@@ -21,14 +21,19 @@ namespace mui {
 
 class comm_mpi : public communicator {
 public:
-	comm_mpi() :
+	comm_mpi(const char URI[], MPI_Comm world ) :
 		domain_local_(0), domain_remote_(0),
 		local_size_(0), local_rank_(0), remote_size_(0), global_size_(0), global_rank_(0),
-		initialized(false), init_by_me(false) {}
+		initialized(false), init_by_me(false) {
+		init(URI, world);
+	}
+	virtual ~comm_mpi() {
+		finalize();
+	}
 
-	void init( const char URI[], int argc = 0, char **argv = NULL ) {
+	void init( const char URI[], MPI_Comm world ) {
 		if ( initialized ) {
-			throw( std::runtime_error("duplicate MPI initialization") );
+			throw( std::runtime_error("duplicate MUI communicator initialization") );
 		}
 
 		// check MPI initialization status
@@ -36,22 +41,21 @@ public:
 		MPI_Initialized( &init );
 		if (!init) {
 			init_by_me = true;
-			MPI_Init( &argc, &argv );
+			MPI_Init( NULL, NULL );
 		}
 
 		// duplicate world to avoid potential conflict with host program
-		MPI_Comm world;
-		MPI_Comm_dup( MPI_COMM_WORLD, &world );
+		if (world == MPI_COMM_WORLD) MPI_Comm_dup( MPI_COMM_WORLD, &world );
 		MPI_Comm_size( world, &global_size_ );
 		MPI_Comm_rank( world, &global_rank_ );
 
 		// get upper bond for tag hash
 		int prime;
 		{
-			void* v;
+			int* v;
 			int flag;
 			MPI_Comm_get_attr(MPI_COMM_WORLD,MPI_TAG_UB,&v,&flag);
-			prime = *(int*)v;
+			prime = *v;
 		}
 
 		// parse URI, split the world using domain tag
@@ -79,11 +83,15 @@ public:
 		MPI_Comm_remote_size( domain_remote_, &remote_size_ );
 
 		// output for debugging
-		std::cout	<<"global rank "<<global_rank_<<'\t'
-					<<"identifier "<<URI<<'\t'
-					<<"domain size "<<local_size_<<'\t'
-					<<"peer number "<<remote_size_<<'\t'
-					<<std::endl;
+		for(int i=0;i<global_size_;i++) {
+			if ( i == global_rank_ )
+				std::cout	<<"rank "<<global_rank_<<'\t'
+							<<"identifier "<<URI<<'\t'
+							<<"domain size "<<local_size_<<'\t'
+							<<"peer number "<<remote_size_<<'\t'
+							<<std::endl;
+			MPI_Barrier( world );
+		}
 
 		initialized = true;
 	}

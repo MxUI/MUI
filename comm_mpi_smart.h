@@ -21,12 +21,8 @@ class comm_mpi_smart : public comm_mpi {
 private:
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
 public:
-	comm_mpi_smart( const char URI[] ) : comm_mpi() {
-		init(URI);
-	}
-	virtual ~comm_mpi_smart() {
-		finalize();
-	}
+	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
+	virtual ~comm_mpi_smart() {}
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {

@@ -9,6 +9,7 @@
 #define CONFIG_H
 
 #include "util.h"
+#include "dim.h"
 #include "exception.h"
 
 namespace mui {

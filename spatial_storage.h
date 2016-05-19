@@ -14,10 +14,6 @@
 
 namespace mui {
 
-struct spatial_bad_state: std::logic_error {
-	spatial_bad_state( const char* err ): std::logic_error(err) {}
-};
-
 template<typename BIN, typename STORAGE, typename CONFIG>
 class spatial_storage {
 private: // type definitions
@@ -85,7 +81,7 @@ public:
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
 		if( data_.empty() ) 
 			return s.filter(f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()));
-		if( !is_built() ) EXCEPTION(spatial_bad_state("spatial storage: query error. "
+		if( !is_built() ) EXCEPTION(std::logic_error("spatial storage: query error. "
 		                                              "not builded bin. Internal data was corrupsed."));
 		const vec& st = storage_cast<const vec&>(data_);
 		return s.filter(f,virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)));
@@ -96,13 +92,13 @@ public:
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
 		if( data_.empty() ) 
 			return s.filter(f, vec());
-		if( !is_built() ) EXCEPTION( spatial_bad_state("spatial storage: query error. "
+		if( !is_built() ) EXCEPTION( std::logic_error("spatial storage: query error. "
 		                                               "not builded bin. Internal data was corrupsed.") );
 		const vec& st= storage_cast<const vec&>(data_);
 		return s.filter(f,bin_.query2(reg,st));
 	}
 	void build() {
-		if( is_built() ) EXCEPTION(spatial_bad_state("spatial storage: build error. cannot build twice."));
+		if( is_built() ) EXCEPTION(std::logic_error("spatial storage: build error. cannot build twice."));
 		if( !data_.empty() ){
 			data_.apply_visitor(construct_{(void*)&bin_});
 			is_bin_ = true;

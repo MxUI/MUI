@@ -34,10 +34,11 @@ public:
 				return data_points[i].second;
 			}
 		}
+		std::cerr << "sampler exact: hit nothing\n";
 		return OTYPE(0.);
 	}
-	inline geometry::any_shape<CONFIG> support( point<double,3> focus ) const {
-		return geometry::point<CONFIG>( focus );
+	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+		return geometry::sphere<CONFIG>( focus, 1 );
 	}
 };
 

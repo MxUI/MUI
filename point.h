@@ -61,13 +61,23 @@ public:
 	// default constructor
 	inline point() {}
 	// construct from scalar constant
-	inline point(SCALAR const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
+	explicit inline point(float  const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
+	explicit inline point(double const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
+	explicit inline point(int    const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
+	explicit inline point(uint   const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
+	explicit inline point(long   const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
+	explicit inline point(ulong  const s) { for(uint i = 0 ; i < D ; i++) x[i] = s; }
 	// construct from C-array
-	inline point(SCALAR const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = *ps++; }
+	explicit inline point(float  const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = ps[i]; }
+	explicit inline point(double const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = ps[i]; }
+	explicit inline point(int    const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = ps[i]; }
+	explicit inline point(uint   const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = ps[i]; }
+	explicit inline point(long   const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = ps[i]; }
+	explicit inline point(ulong  const *ps) { for(uint i = 0 ; i < D ; i++) x[i] = ps[i]; }
 	// construct from parameter pack
 	// 'head' differentiate it from constructing from vector expression
 	template<typename ...T> inline point(SCALAR const head, T const ... tail ) {
-		std::array<TYPE_,D_> s( { head, tail... } );
+		std::array<TYPE_,D_> s( { head, static_cast<SCALAR>(tail)... } );
 		for(uint i = 0 ; i < D ; i++) x[i] = s[i];
 	}
 	// construct from any vector expression
@@ -114,7 +124,8 @@ public:
 		return *this;
 	}
 	inline point & operator /= ( SCALAR const u ) {
-		return operator *= ( SCALAR(1)/u );
+		for(uint i = 0 ; i < D ; i++) x[i] /= u;
+		return *this;
 	}
 };
 
@@ -176,6 +187,15 @@ protected:
 };
 
 template<class E, typename SCALAR, uint D>
+struct vexpr_rscale: public vexpr<vexpr_rscale<E,SCALAR,D>, SCALAR, D> {
+	inline vexpr_rscale( vexpr<E,SCALAR,D> const& u, SCALAR const a ) : u_(u), a_(a) {}
+	inline SCALAR operator [] (uint i) const { return u_[i] / a_; }
+protected:
+	E      const& u_;
+	SCALAR const  a_;
+};
+
+template<class E, typename SCALAR, uint D>
 struct vexpr_rcp: public vexpr<vexpr_rcp<E,SCALAR,D>, SCALAR, D> {
 	inline vexpr_rcp( vexpr<E,SCALAR,D> const& u ) : u_(u) {}
 	inline SCALAR operator [] (uint i) const { return SCALAR(1)/u_[i]; }
@@ -190,15 +210,6 @@ struct vexpr_scale_rcp: public vexpr<vexpr_scale_rcp<E,SCALAR,D>, SCALAR, D> {
 protected:
 	SCALAR const  a_;
 	E      const& u_;
-};
-
-template<class E1, class E2, typename SCALAR>
-struct vexpr_cross: public vexpr<vexpr_cross<E1,E2,SCALAR>, SCALAR, 3U> {
-	inline vexpr_cross( vexpr<E1,SCALAR,3U> const& u, vexpr<E2,SCALAR,3U> const& v ) : u_(u), v_(v) {}
-	inline SCALAR operator [] (uint i) const { return u_[(i+1U)%3U] * v_[(i+2U)%3U] - u_[(i+2U)%3U] * v_[(i+1U)%3U]; }
-protected:
-	E1 const& u_;
-	E2 const& v_;
 };
 
 template<class E, class OP, typename SCALAR, uint D>
@@ -256,7 +267,7 @@ vexpr_scale<E, SCALAR, D> operator * ( SCALAR const a, vexpr<E,SCALAR,D> const &
 
 template<class E, typename SCALAR, uint D> inline
 vexpr_scale<E, SCALAR, D> operator / ( vexpr<E,SCALAR,D> const &u, SCALAR const a ) {
-	return vexpr_scale<E, SCALAR, D>( u, SCALAR(1)/a );
+	return vexpr_rscale<E, SCALAR, D>( u, a );
 }
 
 template<class E1, class E2, typename SCALAR, uint D> inline
@@ -274,8 +285,10 @@ vexpr_scale_rcp<E, SCALAR, D> operator / ( SCALAR const a, vexpr<E,SCALAR,D> con
 ---------------------------------------------------------------------------*/
 
 template<class E1, class E2, typename SCALAR> inline
-vexpr_cross<E1, E2, SCALAR> cross( vexpr<E1,SCALAR,3U> const &u, vexpr<E2,SCALAR,3U> const &v ) {
-	return vexpr_cross<E1, E2, SCALAR>( u, v );
+point<SCALAR,3U> cross( vexpr<E1,SCALAR,3U> const &u, vexpr<E2,SCALAR,3U> const &v ) {
+        point<SCALAR,3U> x;
+        for(uint i=0;i<3;i++)  x[i] = u[(i+1U)%3U] * v[(i+2U)%3U] - u[(i+2U)%3U] * v[(i+1U)%3U];
+        return x;
 }
 
 // generic reduction template
@@ -307,7 +320,7 @@ SCALAR sum( vexpr<E,SCALAR,D> const &u ) {
 // smallest element within a vector
 template<class E, typename SCALAR, uint D> inline
 SCALAR mean( vexpr<E,SCALAR,D> const &u ) {
-	return sum(u) / SCALAR(D);
+	return sum(u) / double(D);
 }
 
 // inner product

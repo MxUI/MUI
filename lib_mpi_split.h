@@ -10,12 +10,21 @@
 
 namespace mui {
 
+inline void mpi_finalize_after_split() {
+	int flag;
+	MPI_Finalized(&flag);
+	if (!flag) MPI_Finalize();
+}
+
 inline MPI_Comm mpi_split_by_app( int argc=0, char **argv=NULL )
 {
 	{
 		int flag;
 		MPI_Initialized(&flag);
-		if( !flag ) MPI_Init( &argc, &argv );
+		if( !flag ) {
+			MPI_Init( &argc, &argv );
+			atexit( mpi_finalize_after_split );
+		}
 	}
 	void* v;
 	int flag;

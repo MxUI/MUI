@@ -29,9 +29,9 @@ template<typename CONFIG = default_config>
 class uniface {
 public:
 	// public typedefs.
-	static const int D  = CONFIG::D;
+	static const int  D     = CONFIG::D;
 	static const bool DEBUG = CONFIG::DEBUG;
-	using REAL = typename CONFIG::REAL;
+	using REAL       = typename CONFIG::REAL;
 	using point_type = typename CONFIG::point_type;
 	using time_type  = typename CONFIG::time_type;
 	using data_types = typename CONFIG::data_types;
@@ -110,6 +110,7 @@ private: // data members
 	std::mutex mutex;
 public:
 	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
+	uniface( std::string const &URI ) : uniface( comm_factory::create_comm(URI.c_str()) ) {}
 	uniface( communicator* comm_ ) : comm(comm_) {
 		using namespace std::placeholders;
 
@@ -261,6 +262,10 @@ private:
 // [x] bool uniface::is_ready( std::string attr );
 // [x] void uniface::forecast( time_type stamp );
 // [ ] linear solver
+// [ ] config generator
+// [ ] logger
+// [ ] python wrapper
+// [ ] periodicity policy
 
 // [ ] shm://domain/interface, create pipes in /dev/shm/interface
 // [ ] void uniface::recommit( time_type stamp, INT version );

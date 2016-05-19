@@ -19,6 +19,7 @@
 #include "comm_mpi_smart.h"
 #include "dim.h"
 #include "lib_mpi_split.h"
+#include "lib_mpi_multidomain.h"
 #include "sampler_exact.h"
 #include "sampler_gauss.h"
 #include "sampler.h"
@@ -40,7 +41,7 @@ namespace mui {
 	using SAMPLER ## SUFFIX = SAMPLER<CONFIG>;
 
 #define SPECIALIZE(SUFFIX,REALTYPE,INTTYPE,DIM) \
-		struct mui_config_##SUFFIX {\
+		typedef struct config_##SUFFIX {\
 			static const int D = DIM;\
 			using REAL = REALTYPE;\
 			using INT  = INTTYPE;\
@@ -49,19 +50,19 @@ namespace mui {
 			static const bool DEBUG = false;\
 			using data_types = type_list<int,double,float>;\
 			using EXCEPTION = exception_segv;\
-		};\
-		using uniface##SUFFIX = uniface<mui_config_##SUFFIX>;\
-		using point##SUFFIX = point<mui_config_##SUFFIX::REAL,mui_config_##SUFFIX::D>;\
-		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,mui_config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,mui_config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,mui_config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,mui_config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,mui_config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,mui_config_##SUFFIX)\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,mui_config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,mui_config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,mui_config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,mui_config_##SUFFIX);\
+		} mui_config_##SUFFIX;\
+		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
+		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
+		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
 
 
 SPECIALIZE(1d,double,int,1);
@@ -76,6 +77,10 @@ SPECIALIZE(3f,float,int,3);
 SPECIALIZE(1fx,float,int64_t,1);
 SPECIALIZE(2fx,float,int64_t,2);
 SPECIALIZE(3fx,float,int64_t,3);
+
+#undef SPECIALIZE
+#undef DECLARE_SAMPLER_0ARG
+#undef DECLARE_SAMPLER_1ARG
 
 }
 

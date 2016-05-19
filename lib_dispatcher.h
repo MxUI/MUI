@@ -22,9 +22,12 @@ template<
 struct dispatcher
 {
 	FPTR dispatch( const UUID &id ) {
-		assoc_iter i = dtable_.find(id);
+		auto i = dtable_.find(id);
 		if ( i == dtable_.end() ) EXCEPTION();
 		return i->second;
+	}
+	bool exist( const UUID &id ) {
+		return dtable_.find(id) != dtable_.end();
 	}
 	FPTR operator [] ( const UUID &id ) {
 		return dispatch(id);
@@ -37,7 +40,6 @@ struct dispatcher
 	}
 protected:
 	using assoc_table = std::unordered_map<UUID,FPTR>;
-	using assoc_iter  = typename assoc_table::iterator;
 	assoc_table dtable_;
 };
 

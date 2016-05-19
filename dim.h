@@ -44,15 +44,15 @@ template<int... MLTTAELI>
 struct dim
 {
 	double a; // prefactor
-	dim() : a(0) {}
-	dim( double _a_ ) : a(_a_) {}
-	dim( const dim &other ) : a(other.a) { printf("1\n"); }
+	inline dim() : a(0) {}
+	inline dim( double _a_ ) : a(_a_) {}
+	inline dim( const dim &other ) : a(other.a) {}
 	template<int... ANOTHER_MLTTAELI> dim( const dim<ANOTHER_MLTTAELI...> &error ) {
 		error.Cannot_Assign_Quantities_With_Incompatible_Dimensionalities;
 	}
 
 	// copy-assign
-	dim& operator = ( const dim &other ) { a = other.a; return *this; }
+	inline dim& operator = ( const dim &other ) { a = other.a; return *this; }
 	template<int... ANOTHER_MLTTAELI>
 		class Cannot_Assign_Quantities_With_Incompatible_Dimensionalities
 		operator = ( const dim<ANOTHER_MLTTAELI...> &other );
@@ -61,12 +61,22 @@ struct dim
 	inline operator double () { return a; }
 
 	// conversion
-	dim convert_to( const dim &other ) {
+	inline dim convert_to( const dim &other ) {
 		return dim( a / other.a );
 	}
 	template<int... ANOTHER_MLTTAELI>
 		class Cannot_Assign_Quantities_With_Incompatible_Dimensionalities
 		convert_to( const dim<ANOTHER_MLTTAELI...> &other );
+
+	// serialization
+	friend inline ostream& operator << ( ostream &out, dim q ) {
+		out << q.a;
+		return out;
+	}
+	friend inline istream& operator >> ( istream &in, dim q ) {
+		in >> q.a;
+		return in;
+	}
 };
 
 /******************************************************************************
@@ -74,37 +84,37 @@ struct dim
 ******************************************************************************/
 
 // addition
-template<int... MLTTAELI1, int... MLTTAELI2>
+template<int... MLTTAELI1, int... MLTTAELI2> inline
 class Cannot_Add_Values_With_Mismatching_Dimensionality operator + ( const dim<MLTTAELI1...> &d1, const dim<MLTTAELI2...> &d2 );
 
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<MLTTAELI...> operator + ( const dim<MLTTAELI...> &d1, const dim<MLTTAELI...> &d2 ) {
 	return dim<MLTTAELI...>( d1.a + d2.a );
 }
 
 // negate
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<MLTTAELI...> operator - ( const dim<MLTTAELI...> &d ) {
 	return dim<MLTTAELI...>( -d.a );
 }
 
 // substraction
-template<int... MLTTAELI1, int... MLTTAELI2>
+template<int... MLTTAELI1, int... MLTTAELI2> inline
 class Cannot_Subtract_Values_With_Mismatching_Dimensionality operator - ( const dim<MLTTAELI1...> &d1, const dim<MLTTAELI2...> &d2 );
 
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<MLTTAELI...> operator - ( const dim<MLTTAELI...> &d1, const dim<MLTTAELI...> &d2 ) {
 	return dim<MLTTAELI...>( d1.a - d2.a );
 }
 
 // multiplication
 // case 0: all dimensions cancel, result is scalar
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 double operator * ( const dim<MLTTAELI...> &u1, const dim<-MLTTAELI...> &u2 ) {
 	return u1.a * u2.a;
 }
 // case 1: result in something with new dimensionality
-template<int... MLTTAELI1, int... MLTTAELI2>
+template<int... MLTTAELI1, int... MLTTAELI2> inline
 dim<(MLTTAELI1+MLTTAELI2)...> operator * ( const dim<MLTTAELI1...> &u1, const dim<MLTTAELI2...> &u2 ) {
 	dim<(MLTTAELI1+MLTTAELI2)...> u;
 	u.a = u1.a * u2.a;
@@ -112,23 +122,23 @@ dim<(MLTTAELI1+MLTTAELI2)...> operator * ( const dim<MLTTAELI1...> &u1, const di
 }
 
 // multiply by constant
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<MLTTAELI...> operator * ( const dim<MLTTAELI...> &u, const double f ) {
 	return dim<MLTTAELI...>( u.a * f );
 }
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<MLTTAELI...> operator * ( const double f, const dim<MLTTAELI...> &u ) {
 	return dim<MLTTAELI...>( u.a * f );
 }
 
 // division
 // case 0: all dimensions cancel, result is scalar
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 double operator / ( const dim<MLTTAELI...> &u1, const dim<MLTTAELI...> &u2 ) {
 	return u1.a / u2.a;
 }
 // case 1: result in something with new dimensionality
-template<int... MLTTAELI1, int... MLTTAELI2>
+template<int... MLTTAELI1, int... MLTTAELI2> inline
 dim<(MLTTAELI1-MLTTAELI2)...> operator / ( const dim<MLTTAELI1...> &u1, const dim<MLTTAELI2...> &u2 ) {
 	dim<(MLTTAELI1-MLTTAELI2)...> u;
 	u.a = u1.a / u2.a;
@@ -136,13 +146,13 @@ dim<(MLTTAELI1-MLTTAELI2)...> operator / ( const dim<MLTTAELI1...> &u1, const di
 }
 
 // divide by constant
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<MLTTAELI...> operator / ( const dim<MLTTAELI...> &u, const double f ) {
 	return u * (1.0/f);
 }
 
 // inversion
-template<int... MLTTAELI>
+template<int... MLTTAELI> inline
 dim<-MLTTAELI...> operator / ( const double f, const dim<MLTTAELI...> &u ) {
 	return dim<-MLTTAELI...>( f / u.a );
 }
@@ -152,7 +162,7 @@ dim<-MLTTAELI...> operator / ( const double f, const dim<MLTTAELI...> &u ) {
 ******************************************************************************/
 
 // Fundamental dimensions
-//                      M L T S T E L I
+//                      M L T T A E L I
 using mass        = dim<1,0,0,0,0,0,0,0>;
 using length      = dim<0,1,0,0,0,0,0,0>;
 using time        = dim<0,0,1,0,0,0,0,0>;
@@ -165,7 +175,7 @@ using information = dim<0,0,0,0,0,0,0,1>;
 // Derived dimensions - General
 using angle       = decltype( length() / length() );
 using area        = decltype( length() * length() );
-using frequency   = decltype( 1.0 / area() );
+using frequency   = decltype( 1.0 / time() );
 using velocity    = decltype( length() / time() );
 using acceleration= decltype( velocity() / time() );
 using force       = decltype( mass() * acceleration() );
@@ -207,19 +217,19 @@ namespace chemical {
 ******************************************************************************/
 
 // Example
-angle operator "" _deg ( long double u ) {
+inline angle operator "" _deg ( long double u ) {
 	return angle( u * ( PI / 360.0 ) );
 }
-angle operator "" _deg ( unsigned long long u ) {
+inline angle operator "" _deg ( unsigned long long u ) {
 	return angle( u * ( PI / 360.0 ) );
 }
 
 // Short-hand macro
 #define make_unit(dimension,suffix,conversion) \
-		dimension operator "" _##suffix ( long double u ) { \
+		inline dimension operator "" _##suffix ( long double u ) { \
 			return dimension( conversion ); \
 		} \
-		dimension operator "" _##suffix ( unsigned long long u ) { \
+		inline dimension operator "" _##suffix ( unsigned long long u ) { \
 			return dimension( conversion ); \
 		}
 
