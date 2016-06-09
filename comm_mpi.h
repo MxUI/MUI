@@ -48,6 +48,9 @@ public:
 		if (world == MPI_COMM_WORLD) MPI_Comm_dup( MPI_COMM_WORLD, &world );
 		MPI_Comm_size( world, &global_size_ );
 		MPI_Comm_rank( world, &global_rank_ );
+		if (global_size_ < 2) {
+			fprintf( stderr, "WARNING: # of global ranks less than 2\n" );
+		}
 
 		// get upper bond for tag hash
 		int prime;
