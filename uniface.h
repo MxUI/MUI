@@ -25,11 +25,15 @@
 
 namespace mui {
 
+/*! \brief Briefly what is uniface
+ *
+ *  An expanded description of uniface. 
+ */
 template<typename CONFIG = default_config>
 class uniface {
 public:
 	// public typedefs.
-	static const int  D     = CONFIG::D;
+	static const int  D     = CONFIG::D; //!< dimensionality of the domains
 	static const bool DEBUG = CONFIG::DEBUG;
 	using REAL       = typename CONFIG::REAL;
 	using point_type = typename CONFIG::point_type;
