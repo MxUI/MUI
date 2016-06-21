@@ -31,7 +31,7 @@ public:
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 		INT n(0);
-		OTYPE vsum;
+		OTYPE vsum(0);
 		for(INT i = 0 ; i < data_points.size() ; i++) {
 			point_type dx = apply( data_points[i].first - focus, abs );
 			bool within = true;
