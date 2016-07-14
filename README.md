@@ -5,6 +5,24 @@ Concurrently coupled numerical simulations using heterogeneous solvers are power
 
 The source code is dual-licensed under both GPL v3 and Apache v2.
 
+## For developers - tests
+
+Test can be run using a combination of CMake and Gtest. To run the tests do the following
+
+```bash
+cd <project dir>
+
+# Downloading gtest
+git submodule init
+git submodule update
+
+mkdir build
+cd build
+cmake ../
+make
+make test
+```
+
 ## Publication
 
 **Tang** Y.-H., **Kudo**, S., **Bian**, X., **Li**, Z., & **Karniadakis**, G. E. Multiscale Universal Interface: A Concurrent Framework for Coupling Heterogeneous Solvers, *Journal of Computational Physics*, **2015**, 297.15, 13-31.
