@@ -160,14 +160,17 @@ public:
 
 	// commit() serializes pushed data and send it to remote nodes and, after that,
 	// send "confirm" message.
-	void commit( time_type timestamp ) {
+	// return actual number of peers contacted
+	int commit( time_type timestamp ) {
 		std::vector<bool> is_sending(comm->remote_size(), true);
 		if( span_start <= timestamp  && timestamp <= span_timeout )
-			for( std::size_t i=0; i<peers.size(); ++i )
+			for( std::size_t i=0; i<peers.size(); ++i ) {
 				is_sending[i] = peers[i].is_recving( timestamp, current_span );
+			}
 		comm->send(message::make("data",timestamp,std::move(push_buffer)), is_sending);
 		push_buffer.clear();
 		comm->send(message::make("timestamp",comm->local_rank(),timestamp));
+		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
 	void forecast( time_type timestamp ) {
 		comm->send(message::make("forecast", comm->local_rank(), timestamp));

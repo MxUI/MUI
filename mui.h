@@ -63,6 +63,11 @@ namespace mui {
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
+		namespace geometry {\
+			using point##SUFFIX = point<config_##SUFFIX>;\
+			using sphere##SUFFIX = sphere<config_##SUFFIX>;\
+			using box##SUFFIX = box<config_##SUFFIX>;\
+		}
 
 
 SPECIALIZE(1d,double,int,1);
