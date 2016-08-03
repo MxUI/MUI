@@ -17,7 +17,7 @@ typedef chrono_sampler_exact3d           mui_chrono_sampler_exact3d;
 typedef chrono_sampler_mean3d            mui_chrono_sampler_mean3d;
 
 // allocator
-void mui_create_uniface3d_f_( mui_uniface3d** ret, const char *URI ) {
+void mui_create_uniface3d_f( mui_uniface3d** ret, const char *URI ) {
 	*ret = new mui_uniface3d( URI );
 }
 
@@ -38,7 +38,7 @@ void mui_create_chrono_sampler_mean3d_f_( mui_chrono_sampler_mean3d** ret, doubl
 }
 
 // deallocator
-void mui_destroy_uniface3d_f_( mui_uniface3d *uniface ) {
+void mui_destroy_uniface3d_f( mui_uniface3d *uniface ) {
 	delete uniface;
 }
 
@@ -59,7 +59,7 @@ void mui_destroy_chrono_sampler_mean3d_f_( mui_chrono_sampler_mean3d* sampler ) 
 }
 
 // push
-void mui_push_f_( mui_uniface3d* uniface, const char *attr, double* x, double* y, double* z, double* value ) {
+void mui_push_f( mui_uniface3d* uniface, const char *attr, double* x, double* y, double* z, double* value ) {
 	uniface->push( std::string(attr), point3d(*x,*y,*z), *value );
 }
 
