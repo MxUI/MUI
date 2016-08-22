@@ -5,7 +5,8 @@ module mui_3df
   interface
     subroutine mui_create_uniface3d_f(uniface,domain) bind(c)
       import :: c_ptr,c_char
-      type(c_ptr), intent(out), target :: uniface(*)
+    !type(c_ptr), intent(out), target :: uniface(*) !<- this line doesnt compile with ifort (error 8284)
+      type(c_ptr), intent(out), target :: uniface    !<- now yes!!
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface3d_f
 
