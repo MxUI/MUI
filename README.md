@@ -12,3 +12,9 @@ The source code is dual-licensed under both GPL v3 and Apache v2.
 ## Contact
 
 Should you have any question please do not hesitate to contact yuhang_tang at brown dot edu
+
+## Examples
+
+| Concurrently coupled simulation of conjugate heat transfer using Finite Element (FEM) - Dissipative Particle Dynamics (DPD)                                                                                                                   |
+|:------------------------------------------------------------------------------------------------------------------:|
+| <img src='fem-dpd.jpg' width='1080px'/>                                                                                                                   |
