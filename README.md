@@ -15,6 +15,10 @@ Should you have any question please do not hesitate to contact yuhang_tang at br
 
 ## Examples
 
-| Concurrently coupled simulation of conjugate heat transfer using Finite Element (FEM) - Dissipative Particle Dynamics (DPD)                                                                                                                   |
+| Concurrently coupled simulation of conjugate heat transfer using Finite Element (FEM) - Dissipative Particle Dynamics (DPD) |
 |:------------------------------------------------------------------------------------------------------------------:|
-| <img src='fem-dpd.jpg' width='1080px'/>                                                                                                                   |
+| <img src='fem-dpd.jpg' width='1080px'/>                                                                           |
+
+| DPD-SPH coupled simulation of flow past polymer-grafted surface |
+|:------------------------------------------------------------------------------------------------------------------:|
+|<img src='graft.jpg' width='720px'/>|
