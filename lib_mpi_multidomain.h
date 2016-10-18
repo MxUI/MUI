@@ -59,6 +59,7 @@ inline std::vector<uniface<CONFIG> *> create_uniface( std::string domain, std::v
         gather( ( int )interfaces.size(), world );
         MPI_Gatherv( my_hashes.data(), my_hashes.size(), MPI_INT, NULL, NULL, NULL, MPI_INT, 0, world );
     }
+    MPI_Barrier( world );
     MPI_Bcast( &n_unique, 1, MPI_INT, 0, world );
     std::vector<int> uniq_hashes( n_unique );
     if( global_rank == 0 ) uniq_hashes.assign( unique_ifs.begin(), unique_ifs.end() );
@@ -71,7 +72,7 @@ inline std::vector<uniface<CONFIG> *> create_uniface( std::string domain, std::v
             MPI_Comm_split( world, 1, global_rank, &comm_ifs );
             int comm_rank;
             MPI_Comm_rank( comm_ifs, &comm_rank );
-            if( comm_rank == 0 ) printf( "> setting up interface %s [%08X]\n", map[i].c_str(), i );
+            if( comm_rank == 0 ) printf( "> setting up interface %s [%08X] (rank ids are local to each interface)\n", map[i].c_str(), i );
             std::string full_uri( "mpi://" );
             full_uri = full_uri + domain + "/" + map[i];
             unifaces.push_back( new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) ) );
