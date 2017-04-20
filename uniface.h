@@ -154,9 +154,9 @@ public:
 			time_type time = first->first;
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			v.emplace_back(time,iter->second.build_and_query_ts(sampler.support(focus).bbox(),focus,sampler));
+			v.emplace_back( time, iter->second.build_and_query_ts( sampler.support(focus).bbox(), focus, sampler, additional... ) );
 		}
-		return t_sampler.filter(t, v, additional...);
+		return t_sampler.filter(t, v);
 	}
 
 	// commit() serializes pushed data and send it to remote nodes and, after that,

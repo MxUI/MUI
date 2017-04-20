@@ -75,18 +75,18 @@ public:
 
 	// no lock internally; it's job of uniface because
 	// we need more large lock if there is no rw-lock.
-	template<typename REGION, typename FOCUS, typename SAMPLER>
+	template<typename REGION, typename FOCUS, typename SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE 
-	query(const REGION& reg, const FOCUS& f, const SAMPLER& s) const {
+	query(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... addtional) const {
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
 		if( data_.empty() ) 
-			return s.filter(f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()));
+			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), addtional... );
 		if( !is_built() ) EXCEPTION(std::logic_error("spatial storage: query error. "
-		                                              "not builded bin. Internal data was corrupsed."));
+		                                             "Bin was not built yet. Internal data was corrupsed."));
 		const vec& st = storage_cast<const vec&>(data_);
-		return s.filter(f,virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)));
+		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), addtional...);
 	}
-	template<typename REGION, typename FOCUS, typename SAMPLER>
+	/*template<typename REGION, typename FOCUS, typename SAMPLER>
 	typename SAMPLER::OTYPE 
 	query2(const REGION& reg, const FOCUS& f, const SAMPLER& s) const {
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
@@ -96,7 +96,7 @@ public:
 		                                               "not builded bin. Internal data was corrupsed.") );
 		const vec& st= storage_cast<const vec&>(data_);
 		return s.filter(f,bin_.query2(reg,st));
-	}
+	}*/
 	void build() {
 		if( is_built() ) EXCEPTION(std::logic_error("spatial storage: build error. cannot build twice."));
 		if( !data_.empty() ){
@@ -104,15 +104,15 @@ public:
 			is_bin_ = true;
 		}
 	}
-	template<typename REGION, typename FOCUS, typename SAMPLER>
+	template<typename REGION, typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
 	typename SAMPLER::OTYPE 
-	build_and_query_ts(const REGION& reg, const FOCUS& f, const SAMPLER& s) {
+	build_and_query_ts(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
 		// this method is thread-safe. other methods are not.
 		{
 			std::unique_lock<std::mutex> lock(mutex_);
 			if( !is_built() ) build();
 		}
-		return query(reg, f, s);
+		return query(reg, f, s, additional...);
 	}
 	void insert( storage_t storage ) {
 		destroy_if_bin_();
