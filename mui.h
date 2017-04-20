@@ -84,8 +84,39 @@ SPECIALIZE(2fx,float,int64_t,2);
 SPECIALIZE(3fx,float,int64_t,3);
 
 #undef SPECIALIZE
-#undef DECLARE_SAMPLER_0ARG
-#undef DECLARE_SAMPLER_1ARG
+
+// sample configuration class
+// modify to adapt to specific simulation scenario
+/******************************************************************************
+struct config_custom {
+	static const int D = 3;
+	using REAL = double;
+	using INT  = int;
+	using point_type = point<REAL,D>;
+	using time_type  = REAL;
+	static const bool DEBUG = false;
+	using data_types = type_list<int,double,float>;
+	using EXCEPTION = exception_segv;
+};
+******************************************************************************/
+
+// usage: SPECIALIZE( _your_custom_suffix, your_custom_config_structure )
+//        uniface_your_custom_suffix interface; ...
+#define SPECIALIZE(SUFFIX,CONFIG) \
+		namespace mui {\
+		using uniface##SUFFIX = uniface<CONFIG>;\
+		using point##SUFFIX = point<CONFIG::REAL,CONFIG::D>;\
+		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,CONFIG);\
+		}
 
 }
 

@@ -141,10 +141,11 @@ public:
 		storage_cast<std::vector<std::pair<point_type,TYPE> >&>(n).emplace_back( loc, value );
 	}
 	
-	template<class SAMPLER, class TIME_SAMPLER>
+	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	fetch( const std::string& attr, const point_type focus, const time_type t,
-	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler ) {
+	fetch( const std::string& attr,const point_type focus, const time_type t,
+	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
+	       ADDITIONAL && ... additional ) {
 		barrier(t_sampler.get_upper_bound(t));
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
@@ -155,7 +156,7 @@ public:
 			if( iter == first->second.end() ) continue;
 			v.emplace_back(time,iter->second.build_and_query_ts(sampler.support(focus).bbox(),focus,sampler));
 		}
-		return t_sampler.filter(t, v);
+		return t_sampler.filter(t, v, additional...);
 	}
 
 	// commit() serializes pushed data and send it to remote nodes and, after that,
