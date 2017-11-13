@@ -8,3 +8,5 @@ default: mui_3df.cpp unit_test.f90
 	mpirun  -np 1 ./unit_test.x mpi://domain1/interface :  -np 1 ./unit_test.x mpi://domain2/interface
 	@echo "Usage: "
 	@echo "Step 1) Compile with a Fortran compiler & link"
+clean:
+	rm *.o *.mod unit_test.x

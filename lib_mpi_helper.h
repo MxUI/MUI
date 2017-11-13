@@ -38,53 +38,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: sampler_time_sum.h
-Created: Apr 15, 2014
+Filename: lib_mpi_helper.h
+Created: Jun 1, 2015
 Author: Y. H. Tang
-Description: Temporal sampler that sums in time ranging from
-             [ now - left, now + right ]
+Description:
 */
 
-#ifndef MUI_SAMPLER_TIME_SUM_H_
-#define MUI_SAMPLER_TIME_SUM_H_
+#ifndef LIB_MPI_HELPER_H_
+#define LIB_MPI_HELPER_H_
 
-#include "util.h"
-#include "config.h"
+#include <mpi.h>
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_sum {
-public:
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
-	
-	chrono_sampler_sum( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
-		left   = newleft;
-		right  = newright;
-	}
+namespace mpi {
 
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		TYPE sum = TYPE(0);
-		for( auto i: points ) {
-			if ( i.first <= focus + right && i.first >= focus - left ) {
-				sum += i.second;
-			}
-		}
-		return sum;
-	}
-	time_type get_upper_bound( time_type focus ) const {
-		return focus + right;
-	}
-	time_type get_lower_bound( time_type focus ) const {
-		return focus - left;
-	}
+template<typename T>
+inline MPI_Datatype mpi_type( T              const& t );
+inline MPI_Datatype mpi_type( int            const &t ) { return MPI_INT; }
+inline MPI_Datatype mpi_type( long           const &t ) { return MPI_LONG; }
+inline MPI_Datatype mpi_type( unsigned long  const &t ) { return MPI_UNSIGNED_LONG; }
+inline MPI_Datatype mpi_type( long long      const &t ) { return MPI_LONG_LONG; }
+inline MPI_Datatype mpi_type( float          const &t ) { return MPI_FLOAT; }
+inline MPI_Datatype mpi_type( double         const &t ) { return MPI_DOUBLE; }
+inline MPI_Datatype mpi_type( char           const &t ) { return MPI_CHAR; }
+inline MPI_Datatype mpi_type( short          const &t ) { return MPI_SHORT; }
+inline MPI_Datatype mpi_type( unsigned short const &t ) { return MPI_UNSIGNED_SHORT; }
 
-protected:
-	time_type left, right;
-};
+template<typename T> inline std::vector<T> gather( T t, MPI_Comm comm ) {
+	int size, rank;
+	MPI_Comm_size( comm, &size );
+	MPI_Comm_rank( comm, &rank );
+	std::vector<T> v;
+	if ( rank == 0 ) v.resize( size );
+	MPI_Gather( &t, 1, mpi_type(t), v.data(), 1, mpi_type(t), 0, comm );
+	return v;
+}
 
 }
 
-#endif /* MUI_SAMPLER_TIME_SUM_H_ */
+}
+
+#endif /* LIB_MPI_HELPER_H_ */
