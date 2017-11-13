@@ -93,7 +93,7 @@ typedef unsigned int uint;
 typedef unsigned long long ull;
 typedef unsigned long long llong;
 
-const static double PI = 3.1415926535897931160;
+const static double PI = 3.1415926535897932385;
 
 template<typename REAL> inline REAL clamp( REAL x, REAL l, REAL r )
 {
