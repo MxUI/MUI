@@ -9,4 +9,7 @@ default: mui_3d.cpp unit_test.c
 	@echo "Usage: "
 	@echo "Step 1) include mui_3d.h in C source"
 	@echo "Step 2) Compile with a C compiler but do not link"
-	@echo "Step 3) Link with a C++ compiler the object code together with mui_3d.o"   
+	@echo "Step 3) Link with a C++ compiler the object code together with mui_3d.o"
+	
+clean:
+	rm *.o unit_test.x
