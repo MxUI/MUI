@@ -38,43 +38,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: chrono_sampler_null.h
-Created: Nov 5, 2014
+Filename: sampler_exact.h
+Created: Feb 10, 2014
 Author: Y. H. Tang
-Description: Dummy temporal sampler intended as a file template for
-             creating new samplers
+Description: Spatial sampler that provides a value at an exact point
+             with no interpolation.
 */
 
-#ifndef MUI_SAMPLER_TIME_NULL_H_
-#define MUI_SAMPLER_TIME_NULL_H_
+#ifndef MUI_SAMPLER_EXACT_H_
+#define MUI_SAMPLER_EXACT_H_
 
-#include "util.h"
-#include "config.h"
+#include <limits>
+#include "../config.h"
+#include "../sampler.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_null {
+template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
+class sampler_exact {
 public:
+	using OTYPE      = O_TP;
+	using ITYPE      = I_TP;
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
-	
-	chrono_sampler_null() {
-		// to do: initialization
-	}
+	using point_type = typename CONFIG::point_type;
 
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		// to do: interpolation algorithm
+	sampler_exact() {}
+
+	template<template<typename,typename> class CONTAINER>
+	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+		for(INT i = 0 ; i < data_points.size() ; i++) {
+		  if ( normsq( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) { //Perform faster square distance check first
+		    if ( norm( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) //Only perform expensive square root where necessary
+		      return data_points[i].second;
+		  }
+		}
+		std::cerr << "sampler exact: hit nothing\n";
+		return OTYPE(0.);
 	}
-	time_type get_upper_bound( time_type focus ) const {
-		// to do: return newest time needed with regard to focus
-	}
-	time_type get_lower_bound( time_type focus ) const {
-		// to do: return oldest time needed with regard to focus
+	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+	  //Set search radius at 10*epsilon to allow for rounding error but minimise problem set as far as possible as this is an exact sampler
+	  return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(10.0) );
 	}
 };
 
 }
 
-#endif /* MUI_SAMPLER_TIME_NULL_H_ */
+#endif /* MUI_SAMPLER_EXACT_H_ */

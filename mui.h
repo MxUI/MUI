@@ -47,26 +47,30 @@ Description: Gateway header for MUI
 #ifndef MUI_H_
 #define MUI_H_
 
-#include "chrono_sampler_exact.h"
-#include "chrono_sampler_gauss.h"
-#include "chrono_sampler_sum.h"
-#include "chrono_sampler_mean.h"
+//Include chrono samplers
+#include "chrono_samplers/chrono_sampler_exact.h"
+#include "chrono_samplers/chrono_sampler_gauss.h"
+#include "chrono_samplers/chrono_sampler_sum.h"
+#include "chrono_samplers/chrono_sampler_mean.h"
+
+//Include spatial samplers
+#include "spatial_samplers/sampler_exact.h"
+#include "spatial_samplers/sampler_gauss.h"
+#include "spatial_samplers/sampler_mov_avg.h"
+#include "spatial_samplers/sampler_nn.h"
+#include "spatial_samplers/sampler_pseudo_nn.h"
+#include "spatial_samplers/sampler_pseudo_n2_linear.h"
+#include "spatial_samplers/sampler_sum_quintic.h"
+#include "spatial_samplers/sampler_sph_quintic.h"
+#include "spatial_samplers/sampler_shepard_quintic.h"
+
+#include "sampler.h"
 #include "comm.h"
 #include "comm_mpi.h"
 #include "comm_mpi_smart.h"
 #include "dim.h"
 #include "lib_mpi_split.h"
 #include "lib_mpi_multidomain.h"
-#include "sampler_exact.h"
-#include "sampler_gauss.h"
-#include "sampler.h"
-#include "sampler_mov_avg.h"
-#include "sampler_nn.h"
-#include "sampler_pseudo_nn.h"
-#include "sampler_pseudo_n2_linear.h"
-#include "sampler_sum_quintic.h"
-#include "sampler_sph_quintic.h"
-#include "sampler_shepard_quintic.h"
 #include "uniface.h"
 #include "util.h"
 

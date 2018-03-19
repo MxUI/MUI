@@ -37,7 +37,7 @@
 !
 !** File Details **
 !
-!Filename: unit_test.f90
+!Filename: unit_test.F90
 !Created:
 !Author: S. Kudo
 !Description: Unit test for the Fortran wrapper.

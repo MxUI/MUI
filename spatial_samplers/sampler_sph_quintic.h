@@ -38,23 +38,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: sampler_shepard_quntic.h
+Filename: sampler_sph_quintic.h
 Created: Jul 21, 2014
 Author: X. Bian
 Description: Spatial sampler that provides a value at a point
-             using a Shepard interpolation with a quintic kernel.
+             using SPH interpolation with a quintic kernel.
 */
 
-#ifndef MUI_SAMPLER_SHEPARD_QUINTIC_H_
-#define MUI_SAMPLER_SHEPARD_QUINTIC_H_
+#ifndef MUI_SAMPLER_SPH_QUINTIC_H_
+#define MUI_SAMPLER_SPH_QUINTIC_H_
 
-#include "util.h"
+#include "../util.h"
 
 namespace mui
 {
 
 template<typename O_TP, typename I_TP = O_TP, typename CONFIG = default_config>
-class sampler_shepard_quintic
+class sampler_sph_quintic
 {
 public:
     using OTYPE      = O_TP;
@@ -64,7 +64,7 @@ public:
     using point_type = typename CONFIG::point_type;
     const static int D = CONFIG::D;
 
-    sampler_shepard_quintic( REAL r_ ) : r( r_ ), hinv( REAL( 3 ) / r_ )
+    sampler_sph_quintic( REAL r_ ) : r( r_ ), hinv( REAL( 3 ) / r_ )
     {
         static_assert( D == 1 || D == 2 || D == 3, "Quintic kernel for dimension other than 1,2,3 not defined." );
         REAL sigma;
@@ -86,17 +86,14 @@ public:
     inline OTYPE filter( point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points ) const
     {
         OTYPE vsum = 0;
-        REAL  wsum = 0;
         for( INT i = 0 ; i < data_points.size() ; i++ ) {
             auto dist2 = normsq( focus - data_points[i].first );
             if( dist2 < r * r ) {
                 REAL w = quintic_polynomial( sqrt( dist2 ) );
                 vsum += data_points[i].second * w;
-                wsum += w;
             }
         }
-        if( wsum ) return vsum / wsum;
-        else return 0;
+        return vsum;
     }
 
     inline geometry::any_shape<CONFIG> support( point_type focus ) const
@@ -135,4 +132,4 @@ protected:
 
 }
 
-#endif /* MUI_SAMPLER_SHEPARD_QUNTIC_H_ */
+#endif /* MUI_SAMPLER_SPH_QUINTIC_H_ */

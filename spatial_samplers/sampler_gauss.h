@@ -38,24 +38,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: sampler_exact.h
+Filename: sampler_gauss.h
 Created: Feb 10, 2014
 Author: Y. H. Tang
-Description: Spatial sampler that provides a value at an exact point
-             with no interpolation.
+Description: Spatial sampler that provides a value at a point
+             using Gaussian interpolation.
 */
 
-#ifndef MUI_SAMPLER_EXACT_H_
-#define MUI_SAMPLER_EXACT_H_
+#ifndef MUI_SAMPLER_GAUSS_H_
+#define MUI_SAMPLER_GAUSS_H_
 
-#include <limits>
-#include "config.h"
-#include "sampler.h"
+#include "../util.h"
 
 namespace mui {
 
 template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
-class sampler_exact {
+class sampler_gauss {
 public:
 	using OTYPE      = O_TP;
 	using ITYPE      = I_TP;
@@ -63,25 +61,34 @@ public:
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
 
-	sampler_exact() {}
+	sampler_gauss( REAL r_, REAL h_ ) : r(r_), h(h_), nh(std::pow(2*PI*h,-0.5*CONFIG::D)) {}
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+		REAL  wsum = 0;
+		OTYPE vsum = 0;
 		for(INT i = 0 ; i < data_points.size() ; i++) {
-		  if ( normsq( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) { //Perform faster square distance check first
-		    if ( norm( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) //Only perform expensive square root where necessary
-		      return data_points[i].second;
-		  }
+			auto d = normsq( focus - data_points[i].first );
+			if ( d < r*r ) {
+				REAL w = nh * std::exp( (-0.5/h) * d );
+				vsum += data_points[i].second * w;
+				wsum += w;
+			}
 		}
-		std::cerr << "sampler exact: hit nothing\n";
-		return OTYPE(0.);
+		if ( wsum ) return vsum / wsum;
+		else return 0.;
 	}
+
 	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
-	  //Set search radius at 10*epsilon to allow for rounding error but minimise problem set as far as possible as this is an exact sampler
-	  return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(10.0) );
+		return geometry::sphere<CONFIG>( focus, r );
 	}
+
+protected:
+	REAL r;
+	REAL h;
+	REAL nh;
 };
 
 }
 
-#endif /* MUI_SAMPLER_EXACT_H_ */
+#endif /* MUI_SAMPLER_GAUSS_H_ */

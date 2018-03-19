@@ -38,51 +38,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: chrono_sampler_exact.h
-Created: Feb 19, 2014
+Filename: sampler_mov_avg.h
+Created: Feb 10, 2014
 Author: Y. H. Tang
-Description: Temporal sampler that samples at exactly the time specified and performs no
-             interpolation
+Description: Spatial sampler that provides a value at a point
+             using a moving average interpolation.
 */
 
-#ifndef MUI_CHRONO_SAMPLER_EXACT_H_
-#define MUI_CHRONO_SAMPLER_EXACT_H_
+#ifndef MUI_SAMPLER_MOVING_AVG_H_
+#define MUI_SAMPLER_MOVING_AVG_H_
 
-#include "util.h"
-#include "config.h"
+#include "../config.h"
+#include "../sampler.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_exact {
+template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
+class sampler_moving_average {
 public:
+	using OTYPE      = O_TP;
+	using ITYPE      = I_TP;
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
-	
-	chrono_sampler_exact( time_type tol = time_type(0) ) {
-		tolerance = tol;
+	using point_type = typename CONFIG::point_type;
+
+	sampler_moving_average( point_type bbox_ ) {
+		bbox  = bbox_;
 	}
 
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		for( auto i: points ) {
-			if ( std::abs(i.first - focus) <= tolerance ) {
-				return i.second;
+	template<template<typename,typename> class CONTAINER>
+	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+		INT n(0);
+		OTYPE vsum(0);
+		for(INT i = 0 ; i < data_points.size() ; i++) {
+			point_type dx = apply( data_points[i].first - focus, abs );
+			bool within = true;
+			for(INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );
+			if ( within ) {
+				vsum += data_points[i].second;
+				n++;
 			}
 		}
-		return TYPE(0);
+		if (CONFIG::DEBUG) assert( n!=0 );
+		return n ? ( vsum / OTYPE(n) ): OTYPE(0.);
 	}
-	time_type get_upper_bound( time_type focus ) const {
-		return focus + tolerance;
-	}
-	time_type get_lower_bound( time_type focus ) const {
-		return focus - tolerance;
+
+	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+		return geometry::box<CONFIG>( focus - 0.5 * bbox, focus + 0.5 * bbox );
 	}
 
 protected:
-	time_type tolerance;
+	point_type bbox;
 };
 
 }
 
-#endif /* MUI_CHRONO_SAMPLER_EXACT_H_ */
+#endif /* MUI_SAMPLER_MOVING_AVG_H_ */
