@@ -245,9 +245,14 @@ public:
 			}
 		}
 
-		auto vol = max[0]-min[0];
-		for( int i=1; i<D; ++i ) vol *= max[i]-min[i];
-
+		auto volMulti = max[0]-min[0];
+		volMulti = (volMulti == 0.0 ? 1.0: volMulti); // catch case of zero size dimension (max[0]-min[0]=0)
+		auto vol = volMulti;
+		for( int i=1; i<D; ++i ){
+		  volMulti = max[i]-min[i];
+		  volMulti = (volMulti == 0.0 ? 1.0: volMulti); // catch case of zero size dimension (max[i]-min[i]=0)
+		  vol *= volMulti;
+		}
 		h = std::pow(6*vol/val.size(),1.0/D); // about 6 points per bin
 		h = h == 0.0 ? 1.0: h;
 		std::size_t nn=1;
