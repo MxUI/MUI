@@ -11,7 +11,7 @@ The source code is dual-licensed under both the GNU General Purpose License v3 a
 
 ## Contact
 
-Should you have any question please do not hesitate to contact the developers, a list can be found without the MxUI GitHub organisation pages https://github.com/MxUI
+Should you have any question please do not hesitate to contact the developers, a list can be found within the MxUI GitHub organisation pages https://github.com/MxUI
 
 ## Examples
 
