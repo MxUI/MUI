@@ -53,11 +53,6 @@ Description: Communication Interface class. Comm is the base
 #include "message.h"
 
 namespace mui {
-/*
- * Communication Interface class
- * Comm is the base class of communication libraries.
- * This class is designed for internal-use.
- */
 class communicator {
 private:
 	// Comm is not copyable.
@@ -73,7 +68,7 @@ public:
 
 	// send message
 	void send( message msg, const std::vector<bool> &is_sending ) {
-		if( is_sending.size() == remote_size() )
+		if( is_sending.size() == static_cast<size_t>(remote_size()) )
 			return send_impl_(std::move(msg), is_sending);
 		else {
 			std::vector<bool> dest = is_sending;

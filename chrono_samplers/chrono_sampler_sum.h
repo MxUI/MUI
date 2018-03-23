@@ -38,59 +38,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: sampler_mov_avg.h
-Created: Feb 10, 2014
+Filename: sampler_time_sum.h
+Created: Apr 15, 2014
 Author: Y. H. Tang
-Description: Spatial sampler that provides a value at a point
-             using a moving average interpolation.
+Description: Temporal sampler that sums in time ranging from
+             [ now - left, now + right ]
 */
 
-#ifndef MUI_SAMPLER_MOVING_AVG_H_
-#define MUI_SAMPLER_MOVING_AVG_H_
+#ifndef MUI_SAMPLER_TIME_SUM_H_
+#define MUI_SAMPLER_TIME_SUM_H_
 
-#include "config.h"
-#include "sampler.h"
+#include "../util.h"
+#include "../config.h"
 
 namespace mui {
 
-template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
-class sampler_moving_average {
+template<typename CONFIG=default_config> class chrono_sampler_sum {
 public:
-	using OTYPE      = O_TP;
-	using ITYPE      = I_TP;
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
-	using point_type = typename CONFIG::point_type;
-
-	sampler_moving_average( point_type bbox_ ) {
-		bbox  = bbox_;
+	using time_type  = typename CONFIG::time_type;
+	
+	chrono_sampler_sum( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
+		left   = newleft;
+		right  = newright;
 	}
 
-	template<template<typename,typename> class CONTAINER>
-	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		INT n(0);
-		OTYPE vsum(0);
-		for(INT i = 0 ; i < data_points.size() ; i++) {
-			point_type dx = apply( data_points[i].first - focus, abs );
-			bool within = true;
-			for(INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );
-			if ( within ) {
-				vsum += data_points[i].second;
-				n++;
+	template<typename TYPE>
+	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
+		TYPE sum = TYPE(0);
+		for( auto i: points ) {
+			if ( i.first <= focus + right && i.first >= focus - left ) {
+				sum += i.second;
 			}
 		}
-		if (CONFIG::DEBUG) assert( n!=0 );
-		return n ? ( vsum / OTYPE(n) ): OTYPE(0.);
+		return sum;
 	}
-
-	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
-		return geometry::box<CONFIG>( focus - 0.5 * bbox, focus + 0.5 * bbox );
+	time_type get_upper_bound( time_type focus ) const {
+		return focus + right;
+	}
+	time_type get_lower_bound( time_type focus ) const {
+		return focus - left;
 	}
 
 protected:
-	point_type bbox;
+	time_type left, right;
 };
 
 }
 
-#endif /* MUI_SAMPLER_MOVING_AVG_H_ */
+#endif /* MUI_SAMPLER_TIME_SUM_H_ */

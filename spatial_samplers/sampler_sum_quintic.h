@@ -48,7 +48,7 @@ Description: Spatial sampler that provides a value at a point
 #ifndef MUI_SAMPLER_SUM_QUINTIC_H_
 #define MUI_SAMPLER_SUM_QUINTIC_H_
 
-#include "util.h"
+#include "../util.h"
 
 namespace mui
 {

@@ -48,7 +48,7 @@ Description: Dummy spatial sampler that provides a template
 #ifndef MUI_SAMPLER_NULL_H_
 #define MUI_SAMPLER_NULL_H_
 
-#include "util.h"
+#include "../util.h"
 
 namespace mui {
 

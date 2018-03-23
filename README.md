@@ -3,7 +3,7 @@ Concurrently coupled numerical simulations using heterogeneous solvers are power
 
 ## Licensing
 
-The source code is dual-licensed under both GPL v3 and Apache v2.
+The source code is dual-licensed under both the GNU General Purpose License v3 and Apache License, version 2.0.
 
 ## Publication
 
@@ -11,7 +11,7 @@ The source code is dual-licensed under both GPL v3 and Apache v2.
 
 ## Contact
 
-Should you have any question please do not hesitate to contact yuhang_tang at brown dot edu
+Should you have any question please do not hesitate to contact the developers, a list can be found within the MxUI GitHub organisation pages https://github.com/MxUI
 
 ## Examples
 

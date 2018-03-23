@@ -80,7 +80,6 @@ struct vexpr {
 
 	// dereferencing using static polymorphism
 	inline SCALAR operator[] (uint i) const {
-		assert( i < D );
 		return static_cast<VEX const &>(*this)[i];
 	}
 

@@ -38,53 +38,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ** File Details **
 
-Filename: sampler_time_sum.h
-Created: Apr 15, 2014
+Filename: sampler_nn.h
+Created: Feb 10, 2014
 Author: Y. H. Tang
-Description: Temporal sampler that sums in time ranging from
-             [ now - left, now + right ]
+Description: Spatial sampler that provides a value at a point
+             using a nearest neighbour interpolation.
 */
 
-#ifndef MUI_SAMPLER_TIME_SUM_H_
-#define MUI_SAMPLER_TIME_SUM_H_
+#ifndef MUI_SAMPLER_NN_H_
+#define MUI_SAMPLER_NN_H_
 
-#include "util.h"
-#include "config.h"
+#include "../config.h"
+#include "../sampler.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_sum {
+template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
+class sampler_nearest_neighbor {
 public:
+	using OTYPE      = O_TP;
+	using ITYPE      = I_TP;
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
-	
-	chrono_sampler_sum( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
-		left   = newleft;
-		right  = newright;
-	}
+	using point_type = typename CONFIG::point_type;
 
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		TYPE sum = TYPE(0);
-		for( auto i: points ) {
-			if ( i.first <= focus + right && i.first >= focus - left ) {
-				sum += i.second;
+	sampler_nearest_neighbor() {}
+
+	template<template<typename,typename> class CONTAINER>
+	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+		REAL r2min = std::numeric_limits<REAL>::max();
+		OTYPE value = 0;
+		for(INT i = 0 ; i < data_points.size() ; i++) {
+			REAL dr2 = normsq( focus - data_points[i].first );
+			if ( dr2 < r2min ) {
+				r2min = dr2;
+				value = data_points[i].second ;
 			}
 		}
-		return sum;
+		return value;
 	}
-	time_type get_upper_bound( time_type focus ) const {
-		return focus + right;
+	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+		return geometry::point<CONFIG>( focus );
 	}
-	time_type get_lower_bound( time_type focus ) const {
-		return focus - left;
-	}
-
-protected:
-	time_type left, right;
 };
 
 }
 
-#endif /* MUI_SAMPLER_TIME_SUM_H_ */
+#endif /* MUI_SAMPLER_NN_H_ */
