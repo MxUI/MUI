@@ -71,7 +71,7 @@ public:
 		INT n(0);
 		OTYPE vsum(0);
 		for(INT i = 0 ; i < data_points.size() ; i++) {
-			point_type dx = apply( data_points[i].first - focus, abs );
+			point_type dx = apply( data_points[i].first - focus, fabs );
 			bool within = true;
 			for(INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );
 			if ( within ) {
