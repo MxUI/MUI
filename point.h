@@ -54,6 +54,7 @@ Description:
 namespace mui {
 
 using uint = unsigned int;
+using ulong = unsigned long;
 
 // error-checking heplers
 template<typename T1, typename T2> struct same_type { static bool const yes = false; };
