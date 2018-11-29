@@ -111,7 +111,7 @@ private:
 	using storage_raw_t = typename def_storage_raw_<data_types>::type;
 	using frame_raw_type = std::unordered_map<std::string, storage_raw_t>;
 
-    using storage_single_t = typename def_storage_single_<data_types>::type;
+	using storage_single_t = typename def_storage_single_<data_types>::type;
 
 	struct peer_state {
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
@@ -129,13 +129,13 @@ private:
 			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
 
-        void set_pts(std::vector<point_type> pts) {
-            pts_ = pts;
-        }
+		void set_pts(std::vector<point_type> pts) {
+			pts_ = pts;
+		}
 
-        const std::vector<point_type>& pts() const {
-            return pts_;
-        }
+		const std::vector<point_type>& pts() const {
+			return pts_;
+		}
 
 		time_type current_t() const { return latest_timestamp; }
 		time_type next_t() const { return next_timestamp; }
@@ -160,8 +160,8 @@ private:
 		time_type next_timestamp = std::numeric_limits<time_type>::lowest();
 		spans_type recving_spans;
 		spans_type sending_spans;
-        std::vector<point_type> pts_;
-        std::unordered_map<std::string, storage_single_t> assigned_vals_;
+		std::vector<point_type> pts_;
+		std::unordered_map<std::string, storage_single_t> assigned_vals_;
 	};
 
 private: // data members
@@ -171,10 +171,10 @@ private: // data members
 	std::map<time_type,bin_frame_type> log;
 
 	frame_type push_buffer;
-    frame_raw_type push_buffer_raw;
-    std::vector<point_type> push_buffer_pts;
+	frame_raw_type push_buffer_raw;
+	std::vector<point_type> push_buffer_pts;
 
-    std::unordered_map<std::string, storage_single_t > assigned_values;
+	std::unordered_map<std::string, storage_single_t > assigned_values;
 
 	std::vector<peer_state> peers;
 	time_type span_start   = std::numeric_limits<time_type>::lowest();
@@ -185,7 +185,7 @@ private: // data members
 	span_t recv_span;
 	time_type memory_length = std::numeric_limits<time_type>::max();
 	std::mutex mutex;
-    bool initialized_pts_;
+	bool initialized_pts_;
 
 public:
 	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
@@ -201,7 +201,7 @@ public:
 		readers.link("receiving span", reader_variables<int32_t, time_type, time_type, span_t>(
 		             std::bind(&uniface::on_recv_span, this, _1, _2, _3, _4)));
 		readers.link("sending span", reader_variables<int32_t, time_type, time_type, span_t>(
-				     std::bind(&uniface::on_send_span, this, _1, _2, _3, _4)));
+		             std::bind(&uniface::on_send_span, this, _1, _2, _3, _4)));
 		readers.link("data", reader_variables<time_type, frame_type>(
 		             std::bind(&uniface::on_recv_data, this, _1, _2)));
 		readers.link("rawdata", reader_variables<int32_t, time_type, frame_raw_type>(
@@ -222,33 +222,33 @@ public:
      */
     template<typename TYPE>
 	void push( const std::string& attr, const point_type loc, const TYPE value ) {
-        if( FIXEDPOINTS ) {
-            if( !initialized_pts_ ) {
-                push_buffer_pts.emplace_back( loc );
-            }
+		if( FIXEDPOINTS ) {
+			if( !initialized_pts_ ) {
+				push_buffer_pts.emplace_back( loc );
+			}
 
-            storage_raw_t& n = push_buffer_raw[attr];
-            if( !n ) n = storage_raw_t(std::vector<TYPE>());
-            storage_cast<std::vector<TYPE>&>(n).emplace_back( value );
-        } 
-        else {
-            storage_t& n = push_buffer[attr];
-            if( !n ) n = storage_t(std::vector<std::pair<point_type,TYPE> >());
-            storage_cast<std::vector<std::pair<point_type,TYPE> >&>(n).emplace_back( loc, value );
-        }
+			storage_raw_t& n = push_buffer_raw[attr];
+			if( !n ) n = storage_raw_t(std::vector<TYPE>());
+			storage_cast<std::vector<TYPE>&>(n).emplace_back( value );
+		} 
+		else {
+			storage_t& n = push_buffer[attr];
+			if( !n ) n = storage_t(std::vector<std::pair<point_type,TYPE> >());
+			storage_cast<std::vector<std::pair<point_type,TYPE> >&>(n).emplace_back( loc, value );
+		}
 	}
 
-    /** \brief Assign the value \c value to the parameter \c attr
-      * Useful if, for example, you wish to pass a parameter (e.g. viscosity)
-      * rather than a field from one code to another
-      */
-    template<typename TYPE>
+	/** \brief Assign the value \c value to the parameter \c attr
+	  * Useful if, for example, you wish to pass a parameter (e.g. viscosity)
+	  * rather than a field from one code to another
+	  */
+	template<typename TYPE>
 	void assign( const std::string& attr, const TYPE value ) {
 		storage_single_t& n = assigned_values[attr];
 		if( !n ) n = TYPE();
-        TYPE& v = storage_cast<TYPE&>(n);
-        v = value;
-        comm->send(message::make("assignedVals", attr, n));
+		TYPE& v = storage_cast<TYPE&>(n);
+		v = value;
+		comm->send(message::make("assignedVals", attr, n));
 	}
 	
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
@@ -269,62 +269,42 @@ public:
 		return t_sampler.filter(t, v);
 	}
 
-    /** \brief Fetch a parameter from the interface
-      * Overloaded \c fetch to fetch a single parameter of name \c attr
-      */
-    template<typename TYPE>
-    TYPE fetch( const std::string& attr ) {
-        storage_single_t& n = assigned_values[attr];
-        if( !n ) return TYPE(0);
-        
-        return storage_cast<TYPE&>(n);
-    }
+	/** \brief Fetch a parameter from the interface
+	  * Overloaded \c fetch to fetch a single parameter of name \c attr
+	  */
+	template<typename TYPE>
+	TYPE fetch( const std::string& attr ) {
+		storage_single_t& n = assigned_values[attr];
+		if( !n ) return TYPE(0);
+
+		return storage_cast<TYPE&>(n);
+	}
     
-    /** \brief Fetch the points that have been committed to the interface
-      * Fetch the points that are associated with the name \c attr, that have been commited to the interface.
-      */
-    template<typename TYPE>
-    std::vector<point_type>
-    fetch_points( const std::string& attr, const time_type t ) {
-      barrier(t);
-      std::vector <point_type> returnPoints;
-
-      for( auto first=log.lower_bound(t), last = log.upper_bound(t); first!= last; ++first ){
-          time_type time = first->first;
-          auto iter = first->second.find(attr);
-          if( iter == first->second.end() ) continue;
-          sampler_exact<TYPE> sampler;
-          returnPoints = iter->second.return_points(sampler);
-      }
-
-      return returnPoints;
-    }
-
 	/** \brief Serializes pushed data and sends it to remote nodes
-      * Serializes pushed data and sends it to remote nodes.  
-      * Returns the actual number of peers contacted
-      */
+	  * Serializes pushed data and sends it to remote nodes.  
+	  * Returns the actual number of peers contacted
+	  */
 	int commit( time_type timestamp ) {
 		std::vector<bool> is_sending(comm->remote_size(), true);
 		if( span_start <= timestamp  && timestamp <= span_timeout ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				is_sending[i] = peers[i].is_recving( timestamp, current_span );
-            }
-        }
-
-        if( FIXEDPOINTS ) {
-            if( push_buffer_pts.size() > 0 ) {
-                comm->send(message::make("points",comm->local_rank(),std::move(push_buffer_pts)), is_sending);
-                initialized_pts_ = true;
-            }
-            comm->send(message::make("rawdata",comm->local_rank(),timestamp,std::move(push_buffer_raw)), is_sending);
-            push_buffer_raw.clear();
-            push_buffer_pts.clear();
+			}
 		}
-	    else {
-            comm->send(message::make("data",timestamp,std::move(push_buffer)), is_sending);
-    	    push_buffer.clear();
-        }
+
+		if( FIXEDPOINTS ) {
+			if( push_buffer_pts.size() > 0 ) {
+				comm->send(message::make("points",comm->local_rank(),std::move(push_buffer_pts)), is_sending);
+				initialized_pts_ = true;
+			}
+			comm->send(message::make("rawdata",comm->local_rank(),timestamp,std::move(push_buffer_raw)), is_sending);
+			push_buffer_raw.clear();
+			push_buffer_pts.clear();
+		}
+		else {
+			comm->send(message::make("data",timestamp,std::move(push_buffer)), is_sending);
+			push_buffer.clear();
+		}
 
 		comm->send(message::make("timestamp",comm->local_rank(),timestamp));
 		return std::count( is_sending.begin(), is_sending.end(), true );
@@ -409,51 +389,51 @@ private:
 
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
-	    frame_type buf = associate( sender, frame );
-        on_recv_data( timestamp, buf );
-    }
+		frame_type buf = associate( sender, frame );
+		on_recv_data( timestamp, buf );
+	}
 
-  	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
+	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
 		peers.at(sender).set_recving(start,timeout,std::move(s));
 	}
 	void on_send_span( int32_t sender, time_type start, time_type timeout, span_t s ){
 		peers.at(sender).set_sending(start,timeout,std::move(s));
 	}
 
-    void on_recv_points( int32_t sender, std::vector<point_type> points ) {
-        peers.at(sender).set_pts(points);
-    }
+	void on_recv_points( int32_t sender, std::vector<point_type> points ) {
+		peers.at(sender).set_pts(points);
+	}
 
-    void on_recv_assignedVals( std::string attr, storage_single_t data ) {
-        typename std::unordered_map<std::string, storage_single_t >::iterator it = assigned_values.find(attr);
-        if (it != assigned_values.end())
-            it->second = data;
-        else 
-            assigned_values.insert( std::pair<std::string, storage_single_t>( attr, data ) );
-    }
+	void on_recv_assignedVals( std::string attr, storage_single_t data ) {
+		typename std::unordered_map<std::string, storage_single_t >::iterator it = assigned_values.find(attr);
+		if (it != assigned_values.end())
+			it->second = data;
+		else 
+			assigned_values.insert( std::pair<std::string, storage_single_t>( attr, data ) );
+	}
     
-    frame_type associate( int32_t sender, frame_raw_type& frame ) {
-        frame_type buf;
-        for( auto& p: frame ){
-            storage_t& n = buf[p.first];
-            if( !n ) n = storage_t(std::vector<std::pair<point_type,REAL> >());
+	frame_type associate( int32_t sender, frame_raw_type& frame ) {
+		frame_type buf;
+		for( auto& p: frame ){
+			storage_t& n = buf[p.first];
+			if( !n ) n = storage_t(std::vector<std::pair<point_type,REAL> >());
 
-            const std::vector<REAL>& data = storage_cast<const std::vector<REAL>&>(p.second);
-            const std::vector<point_type>& pts = peers.at(sender).pts();
+			const std::vector<REAL>& data = storage_cast<const std::vector<REAL>&>(p.second);
+			const std::vector<point_type>& pts = peers.at(sender).pts();
 
-            assert( pts.size() == data.size() );
+			assert( pts.size() == data.size() );
 
-            std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(n);
+			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(n);
 
-            data_store.reserve(data.size());
+			data_store.reserve(data.size());
 
-            for( size_t i=0; i<data.size(); i++ ){
-              data_store.emplace_back( pts[i], data[i] );
-            }
-        }
+			for( size_t i=0; i<data.size(); i++ ){
+				data_store.emplace_back( pts[i], data[i] );
+			}
+		}
 
-        return buf;
-    }
+		return buf;
+	}
 };
 
 }

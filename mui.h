@@ -91,7 +91,7 @@ namespace mui {
 			static const bool DEBUG = false;\
 			using data_types = type_list<int,double,float>;\
 			using EXCEPTION = exception_segv;\
-            static const bool FIXEDPOINTS = true;\
+			static const bool FIXEDPOINTS = true;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\

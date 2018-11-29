@@ -268,8 +268,8 @@ public:
 		h = std::pow(6*vol/val.size(),1.0/D); // about 6 points per bin
 
 		if(h == 0.0){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
-          h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
-          std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
+			h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
+			std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
         }
 
 		std::size_t nn=1;
