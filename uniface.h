@@ -238,12 +238,12 @@ public:
 		}
 	}
 
-	/** \brief Assign the value \c value to the parameter \c attr
+	/** \brief Push the value \c value to the parameter \c attr
 	  * Useful if, for example, you wish to pass a parameter (e.g. viscosity)
 	  * rather than a field from one code to another
 	  */
 	template<typename TYPE>
-	void assign( const std::string& attr, const TYPE value ) {
+	void push( const std::string& attr, const TYPE value ) {
 		storage_single_t& n = assigned_values[attr];
 		if( !n ) n = TYPE();
 		TYPE& v = storage_cast<TYPE&>(n);
