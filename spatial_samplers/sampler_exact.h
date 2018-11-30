@@ -68,17 +68,17 @@ public:
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 		for(INT i = 0 ; i < data_points.size() ; i++) {
-		  if ( normsq( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) { //Perform faster square distance check first
-		    if ( norm( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) //Only perform expensive square root where necessary
-		      return data_points[i].second;
-		  }
+		if ( normsq( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) { //Perform faster square distance check first
+			if ( norm( focus - data_points[i].first ) < std::numeric_limits<REAL>::epsilon() ) //Only perform expensive square root where necessary
+				return data_points[i].second;
+			}
 		}
 		std::cerr << "sampler exact: hit nothing\n";
 		return OTYPE(0.);
 	}
 	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
-	  //Set search radius at 10*epsilon to allow for rounding error but minimise problem set as far as possible as this is an exact sampler
-	  return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(10.0) );
+		//Set search radius at 10*epsilon to allow for rounding error but minimise problem set as far as possible as this is an exact sampler
+		return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(10.0) );
 	}
 };
 
