@@ -131,15 +131,15 @@ struct bin_iterator : std::iterator<std::forward_iterator_tag,std::pair<typename
 		this->operator++();
 		return other;
 	}
-	
+
 	inline void invalidate();
 	inline void validate();
 	inline bool operator!=( const bin_iterator& rhs ) const { return index != rhs.index; }
 	inline bool operator==( const bin_iterator& rhs ) const { return !(this->operator!=(rhs)); }
-	
+
 	inline const P& operator*() const;
 	inline const P* operator->() const;
-	
+
 	const bin_range<T,CONFIG>& range;
 	int count[D-1];
 	std::size_t high;
@@ -208,7 +208,7 @@ inline void bin_iterator<T,CONFIG>::validate()
 	index = range.displs[offset+range.lh[0][0]];
 	high  = range.displs[offset+range.lh[0][1]];
 }
-	
+
 template<typename T, typename CONFIG>
 inline const typename bin_iterator<T,CONFIG>::P& bin_iterator<T,CONFIG>::operator*() const { return range.value[index]; }
 template<typename T, typename CONFIG>
@@ -249,28 +249,28 @@ public:
 		auto vol = max[0]-min[0];
 		auto volMulti = vol;
 
-	    for( int i=1; i<D; ++i ){
-	      if(vol == 0.0){ // check if first dimension is zero size, if so set to 1
-	        vol = 1.0;
-	        zeroCount++;
-	      }
-	      volMulti = max[i]-min[i];
-	      if(volMulti == 0.0){ // check if other dimensions are zero size, if so set them to 1
-	        volMulti = 1.0;
-            zeroCount++;
-          }
-		  vol *= volMulti;
+		for( int i=1; i<D; ++i ){
+			if(vol == 0.0){ // check if first dimension is zero size, if so set to 1
+				vol = 1.0;
+				zeroCount++;
+			}
+			volMulti = max[i]-min[i];
+			if(volMulti == 0.0){ // check if other dimensions are zero size, if so set them to 1
+				volMulti = 1.0;
+				zeroCount++;
+			}
+			vol *= volMulti;
 		}
 
-	    if (zeroCount == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
-	      vol = 0.0;
+		if (zeroCount == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
+			vol = 0.0;
 
 		h = std::pow(6*vol/val.size(),1.0/D); // about 6 points per bin
 
 		if(h == 0.0){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
 			h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
 			std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
-        }
+		}
 
 		std::size_t nn=1;
 		for( int i=0; i<D; ++i ) {
