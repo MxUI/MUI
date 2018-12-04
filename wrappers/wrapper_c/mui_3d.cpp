@@ -44,7 +44,7 @@ Author: Y. H. Tang
 Description: C wrapper to create 3D MUI uniface.
 */
 
-#include "../mui.h"
+#include "mui.h"
 
 extern "C" {
 
