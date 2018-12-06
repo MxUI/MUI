@@ -30,8 +30,8 @@ install( DIRECTORY ${CMAKE_SOURCE_DIR}/
 		 FILES_MATCHING PATTERN "*.h"
 	   )
 
-install( EXPORT muiTargets DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/)
-install(FILES mui-config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/)
+install( EXPORT muiTargets DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cmake/)
+install(FILES mui-config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cmake)
 
 
 add_library(wrapper_c SHARED ./wrappers/wrapper_c/mui_3d.cpp)
