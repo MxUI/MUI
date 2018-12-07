@@ -14,13 +14,17 @@ else (MPI_FOUND)
 	message(SEND_ERROR "MPI not found")
 endif (MPI_FOUND)
 
-add_library(mui INTERFACE)
+find_package(Eigen3 REQUIRED)
 
+
+add_library(mui INTERFACE)
 
 target_include_directories (mui INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 	$<INSTALL_INTERFACE:include>
 )
+
+target_link_libraries(mui INTERFACE Eigen3::Eigen)
 
 target_compile_definitions(mui INTERFACE LIBRARY_HEADER_ONLY)
 
@@ -37,6 +41,7 @@ install(FILES mui-config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cma
 add_library(wrapper_c SHARED ./wrappers/wrapper_c/mui_3d.cpp)
 set_target_properties(wrapper_c PROPERTIES PUBLIC_HEADER ./wrappers/wrapper_c/mui_3d.h)
 target_include_directories(wrapper_c PRIVATE .)
+target_link_libraries(wrapper_c Eigen3::Eigen ${MPI_CXX_LIBRARIES})
 install(TARGETS wrapper_c
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/wrappers/wrapper_c/)
@@ -44,6 +49,7 @@ install(TARGETS wrapper_c
 
 add_library(wrapper_f SHARED ./wrappers/wrapper_f/mui_3df.cpp)
 target_include_directories(wrapper_f PRIVATE .)
+target_link_libraries(wrapper_f Eigen3::Eigen)
 install(TARGETS wrapper_f
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/)
 

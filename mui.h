@@ -60,6 +60,7 @@ Description: Gateway header for MUI
 #include "spatial_samplers/sampler_nn.h"
 #include "spatial_samplers/sampler_pseudo_nn.h"
 #include "spatial_samplers/sampler_pseudo_n2_linear.h"
+#include "spatial_samplers/sampler_rbf.h"
 #include "spatial_samplers/sampler_sum_quintic.h"
 #include "spatial_samplers/sampler_sph_quintic.h"
 #include "spatial_samplers/sampler_shepard_quintic.h"
@@ -100,6 +101,7 @@ namespace mui {
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_rbf,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
@@ -154,6 +156,7 @@ struct config_custom {
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_rbf,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,CONFIG);\

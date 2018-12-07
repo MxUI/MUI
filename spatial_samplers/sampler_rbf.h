@@ -27,7 +27,7 @@ Description: Spatial sampler using Gaussian Radial Basis Function interpolation.
 #define MUI_SAMPLER_RBF_H_
 
 #include "../util.h"
-#include <eigen/Eigen/Sparse>
+#include <Eigen/Sparse>
 #include "../uniface.h"
 
 namespace mui {
@@ -50,8 +50,11 @@ public:
 	N_sp_(50),
 	pts_(pts)
 	{
-		if( !CONFIG::FIXEDPOINTS ) 
-			console_out( 1, 0, "Not (yet) implemented for dynamic points.", "sampler_rbf.h" );
+		if( !CONFIG::FIXEDPOINTS ) {
+			std::cout << "Not (yet) implemented for dynamic points.", "sampler_rbf.h";
+			throw std::exception();
+		}
+
 
 		//set s to give rbf(r)=cutoff (default 1e-9)
 		s_=std::pow(-std::log(cutoff),0.5) / r_;
@@ -64,8 +67,10 @@ public:
 
 		auto p = std::find_if(pts_.begin(),pts_.end(),[focus](point_type b) { return normsq(focus - b) < 1e-10; });
 
-		if( p==std::end(pts_) )
-			console_out( 0, 1, "Point not found. Must pre-set points for RBF interpolation", "sampler_rbf.h" );
+		if( p==std::end(pts_) ) {
+			std::cout << "Point not found. Must pre-set points for RBF interpolation", "sampler_rbf.h";
+			throw std::exception();
+		}
 
 		auto i = std::distance(pts_.begin(),p);
 

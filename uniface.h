@@ -254,7 +254,7 @@ public:
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type focus, const time_type t,
-	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
+	       SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 	       ADDITIONAL && ... additional ) {
 		barrier(t_sampler.get_upper_bound(t));
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
