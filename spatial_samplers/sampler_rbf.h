@@ -41,6 +41,7 @@ public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
+	using EXCEPTION  = typename CONFIG::EXCEPTION;
 
 	sampler_rbf( REAL r, std::vector<point_type>& pts, bool conservative=false, double cutoff=1e-9 ) : 
 	r_(r), 
@@ -51,10 +52,8 @@ public:
 	pts_(pts)
 	{
 		if( !CONFIG::FIXEDPOINTS ) {
-			std::cout << "Not (yet) implemented for dynamic points.", "sampler_rbf.h";
-			throw std::exception();
+			 EXCEPTION(std::runtime_error("Not (yet) implemented for dynamic points."));
 		}
-
 
 		//set s to give rbf(r)=cutoff (default 1e-9)
 		s_=std::pow(-std::log(cutoff),0.5) / r_;
@@ -68,8 +67,7 @@ public:
 		auto p = std::find_if(pts_.begin(),pts_.end(),[focus](point_type b) { return normsq(focus - b) < 1e-10; });
 
 		if( p==std::end(pts_) ) {
-			std::cout << "Point not found. Must pre-set points for RBF interpolation", "sampler_rbf.h";
-			throw std::exception();
+			EXCEPTION( std::runtime_error("Point not found. Must pre-set points for RBF interpolation" ));
 		}
 
 		auto i = std::distance(pts_.begin(),p);
