@@ -2,7 +2,6 @@
 Multiscale Universal Interface Code Coupling Library
 
 Copyright (C) 2017 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis
-
 This software is jointly licensed under the Apache License, Version 2.0
 and the GNU General Public License version 3, you may use it according
 to either.
@@ -46,15 +45,20 @@ Description: C wrapper to create 3D MUI uniface.
 
 #include "mui.h"
 
+
 extern "C" {
 
 using namespace mui;
 
-typedef uniface3d                        mui_uniface3d;
-typedef sampler_gauss3d<double>          mui_sampler_gauss3d;
-typedef sampler_moving_average3d<double> mui_sampler_moving_average3d;
-typedef chrono_sampler_exact3d           mui_chrono_sampler_exact3d;
-typedef chrono_sampler_mean3d            mui_chrono_sampler_mean3d;
+typedef uniface3d                          mui_uniface3d;
+typedef sampler_gauss3d<double>            mui_sampler_gauss3d;
+typedef sampler_moving_average3d<double>   mui_sampler_moving_average3d;
+typedef chrono_sampler_exact3d             mui_chrono_sampler_exact3d;
+typedef chrono_sampler_mean3d              mui_chrono_sampler_mean3d;
+typedef sampler_exact3d<double>            mui_sampler_exact3d;
+typedef sampler_nearest_neighbor3d<double> mui_sampler_nearest3d;
+typedef sampler_rbf3d<double>              mui_sampler_rbf3d;
+
 
 // allocator
 mui_uniface3d* mui_create_uniface3d( const char *URI ) {
@@ -69,12 +73,32 @@ mui_sampler_moving_average3d* mui_create_sampler_moving_average3d( double dx, do
 	return new mui_sampler_moving_average3d( point3d(dx,dy,dz) );
 }
 
+mui_sampler_exact3d* mui_create_sampler_exact3d() {
+    return new mui_sampler_exact3d();
+}
+
+mui_sampler_nearest3d* mui_create_sampler_nearest3d() {
+    return new mui_sampler_nearest3d();
+}
+
 mui_chrono_sampler_exact3d* mui_create_chrono_sampler_exact3d() {
 	return new mui_chrono_sampler_exact3d;
 }
 
 mui_chrono_sampler_mean3d* mui_create_chrono_sampler_mean3d( double past, double future ) {
 	return new mui_chrono_sampler_mean3d( past, future );
+}
+
+mui_sampler_rbf3d* mui_create_sampler_rbf3d( int n, double x[], double y[], double z[], double r )
+{
+    std::vector<point3d> pts;
+
+    for( int i=0; i<n; i++ )
+    {
+        pts.push_back( point3d(x[i],y[i],z[i]) );
+    }
+
+    return new mui_sampler_rbf3d( r, pts, true );
 }
 
 // deallocator
@@ -90,11 +114,23 @@ void mui_destroy_sampler_moving_average3d( mui_sampler_moving_average3d* sampler
 	delete sampler;
 }
 
+void mui_destroy_sampler_exact3d( mui_sampler_exact3d* sampler ) {
+	delete sampler;
+}
+
+void mui_destroy_sampler_nearest3d( mui_sampler_nearest3d* sampler ) {
+	delete sampler;
+}
+
 void mui_destroy_chrono_sampler_exact3d( mui_chrono_sampler_exact3d* sampler ) {
 	delete sampler;
 }
 
 void mui_destroy_chrono_sampler_mean3d( mui_chrono_sampler_mean3d* sampler ) {
+	delete sampler;
+}
+
+void mui_destroy_sampler_rbf3d( mui_sampler_rbf3d* sampler ) {
 	delete sampler;
 }
 
@@ -105,46 +141,92 @@ void mui_push( mui_uniface3d* uniface, const char *attr, double x, double y, dou
 
 // spatial sampler: gaussian
 // temporal sampler: exact point
-double mui_fetch_gaussian_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_gauss3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+double mui_fetch_gaussian_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_gauss3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+
+// spatial sampler: exact
+// temporal sampler: exact point
+double mui_fetch_exact_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_exact3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+
+// spatial sampler: nearest
+// temporal sampler: exact point
+double mui_fetch_nearest_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_nearest3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+
+// spatial sampler: nearest
+// temporal sampler: exact point
+double mui_fetch_rbf_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_rbf3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
 	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
 }
 
 // spatial sampler: gaussian
 // temporal sampler: mean
-double mui_fetch_gaussian_mean( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_gauss3d *spatial, mui_chrono_sampler_mean3d *temporal ) {
+double mui_fetch_gaussian_mean( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_gauss3d *spatial, mui_chrono_sampler_mean3d *temporal ) {
 	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
 }
 
 // spatial sampler: moving average
 // temporal sampler: exact point
-double mui_fetch_moving_average_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_moving_average3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+double mui_fetch_moving_average_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_moving_average3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
 	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
 }
 
 // spatial sampler: moving_average
 // temporal sampler: mean
-double mui_fetch_moving_average_mean( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_moving_average3d *spatial, mui_chrono_sampler_mean3d *temporal ) {
+double mui_fetch_moving_average_mean( mui_uniface3d* uniface, const char *attr, double x, double y, double z, int t, mui_sampler_moving_average3d *spatial, mui_chrono_sampler_mean3d *temporal ) {
 	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
 }
 
 // commit all data in buffer
-void mui_commit( mui_uniface3d* uniface, double t ) {
+void mui_commit( mui_uniface3d* uniface, int t ) {
 	uniface->commit( t );
 }
 
 // wait for peers
-void mui_barrier( mui_uniface3d* uniface, double t ) {
+void mui_barrier( mui_uniface3d* uniface, int t ) {
 	uniface->barrier( t );
 }
 
 // remove obsolete data
-void mui_forget( mui_uniface3d* uniface, double first, double last ) {
+void mui_forget( mui_uniface3d* uniface, int first, int last ) {
 	uniface->forget( first, last );
 }
 
 // set automatic deletion
-void mui_set_memory( mui_uniface3d* uniface, double length ) {
+void mui_set_memory( mui_uniface3d* uniface, int length ) {
 	return uniface->set_memory( length );
 }
+
+// split comm
+MPI_Comm mui_mpi_split_by_app() {
+    return mpi_split_by_app();
+}
+
+// assign
+//void mui_assign( mui_uniface3d* uniface, const char *attr, int value ) {
+void mui_assign( mui_uniface3d* uniface, const char *attr, double value ) {
+	uniface->push( std::string(attr), value );
+}
+
+// fetch assigned
+double mui_fetch_assigned( mui_uniface3d* uniface, const char *attr ) {
+//	return uniface->fetch<int>( std::string(attr) );
+	return uniface->fetch<double>( std::string(attr) );
+}
+
+// assign
+void mui_assign_int( mui_uniface3d* uniface, const char *attr, int value ) {
+	uniface->push( std::string(attr), value );
+}
+
+// fetch assigned
+int mui_fetch_assigned_int( mui_uniface3d* uniface, const char *attr ) {
+	return uniface->fetch<int>( std::string(attr) );
+}
+
 
 }
