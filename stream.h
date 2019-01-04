@@ -50,8 +50,6 @@ Description:
 #include <memory>
 #include <algorithm>
 
-#include "endian_traits.h"
-
 namespace mui {
 
 class istream {
@@ -169,50 +167,77 @@ std::size_t streamed_size( const T& a, const Args&... args )
 	return stream.size() + streamed_size(args...);
 }
 
-  // Use SFINAE to enable this only for types we marked as not
-  // requiring endian conversion
-  template<typename T,
-	   typename std::enable_if<endian_traits<T>::convert == false>::type* = nullptr>
-  istream& operator>>(istream& stream, T& dest) {
-    stream.read(reinterpret_cast<char*>(&dest), sizeof(T));
-    return stream;
-  }
+#define Makeopsh(TYPE,T)						\
+	inline istream& operator>> ( istream& stream, TYPE& t )		\
+	{								\
+		stream.read(reinterpret_cast<char*>(&t),sizeof(t));	\
+		return stream;						\
+	}								\
+	inline ostream& operator<< ( ostream& stream, TYPE t )		\
+	{								\
+		stream.write(reinterpret_cast<char*>(&t),sizeof(t));	\
+		return stream;						\
+	}
 
-  // Use SFINAE to enable this only for types we marked as requiring
-  // endian conversion
-  template<typename T,
-	   typename std::enable_if<endian_traits<T>::convert == true>::type* = nullptr>
-  istream& operator>>(istream& stream, T& dest) {
-    detail::endian_converter<sizeof(T)> conv;
-    stream.read(conv.data.buf, sizeof(T));
-    conv.betoh();
-    std::memcpy(reinterpret_cast<char*>(&dest),
-		conv.data.buf, sizeof(T));
-    return stream;
-  }
+// use network-byte-order(big-endian)
+#define Makeopshs(TYPE,SZ)						\
+	inline istream& operator>> ( istream& stream, TYPE& t )		\
+	{								\
+		int##SZ##_t be;						\
+		stream.read(reinterpret_cast<char*>(&be),sizeof(be));	\
+		be = be##SZ##toh (be);					\
+		std::memcpy(reinterpret_cast<char*>(&t),		\
+		            reinterpret_cast<char*>(&be), sizeof(be));	\
+		return stream;						\
+	}								\
+	inline ostream& operator<< ( ostream& stream, TYPE t )		\
+	{								\
+		int##SZ##_t be;						\
+		std::memcpy(reinterpret_cast<char*>(&be),		\
+		            reinterpret_cast<char*>(&t), sizeof(be));	\
+		be = htobe##SZ (be);					\
+		stream.write(reinterpret_cast<char*>(&be),sizeof(be));	\
+		return stream;						\
+	}
 
-  // Use SFINAE to enable this only for types we marked as not
-  // requiring endian conversion
-  template<typename T,
-	   typename std::enable_if<endian_traits<T>::convert == false>::type* = nullptr>
-  ostream& operator<<(ostream& stream, const T& src) {
-    stream.write(reinterpret_cast<const char*>(&src), sizeof(T));
-    return stream;
-  }
+Makeopsh(char,8);
+Makeopsh(signed char,8);
+Makeopsh(unsigned char,8);
 
-  // Use SFINAE to enable this only for types we marked as requiring
-  // endian conversion
-  template<typename T,
-	   typename std::enable_if<endian_traits<T>::convert == true>::type* = nullptr>
-  ostream& operator<<(ostream& stream, const T& src) {
-    detail::endian_converter<sizeof(T)> conv;
-    std::memcpy(conv.data.buf,
-		reinterpret_cast<const char*>(&src), sizeof(T));
-    conv.htobe();
-    stream.write(conv.data.buf, sizeof(T));
-    return stream;
-  }
+#ifndef MUI_IGNORE_ENDIAN
+#if __BYTE_ORDER == __BIG_ENDIAN
+#  define Makeopshi Makeopsh
+#  if __FLOAT_WORD_ORDER == __BYTE_ORDER
+#    define Makeopshf Makeopsh
+#  else
+#    define Makeopshf Makeopshs
+#  endif
+#else
+#  define Makeopshi Makeopshs
+#  if __FLOAT_WORD_ORDER == __BYTE_ORDER
+#    define Makeopshf Makeopshs
+#  else
+#    define Makeopshf Makeopsh
+#  endif
+#endif
+#else
+#define Makeopshi Makeopsh
+#define Makeopshf Makeopsh
+#endif
 
+Makeopshi(int16_t,16);
+Makeopshi(uint16_t,16);
+Makeopshi(int32_t,32);
+Makeopshi(uint32_t,32);
+Makeopshi(int64_t,64);
+Makeopshi(uint64_t,64);
+Makeopshf(float,32);
+Makeopshf(double,64);
+
+#undef Makeopshf
+#undef Makeopshi
+#undef Makeopshs
+#undef Makeopsh
 
 template<typename F, typename S>
 istream& operator>> ( istream& stream, std::pair<F,S>& pair )
