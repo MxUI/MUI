@@ -279,6 +279,23 @@ public:
 
 		return storage_cast<TYPE&>(n);
 	}
+
+	template<typename TYPE>
+    std::vector<point_type>
+    fetch_points( const std::string& attr, const time_type t ) {
+      barrier(t);
+      std::vector <point_type> returnPoints;
+
+      for( auto first=log.lower_bound(t), last = log.upper_bound(t); first!= last; ++first ){
+          time_type time = first->first;
+          auto iter = first->second.find(attr);
+          if( iter == first->second.end() ) continue;
+          sampler_exact<TYPE> sampler;
+          returnPoints = iter->second.return_points(sampler);
+      }
+
+      return returnPoints;
+    }
     
 	/** \brief Serializes pushed data and sends it to remote nodes
 	  * Serializes pushed data and sends it to remote nodes.  
