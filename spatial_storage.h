@@ -161,6 +161,30 @@ public:
 		else EXCEPTION(bad_storage_id("spatial storage: insert error. Type doesn't match."));
 	}
 	
+	template<typename SAMPLER, typename ... ADDITIONAL>
+    std::vector<point_type>
+    return_points(const SAMPLER& s, ADDITIONAL && ... additional) {
+        // this method is thread-safe. other methods are not.
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            if( !is_built() ) build();
+        }
+
+        using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
+
+        if( !is_built() ) EXCEPTION(std::logic_error("spatial storage: points query error. "
+                                                     "Bin not built yet. Internal data was corrupted."));
+        const vec& st = storage_cast<const vec&>(data_);
+
+        std::vector<point_type> returnPoints(st.size());
+
+        for(size_t i=0; i<st.size(); ++i){
+          returnPoints[i] = st[i].first;
+        }
+
+        return returnPoints;
+    }
+
 	bool is_built() const { return is_bin_; }
 	bool empty() const { return data_.empty(); }
 private:
