@@ -50,6 +50,7 @@ Description: Spatial sampler that provides a value at a point
 
 #include "../config.h"
 #include "../sampler.h"
+#include <cmath>
 
 namespace mui {
 
@@ -68,10 +69,13 @@ public:
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		INT n(0);
+	    size_t n(0);
 		OTYPE vsum(0);
-		for(INT i = 0 ; i < data_points.size() ; i++) {
-			point_type dx = apply( data_points[i].first - focus, fabs );
+		for(size_t i = 0 ; i < data_points.size() ; i++) {
+            point_type dx(REAL(0.0));
+            for (size_t j = 0 ; j < CONFIG::D ; j++) {
+                dx[i] = std::fabs(data_points[i].first[j] - focus[j]);
+            }
 			bool within = true;
 			for(INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );
 			if ( within ) {
@@ -84,7 +88,7 @@ public:
 	}
 
 	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
-		return geometry::box<CONFIG>( focus - 0.5 * bbox, focus + 0.5 * bbox );
+	    return geometry::box<CONFIG>( focus - REAL(0.5) * bbox, focus + REAL(0.5) * bbox );
 	}
 
 protected:

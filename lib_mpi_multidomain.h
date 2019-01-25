@@ -58,7 +58,7 @@ namespace mui
 using namespace mpi;
 
 template<class CONFIG>
-inline std::vector<uniface<CONFIG> *> create_uniface( std::string domain, std::vector<std::string> interfaces, MPI_Comm world = MPI_COMM_WORLD )
+inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string domain, std::vector<std::string> interfaces, MPI_Comm world = MPI_COMM_WORLD )
 {
     // gather total number of interfaces (edges of the graph)
     int global_size, global_rank;
@@ -104,7 +104,7 @@ inline std::vector<uniface<CONFIG> *> create_uniface( std::string domain, std::v
     if( global_rank == 0 ) uniq_hashes.assign( unique_ifs.begin(), unique_ifs.end() );
     MPI_Bcast( uniq_hashes.data(), n_unique, MPI_INT, 0, world );
 
-    std::vector<uniface<CONFIG> *> unifaces;
+    std::vector<std::unique_ptr<uniface<CONFIG>>> unifaces;
     for( auto &i : uniq_hashes ) {
         MPI_Comm comm_ifs;
         if( map.find( i ) != map.end() ) {
@@ -114,7 +114,7 @@ inline std::vector<uniface<CONFIG> *> create_uniface( std::string domain, std::v
             if( comm_rank == 0 ) printf( "> setting up interface %s [%08X] (rank ids are local to each interface)\n", map[i].c_str(), i );
             std::string full_uri( "mpi://" );
             full_uri = full_uri + domain + "/" + map[i];
-            unifaces.push_back( new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) ) );
+            unifaces.push_back( std::unique_ptr<uniface<CONFIG>>(new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) )) );
         } else {
             MPI_Comm_split( world, 0, global_rank, &comm_ifs );
         }

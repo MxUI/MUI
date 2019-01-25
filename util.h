@@ -95,6 +95,12 @@ typedef unsigned long long llong;
 
 const static double PI = 3.1415926535897932385;
 
+static bool _quiet = false;
+
+inline void set_quiet(bool q) {
+    _quiet = q;
+}
+
 template<typename REAL> inline REAL clamp( REAL x, REAL l, REAL r )
 {
 	return (x < l) ? l : ( (x > r) ? r : x );

@@ -62,6 +62,13 @@ Description:
 #include "stream_string.h"
 #include "bin.h"
 
+#ifdef PYTHON_BINDINGS
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+namespace py = pybind11;
+#endif
+
 namespace mui {
 
 /*! \brief Briefly what is uniface
@@ -223,10 +230,7 @@ public:
     template<typename TYPE>
 	void push( const std::string& attr, const point_type loc, const TYPE value ) {
 		if( FIXEDPOINTS ) {
-			if( !initialized_pts_ ) {
-				push_buffer_pts.emplace_back( loc );
-			}
-
+			if( !initialized_pts_ ) push_buffer_pts.emplace_back( loc );
 			storage_raw_t& n = push_buffer_raw[attr];
 			if( !n ) n = storage_raw_t(std::vector<TYPE>());
 			storage_cast<std::vector<TYPE>&>(n).emplace_back( value );
@@ -251,6 +255,54 @@ public:
 		comm->send(message::make("assignedVals", attr, n));
 	}
 	
+#ifdef PYTHON_BINDINGS
+    template<typename TYPE>
+    void push_many(const std::string& attr, const class py::array_t<REAL>& points,
+                   const class py::array_t<TYPE>& values) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        auto values_arr = values.template unchecked<1>();
+        assert(points_arr.shape(0) == values_arr.shape(0));
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            push<TYPE>(attr, p, values_arr(i));
+        }
+    }
+
+    template<class SAMPLER, class TIME_SAMPLER>
+    py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
+    fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
+           const SAMPLER& sampler, const TIME_SAMPLER &t_sampler) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        py::array_t<typename SAMPLER::OTYPE,py::array::c_style> values(points_arr.shape(0));
+        auto values_arr = values.template mutable_unchecked<1>();
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            values_arr(i)  = fetch(attr, p, t, sampler, t_sampler);
+        }
+        return values;
+    }
+
+    template<typename TYPE>
+    py::array_t<REAL, py::array::c_style>
+    fetch_points_np( const std::string& attr, const time_type t ) {
+        std::vector<point_type> points = fetch_points<TYPE>(attr, t);
+        size_t n = points.size();
+        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        auto points_np_arr = points_np.template mutable_unchecked<2>();
+        for (std::size_t i = 0; i < n; i++)
+            for (std::size_t j = 0; j < D; j++)
+                points_np_arr(i,j) = (points[i].data())[j];
+        return points_np;
+    }
+
+#endif
+
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type focus, const time_type t,
@@ -275,7 +327,7 @@ public:
 	template<typename TYPE>
 	TYPE fetch( const std::string& attr ) {
 		storage_single_t& n = assigned_values[attr];
-		if( !n ) return TYPE(0);
+		if( !n ) return TYPE();
 
 		return storage_cast<TYPE&>(n);
 	}
@@ -287,7 +339,6 @@ public:
       std::vector <point_type> returnPoints;
 
       for( auto first=log.lower_bound(t), last = log.upper_bound(t); first!= last; ++first ){
-          time_type time = first->first;
           auto iter = first->second.find(attr);
           if( iter == first->second.end() ) continue;
           sampler_exact<TYPE> sampler;
@@ -331,10 +382,10 @@ public:
 	}
 
 	bool is_ready( const std::string& attr, time_type t ) const {
-		return  std::any_of(log.begin(), log.end(), [=](const bin_frame_type& a) {
-				return a.find(attr) != a.end(); }) // return false for random @attr. 
-			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); });
+	        return  std::any_of(log.begin(), log.end(), [=](const bin_frame_type& a) {
+	                return a.find(attr) != a.end(); }) // return false for random @attr.
+	            && std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+	                return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); });
 	}
 	void barrier( time_type t ) {
 		auto start = std::chrono::system_clock::now();
@@ -444,7 +495,7 @@ private:
 
 			data_store.reserve(data.size());
 
-			for( size_t i=0; i<data.size(); i++ ){
+			for( std::size_t i=0; i<data.size(); i++ ){
 				data_store.emplace_back( pts[i], data[i] );
 			}
 		}
@@ -467,8 +518,7 @@ private:
 // [ ] linear solver
 // [ ] config generator
 // [ ] logger
-// [ ] python wrapper
+// [x] python wrapper
 // [ ] periodicity policy
-
 // [ ] shm://domain/interface, create pipes in /dev/shm/interface
 // [ ] void uniface::recommit( time_type stamp, INT version );
