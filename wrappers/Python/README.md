@@ -47,4 +47,4 @@ make pip-install # To install with pip the created package
 ```
 # Contact
 
-Please contact *Eduardo Ramos* at eduardo.rf159@gmail.com if you find any issue or have any enquiry.
+Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find any issue or have any enquiry.
