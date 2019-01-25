@@ -44,7 +44,7 @@ Author: Y. H. Tang
 Description: Unit test for the C wrapper.
 */
 
-#include "mui_3d.h"
+#include "../C/mui_3d.h"
 
 int main( int argc, char **argv )
 {
