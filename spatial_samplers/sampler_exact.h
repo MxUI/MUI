@@ -69,7 +69,7 @@ public:
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		for(size_t i = 0 ; i < data_points.size() ; i++) {
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
 		  if ( normsq( focus - data_points[i].first ) < tolerance ) {
 		      if ( norm( focus - data_points[i].first ) < tolerance ) {
 		          return data_points[i].second;

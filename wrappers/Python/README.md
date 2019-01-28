@@ -37,7 +37,7 @@
 
 ``` bash
 make COMPILER=[GCC|CLANG] mui4py_mod
-export PYTHONPATH=/pathToMui/wrappers/mui4py
+export PYTHONPATH=/pathToMUI/wrappers/Python/mui4py
 ```
 
 ### Create python package (option 2)

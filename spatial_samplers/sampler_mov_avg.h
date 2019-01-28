@@ -71,13 +71,13 @@ public:
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 	    size_t n(0);
 		OTYPE vsum(0);
-		for(size_t i = 0 ; i < data_points.size() ; i++) {
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
             point_type dx(REAL(0.0));
-            for (size_t j = 0 ; j < CONFIG::D ; j++) {
+            for (INT j = 0 ; j < CONFIG::D ; j++) {
                 dx[i] = std::fabs(data_points[i].first[j] - focus[j]);
             }
 			bool within = true;
-			for(INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );
+			for( INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );
 			if ( within ) {
 				vsum += data_points[i].second;
 				n++;

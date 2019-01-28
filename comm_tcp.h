@@ -455,7 +455,7 @@ protected:
 		std::vector<char> v(streamed_size(msg));
 		auto stream = make_ostream(v.begin());
 		stream << msg;
-		for(int i=0; i<remote_size(); ++i) {
+		for( int i=0; i<remote_size(); ++i ) {
 			if(dest[i]){
 				wques_[i].push(v);
 				poll_.schedule(wques_[i].get_fd());

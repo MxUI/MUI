@@ -347,7 +347,7 @@ template<> inline double powr<0>( const double x ) {
 //	}
 //	friend inline std::ostream& operator << ( std::ostream& out, point v ) {
 //		out<<'(';
-//		for(int i = 0 ; i < D ; i++) out<<v[i]<<(i!=D-1?",":"");
+//		for( int i = 0 ; i < D ; i++ ) out<<v[i]<<(i!=D-1?",":"");
 //		out<<')';
 //		return out;
 //	}

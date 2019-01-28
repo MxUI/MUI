@@ -68,7 +68,7 @@ public:
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 		REAL r2min = std::numeric_limits<REAL>::max();
 		OTYPE value = 0;
-		for(size_t i = 0 ; i < data_points.size() ; i++) {
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
 			REAL dr2 = normsq( focus - data_points[i].first );
 			if ( dr2 < r2min ) {
 				r2min = dr2;

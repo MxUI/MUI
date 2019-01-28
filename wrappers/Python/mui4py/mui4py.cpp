@@ -505,7 +505,7 @@ DECLARE_FUNC_HEADER(point) {
 
 
 template<class CONFIG>
-std::vector<std::unique_ptr<mui::uniface<CONFIG>>> 
+std::vector<std::unique_ptr<mui::uniface<CONFIG>>>
 create_uniface(std::string domain, std::vector<std::string> interfaces, py::handle world=NULL) {
     return mui::create_uniface<CONFIG>(domain, interfaces, MPI_COMM_WORLD);
 }

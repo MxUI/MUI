@@ -115,7 +115,7 @@ public:
 		std::vector<int> all_ifs   ( global_size_, 0 );
 		MPI_Allgather( &domain_hash, 1, MPI_INT, &all_domain[0], 1, MPI_INT, world );
 		MPI_Allgather( &ifs_hash,    1, MPI_INT, &all_ifs[0],    1, MPI_INT, world );
-		for(int i = 0 ; i < global_size_ ; i++) {
+		for( int i = 0 ; i < global_size_ ; i++ ) {
 			if ( i == global_rank_ ) continue;
 			if ( all_domain[i] != domain_hash && all_ifs[i] == ifs_hash ) {
 				MPI_Intercomm_create( domain_local_, 0, world, i, ifs_hash % prime, &domain_remote_ );
@@ -125,7 +125,7 @@ public:
 		MPI_Comm_remote_size( domain_remote_, &remote_size_ );
 
 		// output for debugging
-		for(int i=0;i<global_size_;i++) {
+		for( int i=0;i<global_size_;i++ ) {
 			if ( i == global_rank_ )
 				std::cout	<<"rank "<<global_rank_<<'\t'
 							<<"identifier "<<URI<<'\t'
