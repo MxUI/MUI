@@ -225,6 +225,10 @@ Makeopsh(unsigned char,8);
 #define Makeopshf Makeopsh
 #endif
 
+// macOS
+#ifdef __clang__
+Makeopshi(unsigned long,64)
+#endif
 Makeopshi(int16_t,16);
 Makeopshi(uint16_t,16);
 Makeopshi(int32_t,32);

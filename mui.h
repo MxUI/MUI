@@ -73,6 +73,7 @@ Description: Gateway header for MUI
 #include "lib_mpi_multidomain.h"
 #include "uniface.h"
 #include "util.h"
+#include <string>
 
 namespace mui {
 
@@ -89,7 +90,7 @@ namespace mui {
 			using point_type = point<REAL,D>;\
 			using time_type  = REAL;\
 			static const bool DEBUG = false;\
-			using data_types = type_list<int,double,float>;\
+			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 			using EXCEPTION = exception_segv;\
 			static const bool FIXEDPOINTS = true;\
 		} mui_config_##SUFFIX;\
@@ -109,18 +110,19 @@ namespace mui {
 			using point##SUFFIX = point<config_##SUFFIX>;\
 			using sphere##SUFFIX = sphere<config_##SUFFIX>;\
 			using box##SUFFIX = box<config_##SUFFIX>;\
+			using or_set##SUFFIX = or_set<config_##SUFFIX>;\
 		}
 
 
-SPECIALIZE(1d,double,int,1);
-SPECIALIZE(2d,double,int,2);
-SPECIALIZE(3d,double,int,3);
+SPECIALIZE(1d,double,int32_t,1);
+SPECIALIZE(2d,double,int32_t,2);
+SPECIALIZE(3d,double,int32_t,3);
 SPECIALIZE(1dx,double,int64_t,1);
 SPECIALIZE(2dx,double,int64_t,2);
 SPECIALIZE(3dx,double,int64_t,3);
-SPECIALIZE(1f,float,int,1);
-SPECIALIZE(2f,float,int,2);
-SPECIALIZE(3f,float,int,3);
+SPECIALIZE(1f,float,int32_t,1);
+SPECIALIZE(2f,float,int32_t,2);
+SPECIALIZE(3f,float,int32_t,3);
 SPECIALIZE(1fx,float,int64_t,1);
 SPECIALIZE(2fx,float,int64_t,2);
 SPECIALIZE(3fx,float,int64_t,3);

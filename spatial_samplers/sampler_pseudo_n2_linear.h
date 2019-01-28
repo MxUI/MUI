@@ -69,7 +69,7 @@ public:
 		REAL r2min_1st = std::numeric_limits<REAL>::max();
 		REAL r2min_2nd = std::numeric_limits<REAL>::max();
 		OTYPE value_1st = 0, value_2nd = 0;
-		for(INT i = 0 ; i < data_points.size() ; i++) {
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
 			REAL dr2 = normsq( focus - data_points[i].first );
 			if ( dr2 < r2min_1st ) {
 				r2min_2nd = r2min_1st;

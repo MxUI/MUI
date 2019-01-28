@@ -178,7 +178,7 @@ public:
 
         std::vector<point_type> returnPoints(st.size());
 
-        for(size_t i=0; i<st.size(); ++i){
+        for( size_t i=0; i<st.size(); ++i ){
           returnPoints[i] = st[i].first;
         }
 

@@ -102,7 +102,7 @@ public:
 	}
 	virtual_container( const container_type &container, const std::vector<bool> &pred ) :
 		container_(container) {
-		for(size_t i = 0 ; i < pred.size() ; i++) if (pred[i]) map_.push_back(i);
+		for( size_t i = 0 ; i < pred.size() ; i++ ) if (pred[i]) map_.push_back(i);
 	}
 
 	// opetator [] does no bound check

@@ -86,7 +86,7 @@ public:
     inline OTYPE filter( point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points ) const
     {
         OTYPE vsum = 0;
-        for( INT i = 0 ; i < data_points.size() ; i++ ) {
+        for( size_t i = 0 ; i < data_points.size() ; i++ ) {
             auto dist2 = normsq( focus - data_points[i].first );
             if( dist2 < r * r ) {
                 REAL w = quintic_polynomial( sqrt( dist2 ) );

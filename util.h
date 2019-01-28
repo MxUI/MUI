@@ -95,6 +95,12 @@ typedef unsigned long long llong;
 
 const static double PI = 3.1415926535897932385;
 
+static bool _quiet = false;
+
+inline void set_quiet(bool q) {
+    _quiet = q;
+}
+
 template<typename REAL> inline REAL clamp( REAL x, REAL l, REAL r )
 {
 	return (x < l) ? l : ( (x > r) ? r : x );
@@ -341,7 +347,7 @@ template<> inline double powr<0>( const double x ) {
 //	}
 //	friend inline std::ostream& operator << ( std::ostream& out, point v ) {
 //		out<<'(';
-//		for(int i = 0 ; i < D ; i++) out<<v[i]<<(i!=D-1?",":"");
+//		for( int i = 0 ; i < D ; i++ ) out<<v[i]<<(i!=D-1?",":"");
 //		out<<')';
 //		return out;
 //	}

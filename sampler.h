@@ -65,7 +65,7 @@ public:
 	double filter( point<double,3> focus, const virtual_container<double> &data_points ) const {
 		double sum = 0.;
 		int n = 0;
-		for(int i = 0 ; i < data_points.size() ; i++) {
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
 			if ( ( focus - data_points[i].first ).norm() < r ) {
 				sum += data_points[i].second;
 				n++;

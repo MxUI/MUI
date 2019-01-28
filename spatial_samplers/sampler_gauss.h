@@ -67,16 +67,16 @@ public:
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 		REAL  wsum = 0;
 		OTYPE vsum = 0;
-		for(INT i = 0 ; i < data_points.size() ; i++) {
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
 			auto d = normsq( focus - data_points[i].first );
 			if ( d < r*r ) {
-				REAL w = nh * std::exp( (-0.5/h) * d );
+			    REAL w = nh * std::exp( (REAL(-0.5)/h) * d );
 				vsum += data_points[i].second * w;
 				wsum += w;
 			}
 		}
 		if ( wsum ) return vsum / wsum;
-		else return 0.;
+		else return REAL(0.);
 	}
 
 	inline geometry::any_shape<CONFIG> support( point_type focus ) const {

@@ -91,7 +91,7 @@ protected:
 			std::vector<int> displ(local_size());
 			for( std::size_t i=0; i<displ.size(); ++i ) displ[i] = (!i ? 0: displ[i-1]+recvsizes[i-1]);
 			int total=0;
-			for( int v : recvsizes ) total += v;
+			for( size_t v : recvsizes ) total += v;
 
 			bufs.push_back(std::make_pair(MPI_Request(),std::vector<char>(total)));
 			MPI_Gatherv(const_cast<char*>(ptr), size, MPI_BYTE,

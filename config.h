@@ -59,7 +59,7 @@ struct crunch {
 	static const int D = 3;
 
 	using REAL = double;
-	using INT  = int64_t;
+	using INT  = int;
 	using point_type = point<REAL,D>;
 	using time_type  = REAL; // INT-typed time stamp might be an alternative
 	using data_types = type_list<int,double,float>;

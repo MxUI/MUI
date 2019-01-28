@@ -70,7 +70,7 @@ public:
 				return i.second;
 			}
 		}
-		return TYPE(0);
+		return TYPE();
 	}
 	time_type get_upper_bound( time_type focus ) const {
 		return focus + tolerance;
