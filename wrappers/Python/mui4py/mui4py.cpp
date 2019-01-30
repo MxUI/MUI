@@ -291,7 +291,7 @@ DECLARE_FUNC_HEADER(uniface) {
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def("commit", (int (Tclass::*)(Ttime)) &Tclass::commit, "")
     .def("forecast", (void (Tclass::*)(Ttime)) &Tclass::forecast, "")
-    //.def("is_ready", &Tclass::is_ready, "") //- Removed from compilation as is_ready function currently fails to compile with GCC up to 7.3.0
+    .def("is_ready", &Tclass::is_ready, "")
     .def("barrier", (void (Tclass::*)(Ttime)) &Tclass::barrier, "")
     .def("forget", (void (Tclass::*)(Ttime)) &Tclass::forget, "")
     .def("forget", (void (Tclass::*)(Ttime, Ttime)) &Tclass::forget, "")
