@@ -382,8 +382,9 @@ public:
 	}
 
 	bool is_ready( const std::string& attr, time_type t ) const {
-	        return  std::any_of(log.begin(), log.end(), [=](const bin_frame_type& a) {
-	                return a.find(attr) != a.end(); }) // return false for random @attr.
+		using logitem_ref_t = typename decltype(log)::const_reference;
+	        return  std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
+	                return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 	            && std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
 	                return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); });
 	}
