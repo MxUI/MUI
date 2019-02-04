@@ -490,8 +490,6 @@ private:
 			const std::vector<REAL>& data = storage_cast<const std::vector<REAL>&>(p.second);
 			const std::vector<point_type>& pts = peers.at(sender).pts();
 
-			assert( pts.size() == data.size() );
-
 			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(n);
 
 			data_store.reserve(data.size());
