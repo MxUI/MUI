@@ -308,7 +308,7 @@ public:
 	fetch( const std::string& attr,const point_type focus, const time_type t,
 	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 	       ADDITIONAL && ... additional ) {
-		barrier(t_sampler.get_upper_bound(t));
+		barrier(t_sampler.get_upper_bound(t) - std::numeric_limits<time_type>::epsilon());
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
@@ -341,13 +341,17 @@ public:
 		for( auto first=log.lower_bound(t), last = log.upper_bound(t); first!= last; ++first ){
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			sampler_exact<TYPE> sampler;
-			returnPoints = iter->second.return_points(sampler);
+			const storage_t& n = iter->second.data();
+			auto& data_store = storage_cast<const std::vector<std::pair<point_type,TYPE> >&>(n);
+			returnPoints.reserve(data_store.size());
+			for( size_t i=0; i<data_store.size(); i++ ) {
+				returnPoints.emplace_back(data_store[i].first);
+			}
 		}
 
 		return returnPoints;
 	}
-    
+
 	/** \brief Serializes pushed data and sends it to remote nodes
 	  * Serializes pushed data and sends it to remote nodes.  
 	  * Returns the actual number of peers contacted
@@ -402,7 +406,6 @@ public:
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'll send this span."
-		// not implemented yet. just save arguments.
 		comm->send(message::make("sending span", comm->local_rank(), start, timeout, std::move(s)));
 		span_start = start;
 		span_timeout = timeout;
