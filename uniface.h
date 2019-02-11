@@ -398,8 +398,9 @@ public:
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
+			time_type t_lower = t - time_type(std::numeric_limits<time_type>::epsilon())*10.0; //Allow for rounding error
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) { 
-				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
+				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t_lower || p.next_t() > t_lower); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
