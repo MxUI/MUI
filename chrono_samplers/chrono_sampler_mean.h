@@ -81,6 +81,9 @@ public:
 	time_type get_lower_bound( time_type focus ) const {
 		return focus - left;
 	}
+	time_type tolerance() const {
+		return time_type(0);
+	}	
 
 protected:
 	time_type left, right;

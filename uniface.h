@@ -308,7 +308,7 @@ public:
 	fetch( const std::string& attr,const point_type focus, const time_type t,
 	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 	       ADDITIONAL && ... additional ) {
-		barrier(t_sampler.get_upper_bound(t) - std::numeric_limits<time_type>::epsilon());
+		barrier(t_sampler.get_upper_bound(t) - t_sampler.get_tolerance());
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
@@ -332,13 +332,15 @@ public:
 		return storage_cast<TYPE&>(n);
 	}
 
-	template<typename TYPE>
-	std::vector<point_type>
-	fetch_points( const std::string& attr, const time_type t ) {
-		barrier(t);
+	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
+        std::vector<point_type>
+	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
+               ADDITIONAL && ... additional ) {
+		barrier(t - t_sampler.get_tolerance());
 		std::vector <point_type> returnPoints;
 
-		for( auto first=log.lower_bound(t), last = log.upper_bound(t); first!= last; ++first ){
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			const storage_t& n = iter->second.data();

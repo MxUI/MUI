@@ -63,7 +63,7 @@ public:
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
 
-	sampler_exact( REAL tol = REAL(std::numeric_limits<REAL>::epsilon()) ) {
+	sampler_exact( REAL tol = REAL(std::numeric_limits<REAL>::epsilon())*static_cast<REAL>(10.0) ) {
 	        tolerance = tol;
 	}
 

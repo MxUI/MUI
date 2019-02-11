@@ -73,6 +73,9 @@ public:
 	time_type get_lower_bound( time_type focus ) const {
 		// to do: return oldest time needed with regard to focus
 	}
+	time_type tolerance() const {
+		return time_type(0);
+	}
 };
 
 }

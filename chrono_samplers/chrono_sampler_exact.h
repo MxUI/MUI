@@ -58,8 +58,8 @@ public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
-	
-	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon()) ) {
+
+	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon())*10.0 ) {
 		tolerance = tol;
 	}
 
@@ -78,8 +78,11 @@ public:
 	time_type get_lower_bound( time_type focus ) const {
 		return focus - tolerance;
 	}
+	time_type get_tolerance() const {
+		return tolerance;
+	}
 
-protected:
+private:
 	time_type tolerance;
 };
 
