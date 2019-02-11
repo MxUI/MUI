@@ -197,27 +197,27 @@ namespace mui {
     };
     // Specialisations
     template<>
-    void endian_converter<2>::htobe() {
+    inline void endian_converter<2>::htobe() {
       data.val = htobe16(data.val);
     }
     template<>
-    void endian_converter<2>::betoh() {
+    inline void endian_converter<2>::betoh() {
       data.val = be16toh(data.val);
     }
     template<>
-    void endian_converter<4>::htobe() {
+    inline void endian_converter<4>::htobe() {
       data.val = htobe32(data.val);
     }
     template<>
-    void endian_converter<4>::betoh() {
+    inline void endian_converter<4>::betoh() {
       data.val = be32toh(data.val);
     }
     template<>
-    void endian_converter<8>::htobe() {
+    inline void endian_converter<8>::htobe() {
       data.val = htobe64(data.val);
     }
     template<>
-    void endian_converter<8>::betoh() {
+    inline void endian_converter<8>::betoh() {
       data.val = be64toh(data.val);
     }
   }
