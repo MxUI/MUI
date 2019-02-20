@@ -125,6 +125,23 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
     return unifaces;
 }
 
+  // Ensure all interfaces in the range of the two iterators have hit sync_all
+  template<typename IteratorT>
+  void sync_all(IteratorT begin, IteratorT end,
+		typename std::decay<decltype(**begin)>::type::time_type t) {
+    for(auto it = begin; it != end; ++it) {
+      auto& unif = *it;
+      // If nothing pushed this just announces the current time 
+      unif->commit(t);
+    }
+
+    for(auto it = begin; it != end; ++it) {
+      auto& unif = *it;
+      // This waits for all the other end of the interface to annouce
+      // a time greater than or equal to t
+      unif->barrier(t);
+    }
+  }
 }
 
 #endif /* LIB_MPI_MULTIDOMAIN_H_ */
