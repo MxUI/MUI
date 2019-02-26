@@ -59,7 +59,7 @@ public:
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
 
-	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon())*10.0 ) {
+	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon()*10.0) ) {
 		tolerance = tol;
 	}
 
