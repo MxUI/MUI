@@ -68,7 +68,7 @@ public:
 
 	// send message
 	void send( message msg, const std::vector<bool> &is_sending ) {
-		if( is_sending.size() == static_cast<size_t>(remote_size()) )
+		if( is_sending.size() == static_cast<unsigned>(remote_size()) )
 			return send_impl_(std::move(msg), is_sending);
 		else {
 			std::vector<bool> dest = is_sending;

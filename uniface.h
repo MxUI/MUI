@@ -153,12 +153,13 @@ private:
 			auto p = std::make_pair(t,t);
 			auto end = spans.upper_bound(p);
 			bool prefetched = false;
-			
-			for( auto itr = spans.begin(); itr != end; ++itr )
-				if( t <= itr->first.second ){
+
+			for( auto itr = spans.begin(); itr != end; ++itr ) {
+				if( t <= itr->first.second ) {
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
 				}
+			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
 			return !prefetched;
@@ -308,7 +309,7 @@ public:
 	fetch( const std::string& attr,const point_type focus, const time_type t,
 	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 	       ADDITIONAL && ... additional ) {
-		barrier(t_sampler.get_upper_bound(t));
+		barrier(t_sampler.get_lower_bound(t));
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
@@ -332,22 +333,28 @@ public:
 		return storage_cast<TYPE&>(n);
 	}
 
-	template<typename TYPE>
-	std::vector<point_type>
-	fetch_points( const std::string& attr, const time_type t ) {
-		barrier(t);
+	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
+        std::vector<point_type>
+	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
+               ADDITIONAL && ... additional ) {
+		barrier(t_sampler.get_lower_bound(t));
 		std::vector <point_type> returnPoints;
 
-		for( auto first=log.lower_bound(t), last = log.upper_bound(t); first!= last; ++first ){
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			sampler_exact<TYPE> sampler;
-			returnPoints = iter->second.return_points(sampler);
+			const storage_t& n = iter->second.data();
+			auto& data_store = storage_cast<const std::vector<std::pair<point_type,TYPE> >&>(n);
+			returnPoints.reserve(data_store.size());
+			for( size_t i=0; i<data_store.size(); i++ ) {
+				returnPoints.emplace_back(data_store[i].first);
+			}
 		}
 
 		return returnPoints;
 	}
-    
+
 	/** \brief Serializes pushed data and sends it to remote nodes
 	  * Serializes pushed data and sends it to remote nodes.  
 	  * Returns the actual number of peers contacted
@@ -402,7 +409,6 @@ public:
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'll send this span."
-		// not implemented yet. just save arguments.
 		comm->send(message::make("sending span", comm->local_rank(), start, timeout, std::move(s)));
 		span_start = start;
 		span_timeout = timeout;
@@ -416,13 +422,27 @@ public:
 		recv_span.swap(s);
 	}
 
-	// remove log betwewn (-inf, @end]
-	void forget( time_type end ) {
+	// remove log between (-inf, @end]
+	void forget( time_type end, bool reset_log = false ) {
 		log.erase(log.begin(), log.upper_bound(end));
+		if(reset_log) {
+			time_type curr_time = 0;
+			if(!log.empty()) curr_time = log.rbegin()->first;
+			for(size_t i=0; i<peers.size(); i++) {
+				peers.at(i).set_current_t(curr_time);
+			}
+		}
 	}
 	// remove log between [@first, @last]
-	void forget( time_type first, time_type last ) {
+	void forget( time_type first, time_type last, bool reset_log = false ) {
 		log.erase(log.lower_bound(first), log.upper_bound(last));
+		if(reset_log) {
+			time_type curr_time = 0;
+                	if(!log.empty()) curr_time = log.rbegin()->first;
+			for(size_t i=0; i<peers.size(); i++) {
+				peers.at(i).set_current_t(curr_time);
+			}
+		}
 	}
 	// remove log between (-inf, curent-@length] automatically. 
 	void set_memory( time_type length ) {

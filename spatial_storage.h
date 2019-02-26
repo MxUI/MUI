@@ -121,21 +121,11 @@ public:
 		if( data_.empty() ) 
 			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), addtional... );
 		if( !is_built() ) EXCEPTION(std::logic_error("spatial storage: query error. "
-		                                             "Bin was not built yet. Internal data was corrupsed."));
+		                                             "Bin was not built yet. Internal data was corrupted."));
 		const vec& st = storage_cast<const vec&>(data_);
 		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), addtional...);
 	}
-	/*template<typename REGION, typename FOCUS, typename SAMPLER>
-	typename SAMPLER::OTYPE 
-	query2(const REGION& reg, const FOCUS& f, const SAMPLER& s) const {
-		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
-		if( data_.empty() ) 
-			return s.filter(f, vec());
-		if( !is_built() ) EXCEPTION( std::logic_error("spatial storage: query error. "
-		                                               "not builded bin. Internal data was corrupsed.") );
-		const vec& st= storage_cast<const vec&>(data_);
-		return s.filter(f,bin_.query2(reg,st));
-	}*/
+
 	void build() {
 		if( is_built() ) EXCEPTION(std::logic_error("spatial storage: build error. cannot build twice."));
 		if( !data_.empty() ){
@@ -160,33 +150,10 @@ public:
 		else if( data_.which() == storage.which() ) data_.apply_visitor(insert_{storage});
 		else EXCEPTION(bad_storage_id("spatial storage: insert error. Type doesn't match."));
 	}
-	
-	template<typename SAMPLER, typename ... ADDITIONAL>
-    std::vector<point_type>
-    return_points(const SAMPLER& s, ADDITIONAL && ... additional) {
-        // this method is thread-safe. other methods are not.
-        {
-            std::unique_lock<std::mutex> lock(mutex_);
-            if( !is_built() ) build();
-        }
-
-        using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
-
-        if( !is_built() ) EXCEPTION(std::logic_error("spatial storage: points query error. "
-                                                     "Bin not built yet. Internal data was corrupted."));
-        const vec& st = storage_cast<const vec&>(data_);
-
-        std::vector<point_type> returnPoints(st.size());
-
-        for( size_t i=0; i<st.size(); ++i ){
-          returnPoints[i] = st[i].first;
-        }
-
-        return returnPoints;
-    }
 
 	bool is_built() const { return is_bin_; }
 	bool empty() const { return data_.empty(); }
+	const storage_t& data() { return data_; }
 private:
 	void destroy_if_bin_() { 
 		if( is_built() ) {

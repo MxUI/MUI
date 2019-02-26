@@ -63,7 +63,7 @@ public:
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
 
-	sampler_exact( REAL tol = REAL(std::numeric_limits<REAL>::epsilon()) ) {
+	sampler_exact( REAL tol = REAL(std::numeric_limits<REAL>::epsilon())*static_cast<REAL>(10.0) ) {
 	        tolerance = tol;
 	}
 
@@ -80,8 +80,9 @@ public:
 		return OTYPE();
 	}
 	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
-		//Set search radius at 10*epsilon to allow for rounding error but minimise problem set as far as possible as this is an exact sampler
-		return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(10.0) );
+		//Set search radius at 1000*epsilon to allow for rounding error while minimising problem set as far as possible.
+		//This may cause issues for very small or large domain sizes
+		return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(1000.0) );
 	}
 
 protected:
