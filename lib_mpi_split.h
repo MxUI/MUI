@@ -56,16 +56,21 @@ namespace mui {
     if (!flag) MPI_Finalize();
   }
 
-  inline MPI_Comm mpi_split_by_app( int argc=0, char **argv=NULL )
+  inline MPI_Comm mpi_split_by_app( int argc=0, char **argv=NULL, int threadType=-1, int *thread_support=NULL )
   {
-    {
-      int flag;
-      MPI_Initialized(&flag);
-      if( !flag ) {
-	MPI_Init( &argc, &argv );
-	atexit( mpi_finalize_after_split );
-      }
-    }
+	  {
+	  int flag;
+	  MPI_Initialized(&flag);
+	  if( !flag ) {
+		  if(threadType != -1) {
+			  MPI_Init_thread( &argc, &argv, threadType, thread_support );
+		  }
+		  else {
+			  MPI_Init( &argc, &argv );
+		  }
+		  atexit( mpi_finalize_after_split );
+	  }
+	}
     void* v;
     int flag;
     MPI_Comm_get_attr(MPI_COMM_WORLD,MPI_APPNUM,&v,&flag);
