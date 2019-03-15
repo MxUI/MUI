@@ -67,13 +67,14 @@ public:
 	    int exponent;
 		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
 		real_precision = static_cast<REAL>( exponent );
-		tolerance = tol*real_precision;
+		tolerance = tol;
 	}
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+		REAL point_tol = tolerance*real_precision;
 		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-			if ( normsq( focus - data_points[i].first ) < tolerance ) {
+			if ( norm( focus - data_points[i].first ) < point_tol ) {
 				return data_points[i].second;
 			}
 		}
@@ -87,7 +88,7 @@ public:
 			std::cout << "Point in data_points: " << data_points[i].first[0] << "," << data_points[i].first[1] << "," << data_points[i].first[2] << std::endl << std::flush;
 		}
 
-		return OTYPE();
+		return OTYPE(std::numeric_limits<REAL>::epsilon());
 	}
 	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
 		return geometry::sphere<CONFIG>( focus, tolerance*domain_mag*real_precision );

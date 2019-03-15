@@ -105,7 +105,7 @@ public:
 		for( size_t i = 0 ; i < pred.size() ; i++ ) if (pred[i]) map_.push_back(i);
 	}
 
-	// opetator [] does no bound check
+	// operator [] does no bound check
 	inline const elem_type& operator [] ( size_t i ) const {
 		return container_[ map_[i] ];
 	}

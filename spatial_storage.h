@@ -123,7 +123,16 @@ public:
 		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
 		                                             "Bin not built yet. Internal data corrupted."));
 		const vec& st = storage_cast<const vec&>(data_);
-		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
+
+		typename SAMPLER::OTYPE retValue = s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
+
+		if(retValue == std::numeric_limits<typename CONFIG::REAL>::epsilon()) {
+			for(size_t i=0; i<st.size(); i++) {
+				std::cout << st[i].first[0] << "," << st[i].first[1] << "," << st[i].first[2] << std::endl << std::flush;
+			}
+		}
+
+		return retValue;
 	}
 
 	void build() {
@@ -133,19 +142,26 @@ public:
 			is_bin_ = true;
 		}
 	}
-	//template<typename REGION, typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
+
 	template<typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
-	typename SAMPLER::OTYPE 
-	//build_and_query_ts(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
+	typename SAMPLER::OTYPE
 	build_and_query_ts(const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
 		// this method is thread-safe. other methods are not.
 		{
 			std::unique_lock<std::mutex> lock(mutex_);
 			if( !is_built() ) build();
 		}
-		//return query(reg, f, s, additional...);
 		return query(s.support(f, bin_.domain_size()).bbox(), f, s, additional...);
 	}
+
+	void build_ts() {
+		// this method is thread-safe. other methods are not.
+		{
+			std::unique_lock<std::mutex> lock(mutex_);
+			if( !is_built() ) build();
+		}
+	}
+
 	void insert( storage_t storage ) {
 		destroy_if_bin_();
 		if( !storage ) return;

@@ -276,14 +276,14 @@ public:
 
 		std::size_t nn=1;
 		for( int i=0; i<D; ++i ) {
-			n[i] = std::ceil((max[i]-min[i])/h);
-			n[i] = std::max( n[i], std::size_t(1) );
+			n[i] = static_cast<size_t>(std::ceil((max[i]-min[i])/h));
+			n[i] = static_cast<size_t>(std::max( n[i], std::size_t(1) ));
 			nn *= n[i];
 		}
 
 		// make index
-		std::vector<std::size_t> index(val.size()+1);
-		std::vector<std::size_t> counts(nn);
+		std::vector<std::size_t> index(val.size()+1,0);
+		std::vector<std::size_t> counts(nn,0);
 		for( std::size_t i=0; i<val.size(); ++i ) {
 			index[i] = get_index_(val[i].first);
 			++counts[index[i]];
@@ -325,8 +325,8 @@ private:
 		lda[0] = 1;
 		for( int i=1; i<CONFIG::D; ++i ) lda[i] = lda[i-1]*n[i-1];
 		for( int i=0; i<CONFIG::D; ++i ) {
-			lh[i][0] = std::max(std::floor((bx.get_min()[i]-min[i])/h),typename CONFIG::REAL(0));
-			lh[i][1] = std::min(std::ceil((bx.get_max()[i]-min[i])/h),typename CONFIG::REAL(n[i]));
+			lh[i][0] = static_cast<int>(std::max(std::floor((bx.get_min()[i]-min[i])/h),typename CONFIG::REAL(0)));
+			lh[i][1] = static_cast<int>(std::min(std::ceil((bx.get_max()[i]-min[i])/h),typename CONFIG::REAL(n[i])));
 			if( lh[i][0] >= lh[i][1] ){
 				lh[i][0] = lh[i][1];
 				broken = true;
@@ -338,8 +338,8 @@ private:
 	inline std::size_t get_index_( const point_type& pt ) const {
 		std::size_t m = 1, ret=0;
 		for( int i=0; i<D; ++i ) {
-			std::size_t d = int(std::floor((pt[i]-min[i])/h));
-			d = std::min(d,n[i]-1); // the values may change here if (max[i]-min[i])/h is equal to a integer value.
+			std::size_t d = static_cast<size_t>((std::floor((pt[i]-min[i])/h)));
+			d = static_cast<size_t>(std::min(d,n[i]-1)); // the values may change here if (max[i]-min[i])/h is equal to a integer value.
 			ret += m*d;
 			m *= n[i];
 		}

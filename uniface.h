@@ -317,7 +317,6 @@ public:
 			time_type time = first->first;
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			//v.emplace_back( time, iter->second.build_and_query_ts( sampler.support(focus).bbox(), focus, sampler, additional... ) );
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 		return t_sampler.filter(t, v);
@@ -330,7 +329,6 @@ public:
 	TYPE fetch( const std::string& attr ) {
 	    storage_single_t& n = assigned_values[attr];
 		if( !n ) return TYPE();
-
 		return storage_cast<TYPE&>(n);
 	}
 
@@ -340,11 +338,11 @@ public:
                ADDITIONAL && ... additional ) {
 		barrier(t_sampler.get_lower_bound(t));
 		std::vector <point_type> returnPoints;
-
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
 		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
+			iter->second.build_ts();
 			const storage_t& n = iter->second.data();
 			auto& data_store = storage_cast<const std::vector<std::pair<point_type,TYPE> >&>(n);
 			returnPoints.reserve(data_store.size());
@@ -352,7 +350,6 @@ public:
 				returnPoints.emplace_back(data_store[i].first);
 			}
 		}
-
 		return returnPoints;
 	}
 

@@ -77,7 +77,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
             for( auto &e : map ) {
             	std::cout << "> rank " << global_rank << " \"" << domain.c_str()
 							<< "\" registered interface " << e.second.c_str()
-							<< " as " << std::hex << e.first << std::endl;
+							<< " as " << std::hex << e.first << std::dec << std::endl;
             }
         }
         MPI_Barrier( world );
