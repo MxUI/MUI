@@ -316,7 +316,11 @@ public:
 	}
 
 	REAL domain_size() {
-		return norm(max-min);
+		REAL dim_size = norm(max-min);
+		// Special case if domain only contains a single point
+		if(dim_size == 0.0)
+			dim_size = 1.0;
+		return dim_size;
 	}
 
 private:

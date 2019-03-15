@@ -79,16 +79,9 @@ public:
 			}
 		}
 
-		//std::cerr << "MUI Warning [sampler_exact.h]: hit nothing\n";
-		std::cout << "MUI sampler_exact: hit nothing" << std::endl << std::flush;
+		std::cerr << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
 
-		std::cout << "Point tested: " << focus[0] << "," << focus[1] << "," << focus[2] << std::endl << std::flush;
-
-		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-			std::cout << "Point in data_points: " << data_points[i].first[0] << "," << data_points[i].first[1] << "," << data_points[i].first[2] << std::endl << std::flush;
-		}
-
-		return OTYPE(std::numeric_limits<REAL>::epsilon());
+		return OTYPE();
 	}
 	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
 		return geometry::sphere<CONFIG>( focus, tolerance*domain_mag*real_precision );

@@ -123,16 +123,7 @@ public:
 		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
 		                                             "Bin not built yet. Internal data corrupted."));
 		const vec& st = storage_cast<const vec&>(data_);
-
-		typename SAMPLER::OTYPE retValue = s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
-
-		if(retValue == std::numeric_limits<typename CONFIG::REAL>::epsilon()) {
-			for(size_t i=0; i<st.size(); i++) {
-				std::cout << st[i].first[0] << "," << st[i].first[1] << "," << st[i].first[2] << std::endl << std::flush;
-			}
-		}
-
-		return retValue;
+		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);;
 	}
 
 	void build() {
