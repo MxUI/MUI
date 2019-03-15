@@ -75,8 +75,8 @@ struct vexpr {
 
 	// the only work in constructor is type checking
 	inline vexpr() {
-		static_assert( same_type<TYPE_, typename VEX::TYPE_>::yes, "point element type mismatch" );
-		static_assert( D_ == VEX::D_, "point dimensionality mismatch" );
+		static_assert( same_type<TYPE_, typename VEX::TYPE_>::yes, "MUI Error [point.h]: Point element type mismatch" );
+		static_assert( D_ == VEX::D_, "MUI Error [point.h]: Point dimensionality mismatch" );
 	}
 
 	// dereferencing using static polymorphism

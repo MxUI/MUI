@@ -227,6 +227,7 @@ private:
 	point_type min, max;
 	std::size_t n[CONFIG::D];
 	typename CONFIG::REAL h;
+	using REAL = typename CONFIG::REAL;
 public:
 	template<typename T>
 	bin_t( std::vector<std::pair<point_type,T> >& val ){
@@ -245,27 +246,27 @@ public:
 			}
 		}
 
-		size_t zeroCount=0;
+		size_t zero_count=0;
 		auto vol = max[0]-min[0];
-		auto volMulti = vol;
+		if(vol == 0.0) { // check if first dimension is zero size, if so set to 1
+			vol = 1.0;
+			zero_count++;
+		}
+		auto vol_multi = vol;
 
 		for( int i=1; i<D; ++i ){
-			if(vol == 0.0){ // check if first dimension is zero size, if so set to 1
-				vol = 1.0;
-				zeroCount++;
+			vol_multi = max[i]-min[i];
+			if(vol_multi == 0.0) { // check if other dimensions are zero size, if so set them to 1
+				vol_multi = 1.0;
+				zero_count++;
 			}
-			volMulti = max[i]-min[i];
-			if(volMulti == 0.0){ // check if other dimensions are zero size, if so set them to 1
-				volMulti = 1.0;
-				zeroCount++;
-			}
-			vol *= volMulti;
+			vol *= vol_multi;
 		}
 
-		if (zeroCount == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
+		if (zero_count == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
 			vol = 0.0;
 
-		h = std::pow(6*vol/val.size(),1.0/D); // about 6 points per bin
+		h = std::pow(6.0*vol/static_cast<REAL>(val.size()),1.0/D); // about 6 points per bin
 
 		if(h == 0.0){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
 			h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
@@ -312,6 +313,10 @@ public:
 		int lh[D][2];
 		initialize_query_(bx,lda,lh);
 		return bin_range<T,CONFIG>{lda,lh,displs,v};
+	}
+
+	REAL domain_size() {
+		return norm(max-min);
 	}
 
 private:

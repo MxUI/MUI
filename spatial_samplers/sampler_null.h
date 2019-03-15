@@ -70,7 +70,7 @@ public:
 		// to do: interpolation algorithm
 	}
 
-	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
 		// to do: scope of points needed expressed in terms of mui::geometry::...
 	}
 };

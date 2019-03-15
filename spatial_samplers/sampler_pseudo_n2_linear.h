@@ -85,7 +85,8 @@ public:
 		REAL r2 = std::sqrt( r2min_2nd );
 		return ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
 	}
-	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+
+	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
 		return geometry::sphere<CONFIG>( focus, h );
 	}
 protected:

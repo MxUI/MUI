@@ -96,7 +96,7 @@ public:
         return vsum;
     }
 
-    inline geometry::any_shape<CONFIG> support( point_type focus ) const
+    inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const
     {
         return geometry::sphere<CONFIG>( focus, r );
     }

@@ -123,6 +123,12 @@ template<> inline double powr<1>( const double x ) {
 	return x;
 }
 
+template<typename REAL> inline REAL frexp10(REAL arg, int &exp) {
+	if( arg == 0 ) exp = 0;
+	else exp = 1 + static_cast<int>(std::floor(std::log10(std::fabs(arg))));
+	return arg * std::pow(10, -(exp));
+}
+
 #ifdef __GNUC__
 template<> inline double powr<0>( __attribute__((unused)) const double x ) {
 #else

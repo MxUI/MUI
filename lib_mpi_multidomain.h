@@ -75,7 +75,9 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
     for( int i = 0; i < global_size; i++ ) {
         if( global_rank == i ) {
             for( auto &e : map ) {
-                printf( "> rank %d \"%s\" registered interface %s as %08X\n", global_rank, domain.c_str(), e.second.c_str(), e.first );
+            	std::cout << "> rank " << global_rank << " \"" << domain.c_str()
+							<< "\" registered interface " << e.second.c_str()
+							<< " as " << std::hex << e.first << std::endl;
             }
         }
         MPI_Barrier( world );
@@ -93,7 +95,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
 
         for( auto &i : all_hashes ) unique_ifs.insert( i );
         n_unique = unique_ifs.size();
-        printf( "> %d distinct interfaces found\n", n_unique );
+        std::cout << "> " << n_unique << " distinct interfaces found" << std::endl;
     } else {
         gather( ( int )interfaces.size(), world );
         MPI_Gatherv( my_hashes.data(), my_hashes.size(), MPI_INT, NULL, NULL, NULL, MPI_INT, 0, world );
@@ -111,7 +113,10 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
             MPI_Comm_split( world, 1, global_rank, &comm_ifs );
             int comm_rank;
             MPI_Comm_rank( comm_ifs, &comm_rank );
-            if( comm_rank == 0 ) printf( "> setting up interface %s [%08X] (rank ids are local to each interface)\n", map[i].c_str(), i );
+            if( comm_rank == 0 ){
+            	std::cout << "> setting up interface " << map[i].c_str() << " [" << std::hex << i
+            				<< std::dec << "] (rank ids are local to each interface)" << std::endl;
+            }
             std::string full_uri( "mpi://" );
             full_uri = full_uri + domain + "/" + map[i];
             unifaces.push_back( std::unique_ptr<uniface<CONFIG>>(new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) )) );

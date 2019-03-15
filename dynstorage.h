@@ -62,7 +62,7 @@ struct bad_storage_id: std::runtime_error {
 	bad_storage_id( const char* err ): std::runtime_error(err) {}
 };
 struct bad_storage_cast: std::bad_cast {
-	virtual const char* what() const noexcept { return "storage error: bad cast."; }
+	virtual const char* what() const noexcept { return "MUI Error [dynstorage.h]: Storage error, bad cast."; }
 };
 
 
@@ -98,7 +98,7 @@ template<std::int32_t i, typename R, typename Head, typename... Tail > struct ma
 };
 template<std::int32_t i,typename R> struct make_value_<i,R> {
 	template<typename F>
-	static R apply( int, F ) { throw bad_storage_id("storage error: bad type-id."); }
+	static R apply( int, F ) { throw bad_storage_id("MUI Error [dynstorage.h]: Storage error, bad type id."); }
 };
 
 
@@ -128,9 +128,9 @@ struct apply_visitor_impl_<i,R,Head,Tail...> {
 };
 template<id_t i, typename R> struct apply_visitor_impl_<i,R> {
 	template<typename F>
-	static R apply( id_t, const void*, F& ) { throw bad_storage_id("storage error: bad_id"); }
+	static R apply( id_t, const void*, F& ) { throw bad_storage_id("MUI Error [dynstorage.h]: Storage error, bad id."); }
 	template<typename F>
-	static R applym( id_t, void*, F& )      { throw bad_storage_id("storage error: bad_id"); }
+	static R applym( id_t, void*, F& )      { throw bad_storage_id("MUI Error [dynstorage.h]: Storage error, bad id."); }
 };
 template<typename R,typename... Types> using applyer_ = apply_visitor_impl_<0,R,Types...>;
 }
@@ -173,7 +173,7 @@ public:
 		: which_(get_typeid_<ValueType,Types...>::value),
 		  content_(new ValueType(value)) {
 		static_assert(get_typeid_<ValueType,Types...>::value != bad_id,
-		              "storage error: not supported type. Please add this type to type_list.");
+		              "MUI Error [dynstorage.h]: Storage error, unsupported type. Please add type to type_list.");
 	}
 	template<typename ValueType>
 	explicit storage(ValueType&& value,
@@ -182,7 +182,7 @@ public:
 		: which_(get_typeid_<ValueType,Types...>::value),
 		  content_(new typename std::decay<ValueType>::type(std::move(value))) {
 		static_assert(get_typeid_<ValueType,Types...>::value != bad_id,
-		              "storage error: not supported type. Please add this type to type_list.");
+				"MUI Error [dynstorage.h]: Storage error, unsupported type. Please add type to type_list.");
 	}
 
 	template<typename ValueType>
@@ -268,7 +268,7 @@ inline ValueType&& storage_cast(storage<Args...>&& obj)
 {
 	static_assert(std::is_rvalue_reference<ValueType&&>::value
 	              || std::is_const<typename std::remove_reference<ValueType>::type>::type,
-		"not supported this type of cast.");
+		"MUI Error [dynstorage.h]: This type of cast is not supported.");
 	return storage_cast<ValueType&&>(obj);
 }
 

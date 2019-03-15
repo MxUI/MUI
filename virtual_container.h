@@ -112,7 +112,7 @@ public:
 
 	// at performs bound check
 	inline const elem_type& at ( size_t i ) const {
-		if ( i >= map_.size() ) typename CONFIG::EXCEPTION(std::out_of_range("virtual container: out of range."));
+		if ( i >= map_.size() ) typename CONFIG::EXCEPTION(std::out_of_range("MUI Error [virtual_container.h]: Out of range."));
 		return container_[ map_[i] ];
 	}
 

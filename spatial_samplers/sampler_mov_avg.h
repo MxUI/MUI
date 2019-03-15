@@ -87,7 +87,7 @@ public:
 		return n ? ( vsum / OTYPE(n) ): OTYPE(0.);
 	}
 
-	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
+	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
 	    return geometry::box<CONFIG>( focus - REAL(0.5) * bbox, focus + REAL(0.5) * bbox );
 	}
 

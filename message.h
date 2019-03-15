@@ -122,9 +122,3 @@ inline istream& operator>> ( istream& stream, message& m )
 }
 
 #endif /* MESSAGE_H_ */
-
-
-
-
-
-

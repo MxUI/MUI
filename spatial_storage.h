@@ -116,39 +116,42 @@ public:
 	// we need more large lock if there is no rw-lock.
 	template<typename REGION, typename FOCUS, typename SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE 
-	query(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... addtional) const {
+	query(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) const {
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
 		if( data_.empty() ) 
-			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), addtional... );
-		if( !is_built() ) EXCEPTION(std::logic_error("spatial storage: query error. "
-		                                             "Bin was not built yet. Internal data was corrupted."));
+			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), additional... );
+		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
+		                                             "Bin not built yet. Internal data corrupted."));
 		const vec& st = storage_cast<const vec&>(data_);
-		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), addtional...);
+		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
 	}
 
 	void build() {
-		if( is_built() ) EXCEPTION(std::logic_error("spatial storage: build error. cannot build twice."));
+		if( is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Build error. Cannot build twice."));
 		if( !data_.empty() ){
 			data_.apply_visitor(construct_{(void*)&bin_});
 			is_bin_ = true;
 		}
 	}
-	template<typename REGION, typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
+	//template<typename REGION, typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
+	template<typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
 	typename SAMPLER::OTYPE 
-	build_and_query_ts(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
+	//build_and_query_ts(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
+	build_and_query_ts(const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
 		// this method is thread-safe. other methods are not.
 		{
 			std::unique_lock<std::mutex> lock(mutex_);
 			if( !is_built() ) build();
 		}
-		return query(reg, f, s, additional...);
+		//return query(reg, f, s, additional...);
+		return query(s.support(f, bin_.domain_size()).bbox(), f, s, additional...);
 	}
 	void insert( storage_t storage ) {
 		destroy_if_bin_();
 		if( !storage ) return;
 		if( !data_ ) data_ = std::move(storage);
 		else if( data_.which() == storage.which() ) data_.apply_visitor(insert_{storage});
-		else EXCEPTION(bad_storage_id("spatial storage: insert error. Type doesn't match."));
+		else EXCEPTION(bad_storage_id("MUI Error [spatial_storage.h]: Insert error. Type doesn't match."));
 	}
 
 	bool is_built() const { return is_bin_; }

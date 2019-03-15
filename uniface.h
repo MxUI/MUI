@@ -317,7 +317,8 @@ public:
 			time_type time = first->first;
 			auto iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			v.emplace_back( time, iter->second.build_and_query_ts( sampler.support(focus).bbox(), focus, sampler, additional... ) );
+			//v.emplace_back( time, iter->second.build_and_query_ts( sampler.support(focus).bbox(), focus, sampler, additional... ) );
+			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 		return t_sampler.filter(t, v);
 	}
@@ -404,7 +405,7 @@ public:
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-			std::cerr << "MUI Warning. Communication spends over 5 sec." << std::endl;
+			std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 sec." << std::endl;
 	}
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){

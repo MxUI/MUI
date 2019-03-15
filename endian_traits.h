@@ -107,7 +107,7 @@
 #ifdef MUI_IGNORE_ENDIAN
 // Sanity check
 #  if defined(MUI_INT_BIG_ENDIAN) || defined(MUI_INT_LITTLE_ENDIAN) || defined(MUI_FLOAT_BIG_ENDIAN) || defined(MUI_FLOAT_LITTLE_ENDIAN)
-#    error "Must set no other MUI endian options with MUI_IGNORE_ENDIAN"
+#    error "MUI Error [endian_traits.h]: Must set no other MUI endian options with MUI_IGNORE_ENDIAN"
 #  endif
 
 // Never convert
@@ -119,7 +119,7 @@
 // Integers
 #  ifdef MUI_INT_BIG_ENDIAN
 #    ifdef MUI_INT_LITTLE_ENDIAN
-#      error "Both MUI_INT_BIG_ENDIAN and MUI_INT_LITTLE_ENDIAN defined!"
+#      error "MUI Error [endian_traits.h]: Both MUI_INT_BIG_ENDIAN and MUI_INT_LITTLE_ENDIAN defined"
 #    else
 #      define MUI_CONVERT_INT false
 #    endif
@@ -131,7 +131,7 @@
 #      if defined(__BYTE_ORDER__)
 #        define MUI_CONVERT_INT (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "Cannot auto-detect integer endianness of platform - please set"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set"
 #      endif
 #    endif
 #  endif
@@ -139,7 +139,7 @@
 // Floating points
 #  ifdef MUI_FLOAT_BIG_ENDIAN
 #    ifdef MUI_FLOAT_LITTLE_ENDIAN
-#      error "Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined!"
+#      error "MUI Error [endian_traits.h]: Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined!"
 #    else
 #      define MUI_CONVERT_FLOAT false
 #    endif
@@ -151,7 +151,7 @@
 #      if defined(__FLOAT_WORD_ORDER__)
 #        define MUI_CONVERT_FLOAT (__FLOAT_WORD_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "Cannot auto-detect float endianness of platform - please set"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set"
 #      endif
 #    endif
 #  endif

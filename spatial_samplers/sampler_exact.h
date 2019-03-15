@@ -63,30 +63,39 @@ public:
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
 
-	sampler_exact( REAL tol = REAL(std::numeric_limits<REAL>::epsilon())*static_cast<REAL>(10.0) ) {
-	        tolerance = tol;
+	sampler_exact( REAL tol = std::numeric_limits<REAL>::epsilon() ) {
+	    int exponent;
+		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
+		real_precision = static_cast<REAL>( exponent );
+		tolerance = tol*real_precision;
 	}
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-		  if ( normsq( focus - data_points[i].first ) < tolerance ) {
-		      if ( norm( focus - data_points[i].first ) < tolerance ) {
-		          return data_points[i].second;
-		      }
+			if ( normsq( focus - data_points[i].first ) < tolerance ) {
+				return data_points[i].second;
 			}
 		}
-		std::cerr << "sampler exact: hit nothing\n";
+
+		//std::cerr << "MUI Warning [sampler_exact.h]: hit nothing\n";
+		std::cout << "MUI sampler_exact: hit nothing" << std::endl << std::flush;
+
+		std::cout << "Point tested: " << focus[0] << "," << focus[1] << "," << focus[2] << std::endl << std::flush;
+
+		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
+			std::cout << "Point in data_points: " << data_points[i].first[0] << "," << data_points[i].first[1] << "," << data_points[i].first[2] << std::endl << std::flush;
+		}
+
 		return OTYPE();
 	}
-	inline geometry::any_shape<CONFIG> support( point_type focus ) const {
-		//Set search radius at 1000*epsilon to allow for rounding error while minimising problem set as far as possible.
-		//This may cause issues for very small or large domain sizes
-		return geometry::sphere<CONFIG>( focus, std::numeric_limits<REAL>::epsilon()*static_cast<REAL>(1000.0) );
+	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
+		return geometry::sphere<CONFIG>( focus, tolerance*domain_mag*real_precision );
 	}
 
 protected:
 	    REAL tolerance;
+	    REAL real_precision;
 };
 
 }
