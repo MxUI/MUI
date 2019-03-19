@@ -72,7 +72,7 @@ public:
 };
 
 /*
- * container_steram is something like std::stringstream.
+ * container_stream is something like std::stringstream.
  * Its functionality is serialize & deserialize data to
  * container<char>.
  */

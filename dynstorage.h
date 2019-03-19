@@ -53,8 +53,8 @@ Description:
 #include <typeinfo>
 #include <type_traits>
 
-#include "util.h"
 #include "stream.h"
+#include "util.h"
 
 namespace mui {
 
@@ -86,7 +86,7 @@ template<typename T> struct get_typeid_<T> {
 
 // build i-th element and apply functor
 template<std::int32_t i, typename R, typename... Args> struct make_value_;
-template<std::int32_t i, typename R, typename Head, typename... Tail > struct make_value_<i,R,Head,Tail...>{
+template<std::int32_t i, typename R, typename Head, typename... Tail > struct make_value_<i,R,Head,Tail...> {
 	template<typename F>
 	static R apply( std::int32_t which, F f ) {
 		if( i == which ) {

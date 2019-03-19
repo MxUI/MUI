@@ -48,8 +48,9 @@ Description:
 #define MESSAGE_H_
 
 #include <memory>
-#include "util.h"
+
 #include "stream.h"
+#include "util.h"
 #include "stream_string.h"
 #include "stream_vector.h"
 #include "stream_tuple.h"

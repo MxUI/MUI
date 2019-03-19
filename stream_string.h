@@ -48,6 +48,7 @@ Description:
 #define MUI_STREAM_STRING_H
 
 #include <string>
+
 #include "stream.h"
 
 namespace mui {

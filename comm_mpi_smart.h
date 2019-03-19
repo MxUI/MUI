@@ -51,8 +51,8 @@ Description:
 #include "comm.h"
 #include "comm_mpi.h"
 #include "comm_factory.h"
-#include "stream.h"
 #include "message.h"
+#include "stream.h"
 
 namespace mui {
 

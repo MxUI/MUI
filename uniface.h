@@ -56,11 +56,11 @@ Description:
 #include "lib_dispatcher.h"
 #include "message.h"
 #include "reader_variable.h"
-#include "stream.h"
 #include "stream_vector.h"
 #include "stream_unordered.h"
 #include "stream_string.h"
 #include "bin.h"
+#include "stream.h"
 
 #ifdef PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
@@ -315,7 +315,7 @@ public:
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
 		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
 			time_type time = first->first;
-			auto iter = first->second.find(attr);
+			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
@@ -338,13 +338,12 @@ public:
                ADDITIONAL && ... additional ) {
 		barrier(t_sampler.get_lower_bound(t));
 		std::vector <point_type> returnPoints;
+
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
 		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
-			auto iter = first->second.find(attr);
+			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			iter->second.build_ts();
-			const storage_t& n = iter->second.data();
-			auto& data_store = storage_cast<const std::vector<std::pair<point_type,TYPE> >&>(n);
+			const auto& data_store = storage_cast<const std::vector<std::pair<point_type,TYPE> >& >(iter->second.data());
 			returnPoints.reserve(data_store.size());
 			for( size_t i=0; i<data_store.size(); i++ ) {
 				returnPoints.emplace_back(data_store[i].first);
@@ -436,7 +435,7 @@ public:
 		log.erase(log.lower_bound(first), log.upper_bound(last));
 		if(reset_log) {
 			time_type curr_time = 0;
-                	if(!log.empty()) curr_time = log.rbegin()->first;
+			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time);
 			}

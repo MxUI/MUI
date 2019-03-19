@@ -290,7 +290,7 @@ public:
 		}
 		displs.resize(nn+1,0); // add 1 for sentinel
 		std::partial_sum(counts.begin(),counts.end(), displs.begin()+1);
-		
+
 		counts = displs;
 		std::vector<std::pair<point_type,T> > v(val.size());
 		for( std::size_t i=0; i<val.size(); ++i ) v[counts[index[i]]++] = val[i];

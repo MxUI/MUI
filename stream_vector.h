@@ -48,6 +48,7 @@ Description:
 #define MUI_STREAM_VECTOR_H
 
 #include <vector>
+
 #include "stream.h"
 
 namespace mui {

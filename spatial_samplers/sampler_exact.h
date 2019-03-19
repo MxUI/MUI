@@ -79,7 +79,15 @@ public:
 			}
 		}
 
-		std::cerr << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
+		//std::cerr << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
+
+		std::cout << "MUI Warning [sampler_exact.h]: Hit nothing" << std::endl << std::flush;
+
+		std::cout << "Point tested: " << focus[0] << "," << focus[1] << "," << focus[2] << std::endl << std::flush;
+
+		for(size_t i=0; i<data_points.size(); i++) {
+			std::cout << "data_points value: " << data_points[i].first[0] << "," << data_points[i].first[1] << "," << data_points[i].first[2] << std::endl << std::flush;
+		}
 
 		return OTYPE();
 	}
