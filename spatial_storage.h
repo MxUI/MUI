@@ -115,20 +115,13 @@ public:
 	// no lock internally; it's job of uniface because
 	// we need more large lock if there is no rw-lock.
 	template<typename REGION, typename FOCUS, typename SAMPLER, typename ... ADDITIONAL>
-	typename SAMPLER::OTYPE 
+	typename SAMPLER::OTYPE
 	query(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) const {
 		if( data_.empty() )
 			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >(),std::vector<bool>()), additional... );
 		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
 		                                             "Bin not built yet. Internal data corrupted."));
 		const auto& st = storage_cast<const std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >& >(data_);
-
-		for(size_t i=0; i<st.size(); i++) {
-			if(st[i].first[0] == 0.0 || st[i].first[1] == 0.0 || st[i].first[2] == 0.0) {
-				std::cout << "st zero val: " << st[i].first[0] << "," << st[i].first[1] << "," << st[i].first[2] << std::endl << std::flush;
-			}
-		}
-
 		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
 	}
 
@@ -160,9 +153,14 @@ public:
 		else EXCEPTION(bad_storage_id("MUI Error [spatial_storage.h]: Insert error. Type doesn't match."));
 	}
 
+	template<typename TYPE>
+        const std::vector<std::pair<point_type,TYPE> >& return_data() {
+                return storage_cast<const std::vector<std::pair<point_type,TYPE> >& >(data_);
+        }
+
+
 	bool is_built() const { return is_bin_; }
 	bool empty() const { return data_.empty(); }
-	const storage_t& data() { return data_; }
 private:
 	void destroy_if_bin_() { 
 		if( is_built() ) {

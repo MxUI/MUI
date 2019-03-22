@@ -336,20 +336,42 @@ public:
         std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
                ADDITIONAL && ... additional ) {
+		using vec = std::vector<std::pair<point_type,TYPE> >;
 		barrier(t_sampler.get_lower_bound(t));
-		std::vector <point_type> returnPoints;
+		std::vector <point_type> return_points;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
 		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			const auto& data_store = storage_cast<const std::vector<std::pair<point_type,TYPE> >& >(iter->second.data());
-			returnPoints.reserve(data_store.size());
-			for( size_t i=0; i<data_store.size(); i++ ) {
-				returnPoints.emplace_back(data_store[i].first);
+			const vec& ds = iter->second.template return_data<TYPE>();
+			return_points.reserve(ds.size());
+			for( size_t i=0; i<ds.size(); i++ ) {
+				return_points.emplace_back(ds[i].first);
 			}
 		}
-		return returnPoints;
+		return return_points;
+	}
+
+	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
+    std::vector<TYPE>
+	fetch_values( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
+               ADDITIONAL && ... additional ) {
+		using vec = std::vector<std::pair<point_type,TYPE> >;
+		barrier(t_sampler.get_lower_bound(t));
+		std::vector<TYPE> return_values;
+
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
+			const auto& iter = first->second.find(attr);
+			if( iter == first->second.end() ) continue;
+			const vec& ds = iter->second.template return_data<TYPE>();
+			return_values.reserve(ds.size());
+			for( size_t i=0; i<ds.size(); i++ ) {
+				return_values.emplace_back(ds[i].second);
+			}
+		}
+		return return_values;
 	}
 
 	/** \brief Serializes pushed data and sends it to remote nodes
