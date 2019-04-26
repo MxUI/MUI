@@ -156,11 +156,6 @@ class Uniface(CppClass):
         assign  = getattr(self.raw, "assign_" + ALLOWED_IO_TYPES[data_type])
         assign(tag, safe_cast(data_type, val))
 
-    def push_size(self, tag, size, static_points):
-        data_type = map_type[self._get_tag_type(tag)]
-        push_size = getattr(self.raw, "push_size_" + ALLOWED_IO_TYPES[data_type])
-        push_size(tag, size, static_points)
-
     def announce_recv_span(self, tinit, timeout, geometry):
         assert issubclass(geometry.__class__, Geometry)
         geometry.configure(self.config)
