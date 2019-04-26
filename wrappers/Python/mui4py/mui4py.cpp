@@ -83,10 +83,11 @@ using std::string;
 #define PUSH_INSTANCE_MANY(IO_TYPE)\
      .def("push_many_" STRINGIFY(IO_TYPE), (void (Tclass::*)(const string& attr, const py::array_t<Treal>& points, const py::array_t<IO_TYPE>& values)) &Tclass::push_many, "") 
 
-#define FETCH_POINTS_INSTANCE(IO_TYPE)\
+//Temporarily disabled the fetch_point function. Bind the variadic template later.
+//#define FETCH_POINTS_INSTANCE(IO_TYPE)\
     .def("fetch_points_" STRINGIFY(IO_TYPE), &Tclass::template fetch_points_np<IO_TYPE>) 
 
-#define DEFINE_MUI_UNIFACE_FETCH_POINTS() \
+//#define DEFINE_MUI_UNIFACE_FETCH_POINTS() \
     FOR_EACH(FETCH_POINTS_INSTANCE, double, float, int64_t, int32_t, string)
 
 #define FETCH_INSTANCE_1ARG(IO_TYPE) \
@@ -303,7 +304,8 @@ DECLARE_FUNC_HEADER(uniface) {
     DEFINE_MUI_UNIFACE_PUSH()
     DEFINE_MUI_UNIFACE_FETCH_1ARG()
     DEFINE_MUI_UNIFACE_FETCH_5ARGS()
-    DEFINE_MUI_UNIFACE_FETCH_POINTS()
+//Temporarily disabled the fetch_point function. Bind the variadic template later.
+//    DEFINE_MUI_UNIFACE_FETCH_POINTS()
     .def(py::init<const string &>());
     py::implicitly_convertible<mui::geometry::shape<Tconfig>, mui::geometry::any_shape<Tconfig>>();
 }
