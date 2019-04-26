@@ -293,8 +293,8 @@ DECLARE_FUNC_HEADER(uniface) {
     .def("forecast", (void (Tclass::*)(Ttime)) &Tclass::forecast, "")
     .def("is_ready", &Tclass::is_ready, "")
     .def("barrier", (void (Tclass::*)(Ttime)) &Tclass::barrier, "")
-    .def("forget", (void (Tclass::*)(Ttime)) &Tclass::forget, "")
-    .def("forget", (void (Tclass::*)(Ttime, Ttime)) &Tclass::forget, "")
+    .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
+    .def("forget", (void (Tclass::*)(Ttime, Ttime, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
     .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>))\
            &Tclass::announce_send_span,"") 
