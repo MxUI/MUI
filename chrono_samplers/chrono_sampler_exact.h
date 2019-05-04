@@ -48,6 +48,7 @@ Description: Temporal sampler that samples at exactly the time specified and per
 #ifndef MUI_CHRONO_SAMPLER_EXACT_H_
 #define MUI_CHRONO_SAMPLER_EXACT_H_
 
+#include <limits>
 #include "../util.h"
 #include "../config.h"
 
@@ -59,13 +60,16 @@ public:
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
 
-	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon()*10.0) ) {
-		tolerance = tol;
+	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon()) ) {
+	  int exponent;
+      frexp10<time_type>( std::numeric_limits<time_type>::max(), exponent );
+      time_type real_precision = static_cast<time_type>( exponent );
+      tolerance = tol*real_precision;
 	}
 
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		for( auto i: points ) {
+	    for( auto i: points ) {
 			if ( std::abs(i.first - focus) <= tolerance ) {
 				return i.second;
 			}

@@ -68,26 +68,18 @@ public:
 		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
 		real_precision = static_cast<REAL>( exponent );
 		tolerance = tol;
+		point_tolerance = tolerance*real_precision;
 	}
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		REAL point_tol = tolerance*real_precision;
 		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-			if ( norm( focus - data_points[i].first ) < point_tol ) {
+			if ( norm( focus - data_points[i].first ) < point_tolerance ) {
 				return data_points[i].second;
 			}
 		}
 
-		//std::cerr << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
-
-		std::cout << "MUI Warning [sampler_exact.h]: Hit nothing" << std::endl << std::flush;
-
-		std::cout << "Point tested: " << focus[0] << "," << focus[1] << "," << focus[2] << std::endl << std::flush;
-
-		for(size_t i=0; i<data_points.size(); i++) {
-			std::cout << "data_points value: " << data_points[i].first[0] << "," << data_points[i].first[1] << "," << data_points[i].first[2] << std::endl << std::flush;
-		}
+		std::cerr << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
 
 		return OTYPE();
 	}
@@ -97,6 +89,7 @@ public:
 
 protected:
 	    REAL tolerance;
+	    REAL point_tolerance;
 	    REAL real_precision;
 };
 

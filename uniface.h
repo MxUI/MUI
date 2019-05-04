@@ -414,6 +414,7 @@ public:
 	            && std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
 	                return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); });
 	}
+
 	void barrier( time_type t ) {
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
@@ -422,8 +423,9 @@ public:
 				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
+
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-			std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 sec." << std::endl;
+			std::cerr << "MUI Warning [uniface.h]: Barrier spent over 5s." << std::endl;
 	}
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
@@ -433,6 +435,7 @@ public:
 		span_timeout = timeout;
 		current_span.swap(s);
 	}
+
 	void announce_recv_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'm recving this span."
 		comm->send(message::make("receiving span", comm->local_rank(), start, timeout, std::move(s)));
