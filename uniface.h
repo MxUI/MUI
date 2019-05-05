@@ -124,7 +124,7 @@ private:
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
-			return scan_spans_(t,s,recving_spans);
+		  return scan_spans_(t,s,recving_spans);
 		}
 		void set_recving( time_type start, time_type timeout, span_t s ) {
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
@@ -133,7 +133,7 @@ private:
 			return scan_spans_(t,s,sending_spans);
 		}
 		void set_sending(time_type start, time_type timeout, span_t s) {
-			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+		  sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
 
 		void set_pts(std::vector<point_type> pts) {
@@ -157,7 +157,7 @@ private:
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 				if( t <= itr->first.second ) {
 					prefetched = true;
-					if( collide(s,itr->second) ) return true;
+					if( collide(s,itr->second) )    return true;
 				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
@@ -341,7 +341,7 @@ public:
 		std::vector <point_type> return_points;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first != last; ++first ){
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
@@ -362,7 +362,7 @@ public:
 		std::vector<TYPE> return_values;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first != last; ++first ){
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
@@ -416,17 +416,16 @@ public:
 	}
 
 	void barrier( time_type t ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) { 
-				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-			std::cerr << "MUI Warning [uniface.h]: Barrier spent over 5s." << std::endl;
-	}
+        auto start = std::chrono::system_clock::now();
+        for(;;) {    // barrier must be thread-safe because it is called in fetch()
+            std::lock_guard<std::mutex> lock(mutex);
+            if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+                return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
+            acquire(); // To avoid infinite-loop when synchronous communication
+        }
+        if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
+            std::cerr << "MUI Warning. Communication spends over 5 sec." << std::endl;
+    }
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'll send this span."
