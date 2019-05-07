@@ -247,8 +247,8 @@ public:
 		}
 
 		size_t zero_count=0;
-		auto vol = max[0]-min[0];
-		if(vol == 0.0) { // check if first dimension is zero size, if so set to 1
+		auto vol = abs(max[0]-min[0]);
+		if(almost_equal(vol, 0.0)) { // check if first dimension is zero size, if so set to 1
 			vol = 1.0;
 			zero_count++;
 		}
@@ -256,7 +256,7 @@ public:
 
 		for( int i=1; i<D; ++i ){
 			vol_multi = max[i]-min[i];
-			if(vol_multi == 0.0) { // check if other dimensions are zero size, if so set them to 1
+			if(almost_equal(vol_multi, 0.0)) { // check if other dimensions are zero size, if so set them to 1
 				vol_multi = 1.0;
 				zero_count++;
 			}
@@ -268,7 +268,7 @@ public:
 
 		h = std::pow(6.0*vol/static_cast<REAL>(val.size()),1.0/D); // about 6 points per bin
 
-		if(h == 0.0){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
+		if(almost_equal(h, 0.0)){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
 			h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
 			if(val.size() > 1)
 				std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;

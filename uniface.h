@@ -309,7 +309,7 @@ public:
 	fetch( const std::string& attr,const point_type focus, const time_type t,
 	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 	       ADDITIONAL && ... additional ) {
-		barrier(t_sampler.get_lower_bound(t));
+		barrier(t_sampler.get_upper_bound(t));
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
@@ -337,7 +337,7 @@ public:
 	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
                ADDITIONAL && ... additional ) {
 		using vec = std::vector<std::pair<point_type,TYPE> >;
-		barrier(t_sampler.get_lower_bound(t));
+		barrier(t_sampler.get_upper_bound(t));
 		std::vector <point_type> return_points;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
@@ -358,7 +358,7 @@ public:
 	fetch_values( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
                ADDITIONAL && ... additional ) {
 		using vec = std::vector<std::pair<point_type,TYPE> >;
-		barrier(t_sampler.get_lower_bound(t));
+		barrier(t_sampler.get_upper_bound(t));
 		std::vector<TYPE> return_values;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
@@ -412,7 +412,7 @@ public:
 	        return  std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 	                return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 	            && std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-	                return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); });
+	                return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); });
 	}
 
 	void barrier( time_type t ) {
@@ -420,7 +420,7 @@ public:
         for(;;) {    // barrier must be thread-safe because it is called in fetch()
             std::lock_guard<std::mutex> lock(mutex);
             if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-                return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
+                return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); }) ) break;
             acquire(); // To avoid infinite-loop when synchronous communication
         }
         if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )

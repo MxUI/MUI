@@ -77,13 +77,10 @@ public:
 		return TYPE();
 	}
 	time_type get_upper_bound( time_type focus ) const {
-		return focus + tolerance;
+		return focus;
 	}
 	time_type get_lower_bound( time_type focus ) const {
-		return focus - tolerance;
-	}
-	time_type get_tolerance() const {
-		return tolerance;
+		return focus;
 	}
 
 private:

@@ -129,6 +129,13 @@ template<typename REAL> inline REAL frexp10(REAL arg, int &exp) {
 	return arg * std::pow(10, -(exp));
 }
 
+template<class T> inline bool almost_equal(T x, T y)
+{
+	return (x == y) ||
+		   (std::abs(x-y) < std::numeric_limits<T>::epsilon() * std::abs(x+y)) ||
+		   (std::abs(x-y) < std::numeric_limits<T>::min());
+}
+
 #ifdef __GNUC__
 template<> inline double powr<0>( __attribute__((unused)) const double x ) {
 #else
