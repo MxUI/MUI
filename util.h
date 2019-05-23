@@ -131,7 +131,7 @@ template<class T> inline bool almost_equal(T x, T y)
 }
 
 template<typename T> inline T frexp10(T arg, int &exp) {
-	if(almost_equal(arg, 0)) exp = 0;
+	if(almost_equal(arg, static_cast<T>(0))) exp = 0;
 	else exp = 1 + static_cast<int>(std::floor(std::log10(std::fabs(arg))));
 	return arg * std::pow(10, -(exp));
 }

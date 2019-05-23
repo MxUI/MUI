@@ -247,29 +247,29 @@ public:
 		}
 
 		size_t zero_count=0;
-		auto vol = abs(max[0]-min[0]);
-		if(almost_equal(vol, 0.0)) { // check if first dimension is zero size, if so set to 1
+		REAL vol = abs(max[0]-min[0]);
+		if(almost_equal(vol, static_cast<REAL>(0))) { // check if first dimension is zero size, if so set to 1
 			vol = 1.0;
 			zero_count++;
 		}
-		auto vol_multi = vol;
 
+		REAL vol_multi = vol;
 		for( int i=1; i<D; ++i ){
 			vol_multi = max[i]-min[i];
-			if(almost_equal(vol_multi, 0.0)) { // check if other dimensions are zero size, if so set them to 1
-				vol_multi = 1.0;
+			if(almost_equal(vol_multi, static_cast<REAL>(0))) { // check if other dimensions are zero size, if so set them to 1
+				vol_multi = static_cast<REAL>(1);
 				zero_count++;
 			}
 			vol *= vol_multi;
 		}
 
 		if (zero_count == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
-			vol = 0.0;
+			vol = static_cast<REAL>(0);
 
-		h = std::pow(6.0*vol/static_cast<REAL>(val.size()),1.0/D); // about 6 points per bin
+		h = std::pow(static_cast<REAL>(6)*vol/static_cast<REAL>(val.size()),1.0/D); // about 6 points per bin
 
-		if(almost_equal(h, 0.0)){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
-			h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
+		if(almost_equal(h, static_cast<REAL>(0))){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
+			h = static_cast<REAL>(1); // in this special case set h to 1 arbitrarily so bins work numerically
 			if(val.size() > 1)
 				std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
 		}
@@ -318,7 +318,7 @@ public:
 	REAL domain_size() {
 		REAL dim_size = norm(max-min);
 		// Special case if domain only contains a single point
-		if(almost_equal(dim_size, 0))
+		if(almost_equal(dim_size, static_cast<REAL>(0)))
 			dim_size = 1.0;
 		return dim_size;
 	}
