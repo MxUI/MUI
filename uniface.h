@@ -312,8 +312,8 @@ public:
 		barrier(t_sampler.get_upper_bound(t));
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
-		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first!= last; ++first ){
 			time_type time = first->first;
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
@@ -340,8 +340,8 @@ public:
 		barrier(t_sampler.get_upper_bound(t));
 		std::vector <point_type> return_points;
 
-		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first != last; ++first ){
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first != last; ++first ){
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
@@ -361,8 +361,8 @@ public:
 		barrier(t_sampler.get_upper_bound(t));
 		std::vector<TYPE> return_values;
 
-		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first != last; ++first ){
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first != last; ++first ){
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
@@ -446,7 +446,7 @@ public:
 
 	// remove log between (-inf, @end]
 	void forget( time_type end, bool reset_log = false ) {
-		log.erase(log.begin(), log.upper_bound(end));
+		log.erase(log.begin(), log.upper_bound(end)+threshold(end));
 		if(reset_log) {
 			time_type curr_time = 0;
 			if(!log.empty()) curr_time = log.rbegin()->first;
@@ -457,7 +457,7 @@ public:
 	}
 	// remove log between [@first, @last]
 	void forget( time_type first, time_type last, bool reset_log = false ) {
-		log.erase(log.lower_bound(first), log.upper_bound(last));
+		log.erase(log.lower_bound(first)-threshold(first), log.upper_bound(last)+threshold(last));
 		if(reset_log) {
 			time_type curr_time = 0;
 			if(!log.empty()) curr_time = log.rbegin()->first;

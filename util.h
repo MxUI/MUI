@@ -123,17 +123,22 @@ template<> inline double powr<1>( const double x ) {
 	return x;
 }
 
-template<typename REAL> inline REAL frexp10(REAL arg, int &exp) {
-	if( arg == 0 ) exp = 0;
-	else exp = 1 + static_cast<int>(std::floor(std::log10(std::fabs(arg))));
-	return arg * std::pow(10, -(exp));
-}
-
 template<class T> inline bool almost_equal(T x, T y)
 {
 	return (x == y) ||
 		   (std::abs(x-y) < std::numeric_limits<T>::epsilon() * std::abs(x+y)) ||
 		   (std::abs(x-y) < std::numeric_limits<T>::min());
+}
+
+template<typename T> inline T frexp10(T arg, int &exp) {
+	if(almost_equal(arg, 0)) exp = 0;
+	else exp = 1 + static_cast<int>(std::floor(std::log10(std::fabs(arg))));
+	return arg * std::pow(10, -(exp));
+}
+
+template<class T> inline T threshold(T x)
+{
+	return std::numeric_limits<T>::epsilon() * std::abs(x);
 }
 
 #ifdef __GNUC__
