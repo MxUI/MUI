@@ -437,7 +437,7 @@ public:
 	}
 
 	void announce_recv_span( time_type start, time_type timeout, span_t s ){
-		// say remote nodes that "I'm recving this span."
+		// say remote nodes that "I'm receiving this span."
 		comm->send(message::make("receiving span", comm->local_rank(), start, timeout, std::move(s)));
 		recv_start = start;
 		recv_timeout = timeout;
@@ -446,7 +446,7 @@ public:
 
 	// remove log between (-inf, @end]
 	void forget( time_type end, bool reset_log = false ) {
-		log.erase(log.begin(), log.upper_bound(end)+threshold(end));
+		log.erase(log.begin(), log.upper_bound(end+threshold(end)));
 		if(reset_log) {
 			time_type curr_time = 0;
 			if(!log.empty()) curr_time = log.rbegin()->first;
@@ -457,7 +457,7 @@ public:
 	}
 	// remove log between [@first, @last]
 	void forget( time_type first, time_type last, bool reset_log = false ) {
-		log.erase(log.lower_bound(first)-threshold(first), log.upper_bound(last)+threshold(last));
+		log.erase(log.lower_bound(first-threshold(first)), log.upper_bound(last+threshold(last)));
 		if(reset_log) {
 			time_type curr_time = 0;
 			if(!log.empty()) curr_time = log.rbegin()->first;
