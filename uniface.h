@@ -435,7 +435,7 @@ public:
             acquire(); // To avoid infinite-loop when synchronous communication
         }
         if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-            std::cerr << "MUI Warning. Communication spends over 5 sec." << std::endl;
+            std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 sec." << std::endl;
     }
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){

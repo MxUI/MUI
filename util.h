@@ -84,7 +84,6 @@ Description:
 #endif
 
 #include "stream.h"
-
 #include "point.h"
 
 namespace mui {
