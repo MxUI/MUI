@@ -73,8 +73,22 @@ namespace mui {
 
 /*! \brief Briefly what is uniface
  *
- *  An expanded description of uniface. 
+ *  An expanded description of uniface.
  */
+template<typename CONFIG = default_config>
+class almost_equal_map_time_type : public std::binary_function<typename CONFIG::time_type,typename CONFIG::time_type,bool> {
+public:
+  almost_equal_map_time_type(typename CONFIG::REAL eps_ = std::numeric_limits<typename CONFIG::REAL>::epsilon()) : epsilon(eps_) {}
+
+  bool operator()(const typename CONFIG::time_type &x, const typename CONFIG::time_type &y) const {
+	  return (x == y) ||
+			 (std::abs(x-y) < std::numeric_limits<typename CONFIG::REAL>::epsilon() * std::abs(x+y)) ||
+			 (std::abs(x-y) < std::numeric_limits<typename CONFIG::REAL>::min());
+  }
+
+  typename CONFIG::REAL epsilon;
+};
+
 template<typename CONFIG = default_config>
 class uniface {
 public:
@@ -86,7 +100,6 @@ public:
 	using point_type = typename CONFIG::point_type;
 	using time_type  = typename CONFIG::time_type;
 	using data_types = typename CONFIG::data_types;
-
 	using span_t = geometry::any_shape<CONFIG>;
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
@@ -106,8 +119,6 @@ private:
 	template<typename... TYPES> struct def_storage_single_<type_list<TYPES...> >{
 		using type = storage<TYPES...>;
 	};
-
-
 
 	// internal typedefinitions
 	using storage_t = typename def_storage_<data_types>::type;
@@ -244,16 +255,12 @@ public:
 	}
 
 	/** \brief Push the value \c value to the parameter \c attr
-	  * Useful if, for example, you wish to pass a parameter (e.g. viscosity)
-	  * rather than a field from one code to another
+	  * Useful if, for example, you wish to pass a parameter
+	  * rather than a field.
 	  */
 	template<typename TYPE>
 	void push( const std::string& attr, const TYPE value ) {
-		storage_single_t& n = assigned_values[attr];
-		if( !n ) n = TYPE();
-		TYPE& v = storage_cast<TYPE&>(n);
-		v = value;
-		comm->send(message::make("assignedVals", attr, n));
+		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
 	
 #ifdef PYTHON_BINDINGS
@@ -322,8 +329,10 @@ public:
 		return t_sampler.filter(t, v);
 	}
 
-	/** \brief Fetch a parameter from the interface
-	  * Overloaded \c fetch to fetch a single parameter of name \c attr
+	/** \brief Fetch a single parameter from the interface
+	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
+	  * There is no barrier on this fetch as there is no time associated
+	  * with the value.
 	  */
 	template<typename TYPE>
 	TYPE fetch( const std::string& attr ) {
@@ -402,6 +411,7 @@ public:
 		}
 
 		comm->send(message::make("timestamp",comm->local_rank(),timestamp));
+
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
 	void forecast( time_type timestamp ) {
@@ -417,7 +427,7 @@ public:
     }
 
 	void barrier( time_type t ) {
-        auto start = std::chrono::system_clock::now();
+	    auto start = std::chrono::system_clock::now();
         for(;;) {    // barrier must be thread-safe because it is called in fetch()
             std::lock_guard<std::mutex> lock(mutex);
             if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
@@ -430,7 +440,7 @@ public:
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'll send this span."
-		comm->send(message::make("sending span", comm->local_rank(), start, timeout, std::move(s)));
+	    comm->send(message::make("sending span", comm->local_rank(), start, timeout, std::move(s)));
 		span_start = start;
 		span_timeout = timeout;
 		current_span.swap(s);
@@ -487,17 +497,20 @@ private:
 
 	void on_recv_data( time_type timestamp, frame_type frame ) {
 		// when message.id_ == "data"
-		auto itr = log.find(timestamp);
-		if( itr == log.end() ) std::tie(itr,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
-		auto& cur = itr->second;
-		for( auto& p: frame ){
-			auto pstr = cur.find(p.first);
-			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
-			else pstr->second.insert(p.second);
-		}
-		log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
-	}
+	    auto first=log.lower_bound(timestamp-threshold(timestamp));
+	    auto last=log.upper_bound(timestamp+threshold(timestamp));
 
+		if(first == last) {
+          if( last == log.end() ) std::tie(last,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
+          auto& cur = last->second;
+          for( auto& p: frame ){
+              auto pstr = cur.find(p.first);
+              if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
+              else pstr->second.insert(p.second);
+          }
+          log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
+		}
+	}
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
 		frame_type buf = associate( sender, frame );
