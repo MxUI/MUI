@@ -88,11 +88,11 @@ namespace mui {
 			using REAL = REALTYPE;\
 			using INT  = INTTYPE;\
 			using point_type = point<REAL,D>;\
-			using time_type  = INT;\
+			using time_type  = REAL;\
 			static const bool DEBUG = false;\
 			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 			using EXCEPTION = exception_segv;\
-			static const bool FIXEDPOINTS = true;\
+			static const bool FIXEDPOINTS = false;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
