@@ -435,7 +435,7 @@ public:
             acquire(); // To avoid infinite-loop when synchronous communication
         }
         if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-            std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 sec." << std::endl;
+            std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 seconds" << std::endl;
     }
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
@@ -500,7 +500,7 @@ private:
 	    auto first=log.lower_bound(timestamp-threshold(timestamp));
 	    auto last=log.upper_bound(timestamp+threshold(timestamp));
 
-		if(first == last) {
+		if( first == last ) {
           if( last == log.end() ) std::tie(last,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
           auto& cur = last->second;
           for( auto& p: frame ){
@@ -509,6 +509,16 @@ private:
               else pstr->second.insert(p.second);
           }
           log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
+		}
+		else {
+			size_t count=0;
+
+			for( ; first != last; first++ ) {
+				count++;
+			}
+
+			if( count > 1 )
+				std::cerr << "MUI Warning [uniface.h]: More than 1 time frame of data found in log for time=" << timestamp << std::endl;
 		}
 	}
 
@@ -569,10 +579,10 @@ private:
 // [x] void uniface::set_memory( time_type length );
 // [x] bool uniface::is_ready( std::string attr );
 // [x] void uniface::forecast( time_type stamp );
+// [x] python wrapper
 // [ ] linear solver
 // [ ] config generator
 // [ ] logger
-// [x] python wrapper
 // [ ] periodicity policy
 // [ ] shm://domain/interface, create pipes in /dev/shm/interface
 // [ ] void uniface::recommit( time_type stamp, INT version );
