@@ -315,8 +315,13 @@ public:
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type focus, const time_type t,
 	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
-	       ADDITIONAL && ... additional ) {
-		barrier(t_sampler.get_upper_bound(t));
+		   bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+		   ADDITIONAL && ... additional ) {
+		if(barrier_enabled){
+			if(barrier_time == std::numeric_limits<time_type>::min())
+				barrier_time = t_sampler.get_upper_bound(t);
+			barrier(barrier_time);
+		}
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
@@ -344,9 +349,14 @@ public:
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
         std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
-               ADDITIONAL && ... additional ) {
+                  bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+                  ADDITIONAL && ... additional ) {
 		using vec = std::vector<std::pair<point_type,TYPE> >;
-		barrier(t_sampler.get_upper_bound(t));
+		if(barrier_enabled){
+			if(barrier_time == std::numeric_limits<time_type>::min())
+				barrier_time = t_sampler.get_upper_bound(t);
+			barrier(barrier_time);
+		}
 		std::vector <point_type> return_points;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
@@ -365,9 +375,14 @@ public:
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
     std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
-               ADDITIONAL && ... additional ) {
+			      bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+			      ADDITIONAL && ... additional ) {
 		using vec = std::vector<std::pair<point_type,TYPE> >;
-		barrier(t_sampler.get_upper_bound(t));
+		if(barrier_enabled){
+			if(barrier_time == std::numeric_limits<time_type>::min())
+				barrier_time = t_sampler.get_upper_bound(t);
+			barrier(barrier_time);
+		}
 		std::vector<TYPE> return_values;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
