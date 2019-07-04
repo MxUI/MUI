@@ -1,48 +1,52 @@
-/*
-Multiscale Universal Interface Code Coupling Library
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+*****************************************************************************/
 
-Copyright (C) 2017 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis
-
-This software is jointly licensed under the Apache License, Version 2.0
-and the GNU General Public License version 3, you may use it according
-to either.
-
-** Apache License, version 2.0 **
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-** GNU General Public License, version 3 **
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-** File Details **
-
-Filename: uniface.h
-Created: Feb 11, 2014
-Author: S. Kudo
-Description:
-*/
+/**
+ * @file uniface.h
+ * @author S. Kudo
+ * @date 11 February 2014
+ * @brief Provides the majority of the useful functionality for MUI,
+ * including all fetch, commit and push functions.
+ *
+ * The majority of the user interface for MUI is defined here, as are all of
+ * the data structures.
+ */
 
 #ifndef UNIFACE_H_
 #define UNIFACE_H_
@@ -70,24 +74,6 @@ namespace py = pybind11;
 #endif
 
 namespace mui {
-
-/*! \brief Briefly what is uniface
- *
- *  An expanded description of uniface.
- */
-template<typename CONFIG = default_config>
-class almost_equal_map_time_type : public std::binary_function<typename CONFIG::time_type,typename CONFIG::time_type,bool> {
-public:
-  almost_equal_map_time_type(typename CONFIG::REAL eps_ = std::numeric_limits<typename CONFIG::REAL>::epsilon()) : epsilon(eps_) {}
-
-  bool operator()(const typename CONFIG::time_type &x, const typename CONFIG::time_type &y) const {
-	  return (x == y) ||
-			 (std::abs(x-y) < std::numeric_limits<typename CONFIG::REAL>::epsilon() * std::abs(x+y)) ||
-			 (std::abs(x-y) < std::numeric_limits<typename CONFIG::REAL>::min());
-  }
-
-  typename CONFIG::REAL epsilon;
-};
 
 template<typename CONFIG = default_config>
 class uniface {
