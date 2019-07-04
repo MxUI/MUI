@@ -1,0 +1,6 @@
+<map id="dynstorage.h" name="dynstorage.h">
+<area shape="rect" id="node2" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="99,155,174,181"/>
+<area shape="rect" id="node5" href="$spatial__storage_8h.html" title="Defines the spatial_storage data type. " alt="" coords="125,80,247,107"/>
+<area shape="rect" id="node3" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="5,229,156,256"/>
+<area shape="rect" id="node4" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="109,304,164,331"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="lib_dispatcher.h" name="lib_dispatcher.h">
+<area shape="rect" id="node2" href="$comm__factory_8h.html" title="Structures and methods to create a new communicator based on chosen protocols. " alt="" coords="108,80,224,107"/>
+<area shape="rect" id="node6" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="231,155,306,181"/>
+<area shape="rect" id="node3" href="$comm__mpi__smart_8h.html" title="Structures and methods for a smart (communication reducing) communicator type. " alt="" coords="5,229,143,256"/>
+<area shape="rect" id="node5" href="$comm__tcp_8h.html" title="File containing class definition of base TCP communicator. " alt="" coords="112,155,207,181"/>
+<area shape="rect" id="node4" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="153,304,208,331"/>
+<area shape="rect" id="node7" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="219,229,369,256"/>
+</map>

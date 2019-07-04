@@ -1,0 +1,4 @@
+<map id="uniface.h" name="uniface.h">
+<area shape="rect" id="node2" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="5,80,156,107"/>
+<area shape="rect" id="node3" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="109,155,164,181"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="bin.h" name="bin.h">
+<area shape="rect" id="node2" href="$geometry_8h.html" title="Base classes for creating geometries, primarily used by spatial interpolation methods and for definin..." alt="" coords="1988,80,2075,107"/>
+<area shape="rect" id="node4" href="$config_8h.html" title="File containing data structures defining all data types used by an interface. " alt="" coords="1351,155,1419,181"/>
+<area shape="rect" id="node31" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="2141,379,2215,405"/>
+<area shape="rect" id="node37" href="$stream__string_8h.html" title="Defines the stream in/out for std::string data type. " alt="" coords="2069,304,2181,331"/>
+<area shape="rect" id="node5" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1211,304,1262,331"/>
+<area shape="rect" id="node35" href="$dim_8h.html" title="File providing data specialisms at different dimensionalities. " alt="" coords="1357,229,1412,256"/>
+<area shape="rect" id="node36" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1192,229,1281,256"/>
+<area shape="rect" id="node34" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="1689,379,1750,405"/>
+<area shape="rect" id="node32" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="2125,453,2231,480"/>
+</map>

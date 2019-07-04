@@ -1,0 +1,10 @@
+<map id="comm.h" name="comm.h">
+<area shape="rect" id="node2" href="$comm__factory_8h.html" title="Structures and methods to create a new communicator based on chosen protocols. " alt="" coords="101,80,217,107"/>
+<area shape="rect" id="node3" href="$comm__mpi__smart_8h.html" title="Structures and methods for a smart (communication reducing) communicator type. " alt="" coords="240,155,377,181"/>
+<area shape="rect" id="node4" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="158,304,213,331"/>
+<area shape="rect" id="node5" href="$comm__tcp_8h.html" title="File containing class definition of base TCP communicator. " alt="" coords="121,155,216,181"/>
+<area shape="rect" id="node6" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="22,155,96,181"/>
+<area shape="rect" id="node8" href="$comm__mpi_8h.html" title="Class definition of base MPI communicator. " alt="" coords="344,80,441,107"/>
+<area shape="rect" id="node9" href="$comm__mpi__nxn_8h.html" title="Structures and methods for a many&#45;to&#45;many (nxn) communicator type. " alt="" coords="466,80,591,107"/>
+<area shape="rect" id="node7" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="110,229,261,256"/>
+</map>

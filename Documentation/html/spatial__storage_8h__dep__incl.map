@@ -1,0 +1,5 @@
+<map id="spatial_storage.h" name="spatial_storage.h">
+<area shape="rect" id="node2" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="99,80,174,107"/>
+<area shape="rect" id="node3" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="5,155,156,181"/>
+<area shape="rect" id="node4" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="109,229,164,256"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="spatial_samplers/sampler_exact.h" name="spatial_samplers/sampler_exact.h">
+<area shape="rect" id="node3" href="$config_8h.html" title="File containing data structures defining all data types used by an interface. " alt="" coords="880,95,960,121"/>
+<area shape="rect" id="node4" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="985,244,1036,271"/>
+<area shape="rect" id="node34" href="$dim_8h.html" title="File providing data specialisms at different dimensionalities. " alt="" coords="935,169,990,196"/>
+<area shape="rect" id="node35" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1014,169,1103,196"/>
+<area shape="rect" id="node30" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="2091,319,2165,345"/>
+<area shape="rect" id="node33" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="609,319,671,345"/>
+<area shape="rect" id="node31" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="2064,393,2171,420"/>
+</map>
