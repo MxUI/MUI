@@ -1,0 +1,7 @@
+<map id="mui4py.samplers.ChronoSampler" name="mui4py.samplers.ChronoSampler">
+<area shape="rect" id="node4" href="$classmui4py_1_1samplers_1_1_chrono_sampler_exact.html" title="mui4py.samplers.ChronoSampler\lExact" alt="" coords="617,5,832,47"/>
+<area shape="rect" id="node5" href="$classmui4py_1_1samplers_1_1_chrono_sampler_gauss.html" title="mui4py.samplers.ChronoSampler\lGauss" alt="" coords="617,71,832,112"/>
+<area shape="rect" id="node6" href="$classmui4py_1_1samplers_1_1_chrono_sampler_mean.html" title="mui4py.samplers.ChronoSamplerMean" alt="" coords="601,137,848,163"/>
+<area shape="rect" id="node7" href="$classmui4py_1_1samplers_1_1_chrono_sampler_sum.html" title="mui4py.samplers.ChronoSamplerSum" alt="" coords="603,187,846,214"/>
+<area shape="rect" id="node2" href="$classmui4py_1_1common_1_1_cpp_class.html" title="mui4py.common.CppClass" alt="" coords="111,107,291,134"/>
+</map>

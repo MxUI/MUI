@@ -18,6 +18,7 @@ var hierarchy =
       ] ],
       [ "mui::mpicomm_nxn", "classmui_1_1mpicomm__nxn.html", null ]
     ] ],
+    [ "mui4py.config.Config", "classmui4py_1_1config_1_1_config.html", null ],
     [ "mui::crunch", "structmui_1_1crunch.html", [
       [ "mui::default_config", "structmui_1_1default__config.html", null ]
     ] ],
@@ -46,6 +47,39 @@ var hierarchy =
     [ "mui::make_index_sequence< N >", "structmui_1_1make__index__sequence.html", null ],
     [ "mui::make_index_sequence< 0 >", "structmui_1_1make__index__sequence_3_010_01_4.html", null ],
     [ "mui::message", "structmui_1_1message.html", null ],
+    [ "mui_3df::mui_create_uniface3d_f", "interfacemui__3df_1_1mui__create__uniface3d__f.html", null ],
+    [ "mui_3df::mui_destroy_uniface3d_f", "interfacemui__3df_1_1mui__destroy__uniface3d__f.html", null ],
+    [ "mui_3df::mui_push_f", "interfacemui__3df_1_1mui__push__f.html", null ],
+    [ "object", null, [
+      [ "mui4py.common.Arg", "classmui4py_1_1common_1_1_arg.html", [
+        [ "mui4py.common._Point", "classmui4py_1_1common_1_1___point.html", null ]
+      ] ],
+      [ "mui4py.common.CppClass", "classmui4py_1_1common_1_1_cpp_class.html", [
+        [ "mui4py.geometry.Geometry", "classmui4py_1_1geometry_1_1_geometry.html", [
+          [ "mui4py.geometry.Box", "classmui4py_1_1geometry_1_1_box.html", null ],
+          [ "mui4py.geometry.Point", "classmui4py_1_1geometry_1_1_point.html", null ],
+          [ "mui4py.geometry.Sphere", "classmui4py_1_1geometry_1_1_sphere.html", null ]
+        ] ],
+        [ "mui4py.mui4py.Uniface", "classmui4py_1_1mui4py_1_1_uniface.html", null ],
+        [ "mui4py.samplers.ChronoSampler", "classmui4py_1_1samplers_1_1_chrono_sampler.html", [
+          [ "mui4py.samplers.ChronoSamplerExact", "classmui4py_1_1samplers_1_1_chrono_sampler_exact.html", null ],
+          [ "mui4py.samplers.ChronoSamplerGauss", "classmui4py_1_1samplers_1_1_chrono_sampler_gauss.html", null ],
+          [ "mui4py.samplers.ChronoSamplerMean", "classmui4py_1_1samplers_1_1_chrono_sampler_mean.html", null ],
+          [ "mui4py.samplers.ChronoSamplerSum", "classmui4py_1_1samplers_1_1_chrono_sampler_sum.html", null ]
+        ] ],
+        [ "mui4py.samplers.Sampler", "classmui4py_1_1samplers_1_1_sampler.html", [
+          [ "mui4py.samplers.SamplerExact", "classmui4py_1_1samplers_1_1_sampler_exact.html", null ],
+          [ "mui4py.samplers.SamplerGauss", "classmui4py_1_1samplers_1_1_sampler_gauss.html", null ],
+          [ "mui4py.samplers.SamplerMovingAverage", "classmui4py_1_1samplers_1_1_sampler_moving_average.html", null ],
+          [ "mui4py.samplers.SamplerNearestNeighbor", "classmui4py_1_1samplers_1_1_sampler_nearest_neighbor.html", null ],
+          [ "mui4py.samplers.SamplerPseudoNearest2Linear", "classmui4py_1_1samplers_1_1_sampler_pseudo_nearest2_linear.html", null ],
+          [ "mui4py.samplers.SamplerPseudoNearestNeighbor", "classmui4py_1_1samplers_1_1_sampler_pseudo_nearest_neighbor.html", null ],
+          [ "mui4py.samplers.SamplerSherpardQuintic", "classmui4py_1_1samplers_1_1_sampler_sherpard_quintic.html", null ],
+          [ "mui4py.samplers.SamplerSphQuintic", "classmui4py_1_1samplers_1_1_sampler_sph_quintic.html", null ],
+          [ "mui4py.samplers.SamplerSumQuintic", "classmui4py_1_1samplers_1_1_sampler_sum_quintic.html", null ]
+        ] ]
+      ] ]
+    ] ],
     [ "mui::ostream", "classmui_1_1ostream.html", [
       [ "mui::iostream", "classmui_1_1iostream.html", null ],
       [ "mui::ocount_stream", "classmui_1_1ocount__stream.html", null ],

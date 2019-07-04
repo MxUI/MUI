@@ -5,6 +5,8 @@ var searchData=
   ['data',['data',['../structmui_1_1detail_1_1endian__converter.html#a1e68df4966d4777253a3540405b4fd25',1,'mui::detail::endian_converter']]],
   ['day',['day',['../namespacemui_1_1dim.html#a0af13d9d33c597e5746a5b87e961e671',1,'mui::dim']]],
   ['debug',['DEBUG',['../structmui_1_1crunch.html#acb71ed26e49e2d2f1233b1a08b4992c4',1,'mui::crunch::DEBUG()'],['../classmui_1_1uniface.html#a45811234a0e40931f9fcf2a966795c3e',1,'mui::uniface::DEBUG()']]],
+  ['description',['description',['../namespacesetup.html#aedf461ec52a946bda975938ba0b93ec0',1,'setup']]],
+  ['dim',['dim',['../classmui4py_1_1config_1_1_config.html#addd7c29e335601f8ecf8de2cf2249529',1,'mui4py::config::Config']]],
   ['displs',['displs',['../structmui_1_1bin__range.html#a03f6cc1480f9233acea769dc0bfe26e9',1,'mui::bin_range']]],
   ['domain_5flocal_5f',['domain_local_',['../classmui_1_1comm__mpi.html#a54674e884ecca1e64d8ccdc6798c589e',1,'mui::comm_mpi']]],
   ['domain_5fremote_5f',['domain_remote_',['../classmui_1_1comm__mpi.html#a414000a7c43087ca378d85c45dbaebc9',1,'mui::comm_mpi']]],

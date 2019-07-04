@@ -1,15 +1,9 @@
 var searchData=
 [
-  ['chrono_5fsampler_5fexact',['chrono_sampler_exact',['../classmui_1_1chrono__sampler__exact.html',1,'mui']]],
-  ['chrono_5fsampler_5fgauss',['chrono_sampler_gauss',['../classmui_1_1chrono__sampler__gauss.html',1,'mui']]],
-  ['chrono_5fsampler_5fmean',['chrono_sampler_mean',['../classmui_1_1chrono__sampler__mean.html',1,'mui']]],
-  ['chrono_5fsampler_5fnull',['chrono_sampler_null',['../classmui_1_1chrono__sampler__null.html',1,'mui']]],
-  ['chrono_5fsampler_5fsum',['chrono_sampler_sum',['../classmui_1_1chrono__sampler__sum.html',1,'mui']]],
-  ['comm_5ffactory',['comm_factory',['../structmui_1_1comm__factory.html',1,'mui']]],
-  ['comm_5ffd',['comm_fd',['../classmui_1_1comm__fd.html',1,'mui']]],
-  ['comm_5fmpi',['comm_mpi',['../classmui_1_1comm__mpi.html',1,'mui']]],
-  ['comm_5fmpi_5fsmart',['comm_mpi_smart',['../classmui_1_1comm__mpi__smart.html',1,'mui']]],
-  ['communicator',['communicator',['../classmui_1_1communicator.html',1,'mui']]],
-  ['container_5fstream',['container_stream',['../classmui_1_1container__stream.html',1,'mui']]],
-  ['crunch',['crunch',['../structmui_1_1crunch.html',1,'mui']]]
+  ['bad_5fstorage_5fcast',['bad_storage_cast',['../structmui_1_1bad__storage__cast.html',1,'mui']]],
+  ['bad_5fstorage_5fid',['bad_storage_id',['../structmui_1_1bad__storage__id.html',1,'mui']]],
+  ['bin_5fiterator',['bin_iterator',['../structmui_1_1bin__iterator.html',1,'mui']]],
+  ['bin_5frange',['bin_range',['../structmui_1_1bin__range.html',1,'mui']]],
+  ['bin_5ft',['bin_t',['../structmui_1_1bin__t.html',1,'mui']]],
+  ['box',['Box',['../classmui4py_1_1geometry_1_1_box.html',1,'mui4py.geometry.Box'],['../classmui_1_1geometry_1_1box.html',1,'mui::geometry::box&lt; CONFIG &gt;']]]
 ];
