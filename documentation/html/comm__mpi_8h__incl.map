@@ -1,0 +1,12 @@
+<map id="comm_mpi.h" name="comm_mpi.h">
+<area shape="rect" id="node3" href="$comm_8h.html" title="File containing class definition of communication interface. This is the base class for all other com..." alt="" coords="603,80,673,107"/>
+<area shape="rect" id="node12" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1061,229,1111,256"/>
+<area shape="rect" id="node40" href="$lib__uri_8h.html" title="Base class to contain and manipulate a unique URI (Uniform Resource Identifier). " alt="" coords="1025,155,1091,181"/>
+<area shape="rect" id="node5" href="$message_8h.html" title="Structure to contain and manipulate data from internal data to MPI message. " alt="" coords="221,155,308,181"/>
+<area shape="rect" id="node7" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="135,304,208,331"/>
+<area shape="rect" id="node36" href="$stream__string_8h.html" title="Defines the stream in/out for std::string data type. " alt="" coords="209,229,321,256"/>
+<area shape="rect" id="node37" href="$stream__vector_8h.html" title="Defines the stream in/out for std::vector data type. " alt="" coords="345,229,461,256"/>
+<area shape="rect" id="node38" href="$stream__tuple_8h.html" title="Defines the stream in/out for std::tuple data type. " alt="" coords="25,229,133,256"/>
+<area shape="rect" id="node9" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="350,379,457,405"/>
+<area shape="rect" id="node35" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="1055,304,1117,331"/>
+</map>

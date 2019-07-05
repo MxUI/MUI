@@ -1,48 +1,49 @@
-/*
-Multiscale Universal Interface Code Coupling Library
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+*****************************************************************************/
 
-Copyright (C) 2017 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis
-
-This software is jointly licensed under the Apache License, Version 2.0
-and the GNU General Public License version 3, you may use it according
-to either.
-
-** Apache License, version 2.0 **
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-** GNU General Public License, version 3 **
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-** File Details **
-
-Filename: dynstorage.h
-Created: Feb 10, 2014
-Author: S. Kudo
-Description:
-*/
+/**
+ * @file dynstorage.h
+ * @author S. Kudo
+ * @date 10 February 2014
+ * @brief Implementation of a compound dynamic data structure used throughout
+ * MUI.
+ */
 
 #ifndef DYNSTORAGE_H_
 #define DYNSTORAGE_H_
@@ -53,8 +54,8 @@ Description:
 #include <typeinfo>
 #include <type_traits>
 
-#include "util.h"
 #include "stream.h"
+#include "util.h"
 
 namespace mui {
 
@@ -62,7 +63,7 @@ struct bad_storage_id: std::runtime_error {
 	bad_storage_id( const char* err ): std::runtime_error(err) {}
 };
 struct bad_storage_cast: std::bad_cast {
-	virtual const char* what() const noexcept { return "storage error: bad cast."; }
+	virtual const char* what() const noexcept { return "MUI Error [dynstorage.h]: Storage error, bad cast."; }
 };
 
 
@@ -86,7 +87,7 @@ template<typename T> struct get_typeid_<T> {
 
 // build i-th element and apply functor
 template<std::int32_t i, typename R, typename... Args> struct make_value_;
-template<std::int32_t i, typename R, typename Head, typename... Tail > struct make_value_<i,R,Head,Tail...>{
+template<std::int32_t i, typename R, typename Head, typename... Tail > struct make_value_<i,R,Head,Tail...> {
 	template<typename F>
 	static R apply( std::int32_t which, F f ) {
 		if( i == which ) {
@@ -98,7 +99,7 @@ template<std::int32_t i, typename R, typename Head, typename... Tail > struct ma
 };
 template<std::int32_t i,typename R> struct make_value_<i,R> {
 	template<typename F>
-	static R apply( int, F ) { throw bad_storage_id("storage error: bad type-id."); }
+	static R apply( int, F ) { throw bad_storage_id("MUI Error [dynstorage.h]: Storage error, bad type id."); }
 };
 
 
@@ -128,9 +129,9 @@ struct apply_visitor_impl_<i,R,Head,Tail...> {
 };
 template<id_t i, typename R> struct apply_visitor_impl_<i,R> {
 	template<typename F>
-	static R apply( id_t, const void*, F& ) { throw bad_storage_id("storage error: bad_id"); }
+	static R apply( id_t, const void*, F& ) { throw bad_storage_id("MUI Error [dynstorage.h]: Storage error, bad id."); }
 	template<typename F>
-	static R applym( id_t, void*, F& )      { throw bad_storage_id("storage error: bad_id"); }
+	static R applym( id_t, void*, F& )      { throw bad_storage_id("MUI Error [dynstorage.h]: Storage error, bad id."); }
 };
 template<typename R,typename... Types> using applyer_ = apply_visitor_impl_<0,R,Types...>;
 }
@@ -173,7 +174,7 @@ public:
 		: which_(get_typeid_<ValueType,Types...>::value),
 		  content_(new ValueType(value)) {
 		static_assert(get_typeid_<ValueType,Types...>::value != bad_id,
-		              "storage error: not supported type. Please add this type to type_list.");
+		              "MUI Error [dynstorage.h]: Storage error, unsupported type. Please add type to type_list.");
 	}
 	template<typename ValueType>
 	explicit storage(ValueType&& value,
@@ -182,7 +183,7 @@ public:
 		: which_(get_typeid_<ValueType,Types...>::value),
 		  content_(new typename std::decay<ValueType>::type(std::move(value))) {
 		static_assert(get_typeid_<ValueType,Types...>::value != bad_id,
-		              "storage error: not supported type. Please add this type to type_list.");
+				"MUI Error [dynstorage.h]: Storage error, unsupported type. Please add type to type_list.");
 	}
 
 	template<typename ValueType>
@@ -268,7 +269,7 @@ inline ValueType&& storage_cast(storage<Args...>&& obj)
 {
 	static_assert(std::is_rvalue_reference<ValueType&&>::value
 	              || std::is_const<typename std::remove_reference<ValueType>::type>::type,
-		"not supported this type of cast.");
+		"MUI Error [dynstorage.h]: This type of cast is not supported.");
 	return storage_cast<ValueType&&>(obj);
 }
 

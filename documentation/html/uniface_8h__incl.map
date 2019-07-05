@@ -1,0 +1,21 @@
+<map id="uniface.h" name="uniface.h">
+<area shape="rect" id="node2" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1081,304,1131,331"/>
+<area shape="rect" id="node29" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="155,379,228,405"/>
+<area shape="rect" id="node31" href="$comm_8h.html" title="File containing class definition of communication interface. This is the base class for all other com..." alt="" coords="534,155,603,181"/>
+<area shape="rect" id="node32" href="$message_8h.html" title="Structure to contain and manipulate data from internal data to MPI message. " alt="" coords="260,229,347,256"/>
+<area shape="rect" id="node33" href="$stream__string_8h.html" title="Defines the stream in/out for std::string data type. " alt="" coords="43,304,155,331"/>
+<area shape="rect" id="node34" href="$stream__vector_8h.html" title="Defines the stream in/out for std::vector data type. " alt="" coords="231,304,347,331"/>
+<area shape="rect" id="node35" href="$comm__factory_8h.html" title="Structures and methods to create a new communicator based on chosen protocols. " alt="" coords="1057,80,1173,107"/>
+<area shape="rect" id="node38" href="$lib__dispatcher_8h.html" title="Structure for communicator used in comm_factory.h. " alt="" coords="1255,155,1368,181"/>
+<area shape="rect" id="node40" href="$config_8h.html" title="File containing data structures defining all data types used by an interface. " alt="" coords="880,155,948,181"/>
+<area shape="rect" id="node42" href="$dynstorage_8h.html" title="Implementation of a compound dynamic data structure used throughout MUI. " alt="" coords="601,229,699,256"/>
+<area shape="rect" id="node46" href="$spatial__storage_8h.html" title="Defines the spatial_storage data type. " alt="" coords="735,155,856,181"/>
+<area shape="rect" id="node48" href="$reader__variable_8h.html" title="Creates a structure to parse a message as variables and pass them to a function as arguments..." alt="" coords="359,155,480,181"/>
+<area shape="rect" id="node49" href="$stream__unordered_8h.html" title="Defines the stream in/out for the unordered std::unordered_map. data type. " alt="" coords="1337,304,1475,331"/>
+<area shape="rect" id="node50" href="$bin_8h.html" title="Structures and methods to create an underlying binning structure for data received through an interfa..." alt="" coords="874,80,925,107"/>
+<area shape="rect" id="node30" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="1598,379,1659,405"/>
+<area shape="rect" id="node36" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1204,229,1293,256"/>
+<area shape="rect" id="node37" href="$lib__uri_8h.html" title="Base class to contain and manipulate a unique URI (Uniform Resource Identifier). " alt="" coords="1062,229,1129,256"/>
+<area shape="rect" id="node39" href="$lib__singleton_8h.html" title="Base class to contain communicator in comm_factory.h. " alt="" coords="972,155,1077,181"/>
+<area shape="rect" id="node41" href="$dim_8h.html" title="File providing data specialisms at different dimensionalities. " alt="" coords="881,229,936,256"/>
+</map>

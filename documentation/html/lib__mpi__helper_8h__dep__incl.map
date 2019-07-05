@@ -1,0 +1,7 @@
+<map id="lib_mpi_helper.h" name="lib_mpi_helper.h">
+<area shape="rect" id="node2" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="187,80,338,107"/>
+<area shape="rect" id="node3" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="235,155,290,181"/>
+<area shape="rect" id="node4" href="$mui__3d_8cpp.html" title="wrappers/C/mui_3d.cpp" alt="" coords="5,237,165,263"/>
+<area shape="rect" id="node5" href="$mui__3df_8cpp.html" title="wrappers/Fortran/mui\l_3df.cpp" alt="" coords="190,229,335,271"/>
+<area shape="rect" id="node6" href="$mui4py_8cpp.html" title="wrappers/Python/mui4py\l/mui4py.cpp" alt="" coords="359,229,526,271"/>
+</map>

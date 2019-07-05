@@ -1,0 +1,15 @@
+<map id="comm_factory.h" name="comm_factory.h">
+<area shape="rect" id="node2" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1127,229,1178,256"/>
+<area shape="rect" id="node33" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1025,155,1115,181"/>
+<area shape="rect" id="node34" href="$lib__uri_8h.html" title="Base class to contain and manipulate a unique URI (Uniform Resource Identifier). " alt="" coords="1281,155,1347,181"/>
+<area shape="rect" id="node35" href="$lib__dispatcher_8h.html" title="Structure for communicator used in comm_factory.h. " alt="" coords="936,80,1049,107"/>
+<area shape="rect" id="node36" href="$lib__singleton_8h.html" title="Base class to contain communicator in comm_factory.h. " alt="" coords="1191,80,1296,107"/>
+<area shape="rect" id="node37" href="$comm_8h.html" title="File containing class definition of communication interface. This is the base class for all other com..." alt="" coords="1818,80,1887,107"/>
+<area shape="rect" id="node29" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="2141,304,2215,331"/>
+<area shape="rect" id="node32" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="242,304,303,331"/>
+<area shape="rect" id="node30" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="2125,379,2231,405"/>
+<area shape="rect" id="node38" href="$message_8h.html" title="Structure to contain and manipulate data from internal data to MPI message. " alt="" coords="2044,155,2131,181"/>
+<area shape="rect" id="node39" href="$stream__string_8h.html" title="Defines the stream in/out for std::string data type. " alt="" coords="2031,229,2143,256"/>
+<area shape="rect" id="node40" href="$stream__vector_8h.html" title="Defines the stream in/out for std::vector data type. " alt="" coords="1891,229,2007,256"/>
+<area shape="rect" id="node41" href="$stream__tuple_8h.html" title="Defines the stream in/out for std::tuple data type. " alt="" coords="2219,229,2327,256"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="lib_dispatcher.h" name="lib_dispatcher.h">
+<area shape="rect" id="node2" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1048,155,1099,181"/>
+<area shape="rect" id="node33" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1029,80,1118,107"/>
+<area shape="rect" id="node29" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="1927,229,2001,256"/>
+<area shape="rect" id="node32" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="504,229,565,256"/>
+<area shape="rect" id="node30" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="1891,304,1997,331"/>
+</map>

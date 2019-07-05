@@ -1,74 +1,76 @@
-// -*- mode: C++; -*-
-//
-// Multiscale Universal Interface Code Coupling Library
-//
-// Copyright (C) 2018 R. W. Nash, The University of Edinburgh
-// 
-// This software is jointly licensed under the Apache License, Version
-// 2.0 and the GNU General Public License version 3, you may use it
-// according to either.
-// 
-// ** Apache License, version 2.0 **
-// 
-// Licensed under the Apache License, Version 2.0 (the "License"); you
-// may not use this file except in compliance with the License.  You
-// may obtain a copy of the License at
-// 
-// http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-// implied.  See the License for the specific language governing
-// permissions and limitations under the License.
-// 
-// ** GNU General Public License, version 3 **
-// 
-// This program is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-// ** File Details **
-//
-// Filename: endian_traits.h
-// Created: 2018-11-14
-// Author: R. W. Nash <r.nash@epcc.ed.ac.uk>
-// Description: Support for dealing with big and little endian platforms.
-// 
-// Currently this only supports big and little endian platforms, if
-// you're on something odder, then this wont work.
-//
-// The primary export of this header is a template struct
-// endian_traits - see below for a details
-// 
-// You can configure endianness and conversion by defining one of the following
-//
-//  1. no endian options, in which case this header will try to figure
-//     it out but that probably only works on GCC
-// 
-//  2. MUI_IGNORE_ENDIAN - this mode will never reorder the bytes of a
-//     multibyte number
-//
-//  3. (MUI_INT_BIG_ENDIAN ^ MUI_INT_LITTLE_ENDIAN) && (MUI_FLOAT_BIG_ENDIAN ^ MUI_FLOAT_LITTLE_ENDIAN)
-//
-//     where:
-//      - MUI_INT_BIG_ENDIAN - this will **assume** that the host has a big endian representation of integers
-//
-//      - MUI_INT_LITTLE_ENDIAN - this will **assume** that the host has a little endian representation of integers
-// 
-//      - MUI_FLOAT_BIG_ENDIAN - this will **assume** that the host has a big endian representation of floating values
-//
-//      - MUI_INT_LITTLE_ENDIAN - this will **assume** that the host has a little endian representation of floating values
-// 
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
+* R. W. Nash*                                                                *
+*                                                                            *
+* (* The University of Edinburgh)                                            *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+*****************************************************************************/
+
+/**
+ * @file endian_traits.h
+ * @author R. W. Nash <r.nash@epcc.ed.ac.uk>
+ * @date 14 November 2018
+ * @brief Support for dealing with big and little endian platforms.
+ *
+ * Currently this only supports big and little endian platforms, if
+ * you're on something odder, then this wont work.
+ *
+ * The primary export of this header is a template struct
+ * endian_traits - see below for a details
+ *
+ * You can configure endianness and conversion by defining one of the following
+ *
+ *  1. no endian options, in which case this header will try to figure
+ *     it out but that probably only works on GCC
+ *
+ *  2. MUI_IGNORE_ENDIAN - this mode will never reorder the bytes of a
+ *     multibyte number
+ *
+ *  3. (MUI_INT_BIG_ENDIAN ^ MUI_INT_LITTLE_ENDIAN) && (MUI_FLOAT_BIG_ENDIAN ^ MUI_FLOAT_LITTLE_ENDIAN)
+ *
+ *     where:
+ *      - MUI_INT_BIG_ENDIAN - this will **assume** that the host has a big endian representation of integers
+ *
+ *      - MUI_INT_LITTLE_ENDIAN - this will **assume** that the host has a little endian representation of integers
+ *
+ *      - MUI_FLOAT_BIG_ENDIAN - this will **assume** that the host has a big endian representation of floating values
+ *
+ *      - MUI_INT_LITTLE_ENDIAN - this will **assume** that the host has a little endian representation of floating values
+ */
 
 #ifndef MUI_ENDIAN_TRAITS_H_
 #define MUI_ENDIAN_TRAITS_H_
@@ -107,7 +109,7 @@
 #ifdef MUI_IGNORE_ENDIAN
 // Sanity check
 #  if defined(MUI_INT_BIG_ENDIAN) || defined(MUI_INT_LITTLE_ENDIAN) || defined(MUI_FLOAT_BIG_ENDIAN) || defined(MUI_FLOAT_LITTLE_ENDIAN)
-#    error "Must set no other MUI endian options with MUI_IGNORE_ENDIAN"
+#    error "MUI Error [endian_traits.h]: Must set no other MUI endian options with MUI_IGNORE_ENDIAN"
 #  endif
 
 // Never convert
@@ -119,7 +121,7 @@
 // Integers
 #  ifdef MUI_INT_BIG_ENDIAN
 #    ifdef MUI_INT_LITTLE_ENDIAN
-#      error "Both MUI_INT_BIG_ENDIAN and MUI_INT_LITTLE_ENDIAN defined!"
+#      error "MUI Error [endian_traits.h]: Both MUI_INT_BIG_ENDIAN and MUI_INT_LITTLE_ENDIAN defined"
 #    else
 #      define MUI_CONVERT_INT false
 #    endif
@@ -131,7 +133,7 @@
 #      if defined(__BYTE_ORDER__)
 #        define MUI_CONVERT_INT (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "Cannot auto-detect integer endianness of platform - please set"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set"
 #      endif
 #    endif
 #  endif
@@ -139,7 +141,7 @@
 // Floating points
 #  ifdef MUI_FLOAT_BIG_ENDIAN
 #    ifdef MUI_FLOAT_LITTLE_ENDIAN
-#      error "Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined!"
+#      error "MUI Error [endian_traits.h]: Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined!"
 #    else
 #      define MUI_CONVERT_FLOAT false
 #    endif
@@ -151,7 +153,7 @@
 #      if defined(__FLOAT_WORD_ORDER__)
 #        define MUI_CONVERT_FLOAT (__FLOAT_WORD_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "Cannot auto-detect float endianness of platform - please set"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set"
 #      endif
 #    endif
 #  endif
