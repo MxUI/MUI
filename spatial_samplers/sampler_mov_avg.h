@@ -54,7 +54,7 @@
 
 namespace mui {
 
-template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
+template<typename CONFIG=default_config, typename O_TP=default_config::REAL, typename I_TP=O_TP>
 class sampler_moving_average {
 public:
 	using OTYPE      = O_TP;
@@ -74,7 +74,7 @@ public:
 		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
             point_type dx(REAL(0.0));
             for (INT j = 0 ; j < CONFIG::D ; j++) {
-                dx[i] = std::fabs(data_points[i].first[j] - focus[j]);
+                dx[j] = std::fabs(data_points[i].first[j] - focus[j]);
             }
 			bool within = true;
 			for( INT i = 0 ; within && i < CONFIG::D ; i++ ) within = within && ( dx[i] < bbox[i] );

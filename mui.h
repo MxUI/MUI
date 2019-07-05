@@ -79,7 +79,7 @@
 namespace mui {
 
 #define DECLARE_SAMPLER_1ARG(SAMPLER,SUFFIX,CONFIG)	\
-	template<typename T> using SAMPLER ## SUFFIX = SAMPLER<T,T,CONFIG>;
+	template<typename T> using SAMPLER ## SUFFIX = SAMPLER<CONFIG,T,T>;
 #define DECLARE_SAMPLER_0ARG(SAMPLER,SUFFIX,CONFIG)	\
 	using SAMPLER ## SUFFIX = SAMPLER<CONFIG>;
 

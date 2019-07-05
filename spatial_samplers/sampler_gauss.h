@@ -49,10 +49,12 @@
 #define MUI_SAMPLER_GAUSS_H_
 
 #include "../util.h"
+#include "../config.h"
+#include "../sampler.h"
 
 namespace mui {
 
-template<typename O_TP, typename I_TP=O_TP, typename CONFIG=default_config>
+template<typename CONFIG=default_config, typename O_TP=default_config::REAL, typename I_TP=O_TP>
 class sampler_gauss {
 public:
 	using OTYPE      = O_TP;
