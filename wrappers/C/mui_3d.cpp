@@ -55,6 +55,10 @@ typedef sampler_gauss3d<double>          mui_sampler_gauss3d;
 typedef sampler_moving_average3d<double> mui_sampler_moving_average3d;
 typedef chrono_sampler_exact3d           mui_chrono_sampler_exact3d;
 typedef chrono_sampler_mean3d            mui_chrono_sampler_mean3d;
+typedef sampler_exact3d<double>            mui_sampler_exact3d;
+typedef sampler_nearest_neighbor3d<double> mui_sampler_nearest3d;
+typedef sampler_pseudo_nearest_neighbor3d<double> mui_sampler_pseudo_nearest_neighbor3d;
+typedef sampler_pseudo_nearest2_linear3d<double> mui_sampler_pseudo_nearest2_linear3d;
 
 // allocator
 mui_uniface3d* mui_create_uniface3d( const char *URI ) {
@@ -67,6 +71,22 @@ mui_sampler_gauss3d* mui_create_sampler_3d( double r, double h ) {
 
 mui_sampler_moving_average3d* mui_create_sampler_moving_average3d( double dx, double dy, double dz ) {
 	return new mui_sampler_moving_average3d( point3d(dx,dy,dz) );
+}
+
+mui_sampler_exact3d* mui_create_sampler_exact3d() {
+    return new mui_sampler_exact3d();
+}
+
+mui_sampler_nearest3d* mui_create_sampler_nearest3d() {
+    return new mui_sampler_nearest3d();
+}
+
+mui_sampler_pseudo_nearest_neighbor3d* mui_create_sampler_pseudo_nearest_neighbor3d( double h ) {
+    return new mui_sampler_pseudo_nearest_neighbor3d( h );
+}
+
+mui_sampler_pseudo_nearest2_linear3d* mui_create_sampler_pseudo_nearest2_linear3d( double h ) {
+    return new mui_sampler_pseudo_nearest2_linear3d( h );
 }
 
 mui_chrono_sampler_exact3d* mui_create_chrono_sampler_exact3d() {
@@ -89,6 +109,17 @@ void mui_destroy_sampler_3d( mui_sampler_gauss3d* sampler ) {
 void mui_destroy_sampler_moving_average3d( mui_sampler_moving_average3d* sampler ) {
 	delete sampler;
 }
+void mui_destroy_sampler_nearest3d( mui_sampler_nearest3d* sampler ) {
+	delete sampler;
+}
+
+void mui_destroy_sampler_pseudo_nearest_neighbor3d( mui_sampler_pseudo_nearest_neighbor3d* sampler ) {
+	delete sampler;
+}
+
+void mui_destroy_sampler_pseudo_nearest2_linear3d( mui_sampler_pseudo_nearest2_linear3d* sampler ) {
+	delete sampler;
+}
 
 void mui_destroy_chrono_sampler_exact3d( mui_chrono_sampler_exact3d* sampler ) {
 	delete sampler;
@@ -106,6 +137,29 @@ void mui_push( mui_uniface3d* uniface, const char *attr, double x, double y, dou
 // spatial sampler: gaussian
 // temporal sampler: exact point
 double mui_fetch_gaussian_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_gauss3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+// spatial sampler: exact
+// temporal sampler: exact point
+double mui_fetch_exact_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_exact3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+
+// spatial sampler: nearest
+// temporal sampler: exact point
+double mui_fetch_nearest_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_nearest3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+
+// spatial sampler: pseudo nearest
+// temporal sampler: exact point
+double mui_fetch_pseudo_nearest_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_pseudo_nearest_neighbor3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
+	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
+}
+
+// spatial sampler: pseudo nearest2 linear
+// temporal sampler: exact point
+double mui_fetch_pseudo_nearest2_linear_exact( mui_uniface3d* uniface, const char *attr, double x, double y, double z, double t, mui_sampler_pseudo_nearest2_linear3d *spatial, mui_chrono_sampler_exact3d *temporal ) {
 	return uniface->fetch( std::string(attr), point3d(x,y,z), t, *spatial, *temporal );
 }
 
@@ -145,6 +199,11 @@ void mui_forget( mui_uniface3d* uniface, double first, double last ) {
 // set automatic deletion
 void mui_set_memory( mui_uniface3d* uniface, double length ) {
 	return uniface->set_memory( length );
+}
+
+// split comm
+MPI_Comm mui_mpi_split_by_app() {
+    return mpi_split_by_app();
 }
 
 }
