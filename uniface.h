@@ -122,16 +122,18 @@ private:
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
-		  return scan_spans_(t,s,recving_spans);
+			return scan_spans_(t,s,recving_spans);
 		}
 		void set_recving( time_type start, time_type timeout, span_t s ) {
+			recving_spans.clear();
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 		bool is_sending(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,sending_spans);
 		}
 		void set_sending(time_type start, time_type timeout, span_t s) {
-		  sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+			sending_spans.clear();
+			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
 
 		void set_pts(std::vector<point_type> pts) {
