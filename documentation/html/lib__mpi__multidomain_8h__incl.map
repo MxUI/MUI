@@ -1,0 +1,24 @@
+<map id="lib_mpi_multidomain.h" name="lib_mpi_multidomain.h">
+<area shape="rect" id="node2" href="$lib__uri_8h.html" title="Base class to contain and manipulate a unique URI (Uniform Resource Identifier). " alt="" coords="1011,229,1078,256"/>
+<area shape="rect" id="node32" href="$comm__mpi_8h.html" title="Class definition of base MPI communicator. " alt="" coords="929,155,1027,181"/>
+<area shape="rect" id="node38" href="$lib__mpi__helper_8h.html" title="MPI data types used internally by MUI. " alt="" coords="840,80,956,107"/>
+<area shape="rect" id="node39" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="1707,80,1782,107"/>
+<area shape="rect" id="node3" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1190,379,1241,405"/>
+<area shape="rect" id="node30" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="2063,453,2136,480"/>
+<area shape="rect" id="node31" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="42,453,103,480"/>
+<area shape="rect" id="node34" href="$comm_8h.html" title="File containing class definition of communication interface. This is the base class for all other com..." alt="" coords="1638,229,1707,256"/>
+<area shape="rect" id="node35" href="$message_8h.html" title="Structure to contain and manipulate data from internal data to MPI message. " alt="" coords="2081,304,2168,331"/>
+<area shape="rect" id="node36" href="$stream__string_8h.html" title="Defines the stream in/out for std::string data type. " alt="" coords="2131,379,2243,405"/>
+<area shape="rect" id="node37" href="$stream__vector_8h.html" title="Defines the stream in/out for std::vector data type. " alt="" coords="2268,379,2384,405"/>
+<area shape="rect" id="node40" href="$comm__factory_8h.html" title="Structures and methods to create a new communicator based on chosen protocols. " alt="" coords="1289,155,1405,181"/>
+<area shape="rect" id="node42" href="$lib__dispatcher_8h.html" title="Structure for communicator used in comm_factory.h. " alt="" coords="1385,229,1499,256"/>
+<area shape="rect" id="node44" href="$config_8h.html" title="File containing data structures defining all data types used by an interface. " alt="" coords="1535,229,1603,256"/>
+<area shape="rect" id="node46" href="$dynstorage_8h.html" title="Implementation of a compound dynamic data structure used throughout MUI. " alt="" coords="1831,304,1928,331"/>
+<area shape="rect" id="node47" href="$spatial__storage_8h.html" title="Defines the spatial_storage data type. " alt="" coords="1783,155,1904,181"/>
+<area shape="rect" id="node48" href="$reader__variable_8h.html" title="Creates a structure to parse a message as variables and pass them to a function as arguments..." alt="" coords="2081,229,2203,256"/>
+<area shape="rect" id="node49" href="$stream__unordered_8h.html" title="Defines the stream in/out for the unordered std::unordered_map. data type. " alt="" coords="1665,379,1803,405"/>
+<area shape="rect" id="node50" href="$bin_8h.html" title="Structures and methods to create an underlying binning structure for data received through an interfa..." alt="" coords="1606,155,1657,181"/>
+<area shape="rect" id="node41" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1385,304,1475,331"/>
+<area shape="rect" id="node43" href="$lib__singleton_8h.html" title="Base class to contain communicator in comm_factory.h. " alt="" coords="1204,304,1309,331"/>
+<area shape="rect" id="node45" href="$dim_8h.html" title="File providing data specialisms at different dimensionalities. " alt="" coords="1601,304,1656,331"/>
+</map>

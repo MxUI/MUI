@@ -1,54 +1,60 @@
-/*
-Multiscale Universal Interface Code Coupling Library
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+*****************************************************************************/
 
-Copyright (C) 2017 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis
-
-This software is jointly licensed under the Apache License, Version 2.0
-and the GNU General Public License version 3, you may use it according
-to either.
-
-** Apache License, version 2.0 **
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-** GNU General Public License, version 3 **
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-** File Details **
-
-Filename: stream.h
-Created: Mar 18, 2014
-Author: S. Kudo
-Description:
-*/
+/**
+ * @file stream.h
+ * @author S. Kudo
+ * @date 18 March 2014
+ * @brief Defines base stream class container_stream and associated
+ * functors.
+ *
+ * container_stream is akin to std::stringstream. Its functionality is to
+ * serialize & deserialize data to container<char>.
+ */
 
 #ifndef MUI_STREAM_H_
 #define MUI_STREAM_H_
 
 #include <memory>
 #include <algorithm>
+
+#include "endian_traits.h"
 
 namespace mui {
 
@@ -69,11 +75,6 @@ public:
 	virtual ~iostream() {}
 };
 
-/*
- * container_steram is something like std::stringstream.
- * Its functionality is serialize & deserialize data to
- * container<char>.
- */
 template<template<typename T, typename =std::allocator<T> > class Seq,
          typename Alloc=std::allocator<char> >
 class container_stream: public iostream {
@@ -167,77 +168,49 @@ std::size_t streamed_size( const T& a, const Args&... args )
 	return stream.size() + streamed_size(args...);
 }
 
-#define Makeopsh(TYPE,T)						\
-	inline istream& operator>> ( istream& stream, TYPE& t )		\
-	{								\
-		stream.read(reinterpret_cast<char*>(&t),sizeof(t));	\
-		return stream;						\
-	}								\
-	inline ostream& operator<< ( ostream& stream, TYPE t )		\
-	{								\
-		stream.write(reinterpret_cast<char*>(&t),sizeof(t));	\
-		return stream;						\
-	}
+  // Use SFINAE to enable this only for types we marked as not
+  // requiring endian conversion
+  template<typename T,
+	   typename std::enable_if<endian_traits<T>::convert == false>::type* = nullptr>
+  istream& operator>>(istream& stream, T& dest) {
+    stream.read(reinterpret_cast<char*>(&dest), sizeof(T));
+    return stream;
+  }
 
-// use network-byte-order(big-endian)
-#define Makeopshs(TYPE,SZ)						\
-	inline istream& operator>> ( istream& stream, TYPE& t )		\
-	{								\
-		int##SZ##_t be;						\
-		stream.read(reinterpret_cast<char*>(&be),sizeof(be));	\
-		be = be##SZ##toh (be);					\
-		std::memcpy(reinterpret_cast<char*>(&t),		\
-		            reinterpret_cast<char*>(&be), sizeof(be));	\
-		return stream;						\
-	}								\
-	inline ostream& operator<< ( ostream& stream, TYPE t )		\
-	{								\
-		int##SZ##_t be;						\
-		std::memcpy(reinterpret_cast<char*>(&be),		\
-		            reinterpret_cast<char*>(&t), sizeof(be));	\
-		be = htobe##SZ (be);					\
-		stream.write(reinterpret_cast<char*>(&be),sizeof(be));	\
-		return stream;						\
-	}
+  // Use SFINAE to enable this only for types we marked as requiring
+  // endian conversion
+  template<typename T,
+	   typename std::enable_if<endian_traits<T>::convert == true>::type* = nullptr>
+  istream& operator>>(istream& stream, T& dest) {
+    detail::endian_converter<sizeof(T)> conv;
+    stream.read(conv.data.buf, sizeof(T));
+    conv.betoh();
+    std::memcpy(reinterpret_cast<char*>(&dest),
+		conv.data.buf, sizeof(T));
+    return stream;
+  }
 
-Makeopsh(char,8);
-Makeopsh(signed char,8);
-Makeopsh(unsigned char,8);
+  // Use SFINAE to enable this only for types we marked as not
+  // requiring endian conversion
+  template<typename T,
+	   typename std::enable_if<endian_traits<T>::convert == false>::type* = nullptr>
+  ostream& operator<<(ostream& stream, const T& src) {
+    stream.write(reinterpret_cast<const char*>(&src), sizeof(T));
+    return stream;
+  }
 
-#ifndef MUI_IGNORE_ENDIAN
-#if __BYTE_ORDER == __BIG_ENDIAN
-#  define Makeopshi Makeopsh
-#  if __FLOAT_WORD_ORDER == __BYTE_ORDER
-#    define Makeopshf Makeopsh
-#  else
-#    define Makeopshf Makeopshs
-#  endif
-#else
-#  define Makeopshi Makeopshs
-#  if __FLOAT_WORD_ORDER == __BYTE_ORDER
-#    define Makeopshf Makeopshs
-#  else
-#    define Makeopshf Makeopsh
-#  endif
-#endif
-#else
-#define Makeopshi Makeopsh
-#define Makeopshf Makeopsh
-#endif
-
-Makeopshi(int16_t,16);
-Makeopshi(uint16_t,16);
-Makeopshi(int32_t,32);
-Makeopshi(uint32_t,32);
-Makeopshi(int64_t,64);
-Makeopshi(uint64_t,64);
-Makeopshf(float,32);
-Makeopshf(double,64);
-
-#undef Makeopshf
-#undef Makeopshi
-#undef Makeopshs
-#undef Makeopsh
+  // Use SFINAE to enable this only for types we marked as requiring
+  // endian conversion
+  template<typename T,
+	   typename std::enable_if<endian_traits<T>::convert == true>::type* = nullptr>
+  ostream& operator<<(ostream& stream, const T& src) {
+    detail::endian_converter<sizeof(T)> conv;
+    std::memcpy(conv.data.buf,
+		reinterpret_cast<const char*>(&src), sizeof(T));
+    conv.htobe();
+    stream.write(conv.data.buf, sizeof(T));
+    return stream;
+  }
 
 template<typename F, typename S>
 istream& operator>> ( istream& stream, std::pair<F,S>& pair )

@@ -1,0 +1,6 @@
+<map id="lib_mpi_split.h" name="lib_mpi_split.h">
+<area shape="rect" id="node2" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="235,80,290,107"/>
+<area shape="rect" id="node3" href="$mui__3d_8cpp.html" title="wrappers/C/mui_3d.cpp" alt="" coords="5,162,165,189"/>
+<area shape="rect" id="node4" href="$mui__3df_8cpp.html" title="wrappers/Fortran/mui\l_3df.cpp" alt="" coords="190,155,335,196"/>
+<area shape="rect" id="node5" href="$mui4py_8cpp.html" title="wrappers/Python/mui4py\l/mui4py.cpp" alt="" coords="359,155,526,196"/>
+</map>

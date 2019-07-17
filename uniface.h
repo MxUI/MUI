@@ -1,48 +1,52 @@
-/*
-Multiscale Universal Interface Code Coupling Library
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+*****************************************************************************/
 
-Copyright (C) 2017 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis
-
-This software is jointly licensed under the Apache License, Version 2.0
-and the GNU General Public License version 3, you may use it according
-to either.
-
-** Apache License, version 2.0 **
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-** GNU General Public License, version 3 **
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-** File Details **
-
-Filename: uniface.h
-Created: Feb 11, 2014
-Author: S. Kudo
-Description:
-*/
+/**
+ * @file uniface.h
+ * @author S. Kudo
+ * @date 11 February 2014
+ * @brief Provides the majority of the useful functionality for MUI,
+ * including all fetch, commit and push functions.
+ *
+ * The majority of the user interface for MUI is defined here, as are all of
+ * the data structures.
+ */
 
 #ifndef UNIFACE_H_
 #define UNIFACE_H_
@@ -56,18 +60,21 @@ Description:
 #include "lib_dispatcher.h"
 #include "message.h"
 #include "reader_variable.h"
-#include "stream.h"
 #include "stream_vector.h"
 #include "stream_unordered.h"
 #include "stream_string.h"
 #include "bin.h"
+#include "stream.h"
+
+#ifdef PYTHON_BINDINGS
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+namespace py = pybind11;
+#endif
 
 namespace mui {
 
-/*! \brief Briefly what is uniface
- *
- *  An expanded description of uniface. 
- */
 template<typename CONFIG = default_config>
 class uniface {
 public:
@@ -100,8 +107,6 @@ private:
 		using type = storage<TYPES...>;
 	};
 
-
-
 	// internal typedefinitions
 	using storage_t = typename def_storage_<data_types>::type;
 	using spatial_t = spatial_storage<bin_t<CONFIG>,storage_t,CONFIG>;
@@ -117,7 +122,7 @@ private:
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
-			return scan_spans_(t,s,recving_spans);
+		  return scan_spans_(t,s,recving_spans);
 		}
 		void set_recving( time_type start, time_type timeout, span_t s ) {
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
@@ -126,7 +131,7 @@ private:
 			return scan_spans_(t,s,sending_spans);
 		}
 		void set_sending(time_type start, time_type timeout, span_t s) {
-			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+		  sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
 
 		void set_pts(std::vector<point_type> pts) {
@@ -143,15 +148,16 @@ private:
 		void set_next_t( time_type t ) { next_timestamp = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			auto p = std::make_pair(t,t);
+			auto p = std::make_pair(t+threshold(t),t+threshold(t));
 			auto end = spans.upper_bound(p);
 			bool prefetched = false;
-			
-			for( auto itr = spans.begin(); itr != end; ++itr )
-				if( t <= itr->first.second ){
+
+			for( auto itr = spans.begin(); itr != end; ++itr ) {
+			    if( almost_equal(t, itr->first.second) || t < itr->first.second ) {
 					prefetched = true;
-					if( collide(s,itr->second) ) return true;
+					if( collide(s,itr->second) )  return true;
 				}
+			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
 			return !prefetched;
@@ -223,10 +229,7 @@ public:
     template<typename TYPE>
 	void push( const std::string& attr, const point_type loc, const TYPE value ) {
 		if( FIXEDPOINTS ) {
-			if( !initialized_pts_ ) {
-				push_buffer_pts.emplace_back( loc );
-			}
-
+			if( !initialized_pts_ ) push_buffer_pts.emplace_back( loc );
 			storage_raw_t& n = push_buffer_raw[attr];
 			if( !n ) n = storage_raw_t(std::vector<TYPE>());
 			storage_cast<std::vector<TYPE>&>(n).emplace_back( value );
@@ -239,54 +242,157 @@ public:
 	}
 
 	/** \brief Push the value \c value to the parameter \c attr
-	  * Useful if, for example, you wish to pass a parameter (e.g. viscosity)
-	  * rather than a field from one code to another
+	  * Useful if, for example, you wish to pass a parameter
+	  * rather than a field.
 	  */
 	template<typename TYPE>
 	void push( const std::string& attr, const TYPE value ) {
-		storage_single_t& n = assigned_values[attr];
-		if( !n ) n = TYPE();
-		TYPE& v = storage_cast<TYPE&>(n);
-		v = value;
-		comm->send(message::make("assignedVals", attr, n));
+		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
 	
+#ifdef PYTHON_BINDINGS
+    template<typename TYPE>
+    void push_many(const std::string& attr, const class py::array_t<REAL>& points,
+                   const class py::array_t<TYPE>& values) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        auto values_arr = values.template unchecked<1>();
+        assert(points_arr.shape(0) == values_arr.shape(0));
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            push<TYPE>(attr, p, values_arr(i));
+        }
+    }
+
+    template<class SAMPLER, class TIME_SAMPLER>
+    py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
+    fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
+           const SAMPLER& sampler, const TIME_SAMPLER &t_sampler) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        py::array_t<typename SAMPLER::OTYPE,py::array::c_style> values(points_arr.shape(0));
+        auto values_arr = values.template mutable_unchecked<1>();
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            values_arr(i)  = fetch(attr, p, t, sampler, t_sampler);
+        }
+        return values;
+    }
+
+    template<typename TYPE>
+    py::array_t<REAL, py::array::c_style>
+    fetch_points_np( const std::string& attr, const time_type t ) {
+        std::vector<point_type> points = fetch_points<TYPE>(attr, t);
+        size_t n = points.size();
+        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        auto points_np_arr = points_np.template mutable_unchecked<2>();
+        for (std::size_t i = 0; i < n; i++)
+            for (std::size_t j = 0; j < D; j++)
+                points_np_arr(i,j) = (points[i].data())[j];
+        return points_np;
+    }
+
+#endif
+
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type focus, const time_type t,
-	       SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
-	       ADDITIONAL && ... additional ) {
-		barrier(t_sampler.get_upper_bound(t));
+	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
+		   bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+		   ADDITIONAL && ... additional ) {
+		if(barrier_enabled){
+			if(barrier_time == std::numeric_limits<time_type>::min())
+				barrier_time = t_sampler.get_upper_bound(t);
+			barrier(barrier_time);
+		}
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
-		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)); first!= last; ++first ){
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first!= last; ++first ){
 			time_type time = first->first;
-			auto iter = first->second.find(attr);
+			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
-			v.emplace_back( time, iter->second.build_and_query_ts( sampler.support(focus).bbox(), focus, sampler, additional... ) );
+			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 		return t_sampler.filter(t, v);
 	}
 
-	/** \brief Fetch a parameter from the interface
-	  * Overloaded \c fetch to fetch a single parameter of name \c attr
+	/** \brief Fetch a single parameter from the interface
+	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
+	  * There is no barrier on this fetch as there is no time associated
+	  * with the value.
 	  */
 	template<typename TYPE>
 	TYPE fetch( const std::string& attr ) {
-		storage_single_t& n = assigned_values[attr];
-		if( !n ) return TYPE(0);
-
+	    storage_single_t& n = assigned_values[attr];
+		if( !n ) return TYPE();
 		return storage_cast<TYPE&>(n);
 	}
-    
+
+	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
+        std::vector<point_type>
+	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
+                  bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+                  ADDITIONAL && ... additional ) {
+		using vec = std::vector<std::pair<point_type,TYPE> >;
+		if(barrier_enabled){
+			if(barrier_time == std::numeric_limits<time_type>::min())
+				barrier_time = t_sampler.get_upper_bound(t);
+			barrier(barrier_time);
+		}
+		std::vector <point_type> return_points;
+
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first != last; ++first ){
+			const auto& iter = first->second.find(attr);
+			if( iter == first->second.end() ) continue;
+			const vec& ds = iter->second.template return_data<TYPE>();
+			return_points.reserve(ds.size());
+			for( size_t i=0; i<ds.size(); i++ ) {
+				return_points.emplace_back(ds[i].first);
+			}
+		}
+		return return_points;
+	}
+
+	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
+    std::vector<TYPE>
+	fetch_values( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
+			      bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+			      ADDITIONAL && ... additional ) {
+		using vec = std::vector<std::pair<point_type,TYPE> >;
+		if(barrier_enabled){
+			if(barrier_time == std::numeric_limits<time_type>::min())
+				barrier_time = t_sampler.get_upper_bound(t);
+			barrier(barrier_time);
+		}
+		std::vector<TYPE> return_values;
+
+		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first != last; ++first ){
+			const auto& iter = first->second.find(attr);
+			if( iter == first->second.end() ) continue;
+			const vec& ds = iter->second.template return_data<TYPE>();
+			return_values.reserve(ds.size());
+			for( size_t i=0; i<ds.size(); i++ ) {
+				return_values.emplace_back(ds[i].second);
+			}
+		}
+		return return_values;
+	}
+
 	/** \brief Serializes pushed data and sends it to remote nodes
 	  * Serializes pushed data and sends it to remote nodes.  
 	  * Returns the actual number of peers contacted
 	  */
 	int commit( time_type timestamp ) {
-		std::vector<bool> is_sending(comm->remote_size(), true);
-		if( span_start <= timestamp  && timestamp <= span_timeout ) {
+	    std::vector<bool> is_sending(comm->remote_size(), true);
+
+	    if( ((almost_equal(span_start, timestamp) || span_start < timestamp) && (almost_equal(timestamp, span_timeout) || timestamp < span_timeout)) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				is_sending[i] = peers[i].is_recving( timestamp, current_span );
 			}
@@ -307,6 +413,7 @@ public:
 		}
 
 		comm->send(message::make("timestamp",comm->local_rank(),timestamp));
+
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
 	void forecast( time_type timestamp ) {
@@ -314,46 +421,62 @@ public:
 	}
 
 	bool is_ready( const std::string& attr, time_type t ) const {
-		return  std::any_of(log.begin(), log.end(), [=](const bin_frame_type& a) {
-				return a.find(attr) != a.end(); }) // return false for random @attr. 
-			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); });
-	}
+	        using logitem_ref_t = typename decltype(log)::const_reference;
+	            return  std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
+	                    return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
+	                && std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+	                    return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); });
+    }
+
 	void barrier( time_type t ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) { 
-				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-			std::cerr << "MUI Warning. Communication spends over 5 sec." << std::endl;
-	}
+	    auto start = std::chrono::system_clock::now();
+        for(;;) {    // barrier must be thread-safe because it is called in fetch()
+            std::lock_guard<std::mutex> lock(mutex);
+            if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+                return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); }) ) break;
+            acquire(); // To avoid infinite-loop when synchronous communication
+        }
+        if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
+            std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 seconds" << std::endl;
+    }
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'll send this span."
-		// not implemented yet. just save arguments.
-		comm->send(message::make("sending span", comm->local_rank(), start, timeout, std::move(s)));
+	    comm->send(message::make("sending span", comm->local_rank(), start, timeout, std::move(s)));
 		span_start = start;
 		span_timeout = timeout;
 		current_span.swap(s);
 	}
+
 	void announce_recv_span( time_type start, time_type timeout, span_t s ){
-		// say remote nodes that "I'm recving this span."
+		// say remote nodes that "I'm receiving this span."
 		comm->send(message::make("receiving span", comm->local_rank(), start, timeout, std::move(s)));
 		recv_start = start;
 		recv_timeout = timeout;
 		recv_span.swap(s);
 	}
 
-	// remove log betwewn (-inf, @end]
-	void forget( time_type end ) {
-		log.erase(log.begin(), log.upper_bound(end));
+	// remove log between (-inf, @end]
+	void forget( time_type end, bool reset_log = false ) {
+		log.erase(log.begin(), log.upper_bound(end+threshold(end)));
+		if(reset_log) {
+			time_type curr_time = 0;
+			if(!log.empty()) curr_time = log.rbegin()->first;
+			for(size_t i=0; i<peers.size(); i++) {
+				peers.at(i).set_current_t(curr_time);
+			}
+		}
 	}
 	// remove log between [@first, @last]
-	void forget( time_type first, time_type last ) {
-		log.erase(log.lower_bound(first), log.upper_bound(last));
+	void forget( time_type first, time_type last, bool reset_log = false ) {
+		log.erase(log.lower_bound(first-threshold(first)), log.upper_bound(last+threshold(last)));
+		if(reset_log) {
+			time_type curr_time = 0;
+			if(!log.empty()) curr_time = log.rbegin()->first;
+			for(size_t i=0; i<peers.size(); i++) {
+				peers.at(i).set_current_t(curr_time);
+			}
+		}
 	}
 	// remove log between (-inf, curent-@length] automatically. 
 	void set_memory( time_type length ) {
@@ -376,15 +499,29 @@ private:
 
 	void on_recv_data( time_type timestamp, frame_type frame ) {
 		// when message.id_ == "data"
-		auto itr = log.find(timestamp);
-		if( itr == log.end() ) std::tie(itr,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
-		auto& cur = itr->second;
-		for( auto& p: frame ){
-			auto pstr = cur.find(p.first);
-			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
-			else pstr->second.insert(p.second);
+	    auto first=log.lower_bound(timestamp-threshold(timestamp));
+	    auto last=log.upper_bound(timestamp+threshold(timestamp));
+
+		if( first == last ) {
+          if( last == log.end() ) std::tie(last,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
+          auto& cur = last->second;
+          for( auto& p: frame ){
+              auto pstr = cur.find(p.first);
+              if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
+              else pstr->second.insert(p.second);
+          }
+          log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
 		}
-		log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
+		else {
+			size_t count=0;
+
+			for( ; first != last; first++ ) {
+				count++;
+			}
+
+			if( count > 1 )
+				std::cerr << "MUI Warning [uniface.h]: More than 1 time frame of data found in log for time=" << timestamp << std::endl;
+		}
 	}
 
 
@@ -427,7 +564,7 @@ private:
 
 			data_store.reserve(data.size());
 
-			for( size_t i=0; i<data.size(); i++ ){
+			for( std::size_t i=0; i<data.size(); i++ ){
 				data_store.emplace_back( pts[i], data[i] );
 			}
 		}
@@ -447,11 +584,10 @@ private:
 // [x] void uniface::set_memory( time_type length );
 // [x] bool uniface::is_ready( std::string attr );
 // [x] void uniface::forecast( time_type stamp );
+// [x] python wrapper
 // [ ] linear solver
 // [ ] config generator
 // [ ] logger
-// [ ] python wrapper
 // [ ] periodicity policy
-
 // [ ] shm://domain/interface, create pipes in /dev/shm/interface
 // [ ] void uniface::recommit( time_type stamp, INT version );

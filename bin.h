@@ -1,48 +1,49 @@
-/*
-Multiscale Universal Interface Code Coupling Library
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+******************************************************************************/
 
-Copyright (C) 2017 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis
-
-This software is jointly licensed under the Apache License, Version 2.0
-and the GNU General Public License version 3, you may use it according
-to either.
-
-** Apache License, version 2.0 **
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-** GNU General Public License, version 3 **
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-** File Details **
-
-Filename: bin.h
-Created: Apr 10, 2014
-Author: S. Kudo
-Description:
-*/
+/**
+ * @file bin.h
+ * @author S. Kudo
+ * @date 10 April 2014
+ * @brief Structures and methods to create an underlying binning structure
+ * for data received through an interface.
+ */
 
 #ifndef BIN_H
 #define BIN_H
@@ -227,6 +228,7 @@ private:
 	point_type min, max;
 	std::size_t n[CONFIG::D];
 	typename CONFIG::REAL h;
+	using REAL = typename CONFIG::REAL;
 public:
 	template<typename T>
 	bin_t( std::vector<std::pair<point_type,T> >& val ){
@@ -245,50 +247,51 @@ public:
 			}
 		}
 
-		size_t zeroCount=0;
-		auto vol = max[0]-min[0];
-		auto volMulti = vol;
-
-		for( int i=1; i<D; ++i ){
-			if(vol == 0.0){ // check if first dimension is zero size, if so set to 1
-				vol = 1.0;
-				zeroCount++;
-			}
-			volMulti = max[i]-min[i];
-			if(volMulti == 0.0){ // check if other dimensions are zero size, if so set them to 1
-				volMulti = 1.0;
-				zeroCount++;
-			}
-			vol *= volMulti;
+		size_t zero_count=0;
+		REAL vol = abs(max[0]-min[0]);
+		if(almost_equal(vol, static_cast<REAL>(0))) { // check if first dimension is zero size, if so set to 1
+			vol = 1.0;
+			zero_count++;
 		}
 
-		if (zeroCount == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
-			vol = 0.0;
+		REAL vol_multi = vol;
+		for( int i=1; i<D; ++i ){
+			vol_multi = max[i]-min[i];
+			if(almost_equal(vol_multi, static_cast<REAL>(0))) { // check if other dimensions are zero size, if so set them to 1
+				vol_multi = static_cast<REAL>(1);
+				zero_count++;
+			}
+			vol *= vol_multi;
+		}
 
-		h = std::pow(6*vol/val.size(),1.0/D); // about 6 points per bin
+		if (zero_count == D) // if each dimension was actually zero (rather than just a subset) then set vol to zero
+			vol = static_cast<REAL>(0);
 
-		if(h == 0.0){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
-			h = 1.0; // in this special case set h to 1 arbitrarily so bins work numerically
-			std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
+		h = std::pow(static_cast<REAL>(6)*vol/static_cast<REAL>(val.size()),1.0/D); // about 6 points per bin
+
+		if(almost_equal(h, static_cast<REAL>(0))){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
+			h = static_cast<REAL>(1); // in this special case set h to 1 arbitrarily so bins work numerically
+			if(val.size() > 1)
+				std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
 		}
 
 		std::size_t nn=1;
 		for( int i=0; i<D; ++i ) {
-			n[i] = std::ceil((max[i]-min[i])/h);
-			n[i] = std::max( n[i], std::size_t(1) );
+			n[i] = static_cast<size_t>(std::ceil((max[i]-min[i])/h));
+			n[i] = static_cast<size_t>(std::max( n[i], std::size_t(1) ));
 			nn *= n[i];
 		}
 
 		// make index
-		std::vector<std::size_t> index(val.size()+1);
-		std::vector<std::size_t> counts(nn);
+		std::vector<std::size_t> index(val.size()+1,0);
+		std::vector<std::size_t> counts(nn,0);
 		for( std::size_t i=0; i<val.size(); ++i ) {
 			index[i] = get_index_(val[i].first);
 			++counts[index[i]];
 		}
 		displs.resize(nn+1,0); // add 1 for sentinel
 		std::partial_sum(counts.begin(),counts.end(), displs.begin()+1);
-		
+
 		counts = displs;
 		std::vector<std::pair<point_type,T> > v(val.size());
 		for( std::size_t i=0; i<val.size(); ++i ) v[counts[index[i]]++] = val[i];
@@ -313,14 +316,22 @@ public:
 		return bin_range<T,CONFIG>{lda,lh,displs,v};
 	}
 
+	REAL domain_size() {
+		REAL dim_size = norm(max-min);
+		// Special case if domain only contains a single point
+		if(almost_equal(dim_size, static_cast<REAL>(0)))
+			dim_size = 1.0;
+		return dim_size;
+	}
+
 private:
 	bool initialize_query_( const geometry::box<CONFIG>& bx, int lda[], int lh[][2] ) const {
 		bool broken = false;
 		lda[0] = 1;
 		for( int i=1; i<CONFIG::D; ++i ) lda[i] = lda[i-1]*n[i-1];
 		for( int i=0; i<CONFIG::D; ++i ) {
-			lh[i][0] = std::max(std::floor((bx.get_min()[i]-min[i])/h),typename CONFIG::REAL(0));
-			lh[i][1] = std::min(std::ceil((bx.get_max()[i]-min[i])/h),typename CONFIG::REAL(n[i]));
+			lh[i][0] = static_cast<int>(std::max(std::floor((bx.get_min()[i]-min[i])/h),typename CONFIG::REAL(0)));
+			lh[i][1] = static_cast<int>(std::min(std::ceil((bx.get_max()[i]-min[i])/h),typename CONFIG::REAL(n[i])));
 			if( lh[i][0] >= lh[i][1] ){
 				lh[i][0] = lh[i][1];
 				broken = true;
@@ -332,8 +343,8 @@ private:
 	inline std::size_t get_index_( const point_type& pt ) const {
 		std::size_t m = 1, ret=0;
 		for( int i=0; i<D; ++i ) {
-			std::size_t d = int(std::floor((pt[i]-min[i])/h));
-			d = std::min(d,n[i]-1); // the values may change here if (max[i]-min[i])/h is equal to a integer value.
+			std::size_t d = static_cast<size_t>((std::floor((pt[i]-min[i])/h)));
+			d = static_cast<size_t>(std::min(d,n[i]-1)); // the values may change here if (max[i]-min[i])/h is equal to a integer value.
 			ret += m*d;
 			m *= n[i];
 		}
