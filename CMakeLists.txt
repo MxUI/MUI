@@ -38,16 +38,16 @@ install( EXPORT muiTargets DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cmake/)
 install(FILES mui-config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cmake)
 
 
-add_library(wrapper_c SHARED ./wrappers/wrapper_c/mui_3d.cpp)
-set_target_properties(wrapper_c PROPERTIES PUBLIC_HEADER ./wrappers/wrapper_c/mui_3d.h)
+add_library(wrapper_c SHARED ./wrappers/C/mui_3d.cpp)
+set_target_properties(wrapper_c PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_3d.h)
 target_include_directories(wrapper_c PRIVATE .)
 target_link_libraries(wrapper_c Eigen3::Eigen ${MPI_CXX_LIBRARIES})
 install(TARGETS wrapper_c
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/wrappers/wrapper_c/)
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/wrappers/C/)
 
 
-add_library(wrapper_f SHARED ./wrappers/wrapper_f/mui_3df.cpp)
+add_library(wrapper_f SHARED ./wrappers/Fortran/mui_3df.cpp)
 target_include_directories(wrapper_f PRIVATE .)
 target_link_libraries(wrapper_f Eigen3::Eigen)
 install(TARGETS wrapper_f
