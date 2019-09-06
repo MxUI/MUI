@@ -97,6 +97,7 @@ protected:
 			MPI_Gatherv(const_cast<char*>(ptr), size, MPI_BYTE,
 			            bufs.back().second.data(), recvsizes.data(), displ.data(), MPI_BYTE, 0, local_comm );
 			MPI_Isend(bufs.back().second.data(), total, MPI_BYTE, 0, tag, intercomm, &(bufs.back().first));
+			MPI_Wait(&(bufs.back().first), MPI_STATUS_IGNORE);
 		} else {
 			MPI_Gather((void*)&size, 1, MPI_INT,
 			           NULL, 0, MPI_INT, 0, local_comm);
