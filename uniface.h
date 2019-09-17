@@ -495,37 +495,23 @@ private:
 	void on_recv_confirm( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_current_t(timestamp);
 	}
+
 	void on_recv_forecast( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_next_t(timestamp);
 	}
 
 	void on_recv_data( time_type timestamp, frame_type frame ) {
 		// when message.id_ == "data"
-	    auto first=log.lower_bound(timestamp-threshold(timestamp));
-	    auto last=log.upper_bound(timestamp+threshold(timestamp));
-
-		if( first == last ) {
-          if( last == log.end() ) std::tie(last,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
-          auto& cur = last->second;
-          for( auto& p: frame ){
-              auto pstr = cur.find(p.first);
-              if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
-              else pstr->second.insert(p.second);
-          }
-          log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
+		auto itr = log.find(timestamp);
+		if( itr == log.end() ) std::tie(itr,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
+		auto& cur = itr->second;
+		for( auto& p: frame ){
+			auto pstr = cur.find(p.first);
+			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
+			else pstr->second.insert(p.second);
 		}
-		else {
-			size_t count=0;
-
-			for( ; first != last; first++ ) {
-				count++;
-			}
-
-			if( count > 1 )
-				std::cerr << "MUI Warning [uniface.h]: More than 1 time frame of data found in log for time=" << timestamp << std::endl;
-		}
+		log.erase(log.begin(), log.upper_bound((timestamp+threshold(timestamp))-memory_length));
 	}
-
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
 		frame_type buf = associate( sender, frame );
