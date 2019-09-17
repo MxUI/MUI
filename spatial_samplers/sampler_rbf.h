@@ -40,7 +40,7 @@
 
 /**
  * @file sampler_rbf.h
- * @author A. SKillen
+ * @author A. Skillen
  * @date November 2018
  * @brief Spatial sampler using Gaussian Radial Basis Function interpolation.
  */
