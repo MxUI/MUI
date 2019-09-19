@@ -66,7 +66,9 @@ public:
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
+		std::cout << "starting test_completion()" << std::endl;
 		test_completion();
+		std::cout << "end test_completion()" << std::endl;
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if ( is_sending[i] ) {
@@ -78,7 +80,7 @@ private:
 	}
 
 	message recv_impl_() {
-		test_completion();
+		//test_completion();
 		std::vector<char> temp;
 		MPI_Status status;
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
@@ -97,6 +99,8 @@ private:
 				if( test ) itr = send_buf.erase(itr);
 				else ++itr;
 			}
+
+			std::cout << "Buffer has " << send_buf.size() << "entries" << std::endl;
 		}
 	}
 };
