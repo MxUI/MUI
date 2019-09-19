@@ -54,6 +54,7 @@
 #include "comm_factory.h"
 #include "message.h"
 #include "stream.h"
+#include <chrono>
 
 namespace mui {
 
@@ -66,12 +67,10 @@ public:
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-		std::cout << "starting test_completion()" << std::endl;
 		test_completion();
-		std::cout << "end test_completion()" << std::endl;
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
-			if ( is_sending[i] ) {
+			if( is_sending[i] ){
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0, 
 				          domain_remote_, &(send_buf.back().first));
@@ -80,7 +79,7 @@ private:
 	}
 
 	message recv_impl_() {
-		//test_completion();
+		test_completion();
 		std::vector<char> temp;
 		MPI_Status status;
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
@@ -92,6 +91,7 @@ private:
 	}
 
 	void test_completion() {
+		auto start = std::chrono::system_clock::now();
 		while(!send_buf.empty()){
 			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
 				int test = false;
@@ -100,7 +100,8 @@ private:
 				else ++itr;
 			}
 
-			std::cout << "Buffer has " << send_buf.size() << "entries" << std::endl;
+			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(10) )
+				std::cerr << "MUI Warning [comm_mpi_smart.h]: Send completion taken over 10s, check receives (" << send_buf.size() << " message sends not yet complete)" << std::endl;
 		}
 	}
 };
