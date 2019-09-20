@@ -86,7 +86,6 @@ public:
 	using point_type = typename CONFIG::point_type;
 	using time_type  = typename CONFIG::time_type;
 	using data_types = typename CONFIG::data_types;
-
 	using span_t = geometry::any_shape<CONFIG>;
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
@@ -122,18 +121,16 @@ private:
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
-			return scan_spans_(t,s,recving_spans);
+		  return scan_spans_(t,s,recving_spans);
 		}
 		void set_recving( time_type start, time_type timeout, span_t s ) {
-			recving_spans.clear();
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 		bool is_sending(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,sending_spans);
 		}
 		void set_sending(time_type start, time_type timeout, span_t s) {
-			sending_spans.clear();
-			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+		  sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
 
 		void set_pts(std::vector<point_type> pts) {
@@ -303,6 +300,11 @@ public:
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type focus, const time_type t,
+<<<<<<< HEAD
+	       SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
+	       ADDITIONAL && ... additional ) {
+		barrier(t_sampler.get_upper_bound(t));
+=======
 	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 		   bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
 		   ADDITIONAL && ... additional ) {
@@ -311,6 +313,7 @@ public:
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
+>>>>>>> master
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
@@ -495,22 +498,35 @@ private:
 	void on_recv_confirm( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_current_t(timestamp);
 	}
-
 	void on_recv_forecast( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_next_t(timestamp);
 	}
 
 	void on_recv_data( time_type timestamp, frame_type frame ) {
 		// when message.id_ == "data"
-		auto itr = log.find(timestamp);
-		if( itr == log.end() ) std::tie(itr,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
-		auto& cur = itr->second;
-		for( auto& p: frame ){
-			auto pstr = cur.find(p.first);
-			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
-			else pstr->second.insert(p.second);
+	    auto first=log.lower_bound(timestamp-threshold(timestamp));
+	    auto last=log.upper_bound(timestamp+threshold(timestamp));
+
+		if( first == last ) {
+          if( last == log.end() ) std::tie(last,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
+          auto& cur = last->second;
+          for( auto& p: frame ){
+              auto pstr = cur.find(p.first);
+              if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
+              else pstr->second.insert(p.second);
+          }
+          log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
 		}
-		log.erase(log.begin(), log.upper_bound((timestamp+threshold(timestamp))-memory_length));
+		else {
+			size_t count=0;
+
+			for( ; first != last; first++ ) {
+				count++;
+			}
+
+			if( count > 1 )
+				std::cerr << "MUI Warning [uniface.h]: More than 1 time frame of data found in log for time=" << timestamp << std::endl;
+		}
 	}
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
@@ -545,8 +561,6 @@ private:
 
 			const std::vector<REAL>& data = storage_cast<const std::vector<REAL>&>(p.second);
 			const std::vector<point_type>& pts = peers.at(sender).pts();
-
-			assert( pts.size() == data.size() );
 
 			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(n);
 
