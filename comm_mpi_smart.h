@@ -54,6 +54,7 @@
 #include "comm_factory.h"
 #include "message.h"
 #include "stream.h"
+#include <chrono>
 
 namespace mui {
 
@@ -69,7 +70,7 @@ private:
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
-			if ( is_sending[i] ) {
+			if( is_sending[i] ){
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0, 
 				          domain_remote_, &(send_buf.back().first));
@@ -90,13 +91,11 @@ private:
 	}
 
 	void test_completion() {
-		while(!send_buf.empty()){
-			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
-				int test = false;
-				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				if( test ) itr = send_buf.erase(itr);
-				else ++itr;
-			}
+		for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
+			int test = false;
+			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
+			if( test ) itr = send_buf.erase(itr);
+			else ++itr;
 		}
 	}
 };

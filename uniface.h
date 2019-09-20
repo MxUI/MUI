@@ -119,29 +119,39 @@ private:
 	using storage_single_t = typename def_storage_single_<data_types>::type;
 
 	struct peer_state {
+		peer_state() : disable_send(false), disable_recv(false) {}
+
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,recving_spans);
 		}
 		void set_recving( time_type start, time_type timeout, span_t s ) {
-			recving_spans.clear();
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 		bool is_sending(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,sending_spans);
 		}
 		void set_sending(time_type start, time_type timeout, span_t s) {
-			sending_spans.clear();
 			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
-
 		void set_pts(std::vector<point_type> pts) {
 			pts_ = pts;
 		}
-
 		const std::vector<point_type>& pts() const {
 			return pts_;
+		}
+		void set_send_disable() {
+			disable_send = true;
+		}
+		void set_recv_disable() {
+			disable_recv = true;
+		}
+		bool is_send_disabled() const {
+			return disable_send;
+		}
+		bool is_recv_disabled() const {
+			return disable_recv;
 		}
 
 		time_type current_t() const { return latest_timestamp; }
@@ -170,6 +180,8 @@ private:
 		spans_type sending_spans;
 		std::vector<point_type> pts_;
 		std::unordered_map<std::string, storage_single_t> assigned_vals_;
+		bool disable_send;
+		bool disable_recv;
 	};
 
 private: // data members
@@ -210,6 +222,10 @@ public:
 		             std::bind(&uniface::on_recv_span, this, _1, _2, _3, _4)));
 		readers.link("sending span", reader_variables<int32_t, time_type, time_type, span_t>(
 		             std::bind(&uniface::on_send_span, this, _1, _2, _3, _4)));
+		readers.link("receiving disable", reader_variables<int32_t>(
+					 std::bind(&uniface::on_send_disable, this, _1)));
+		readers.link("sending disable", reader_variables<int32_t>(
+					 std::bind(&uniface::on_recv_disable, this, _1)));
 		readers.link("data", reader_variables<time_type, frame_type>(
 		             std::bind(&uniface::on_recv_data, this, _1, _2)));
 		readers.link("rawdata", reader_variables<int32_t, time_type, frame_raw_type>(
@@ -311,6 +327,10 @@ public:
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
+		else{
+			acquire();
+		}
+
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
@@ -346,6 +366,10 @@ public:
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
+		else{
+			acquire();
+		}
+
 		std::vector <point_type> return_points;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
@@ -372,6 +396,10 @@ public:
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
+		else{
+			acquire();
+		}
+
 		std::vector<TYPE> return_values;
 
 		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
@@ -393,10 +421,16 @@ public:
 	  */
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
+	    std::vector<bool> not_disabled(comm->remote_size(), false);
 
 	    if( ((almost_equal(span_start, timestamp) || span_start < timestamp) && (almost_equal(timestamp, span_timeout) || timestamp < span_timeout)) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				is_sending[i] = peers[i].is_recving( timestamp, current_span );
+				if(!peers[i].is_recv_disabled()){
+					is_sending[i] = peers[i].is_recving( timestamp, current_span );
+					not_disabled[i] = true;
+				}
+				else
+					is_sending[i] = false;
 			}
 		}
 
@@ -414,20 +448,23 @@ public:
 			push_buffer.clear();
 		}
 
-		comm->send(message::make("timestamp",comm->local_rank(),timestamp));
+		comm->send(message::make("timestamp", comm->local_rank(), timestamp), not_disabled);
 
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
+
 	void forecast( time_type timestamp ) {
 		comm->send(message::make("forecast", comm->local_rank(), timestamp));
 	}
 
 	bool is_ready( const std::string& attr, time_type t ) const {
 	        using logitem_ref_t = typename decltype(log)::const_reference;
-	            return  std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
-	                    return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
-	                && std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-	                    return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); });
+
+			return  std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
+					return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
+					&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+					return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
+							((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); });
     }
 
 	void barrier( time_type t ) {
@@ -435,11 +472,12 @@ public:
         for(;;) {    // barrier must be thread-safe because it is called in fetch()
             std::lock_guard<std::mutex> lock(mutex);
             if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-                return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); }) ) break;
+                return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
+                		((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); }) ) break;
             acquire(); // To avoid infinite-loop when synchronous communication
         }
         if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-            std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 seconds" << std::endl;
+            std::cerr << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
     }
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
@@ -450,12 +488,22 @@ public:
 		current_span.swap(s);
 	}
 
+	void announce_send_disable(){
+		// say remote nodes that "I'm disabled for send"
+		comm->send(message::make("sending disable", comm->local_rank()));
+	}
+
 	void announce_recv_span( time_type start, time_type timeout, span_t s ){
 		// say remote nodes that "I'm receiving this span."
 		comm->send(message::make("receiving span", comm->local_rank(), start, timeout, std::move(s)));
 		recv_start = start;
 		recv_timeout = timeout;
 		recv_span.swap(s);
+	}
+
+	void announce_recv_disable(){
+		// say remote nodes that "I'm disabled for receive"
+		comm->send(message::make("receiving disable", comm->local_rank()));
 	}
 
 	// remove log between (-inf, @end]
@@ -521,8 +569,17 @@ private:
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
 		peers.at(sender).set_recving(start,timeout,std::move(s));
 	}
+
 	void on_send_span( int32_t sender, time_type start, time_type timeout, span_t s ){
 		peers.at(sender).set_sending(start,timeout,std::move(s));
+	}
+
+	void on_recv_disable( int32_t sender ) {
+		peers.at(sender).set_recv_disable();
+	}
+
+	void on_send_disable( int32_t sender ){
+		peers.at(sender).set_send_disable();
 	}
 
 	void on_recv_points( int32_t sender, std::vector<point_type> points ) {
