@@ -138,17 +138,11 @@ private:
 	}
 
 	void _M_test() {
-		auto start = std::chrono::system_clock::now();
-		while(!bufs.empty()){
-			for( auto itr=bufs.begin(), end=bufs.end(); itr != end; ){
-				int test = false;
-				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				if( test ) itr = send_buf.erase(itr);
-				else ++itr;
-			}
-
-			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(10) )
-				std::cerr << "MUI Warning [comm_mpi_nxn.h]: Send completion taken over 10s, check receives (" << bufs.size() << " message sends not yet complete)" << std::endl;
+		for( auto itr=bufs.begin(), end=bufs.end(); itr != end; ){
+			int test = false;
+			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
+			if( test ) itr = send_buf.erase(itr);
+			else ++itr;
 		}
 	}
 

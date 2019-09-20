@@ -91,17 +91,11 @@ private:
 	}
 
 	void test_completion() {
-		auto start = std::chrono::system_clock::now();
-		while(!send_buf.empty()){
-			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
-				int test = false;
-				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				if( test ) itr = send_buf.erase(itr);
-				else ++itr;
-			}
-
-			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(10) )
-				std::cerr << "MUI Warning [comm_mpi_smart.h]: Send completion taken over 10s, check receives (" << send_buf.size() << " message sends not yet complete)" << std::endl;
+		for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
+			int test = false;
+			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
+			if( test ) itr = send_buf.erase(itr);
+			else ++itr;
 		}
 	}
 };
