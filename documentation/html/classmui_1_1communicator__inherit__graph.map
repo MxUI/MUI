@@ -1,6 +1,0 @@
-<map id="mui::communicator" name="mui::communicator">
-<area shape="rect" id="node2" href="$classmui_1_1comm__fd.html" title="mui::comm_fd" alt="" coords="5,80,111,107"/>
-<area shape="rect" id="node3" href="$classmui_1_1comm__mpi.html" title="mui::comm_mpi" alt="" coords="135,80,250,107"/>
-<area shape="rect" id="node5" href="$classmui_1_1mpicomm__nxn.html" title="mui::mpicomm_nxn" alt="" coords="274,80,410,107"/>
-<area shape="rect" id="node4" href="$classmui_1_1comm__mpi__smart.html" title="mui::comm_mpi_smart" alt="" coords="115,155,270,181"/>
-</map>

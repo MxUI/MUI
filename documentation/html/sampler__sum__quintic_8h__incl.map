@@ -1,6 +1,0 @@
-<map id="spatial_samplers/sampler_sum_quintic.h" name="spatial_samplers/sampler_sum_quintic.h">
-<area shape="rect" id="node2" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="984,95,1047,121"/>
-<area shape="rect" id="node29" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="787,169,860,196"/>
-<area shape="rect" id="node32" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="123,169,185,196"/>
-<area shape="rect" id="node30" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="829,244,935,271"/>
-</map>

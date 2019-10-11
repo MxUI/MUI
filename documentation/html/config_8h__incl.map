@@ -1,8 +1,0 @@
-<map id="config.h" name="config.h">
-<area shape="rect" id="node2" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="990,155,1041,181"/>
-<area shape="rect" id="node33" href="$dim_8h.html" title="File providing data specialisms at different dimensionalities. " alt="" coords="988,80,1043,107"/>
-<area shape="rect" id="node34" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1067,80,1156,107"/>
-<area shape="rect" id="node29" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="787,229,860,256"/>
-<area shape="rect" id="node32" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="123,229,185,256"/>
-<area shape="rect" id="node30" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="829,304,935,331"/>
-</map>

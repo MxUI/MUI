@@ -1,8 +1,0 @@
-<map id="spatial_storage.h" name="spatial_storage.h">
-<area shape="rect" id="node4" href="$dynstorage_8h.html" title="Implementation of a compound dynamic data structure used throughout MUI. " alt="" coords="1866,80,1963,107"/>
-<area shape="rect" id="node39" href="$virtual__container_8h.html" title="Provides a virtual container interface that is used to wrap around data structures created by dynstor..." alt="" coords="1433,80,1561,107"/>
-<area shape="rect" id="node10" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="2007,229,2081,256"/>
-<area shape="rect" id="node15" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1243,155,1293,181"/>
-<area shape="rect" id="node13" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="2064,304,2171,331"/>
-<area shape="rect" id="node38" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="1769,229,1831,256"/>
-</map>
