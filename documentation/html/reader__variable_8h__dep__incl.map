@@ -1,8 +1,0 @@
-<map id="reader_variable.h" name="reader_variable.h">
-<area shape="rect" id="node2" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="343,80,417,107"/>
-<area shape="rect" id="node3" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="191,155,342,181"/>
-<area shape="rect" id="node4" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="239,229,294,256"/>
-<area shape="rect" id="node7" href="$mui4py_8cpp.html" title="wrappers/Python/mui4py\l/mui4py.cpp" alt="" coords="359,304,526,345"/>
-<area shape="rect" id="node5" href="$mui__3d_8cpp.html" title="wrappers/C/mui_3d.cpp" alt="" coords="5,311,165,338"/>
-<area shape="rect" id="node6" href="$mui__3df_8cpp.html" title="wrappers/Fortran/mui\l_3df.cpp" alt="" coords="190,304,335,345"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="message.h" name="message.h">
-<area shape="rect" id="node3" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="114,155,187,181"/>
-<area shape="rect" id="node8" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="1113,80,1164,107"/>
-<area shape="rect" id="node33" href="$stream__string_8h.html" title="Defines the stream in/out for std::string data type. " alt="" coords="21,80,133,107"/>
-<area shape="rect" id="node34" href="$stream__vector_8h.html" title="Defines the stream in/out for std::vector data type. " alt="" coords="208,80,324,107"/>
-<area shape="rect" id="node35" href="$stream__tuple_8h.html" title="Defines the stream in/out for std::tuple data type. " alt="" coords="1188,80,1296,107"/>
-<area shape="rect" id="node5" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="97,229,204,256"/>
-<area shape="rect" id="node32" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="1996,155,2057,181"/>
-</map>
