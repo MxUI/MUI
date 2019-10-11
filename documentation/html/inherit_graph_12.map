@@ -1,7 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classmui_1_1communicator.html" title="mui::communicator" alt="" coords="5,56,139,83"/>
-<area shape="rect" id="node2" href="$classmui_1_1comm__fd.html" title="mui::comm_fd" alt="" coords="202,5,307,32"/>
-<area shape="rect" id="node3" href="$classmui_1_1comm__mpi.html" title="mui::comm_mpi" alt="" coords="197,56,312,83"/>
-<area shape="rect" id="node5" href="$classmui_1_1mpicomm__nxn.html" title="mui::mpicomm_nxn" alt="" coords="187,107,323,133"/>
-<area shape="rect" id="node4" href="$classmui_1_1comm__mpi__smart.html" title="mui::comm_mpi_smart" alt="" coords="371,56,525,83"/>
-</map>

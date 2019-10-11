@@ -1,9 +1,0 @@
-<map id="dynstorage.h" name="dynstorage.h">
-<area shape="rect" id="node2" href="$uniface_8h.html" title="Provides the majority of the useful functionality for MUI, including all fetch, commit and push funct..." alt="" coords="347,155,421,181"/>
-<area shape="rect" id="node8" href="$spatial__storage_8h.html" title="Defines the spatial_storage data type. " alt="" coords="373,80,494,107"/>
-<area shape="rect" id="node3" href="$lib__mpi__multidomain_8h.html" title="Provides helper functions for creating and synchronising multiple MUI interfaces for a single domain..." alt="" coords="195,229,346,256"/>
-<area shape="rect" id="node4" href="$mui_8h.html" title="The main header file for MUI. Usually the only file that needs to be included in order to integrate i..." alt="" coords="243,304,298,331"/>
-<area shape="rect" id="node7" href="$mui4py_8cpp.html" title="wrappers/Python/mui4py\l/mui4py.cpp" alt="" coords="359,379,526,420"/>
-<area shape="rect" id="node5" href="$mui__3d_8cpp.html" title="wrappers/C/mui_3d.cpp" alt="" coords="5,386,165,413"/>
-<area shape="rect" id="node6" href="$mui__3df_8cpp.html" title="wrappers/Fortran/mui\l_3df.cpp" alt="" coords="190,379,335,420"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="chrono_samplers/chrono_sampler_mean.h" name="chrono_samplers/chrono_sampler_mean.h">
-<area shape="rect" id="node2" href="$util_8h.html" title="Provides a number of utility functions used through the rest of the library. " alt="" coords="984,244,1047,271"/>
-<area shape="rect" id="node33" href="$config_8h.html" title="File containing data structures defining all data types used by an interface. " alt="" coords="989,95,1069,121"/>
-<area shape="rect" id="node29" href="$stream_8h.html" title="Defines base stream class container_stream and associated functors. " alt="" coords="787,319,860,345"/>
-<area shape="rect" id="node32" href="$point_8h.html" title="Container structure for a point data type, including specialism and manipulation. ..." alt="" coords="123,319,185,345"/>
-<area shape="rect" id="node30" href="$endian__traits_8h.html" title="Support for dealing with big and little endian platforms. " alt="" coords="829,393,935,420"/>
-<area shape="rect" id="node34" href="$dim_8h.html" title="File providing data specialisms at different dimensionalities. " alt="" coords="1021,169,1076,196"/>
-<area shape="rect" id="node35" href="$exception_8h.html" title="Base class for exception handling. " alt="" coords="1100,169,1189,196"/>
-</map>
