@@ -319,7 +319,7 @@ public:
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type focus, const time_type t,
-	       const SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
+	       SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
 		   bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
 		   ADDITIONAL && ... additional ) {
 		if(barrier_enabled){

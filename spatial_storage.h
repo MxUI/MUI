@@ -116,7 +116,7 @@ public:
 	// we need more large lock if there is no rw-lock.
 	template<typename REGION, typename FOCUS, typename SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	query(const REGION& reg, const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) const {
+	query(const REGION& reg, const FOCUS& f, SAMPLER& s, ADDITIONAL && ... additional) const {
 		if( data_.empty() )
 			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >(),std::vector<bool>()), additional... );
 		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
@@ -135,7 +135,7 @@ public:
 
 	template<typename FOCUS, typename SAMPLER, typename ...ADDITIONAL>
 	typename SAMPLER::OTYPE
-	build_and_query_ts(const FOCUS& f, const SAMPLER& s, ADDITIONAL && ... additional) {
+	build_and_query_ts(const FOCUS& f, SAMPLER& s, ADDITIONAL && ... additional) {
 		// this method is thread-safe. other methods are not.
 		{
 			std::unique_lock<std::mutex> lock(mutex_);
