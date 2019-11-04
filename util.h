@@ -127,8 +127,8 @@ template<> inline double powr<1>( const double x ) {
 template<class T> inline bool almost_equal(T x, T y)
 {
 	return (x == y) ||
-		   (std::abs(x-y) < std::numeric_limits<T>::epsilon() * std::abs(x+y)) ||
-		   (std::abs(x-y) < std::numeric_limits<T>::min());
+		   (std::fabs(x-y) < std::numeric_limits<T>::epsilon() * std::fabs(x+y)) ||
+		   (std::fabs(x-y) < std::numeric_limits<T>::min());
 }
 
 template<typename T> inline T frexp10(T arg, int &exp) {
