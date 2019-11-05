@@ -53,7 +53,7 @@
 
 namespace mui {
 
-template<typename CONFIG=default_config, typename O_TP=default_config::REAL, typename I_TP=O_TP>
+template<typename CONFIG=default_config, typename O_TP=typename CONFIG::REAL, typename I_TP=O_TP>
 class sampler_pseudo_nearest2_linear {
 public:
 	using OTYPE      = O_TP;
