@@ -139,7 +139,7 @@ template<typename T> inline T frexp10(T arg, int &exp) {
 
 template<class T> inline T threshold(T x)
 {
-	return std::numeric_limits<T>::epsilon() * std::abs(x);
+	return std::numeric_limits<T>::epsilon() * std::fabs(x);
 }
 
 #ifdef __GNUC__
