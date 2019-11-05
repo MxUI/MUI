@@ -93,7 +93,7 @@ namespace mui {
 			using REAL = REALTYPE;\
 			using INT  = INTTYPE;\
 			using point_type = point<REAL,D>;\
-			using time_type  = REAL;\
+			using time_type  = INT;\
 			static const bool DEBUG = false;\
 			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 			using EXCEPTION = exception_segv;\
@@ -140,7 +140,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 			using REAL = REALTYPE;\
 			using INT  = INTTYPE;\
 			using point_type = point<REAL,D>;\
-			using time_type  = REAL;\
+			using time_type  = INT;\
 			static const bool DEBUG = false;\
 			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 			using EXCEPTION = exception_segv;\
