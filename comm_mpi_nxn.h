@@ -138,11 +138,12 @@ private:
 	}
 
 	void _M_test() {
-		for( auto itr=bufs.begin(), end=bufs.end(); itr != end; ){
-			int test = false;
-			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-			if( test ) itr = send_buf.erase(itr);
-			else ++itr;
+		if( local_rank() == 0 ){
+			int test = true;
+			while( test&&!bufs.empty() ) {
+				MPI_Test(&(bufs.front().first),&test,MPI_STATUS_IGNORE);
+				if( test ) bufs.pop_front();
+			}
 		}
 	}
 
