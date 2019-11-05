@@ -54,7 +54,6 @@
 #include "comm_factory.h"
 #include "message.h"
 #include "stream.h"
-#include <chrono>
 
 namespace mui {
 

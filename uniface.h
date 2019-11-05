@@ -165,7 +165,7 @@ private:
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-			    if( almost_equal(t, itr->first.second) || t < itr->first.second ) {
+			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) )  return true;
 				}
@@ -421,10 +421,11 @@ public:
 	  */
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    std::vector<bool> not_disabled(comm->remote_size(), false);
+	    std::vector<bool> not_disabled(comm->remote_size(), true);
 
-	    if( ((almost_equal(span_start, timestamp) || span_start < timestamp) && (almost_equal(timestamp, span_timeout) || timestamp < span_timeout)) ) {
+	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
+				std::cout << peers[i].is_recv_disabled() << std::endl;
 				if(!peers[i].is_recv_disabled()){
 					is_sending[i] = peers[i].is_recving( timestamp, current_span );
 					not_disabled[i] = true;
@@ -463,7 +464,7 @@ public:
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
 			return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
-					((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); });
+					(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
 	}
 
 	void barrier( time_type t ) {
@@ -472,7 +473,7 @@ public:
 			std::lock_guard<std::mutex> lock(mutex);
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
 				return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
-						((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); }) ) break;
+						(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
@@ -557,7 +558,7 @@ private:
 			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
 			else pstr->second.insert(p.second);
 		}
-		log.erase(log.begin(), log.upper_bound((timestamp+threshold(timestamp))-memory_length));
+		log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
 	}
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
