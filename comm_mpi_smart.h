@@ -90,13 +90,11 @@ private:
 	}
 
 	void test_completion() {
-		while(!send_buf.empty()){
-			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
-				int test = false;
-				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				if( test ) itr = send_buf.erase(itr);
-				else ++itr;
-			}
+		for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
+			int test = false;
+			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
+			if( test ) itr = send_buf.erase(itr);
+			else ++itr;
 		}
 	}
 };
