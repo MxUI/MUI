@@ -56,7 +56,37 @@ namespace mui {
 
 template<typename... TYPES> struct type_list {};
 
-struct crunch {
+struct one_dim {
+	static const int D = 1;
+
+	using REAL = double;
+	using INT  = int;
+	using point_type = point<REAL,D>;
+	using time_type  = REAL; // INT-typed time stamp might be an alternative
+	using data_types = type_list<int,double,float>;
+
+	static const bool DEBUG = false;
+	using EXCEPTION = exception_segv;
+
+	static const bool FIXEDPOINTS = false;
+};
+
+struct two_dim {
+	static const int D = 2;
+
+	using REAL = double;
+	using INT  = int;
+	using point_type = point<REAL,D>;
+	using time_type  = REAL; // INT-typed time stamp might be an alternative
+	using data_types = type_list<int,double,float>;
+
+	static const bool DEBUG = false;
+	using EXCEPTION = exception_segv;
+
+	static const bool FIXEDPOINTS = false;
+};
+
+struct three_dim {
 	static const int D = 3;
 
 	using REAL = double;
@@ -72,7 +102,7 @@ struct crunch {
 };
 
 // backward-compatibility
-struct default_config : crunch {};
+struct default_config : three_dim {};
 
 /*
  * user can define his own config like this:
