@@ -63,7 +63,7 @@ struct one_dim {
 	using INT  = int;
 	using point_type = point<REAL,D>;
 	using time_type  = REAL; // INT-typed time stamp might be an alternative
-	using data_types = type_list<int,double,float>;
+	using data_types = type_list<int32_t,int64_t,double,float,std::string>;
 
 	static const bool DEBUG = false;
 	using EXCEPTION = exception_segv;
@@ -78,7 +78,7 @@ struct two_dim {
 	using INT  = int;
 	using point_type = point<REAL,D>;
 	using time_type  = REAL; // INT-typed time stamp might be an alternative
-	using data_types = type_list<int,double,float>;
+	using data_types = type_list<int32_t,int64_t,double,float,std::string>;
 
 	static const bool DEBUG = false;
 	using EXCEPTION = exception_segv;
@@ -93,7 +93,7 @@ struct three_dim {
 	using INT  = int;
 	using point_type = point<REAL,D>;
 	using time_type  = REAL; // INT-typed time stamp might be an alternative
-	using data_types = type_list<int,double,float>;
+	using data_types = type_list<int32_t,int64_t,double,float,std::string>;
 
 	static const bool DEBUG = false;
 	using EXCEPTION = exception_segv;
