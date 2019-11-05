@@ -53,7 +53,6 @@
 #include <vector>
 #include <mpi.h>
 #include "comm.h"
-#include <chrono>
 
 namespace mui {
 class mpicomm_nxn : public communicator {
