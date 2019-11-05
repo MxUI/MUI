@@ -152,7 +152,7 @@ private:
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-			    if( almost_equal(t, itr->first.second) || t < itr->first.second ) {
+			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) )  return true;
 				}
@@ -391,7 +391,7 @@ public:
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
 
-	    if( ((almost_equal(span_start, timestamp) || span_start < timestamp) && (almost_equal(timestamp, span_timeout) || timestamp < span_timeout)) ) {
+	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				is_sending[i] = peers[i].is_recving( timestamp, current_span );
 			}
@@ -424,7 +424,7 @@ public:
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-			return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); });
+			return (!p.is_sending(t,recv_span)) || (((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
 	}
 
 	void barrier( time_type t ) {
@@ -432,7 +432,7 @@ public:
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (!p.is_sending(t,recv_span)) || ((almost_equal(p.current_t(), t) || p.current_t() > t) || p.next_t() > t); }) ) break;
+				return (!p.is_sending(t,recv_span)) || (((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
@@ -492,35 +492,23 @@ private:
 	void on_recv_confirm( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_current_t(timestamp);
 	}
+
 	void on_recv_forecast( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_next_t(timestamp);
 	}
 
 	void on_recv_data( time_type timestamp, frame_type frame ) {
 		// when message.id_ == "data"
-	    auto first=log.lower_bound(timestamp-threshold(timestamp));
-	    auto last=log.upper_bound(timestamp+threshold(timestamp));
+		auto itr = log.find(timestamp);
 
-		if( first == last ) {
-          if( last == log.end() ) std::tie(last,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
-          auto& cur = last->second;
-          for( auto& p: frame ){
-              auto pstr = cur.find(p.first);
-              if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
-              else pstr->second.insert(p.second);
-          }
-          log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
+		if( itr == log.end() ) std::tie(itr,std::ignore) = log.insert(std::make_pair(timestamp,bin_frame_type()));
+		auto& cur = itr->second;
+		for( auto& p: frame ){
+			auto pstr = cur.find(p.first);
+			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
+			else pstr->second.insert(p.second);
 		}
-		else {
-			size_t count=0;
-
-			for( ; first != last; first++ ) {
-				count++;
-			}
-
-			if( count > 1 )
-				std::cerr << "MUI Warning [uniface.h]: More than 1 time frame of data found in log for time=" << timestamp << std::endl;
-		}
+		log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
 	}
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
