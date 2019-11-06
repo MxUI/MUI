@@ -54,7 +54,7 @@
 
 namespace mui {
 
-template<typename CONFIG=default_config, typename O_TP=default_config::REAL, typename I_TP=O_TP>
+template<typename CONFIG=default_config, typename O_TP=typename CONFIG::REAL, typename I_TP=O_TP>
 class sampler_exact {
 public:
 	using OTYPE      = O_TP;
@@ -64,7 +64,7 @@ public:
 	using point_type = typename CONFIG::point_type;
 
 	sampler_exact( REAL tol = std::numeric_limits<REAL>::epsilon() ) {
-	    int exponent;
+	    INT exponent;
 		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
 		real_precision = static_cast<REAL>( exponent );
 		tolerance = tol;
