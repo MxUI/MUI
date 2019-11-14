@@ -51,6 +51,7 @@ Description: MUI Python bindings
 #include "../../../mui.h"
 #include "../../../uniface.h"
 #include <string>
+#include <limits>
 #include <sstream>
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
@@ -103,12 +104,12 @@ using std::string;
 #define FETCH_INSTANCE_SINGLE(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
         (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>, const Ttime,\
-        const mui::SPATIAL_SAMPLER<IO_TYPE,IO_TYPE,Tconfig>&, const mui::CHRONO_SAMPLER<Tconfig>&)) &Tclass::fetch, "") \
+        const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::CHRONO_SAMPLER<Tconfig>&, bool, Ttime)) &Tclass::fetch, "") \
 
 #define FETCH_INSTANCE_MANY(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch_many_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
         (py::array_t<IO_TYPE,py::array::c_style> (Tclass::*) (const string& attr,const py::array_t<Treal,py::array::c_style> points, const Ttime t,\
-        const mui::SPATIAL_SAMPLER<IO_TYPE,IO_TYPE,Tconfig>& sampler, const mui::CHRONO_SAMPLER<Tconfig>& t_sampler)) &Tclass::fetch_many, "")
+        const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>& sampler, const mui::CHRONO_SAMPLER<Tconfig>& t_sampler)) &Tclass::fetch_many, "")
 
 #define FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
     FETCH_INSTANCE_MANY(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
@@ -367,7 +368,7 @@ DECLARE_FUNC_HEADER(chrono_sampler_sum) {
 template <template <typename Type0, typename Type1, typename Type2> class TclassTemplate, typename Tconfig, typename TArg1=void>
 DECLARE_FUNC_HEADER(sampler_exact) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     using Treal = typename Tconfig::REAL;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal>(), py::arg("tol") = Treal(std::numeric_limits<Treal>::epsilon()));
@@ -378,7 +379,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_gauss) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal,Treal>());
 }
@@ -388,7 +389,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_moving_average) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<mui::point<Treal,Tconfig::D>>());
 }
@@ -397,7 +398,7 @@ DECLARE_FUNC_HEADER(sampler_moving_average) {
 template <template <typename Type0, typename Type1, typename Type2> class TclassTemplate, typename Tconfig, typename TArg1=void>
 DECLARE_FUNC_HEADER(sampler_nearest_neighbor) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<>());
 }
@@ -407,7 +408,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_pseudo_nearest2_linear) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal>());
 }
@@ -417,7 +418,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_pseudo_nearest_neighbor) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal>());
 }
@@ -427,7 +428,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_shepard_quintic) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal>());
 }
@@ -437,7 +438,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_sph_quintic) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal>());
 }
@@ -447,7 +448,7 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_sum_quintic) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
-    using Tclass = TclassTemplate<TArg1,TArg1,Tconfig>;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def(py::init<Treal>());
 }
@@ -547,6 +548,10 @@ string get_compiler_config() {
 
 PYBIND11_MODULE(mui4py_mod, m) {
     m.doc() = "MUI bindings for Python."; // optional module docstring
+
+    // Expose numerical limits from C++
+    m.attr("numeric_limits_real") = std::numeric_limits<double>::min();
+    m.attr("numeric_limits_int") = std::numeric_limits<int>::min();
 
    // Class bindings
    DECLARE_MUI_CPP2PY_CLASSES_0ARG(geometry_shape,geometry::shape)
