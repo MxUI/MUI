@@ -2,7 +2,7 @@ COMPILER ?= GCC
 CC	= mpic++
 CFLAGS	= -Wall -std=c++11 -O3
 LDFLAGS = -shared
-USE_RBF = True
+USE_RBF = False
 include $(COMPILER).make
 INC_MPI4PY = -I$(shell python3 -c "import mpi4py;print(mpi4py.get_include())")
 INC_PYBIND = $(shell python3 -m pybind11 --includes)
