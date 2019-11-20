@@ -4,7 +4,7 @@ from mui4py.mui4py import Uniface, mpi_split_by_app, set_quiet,\
 from mui4py.samplers import SamplerExact, SamplerGauss, SamplerMovingAverage,\
                             SamplerNearestNeighbor, SamplerPseudoNearest2Linear,\
                             SamplerPseudoNearestNeighbor, SamplerSherpardQuintic,\
-                            SamplerSphQuintic, SamplerSumQuintic,\
+                            SamplerSphQuintic, SamplerSumQuintic, SamplerRbf,\
                             ChronoSamplerExact, ChronoSamplerGauss,\
                             ChronoSamplerMean, ChronoSamplerSum
 from mui4py.types import STRING, INT32, INT64, INT, FLOAT32, FLOAT64, FLOAT

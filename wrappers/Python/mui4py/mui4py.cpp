@@ -130,6 +130,32 @@ using std::string;
        FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,int64_t) \
        FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,int32_t) 
 
+#ifdef USE_RBF
+#define EXPAND_FETCH_NUMERICAL(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_exact,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_shepard_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_sph_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_rbf,CHRONO_SAMPLER)
+
+#define EXPAND_FETCH_EXACT(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_EXACT(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_shepard_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_sph_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_rbf,CHRONO_SAMPLER)
+#else
+
 #define EXPAND_FETCH_NUMERICAL(CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_exact,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
@@ -152,6 +178,7 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER)
 
+#endif
 
 #define DEFINE_MUI_UNIFACE_FETCH_5ARGS() \
        EXPAND_FETCH_EXACT(chrono_sampler_exact) \
@@ -453,6 +480,21 @@ DECLARE_FUNC_HEADER(sampler_sum_quintic) {
     .def(py::init<Treal>());
 }
 
+#ifdef USE_RBF
+
+//SPATIAL_SAMPLER_RBF CLASS//
+template <template <typename Type0, typename Type1, typename Type2> class TclassTemplate, typename Tconfig, typename TArg1=void>
+DECLARE_FUNC_HEADER(sampler_rbf) {
+    string pyclass_name = get_pyclass_name(name, typestr, arg1);
+    using Treal = typename Tconfig::REAL;
+    using Tpoint = typename Tconfig::point_type;
+    using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
+    py::class_<Tclass>(m, pyclass_name.c_str())
+    .def(py::init<Treal, std::vector<Tpoint> &, bool, Treal, bool>());
+}
+
+#endif
+
 // [*** SPATIAL_SAMPLER CLASSES END ***] //
 
 
@@ -512,7 +554,6 @@ std::vector<std::unique_ptr<mui::uniface<CONFIG>>>
 create_uniface(std::string domain, std::vector<std::string> interfaces, py::handle world=NULL) {
     return mui::create_uniface<CONFIG>(domain, interfaces, MPI_COMM_WORLD);
 }
-
 
 py::handle mpi_split_by_app() {
     if (import_mpi4py() < 0) {
@@ -591,6 +632,11 @@ PYBIND11_MODULE(mui4py_mod, m) {
    #define EXPAND_SPATIAL_SUM_QUINTIC_SAMPLER(T) \
         DECLARE_MUI_CPP2PY_CLASSES_1ARG(sampler_sum_quintic,sampler_sum_quintic,T)
    FOR_EACH(EXPAND_SPATIAL_SUM_QUINTIC_SAMPLER,double,float,int32_t,int64_t)
+#ifdef USE_RBF
+    #define EXPAND_SPATIAL_RBF_SAMPLER(T) \
+        DECLARE_MUI_CPP2PY_CLASSES_1ARG(sampler_rbf,sampler_rbf,T)
+   FOR_EACH(EXPAND_SPATIAL_RBF_SAMPLER,double,float,int32_t,int64_t)
+#endif
 
    // Chrono samplers
    DECLARE_MUI_CPP2PY_CLASSES_0ARG(chrono_sampler_exact,chrono_sampler_exact)

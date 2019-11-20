@@ -231,3 +231,6 @@ class Uniface(CppClass):
             fargs = (tag, loc, time, ss.raw, cs.raw, barrier_enabled, barrier_time)
         fetch = getattr(self.raw, fetch_fname)
         return safe_cast(self._get_tag_type(tag), fetch(*fargs))
+
+    def Point (self, points):
+        return array2Point(points, self.config, self.raw_point)
