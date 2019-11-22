@@ -221,6 +221,16 @@ class Uniface(CppClass):
             spatial_sampler = args[3]
             chrono_sampler = args[4]
             fetch_fname, ss, cs = self._get_fetch_5args("fetch", tag, data_type, spatial_sampler, chrono_sampler)
-            fargs = (tag, loc, time, ss.raw, cs.raw)
+            barrier_enabled = True
+            if type(time).__name__ == 'float':
+                barrier_time = mui4py_mod.numeric_limits_real
+            elif type(time).__name__ == 'int':
+                barrier_time = mui4py_mod.numeric_limits_int
+            else:
+                raise Exception("Unrecognized time type '{}'.".format(type(time).__name__))
+            fargs = (tag, loc, time, ss.raw, cs.raw, barrier_enabled, barrier_time)
         fetch = getattr(self.raw, fetch_fname)
         return safe_cast(self._get_tag_type(tag), fetch(*fargs))
+
+    def Point (self, points):
+        return array2Point(points, self.config, self.raw_point)

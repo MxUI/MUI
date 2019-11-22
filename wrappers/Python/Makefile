@@ -2,9 +2,11 @@ COMPILER ?= GCC
 CC	= mpic++
 CFLAGS	= -Wall -std=c++11 -O3
 LDFLAGS = -shared
+USE_RBF = False
 include $(COMPILER).make
 INC_MPI4PY = -I$(shell python3 -c "import mpi4py;print(mpi4py.get_include())")
 INC_PYBIND = $(shell python3 -m pybind11 --includes)
+INC_TPARTY =
 CC_VERSION_STR = '"$(shell $(CC) --version | head -n 1)"'
 MPI_VERSION_STR = '"$(shell bash mpi_version.sh)"'
 CC_CONFIG_STR = '"$(shell $(CC) -show) $(CFLAGS) $(INC_MPI4PY) $(INC_PYBIND)"'
@@ -15,6 +17,11 @@ else ifeq ($(PYTHON_INT_SIZE),32)
 	CFLAGS_D = -DPYTHON_INT_32
 endif
 CFLAGS_D += -DCOMPILER_VERSION_STR=$(CC_VERSION_STR) -DMPI_VERSION_STR=$(MPI_VERSION_STR) -DCOMPILER_CONFIG_STR=$(CC_CONFIG_STR) -DPYTHON_BINDINGS
+ifeq ($(USE_RBF),True)
+    CFLAGS += -fpermissive
+    INC_TPARTY += -I../../thirdParty/eigen
+    CFLAGS_D +=  -DUSE_RBF
+endif
 EXTENSION_SUFFIX = $(shell python3-config --extension-suffix)
 TARGET_LIB = mui4py/mui4py_mod$(EXTENSION_SUFFIX)
 SRCS = mui4py/mui4py.cpp
@@ -30,7 +37,7 @@ $(TARGET_LIB): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 %.o: %.cpp
-	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) $< -o $@
+	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) $(INC_TPARTY) $< -o $@
 
 .PHONY: package meta-package clean-package clean-mod clean-all install pip-install clean-obj
 package: mui4py_mod
