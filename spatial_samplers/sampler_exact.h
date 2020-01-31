@@ -64,7 +64,7 @@ public:
 	using point_type = typename CONFIG::point_type;
 
 	sampler_exact( REAL tol = std::numeric_limits<REAL>::epsilon() ) {
-	    int exponent;
+	    INT exponent;
 		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
 		real_precision = static_cast<REAL>( exponent );
 		tolerance = tol;

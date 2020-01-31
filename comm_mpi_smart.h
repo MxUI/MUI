@@ -69,7 +69,7 @@ private:
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
-			if ( is_sending[i] ) {
+			if( is_sending[i] ){
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0, 
 				          domain_remote_, &(send_buf.back().first));

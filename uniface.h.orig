@@ -81,12 +81,11 @@ public:
 	// public typedefs.
 	static const int  D     = CONFIG::D; //!< dimensionality of the domains
 	static const bool DEBUG = CONFIG::DEBUG;
-	static const bool FIXEDPOINTS = CONFIG::FIXEDPOINTS;
+    static const bool FIXEDPOINTS = CONFIG::FIXEDPOINTS;
 	using REAL       = typename CONFIG::REAL;
 	using point_type = typename CONFIG::point_type;
 	using time_type  = typename CONFIG::time_type;
 	using data_types = typename CONFIG::data_types;
-
 	using span_t = geometry::any_shape<CONFIG>;
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
@@ -124,41 +123,36 @@ private:
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
-			return scan_spans_(t,s,recving_spans);
+		  return scan_spans_(t,s,recving_spans);
 		}
-		
 		void set_recving( time_type start, time_type timeout, span_t s ) {
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
-		
 		bool is_sending(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,sending_spans);
 		}
-		
 		void set_sending(time_type start, time_type timeout, span_t s) {
+<<<<<<< HEAD
+		  sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+=======
 			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+>>>>>>> dev
 		}
-
 		void set_pts(std::vector<point_type> pts) {
 			pts_ = pts;
 		}
-
 		const std::vector<point_type>& pts() const {
 			return pts_;
 		}
-		
 		void set_send_disable() {
 			disable_send = true;
 		}
-		
 		void set_recv_disable() {
 			disable_recv = true;
 		}
-		
 		bool is_send_disabled() const {
 			return disable_send;
 		}
-		
 		bool is_recv_disabled() const {
 			return disable_recv;
 		}
@@ -471,8 +465,12 @@ public:
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+<<<<<<< HEAD
+			return (!p.is_sending(t,recv_span)) || (((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
+=======
 			return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
 					(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
+>>>>>>> dev
 	}
 
 	void barrier( time_type t ) {
@@ -480,12 +478,20 @@ public:
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+<<<<<<< HEAD
+				return (!p.is_sending(t,recv_span)) || (((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
+			acquire(); // To avoid infinite-loop when synchronous communication
+		}
+		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
+			std::cerr << "MUI Warning [uniface.h]: Communication spends over 5 seconds" << std::endl;
+=======
 				return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
 						(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
 			std::cerr << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+>>>>>>> dev
 	}
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
@@ -611,8 +617,6 @@ private:
 
 			const std::vector<REAL>& data = storage_cast<const std::vector<REAL>&>(p.second);
 			const std::vector<point_type>& pts = peers.at(sender).pts();
-
-			assert( pts.size() == data.size() );
 
 			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(n);
 

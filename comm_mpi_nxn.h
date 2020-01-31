@@ -135,7 +135,7 @@ private:
 		MPI_Comm_rank(local_comm,&rank);
 		return rank;
 	}
-	
+
 	void _M_test() {
 		if( local_rank() == 0 ){
 			int test = true;

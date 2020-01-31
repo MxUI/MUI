@@ -137,6 +137,12 @@ template<typename T> inline T frexp10(T arg, int &exp) {
 	return arg * std::pow(10, -(exp));
 }
 
+template<typename T> inline T frexp10(T arg, long &exp) {
+	if(almost_equal(arg, static_cast<T>(0))) exp = 0;
+	else exp = 1 + static_cast<long>(std::floor(std::log10(std::fabs(arg))));
+	return arg * std::pow(10, -(exp));
+}
+
 template<class T> inline T threshold(T x)
 {
 	return std::numeric_limits<T>::epsilon() * std::fabs(x);
