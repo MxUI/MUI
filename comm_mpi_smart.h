@@ -48,6 +48,8 @@
 #ifndef COMM_MPI_SMART_H
 #define COMM_MPI_SMART_H
 
+#include <cstdint>
+#include <cstdlib>
 #include "util.h"
 #include "comm.h"
 #include "comm_mpi.h"
@@ -70,6 +72,12 @@ private:
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if( is_sending[i] ){
+				if(bytes->size() > INT_MAX){
+					std::cerr << "Trying to send more data than it's possible with MPI_Isend.\n"
+						<< "This is likely because there are too much data per MPI rank.\n"
+						<< "The program will now stop. Increase the number of MPI rank and try again." << std::endl;
+					std::abort();
+				}
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0, 
 				          domain_remote_, &(send_buf.back().first));
