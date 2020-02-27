@@ -14,7 +14,7 @@ else (MPI_FOUND)
 	message(SEND_ERROR "MPI not found")
 endif (MPI_FOUND)
 
-option(use_RBF, OFF)
+option(use_RBF OFF)
 
 if(use_RBF)
     find_package(Eigen3 REQUIRED)
