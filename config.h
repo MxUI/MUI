@@ -69,6 +69,7 @@ struct one_dim {
 	using EXCEPTION = exception_segv;
 
 	static const bool FIXEDPOINTS = false;
+	static const bool SUBITER = false;
 };
 
 struct two_dim {
@@ -84,6 +85,7 @@ struct two_dim {
 	using EXCEPTION = exception_segv;
 
 	static const bool FIXEDPOINTS = false;
+	static const bool SUBITER = false;
 };
 
 struct three_dim {
@@ -99,6 +101,7 @@ struct three_dim {
 	using EXCEPTION = exception_segv;
 
 	static const bool FIXEDPOINTS = false;
+	static const bool SUBITER = false;
 };
 
 // backward-compatibility

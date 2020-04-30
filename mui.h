@@ -98,6 +98,7 @@ namespace mui {
 			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 			using EXCEPTION = exception_segv;\
 			static const bool FIXEDPOINTS = false;\
+			static const bool SUBITER = false;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
@@ -146,6 +147,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 			using EXCEPTION = exception_segv;\
 			static const bool FIXEDPOINTS = false;\
+			static const bool SUBITER = false;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
@@ -194,6 +196,7 @@ struct config_custom {
 	using data_types = type_list<int,double,float>;
 	using EXCEPTION = exception_segv;
     static const bool FIXEDPOINTS = false;
+    static const bool SUBITER = false;
 };
 ******************************************************************************/
 
