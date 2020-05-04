@@ -365,29 +365,36 @@ public:
 			acquire();
 		}
 
-		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
-
 		if( SUBITER) {
-			std::pair<time_type,time_type> t_lower(t_sampler.get_lower_bound(t))
-			for( auto first=log_subiter.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
-				 last = log_subiter.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first!= last; ++first ){
-				time_type time = first->first;
+			std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
+
+			std::pair<time_type,time_type> t_lower(t_sampler.get_lower_bound(t.first)-threshold(t.first),
+												   t_sampler.get_lower_bound(t.second)-threshold(t.second));
+			std::pair<time_type,time_type> t_upper(t_sampler.get_upper_bound(t.first)+threshold(t.first),
+												   t_sampler.get_upper_bound(t.second)+threshold(t.second));
+			for( auto first = log_subiter.lower_bound(t_lower), last = log_subiter.upper_bound(t_upper);
+				 first != last; ++first ){
+				std::pair<time_type,time_type> time = first->first;
 				const auto& iter = first->second.find(attr);
 				if( iter == first->second.end() ) continue;
 				v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 			}
+
+			return t_sampler.filter(t, v);
 		}
 		else {
-			for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
-				 last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first!= last; ++first ){
+			std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
+
+			for( auto first = log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+				 last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first != last; ++first ){
 				time_type time = first->first;
 				const auto& iter = first->second.find(attr);
 				if( iter == first->second.end() ) continue;
 				v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 			}
-		}
 
-		return t_sampler.filter(t, v);
+			return t_sampler.filter(t, v);
+		}
 	}
 
 	/** \brief Fetch a single parameter from the interface
