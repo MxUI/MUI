@@ -64,6 +64,7 @@ public:
 		cutoff = newcutoff;
 	}
 
+	// Filter using single value for time
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
 		REAL wsum = REAL(0);
@@ -78,12 +79,31 @@ public:
 		}
 		return ( wsum > std::numeric_limits<REAL>::epsilon() ) ? ( vsum / wsum ) : TYPE(0);
 	}
+
+	// Filter using two values for time (sub iteration)
+	template<typename TYPE>
+	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+		REAL wsum = REAL(0);
+		TYPE vsum = TYPE(0);
+		for( auto i: points ) {
+			time_type dt = std::abs(i.first.first - focus.first);
+			if ( dt < cutoff ) {
+				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt * dt / sigma );
+				vsum += i.second * w;
+				wsum += w;
+			}
+		}
+		return ( wsum > std::numeric_limits<REAL>::epsilon() ) ? ( vsum / wsum ) : TYPE(0);
+	}
+
 	time_type get_upper_bound( time_type focus ) const {
 		return focus + cutoff;
 	}
+
 	time_type get_lower_bound( time_type focus ) const {
 		return focus - cutoff;
 	}
+
 	time_type tolerance() const {
 		return time_type(0);
 	}

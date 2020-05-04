@@ -64,6 +64,7 @@ public:
 		right  = newright;
 	}
 
+	// Filter using single value for time
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
 		TYPE sum = TYPE(0);
@@ -74,12 +75,28 @@ public:
 		}
 		return sum;
 	}
+
+	// Filter using two values for time (sub iteration)
+	template<typename TYPE>
+	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+		TYPE sum = TYPE(0);
+		for( auto i: points ) {
+			if ( (i.first.first <= focus.first + right && i.first.first >= focus.first - left)
+				 && (i.first.second <= focus.second + right && i.first.second >= focus.second - left)) {
+				sum += i.second;
+			}
+		}
+		return sum;
+	}
+
 	time_type get_upper_bound( time_type focus ) const {
 		return focus + right;
 	}
+
 	time_type get_lower_bound( time_type focus ) const {
 		return focus - left;
 	}
+
 	time_type tolerance() const {
 		return time_type(0);
 	}	

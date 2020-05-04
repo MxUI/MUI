@@ -63,16 +63,26 @@ public:
 		// to do: initialization
 	}
 
+	// Filter using single value for time
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
 		// to do: interpolation algorithm
 	}
+
+	// Filter using two values for time (sub iteration)
+	template<typename TYPE>
+	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+		// to do: interpolation algorithm
+	}
+
 	time_type get_upper_bound( time_type focus ) const {
 		// to do: return newest time needed with regard to focus
 	}
+
 	time_type get_lower_bound( time_type focus ) const {
 		// to do: return oldest time needed with regard to focus
 	}
+
 	time_type tolerance() const {
 		return time_type(0);
 	}
