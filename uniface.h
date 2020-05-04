@@ -164,9 +164,19 @@ private:
 		}
 
 		time_type current_t() const { return latest_timestamp; }
+		time_type current_t_si() const { return latest_subiter; }
 		time_type next_t() const { return next_timestamp; }
+		time_type next_t_si() const { return next_subiter; }
 		void set_current_t( time_type t ) { latest_timestamp = t; }
+		void set_current_t( std::pair<time_type,time_type> t ) {
+			latest_timestamp = t.first;
+			latest_subiter = t.second;
+		}
 		void set_next_t( time_type t ) { next_timestamp = t; }
+		void set_next_t( std::pair<time_type,time_type> t ) {
+			next_timestamp = t.first;
+			next_subiter = t.second;
+		}
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
 			auto p = std::make_pair(t+threshold(t),t+threshold(t));
@@ -184,7 +194,9 @@ private:
 			return !prefetched;
 		}
 		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
+		time_type latest_subiter = std::numeric_limits<time_type>::lowest();
 		time_type next_timestamp = std::numeric_limits<time_type>::lowest();
+		time_type next_subiter = std::numeric_limits<time_type>::lowest();
 		spans_type recving_spans;
 		spans_type sending_spans;
 		std::vector<point_type> pts_;
@@ -198,6 +210,7 @@ private: // data members
 	dispatcher<message::id_type, std::function<void(message)> > readers;
 
 	std::map<time_type,bin_frame_type> log;
+	std::map<std::pair<time_type,time_type>,bin_frame_type> log_subiter;
 
 	frame_type push_buffer;
 	frame_raw_type push_buffer_raw;
@@ -223,10 +236,23 @@ public:
 		using namespace std::placeholders;
 
 		peers.resize(comm->remote_size());
+
 		readers.link("timestamp", reader_variables<int32_t, time_type>(
-		             std::bind(&uniface::on_recv_confirm, this, _1, _2)));
+					 std::bind(&uniface::on_recv_confirm, this, _1, _2)));
+		readers.link("timestamp_si", reader_variables<int32_t, std::pair<time_type,time_type> >(
+				 	 std::bind(&uniface::on_recv_confirm_si, this, _1, _2)));
 		readers.link("forecast", reader_variables<int32_t, time_type>(
-		             std::bind(&uniface::on_recv_forecast, this, _1, _2)));
+					 std::bind(&uniface::on_recv_forecast, this, _1, _2)));
+		readers.link("forecast_si", reader_variables<int32_t, std::pair<time_type,time_type> >(
+				 	 std::bind(&uniface::on_recv_forecast_si, this, _1, _2)));
+		readers.link("data", reader_variables<time_type, frame_type>(
+					 std::bind(&uniface::on_recv_data, this, _1, _2)));
+		readers.link("data_si", reader_variables<std::pair<time_type,time_type>, frame_type>(
+				 	 std::bind(&uniface::on_recv_data_si, this, _1, _2)));
+		readers.link("rawdata", reader_variables<int32_t, time_type, frame_raw_type>(
+					 std::bind(&uniface::on_recv_rawdata, this, _1, _2, _3)));
+		readers.link("rawdata_si", reader_variables<int32_t, std::pair<time_type,time_type>, frame_raw_type>(
+				 	 std::bind(&uniface::on_recv_rawdata_si, this, _1, _2, _3)));
 		readers.link("receiving span", reader_variables<int32_t, time_type, time_type, span_t>(
 		             std::bind(&uniface::on_recv_span, this, _1, _2, _3, _4)));
 		readers.link("sending span", reader_variables<int32_t, time_type, time_type, span_t>(
@@ -235,10 +261,6 @@ public:
 					 std::bind(&uniface::on_send_disable, this, _1)));
 		readers.link("sending disable", reader_variables<int32_t>(
 					 std::bind(&uniface::on_recv_disable, this, _1)));
-		readers.link("data", reader_variables<time_type, frame_type>(
-		             std::bind(&uniface::on_recv_data, this, _1, _2)));
-		readers.link("rawdata", reader_variables<int32_t, time_type, frame_raw_type>(
-		             std::bind(&uniface::on_recv_rawdata, this, _1, _2, _3)));
 		readers.link("points", reader_variables<int32_t, std::vector<point_type>>(
 		             std::bind(&uniface::on_recv_points, this, _1, _2)));
 		readers.link("assignedVals", reader_variables<std::string, storage_single_t>(
@@ -327,12 +349,12 @@ public:
 
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	fetch( const std::string& attr,const point_type focus, const time_type t,
-	       SAMPLER& sampler, const TIME_SAMPLER &t_sampler,
-		   bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+	fetch( const std::string& attr,const point_type focus,const time_type t,
+		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler,bool barrier_enabled = true,
+		   time_type barrier_time = std::numeric_limits<time_type>::lowest(),
 		   ADDITIONAL && ... additional ) {
 		if(barrier_enabled){
-			if(barrier_time == std::numeric_limits<time_type>::min())
+			if(barrier_time == std::numeric_limits<time_type>::lowest())
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
@@ -342,13 +364,50 @@ public:
 
 		std::vector<std::pair<time_type,typename SAMPLER::OTYPE> > v;
 
-		for( auto first=log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
-		     last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first!= last; ++first ){
+		for( auto first = log.lower_bound(t_sampler.get_lower_bound(t)-threshold(t)),
+			 last = log.upper_bound(t_sampler.get_upper_bound(t)+threshold(t)); first != last; ++first ){
 			time_type time = first->first;
 			const auto& iter = first->second.find(attr);
 			if( iter == first->second.end() ) continue;
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
+
+		return t_sampler.filter(t, v);
+	}
+
+	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
+	typename SAMPLER::OTYPE
+	fetch( const std::string& attr,const point_type focus,const std::pair<time_type,time_type> t,
+		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler,bool barrier_enabled = true,
+		   std::pair<time_type,time_type> barrier_time = std::pair<time_type,time_type>
+		   (std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest()),
+		   ADDITIONAL && ... additional ) {
+		if(barrier_enabled){
+			std::pair<time_type,time_type> default_bt(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
+			if(barrier_time == default_bt) {
+				barrier_time.first = t_sampler.get_upper_bound(t.first);
+				barrier_time.second = t_sampler.get_upper_bound(t.second);
+			}
+			barrier(barrier_time);
+		}
+		else{
+			acquire();
+		}
+
+		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
+
+		std::pair<time_type,time_type> t_lower(t_sampler.get_lower_bound(t.first)-threshold(t.first),
+											   t_sampler.get_lower_bound(t.second)-threshold(t.second));
+		std::pair<time_type,time_type> t_upper(t_sampler.get_upper_bound(t.first)+threshold(t.first),
+											   t_sampler.get_upper_bound(t.second)+threshold(t.second));
+		for( auto first = log_subiter.lower_bound(t_lower), last = log_subiter.upper_bound(t_upper);
+			 first != last; ++first ){
+			std::pair<time_type,time_type> time = first->first;
+			const auto& iter = first->second.find(attr);
+			if( iter == first->second.end() ) continue;
+			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
+		}
+
 		return t_sampler.filter(t, v);
 	}
 
@@ -367,11 +426,11 @@ public:
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
         std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
-                  bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+                  bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::lowest(),
                   ADDITIONAL && ... additional ) {
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		if(barrier_enabled){
-			if(barrier_time == std::numeric_limits<time_type>::min())
+			if(barrier_time == std::numeric_limits<time_type>::lowest())
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
@@ -397,11 +456,11 @@ public:
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
     std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler,
-			      bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::min(),
+			      bool barrier_enabled = true, time_type barrier_time = std::numeric_limits<time_type>::lowest(),
 			      ADDITIONAL && ... additional ) {
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		if(barrier_enabled){
-			if(barrier_time == std::numeric_limits<time_type>::min())
+			if(barrier_time == std::numeric_limits<time_type>::lowest())
 				barrier_time = t_sampler.get_upper_bound(t);
 			barrier(barrier_time);
 		}
@@ -457,13 +516,50 @@ public:
 			push_buffer.clear();
 		}
 
-		comm->send(message::make("timestamp", comm->local_rank(), timestamp), not_disabled);
+		comm->send(message::make("timestamp",comm->local_rank(),timestamp), not_disabled);
 
-		return std::count( is_sending.begin(), is_sending.end(), true );
+		return std::count( is_sending.begin(),is_sending.end(),true );
+	}
+
+	int commit( std::pair<time_type,time_type> timestamp ) {
+		std::vector<bool> is_sending(comm->remote_size(), true);
+		std::vector<bool> not_disabled(comm->remote_size(), true);
+
+		if( (((span_start < timestamp.first) || almost_equal(span_start, timestamp.first)) && ((timestamp.first < span_timeout) || almost_equal(timestamp.first, span_timeout))) ) {
+			for( std::size_t i=0; i<peers.size(); ++i ) {
+				if(!peers[i].is_recv_disabled()){
+					is_sending[i] = peers[i].is_recving( timestamp.first, current_span );
+					not_disabled[i] = true;
+				}
+				else
+					is_sending[i] = false;
+			}
+		}
+
+		if( FIXEDPOINTS ) {
+			if( push_buffer_pts.size() > 0 ) {
+				comm->send(message::make("points",comm->local_rank(),std::move(push_buffer_pts)), is_sending);
+				initialized_pts_ = true;
+			}
+			comm->send(message::make("rawdata_si",comm->local_rank(),timestamp,std::move(push_buffer_raw)), is_sending);
+			push_buffer_raw.clear();
+			push_buffer_pts.clear();
+		}
+		else {
+			comm->send(message::make("data_si",timestamp,std::move(push_buffer)), is_sending);
+			push_buffer.clear();
+		}
+
+		comm->send(message::make("timestamp_si",comm->local_rank(),timestamp), not_disabled);
+
+		return std::count( is_sending.begin(),is_sending.end(),true );
 	}
 
 	void forecast( time_type timestamp ) {
 		comm->send(message::make("forecast", comm->local_rank(), timestamp));
+	}
+	void forecast( std::pair<time_type,time_type> timestamp ) {
+		comm->send(message::make("forecast_si", comm->local_rank(), timestamp));
 	}
 
 	bool is_ready( const std::string& attr, time_type t ) const {
@@ -482,6 +578,20 @@ public:
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
 				return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
 						(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
+			acquire(); // To avoid infinite-loop when synchronous communication
+		}
+		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
+			std::cerr << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+	}
+
+	void barrier( std::pair<time_type,time_type> t ) {
+		auto start = std::chrono::system_clock::now();
+		for(;;) {    // barrier must be thread-safe because it is called in fetch()
+			std::lock_guard<std::mutex> lock(mutex);
+			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+				return (p.is_send_disabled() ? true : !p.is_sending(t.first,recv_span)) ||
+						((((p.current_t() > t.first) || almost_equal(p.current_t(), t.first)) || (p.next_t() > t.first)) &&
+						(((p.current_t_si() > t.second) || almost_equal(p.current_t_si(), t.second)) || (p.next_t_si() > t.second))); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
@@ -551,8 +661,14 @@ private:
 	void on_recv_confirm( int32_t sender, time_type timestamp ) {
 		peers.at(sender).set_current_t(timestamp);
 	}
+	void on_recv_confirm_si( int32_t sender, std::pair<time_type,time_type> timestamp ) {
+		peers.at(sender).set_current_t(timestamp);
+	}
 
 	void on_recv_forecast( int32_t sender, time_type timestamp ) {
+		peers.at(sender).set_next_t(timestamp);
+	}
+	void on_recv_forecast_si( int32_t sender, std::pair<time_type,time_type> timestamp ) {
 		peers.at(sender).set_next_t(timestamp);
 	}
 
@@ -569,10 +685,27 @@ private:
 		}
 		log.erase(log.begin(), log.upper_bound(timestamp-memory_length));
 	}
+	void on_recv_data_si( std::pair<time_type,time_type> timestamp, frame_type frame ) {
+		// when message.id_ == "data"
+		auto itr = log_subiter.find(timestamp);
+
+		if( itr == log_subiter.end() ) std::tie(itr,std::ignore) = log_subiter.insert(std::make_pair(timestamp,bin_frame_type()));
+		auto& cur = itr->second;
+		for( auto& p: frame ){
+			auto pstr = cur.find(p.first);
+			if( pstr == cur.end() ) cur.insert(std::make_pair(std::move(p.first),spatial_t(std::move(p.second))));
+			else pstr->second.insert(p.second);
+		}
+		//log_subiter.erase(log_subiter.begin(), log_subiter.upper_bound(timestamp-memory_length));
+	}
 
 	void on_recv_rawdata( int32_t sender, time_type timestamp, frame_raw_type frame ) {
 		frame_type buf = associate( sender, frame );
 		on_recv_data( timestamp, buf );
+	}
+	void on_recv_rawdata_si( int32_t sender, std::pair<time_type,time_type> timestamp, frame_raw_type frame ) {
+		frame_type buf = associate( sender, frame );
+		on_recv_data_si( timestamp, buf );
 	}
 
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
@@ -630,18 +763,3 @@ private:
 }
 
 #endif // _UNIFACE_H
-
-// TO-DO
-// [x] in uniface::barrier: give time-out warning  <- requires try_recv
-// [x] void uniface::forget( time_type time );
-// [x] void uniface::forget( time_type begin, time_type end );
-// [x] void uniface::set_memory( time_type length );
-// [x] bool uniface::is_ready( std::string attr );
-// [x] void uniface::forecast( time_type stamp );
-// [x] python wrapper
-// [ ] linear solver
-// [ ] config generator
-// [ ] logger
-// [ ] periodicity policy
-// [ ] shm://domain/interface, create pipes in /dev/shm/interface
-// [ ] void uniface::recommit( time_type stamp, INT version );
