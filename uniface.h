@@ -434,12 +434,12 @@ public:
 
 	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				if(!peers[i].is_recv_disabled()){
-					is_sending[i] = peers[i].is_recving( timestamp, current_span );
-					not_disabled[i] = true;
+				if(peers[i].is_recv_disabled()){
+				  is_sending[i] = false;
+				  not_disabled[i] = false;
 				}
 				else
-					is_sending[i] = false;
+				  is_sending[i] = peers[i].is_recving( timestamp, current_span );
 			}
 		}
 
