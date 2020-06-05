@@ -430,7 +430,7 @@ public:
 	  */
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    std::vector<bool> not_disabled(comm->remote_size(), true);
+	    std::vector<bool> not_disabled(comm->remote_size(), false);
 
 	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
