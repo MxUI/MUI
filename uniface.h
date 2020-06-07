@@ -474,7 +474,7 @@ public:
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-			return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
+			return (p.is_send_disabled()) || (!p.is_sending(t,recv_span)) ||
 					(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
 	}
 
@@ -483,7 +483,7 @@ public:
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
+				return (p.is_send_disabled()) || (!p.is_sending(t,recv_span)) ||
 						(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
