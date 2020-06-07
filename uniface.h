@@ -430,16 +430,19 @@ public:
 	  */
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    std::vector<bool> not_disabled(comm->remote_size(), true);
 
+	    // Check if peer set to disabled
+	    for( std::size_t i=0; i<peers.size(); ++i ) {
+	    	if(peers[i].is_recv_disabled()){
+	    		is_sending[i] = false;
+			}
+		}
+
+	    // Check for smart send
 	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				if(peers[i].is_recv_disabled()){
-				  is_sending[i] = false;
-				  not_disabled[i] = false;
-				}
-				else
-				  is_sending[i] = peers[i].is_recving( timestamp, current_span );
+				if(is_sending[i]) // Check peer wasn't disabled before smart send check
+					is_sending[i] = is_sending[i] = peers[i].is_recving( timestamp, current_span );
 			}
 		}
 
@@ -457,7 +460,7 @@ public:
 			push_buffer.clear();
 		}
 
-		comm->send(message::make("timestamp", comm->local_rank(), timestamp), not_disabled);
+		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_sending);
 
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
