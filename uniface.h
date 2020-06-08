@@ -598,6 +598,7 @@ private:
 	}
 
 	void on_recv_disable( int32_t sender ) {
+		std::cout << "disable recv from peer: " << sender << std::endl;
 		peers.at(sender).set_recv_disable();
 	}
 
