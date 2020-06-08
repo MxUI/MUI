@@ -590,6 +590,7 @@ private:
 	}
 
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
+		std::cout << "disable recv from peer SS: " << sender << std::endl;
 		peers.at(sender).set_recving(start,timeout,std::move(s));
 	}
 
