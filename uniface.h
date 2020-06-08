@@ -172,15 +172,20 @@ private:
 		void set_next_t( time_type t ) { next_timestamp = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			//auto p = std::make_pair(t+threshold(t),t+threshold(t));
-			auto p = std::make_pair(t,t);
+			auto p = std::make_pair(t+threshold(t),t+threshold(t));
 			auto end = spans.upper_bound(p);
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
+			    	std::cout << "Enter scan_spans if" << std::endl;
 					prefetched = true;
-					if( collide(s,itr->second) )  return true;
+					if( collide(s,itr->second) ) {
+						std::cout << "Collide returned true" << std::endl;
+						return true;
+					}
+					else
+						std::cout << "Collide returned false" << std::endl;
 				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
