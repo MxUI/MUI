@@ -174,8 +174,8 @@ private:
 
 			std::cout << "Enter scan_spans_, size:" << spans.size() << std::endl;
 
-			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				std::cout << "t: " << t << "itr->first.second" << itr->first.second << std::endl;
+			for( auto itr = spans.begin(); itr != spans.end(); ++itr ) {
+				std::cout << "t: " << t << " itr->first.first " << itr->first.first << " itr->first.second " << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 			    	std::cout << "Enter scan_spans if" << std::endl;
 					prefetched = true;
