@@ -372,6 +372,7 @@ template<typename CONFIG> bool collide( const sphere<CONFIG>& lhs, const box<CON
 template<typename CONFIG> bool collide( const box<CONFIG>& lhs, const box<CONFIG>& rhs)
 {
     for( uint i=0; i<CONFIG::D; ++i ) {
+    std::cout << "collide: [" << lhs.get_max()[i] " < " << rhs.get_min()[i] << "] [" << rhs.get_max()[i] << " < " << lhs.get_min()[i] << "]" << std::endl;
 	  if( lhs.get_max()[i] < rhs.get_min()[i] || rhs.get_max()[i] < lhs.get_min()[i] ) return false;
     }
 
