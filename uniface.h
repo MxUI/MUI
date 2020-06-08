@@ -467,7 +467,7 @@ public:
 
 		// Logic combine peer sent lists
 		for(size_t i=0; i<comm->remote_size(); i++){
-			is_sending[i] |= is_enabled[i];
+			is_sending[i] = is_sending[i] || is_enabled[i];
 		}
 
 		return std::count( is_sending.begin(), is_sending.end(), true );
