@@ -173,7 +173,7 @@ private:
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
 			//auto p = std::make_pair(t+threshold(t),t+threshold(t));
-			p = std::make_pair(t,t);
+			auto p = std::make_pair(t,t);
 			auto end = spans.upper_bound(p);
 			bool prefetched = false;
 
