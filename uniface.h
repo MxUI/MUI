@@ -435,7 +435,7 @@ public:
 	    // Check if peer set to disabled (not linked to time span)
 	    for( std::size_t i=0; i<peers.size(); ++i ) {
 	    	if(peers[i].is_recv_disabled()){
-	    		std::cout << "Peer disabled: " << i << std::endl;
+	    		std::cout << "Peer completely disabled: " << i << std::endl;
 	    		is_enabled[i] = false;
 			}
 		}
@@ -490,6 +490,13 @@ public:
 	}
 
 	void barrier( time_type t ) {
+
+		std::cout << ":::::::::::::::: Barrier ::::::::::::::::" << std::endl;
+		for(size_t i=0; i<peers.size(); i++) {
+			std::cout << "peer: " << i << " disabled: " << peers[i].is_send_disabled() << " SS: " << peers[i].is_sending(t,recv_span) << std::endl;
+		}
+		std::cout << ":::::::::::::::::::::::::::::::::::::::::" << std::endl;
+
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
@@ -590,7 +597,6 @@ private:
 	}
 
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		std::cout << "disable recv from peer SS: " << sender << std::endl;
 		peers.at(sender).set_recving(start,timeout,std::move(s));
 	}
 
@@ -599,7 +605,6 @@ private:
 	}
 
 	void on_recv_disable( int32_t sender ) {
-		std::cout << "disable recv from peer: " << sender << std::endl;
 		peers.at(sender).set_recv_disable();
 	}
 
