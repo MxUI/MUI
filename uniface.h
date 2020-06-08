@@ -176,7 +176,10 @@ private:
 			auto end = spans.upper_bound(p);
 			bool prefetched = false;
 
+			std::cout << "Enter scan_spans_" << std::endl;
+
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
+				std::cout << "t: " << t << "itr->first.second" << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 			    	std::cout << "Enter scan_spans if" << std::endl;
 					prefetched = true;
