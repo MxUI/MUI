@@ -136,6 +136,9 @@ private:
 		}
 		
 		void set_sending(time_type start, time_type timeout, span_t s) {
+			std::cout << "[" << s.bbox().get_min()[0] << "," << s.bbox().get_min()[1] << "," << s.bbox().get_min()[2] << "] "
+					  << "[" << s.bbox().get_max()[0] << "," << s.bbox().get_max()[1] << "," << s.bbox().get_max()[2] << "]" << std::endl;
+
 			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
 		}
 
