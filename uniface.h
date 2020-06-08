@@ -174,20 +174,10 @@ private:
 			if(spans.size() > 1)
 				end = spans.lower_bound({t,t});
 
-			std::cout << "Enter scan_spans_, size:" << spans.size() << std::endl;
-			std::cout << "end: itr->first.first: " << end->first.first << " itr->first.second: " << end->first.second << std::endl;
-
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				std::cout << "t: " << t << " itr->first.first " << itr->first.first << " itr->first.second " << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
-			    	std::cout << "Enter scan_spans if" << std::endl;
 					prefetched = true;
-					if( collide(s,itr->second) ) {
-						std::cout << "Collide returned true" << std::endl;
-						return true;
-					}
-					else
-						std::cout << "Collide returned false" << std::endl;
+					if( collide(s,itr->second) ) return true;
 				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
@@ -445,21 +435,18 @@ public:
 
 	    // Check if peer set to disabled (not linked to time span)
 	    for( std::size_t i=0; i<peers.size(); ++i ) {
-	    	if(peers[i].is_recv_disabled()){
-	    		std::cout << "Peer completely disabled: " << i << std::endl;
+	    	if(peers[i].is_recv_disabled())
 	    		is_enabled[i] = false;
-			}
 		}
 
 	    // Check for smart send
-	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
+	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) &&
+	    	((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				if(!is_enabled[i]) // Peer is completely disabled
 					is_sending[i] = false;
-				else{ // Check peer using typical smart send procedure
-					std::cout << "Peer disabled SS: " << i << std::endl;
+				else // Check peer using typical smart send procedure
 					is_sending[i] = is_sending[i] = peers[i].is_recving( timestamp, current_span );
-				}
 			}
 		}
 
@@ -501,13 +488,6 @@ public:
 	}
 
 	void barrier( time_type t ) {
-
-		std::cout << ":::::::::::::::: Barrier ::::::::::::::::" << std::endl;
-		for(size_t i=0; i<peers.size(); i++) {
-			std::cout << "peer: " << i << " disabled: " << peers[i].is_send_disabled() << " SS: " << peers[i].is_sending(t,recv_span) << std::endl;
-		}
-		std::cout << ":::::::::::::::::::::::::::::::::::::::::" << std::endl;
-
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
