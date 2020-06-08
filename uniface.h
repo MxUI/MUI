@@ -445,8 +445,10 @@ public:
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				if(!is_enabled[i]) // Peer is completely disabled
 					is_sending[i] = false;
-				else // Check peer using typical smart send procedure
+				else{ // Check peer using typical smart send procedure
+					std::cout << "Peer disabled SS: " << i << std::endl;
 					is_sending[i] = is_sending[i] = peers[i].is_recving( timestamp, current_span );
+				}
 			}
 		}
 
