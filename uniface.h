@@ -169,8 +169,7 @@ private:
 		void set_next_t( time_type t ) { next_timestamp = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			auto p = std::make_pair(t+threshold(t),t+threshold(t));
-			auto end = spans.lower_bound(p);
+			auto end = spans.lower_bound({t,t});
 			bool prefetched = false;
 
 			std::cout << "Enter scan_spans_, size:" << spans.size() << std::endl;
