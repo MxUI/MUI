@@ -169,12 +169,13 @@ private:
 		void set_next_t( time_type t ) { next_timestamp = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			auto end = spans.lower_bound({t,t});
+			auto span_end = spans.lower_bound({t,t});
 			bool prefetched = false;
 
 			std::cout << "Enter scan_spans_, size:" << spans.size() << std::endl;
+			std::cout << "end: itr->first.first: " << span_end->first.first << " itr->first.second: " << span_end->first.second << std::endl;
 
-			for( auto itr = spans.begin(); itr != spans.end(); ++itr ) {
+			for( auto itr = spans.begin(); itr != span_end; ++itr ) {
 				std::cout << "t: " << t << " itr->first.first " << itr->first.first << " itr->first.second " << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 			    	std::cout << "Enter scan_spans if" << std::endl;
