@@ -136,10 +136,7 @@ private:
 		}
 		
 		void set_sending(time_type start, time_type timeout, span_t s) {
-			std::cout << "[" << s.bbox().get_min()[0] << "," << s.bbox().get_min()[1] << "," << s.bbox().get_min()[2] << "] "
-					  << "[" << s.bbox().get_max()[0] << "," << s.bbox().get_max()[1] << "," << s.bbox().get_max()[2] << "]" << std::endl;
-
-			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+			sending_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 
 		void set_pts(std::vector<point_type> pts) {
@@ -178,7 +175,7 @@ private:
 
 			std::cout << "Enter scan_spans_, size:" << spans.size() << std::endl;
 
-			for( auto itr = spans.begin(); itr != end; ++itr ) {
+			for( auto itr = spans.begin(); itr != spans.end(); ++itr ) {
 				std::cout << "t: " << t << "itr->first.second" << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 			    	std::cout << "Enter scan_spans if" << std::endl;
