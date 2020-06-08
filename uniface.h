@@ -435,6 +435,7 @@ public:
 	    // Check if peer set to disabled (not linked to time span)
 	    for( std::size_t i=0; i<peers.size(); ++i ) {
 	    	if(peers[i].is_recv_disabled()){
+	    		std::cout << "Peer disabled" << std::endl;
 	    		is_enabled[i] = false;
 			}
 		}
