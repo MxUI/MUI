@@ -469,7 +469,7 @@ public:
 		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_enabled);
 
 		// Logic combine peer sent lists
-		for(size_t i=0; i<comm->remote_size(); i++){
+		for(std::size_t i=0; i<comm->remote_size(); ++i){
 			is_sending[i] = is_sending[i] || is_enabled[i];
 		}
 
