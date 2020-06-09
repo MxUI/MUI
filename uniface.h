@@ -175,6 +175,7 @@ private:
 				end = spans.lower_bound({t,t});
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
+				std::cout << "Testing: t: " << t << " itr->first.first: " << itr->first.first << " itr->first.second: " << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) ){
