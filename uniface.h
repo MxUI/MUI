@@ -64,7 +64,7 @@
 #include "stream_unordered.h"
 #include "stream_string.h"
 #include "bin.h"
-#include "stream_old.h"
+#include "stream.h"
 
 #ifdef PYTHON_BINDINGS
 #include <pybind11/pybind11.h>

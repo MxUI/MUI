@@ -50,7 +50,7 @@
 
 #include <string>
 
-#include "stream_old.h"
+#include "stream.h"
 
 namespace mui {
 inline istream& operator>>(istream& stream, std::string& ret)

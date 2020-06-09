@@ -50,7 +50,7 @@
 #include "util.h"
 #include "config.h"
 #include "geometry.h"
-#include "stream_old.h"
+#include "stream.h"
 #include "stream_vector.h"
 
 namespace mui {

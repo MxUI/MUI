@@ -51,7 +51,7 @@
 
 #include <tuple>
 
-#include "stream_old.h"
+#include "stream.h"
 
 namespace mui {
 

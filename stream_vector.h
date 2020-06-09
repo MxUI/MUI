@@ -50,7 +50,7 @@
 
 #include <vector>
 
-#include "stream_old.h"
+#include "stream.h"
 
 namespace mui {
 template<typename TYPE>

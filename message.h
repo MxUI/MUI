@@ -50,7 +50,7 @@
 
 #include <memory>
 
-#include "stream_old.h"
+#include "stream.h"
 #include "util.h"
 #include "stream_string.h"
 #include "stream_vector.h"
