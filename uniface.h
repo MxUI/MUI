@@ -451,9 +451,12 @@ public:
 		}
 		*/
 
+	    std::cout << "Peers size: " << peers.size() << std::endl;
+
 	    // Check for smart send
 	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) &&
 	    	((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
+	    	std::cout << "Checking smart send for t:" << timestamp << std::endl;
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				//if(!is_enabled[i]) // Peer is completely disabled
 					//is_sending[i] = false;
