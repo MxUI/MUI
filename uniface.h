@@ -174,6 +174,8 @@ private:
 			if(spans.size() > 1)
 				end = spans.lower_bound({t,t});
 
+			std::cout << "Spans size: " << spans.size() << std::endl;
+
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 				std::cout << "Testing: t: " << t << " itr->first.first: " << itr->first.first << " itr->first.second: " << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
