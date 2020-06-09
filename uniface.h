@@ -128,6 +128,7 @@ private:
 		}
 		
 		void set_recving( time_type start, time_type timeout, span_t s ) {
+			std::cout << "Recv span" << std::endl;
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 		
@@ -174,20 +175,10 @@ private:
 			if(spans.size() > 1)
 				end = spans.lower_bound({t,t});
 
-			std::cout << "Spans size: " << spans.size() << std::endl;
-
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				std::cout << "Testing: t: " << t << " itr->first.first: " << itr->first.first << " itr->first.second: " << itr->first.second << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
-					if( collide(s,itr->second) ){
-						std::cout << "Collide true" << std::endl;
-						return true;
-					}
-					else
-					{
-						std::cout << "Collide false" << std::endl;
-					}
+					if( collide(s,itr->second) ) return true;
 				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
@@ -451,12 +442,9 @@ public:
 		}
 		*/
 
-	    std::cout << "Peers size: " << peers.size() << std::endl;
-
 	    // Check for smart send
 	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) &&
 	    	((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
-	    	std::cout << "Checking smart send for t:" << timestamp << std::endl;
 			for( std::size_t i=0; i<peers.size(); ++i ) {
 				//if(!is_enabled[i]) // Peer is completely disabled
 					//is_sending[i] = false;
