@@ -86,7 +86,7 @@ private:
 	}
 
 	message recv_impl_() {
-		test_completion();
+		//test_completion();
 		std::vector<char> temp;
 		MPI_Status status;
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
