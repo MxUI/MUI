@@ -51,7 +51,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "stream.h"
+#include "stream_old.h"
 
 namespace mui {
 template<typename K, typename V>

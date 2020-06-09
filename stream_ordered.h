@@ -50,7 +50,7 @@
 #include <map>
 #include <set>
 
-#include "stream.h"
+#include "stream_old.h"
 
 namespace mui {
 template<typename K, typename V>

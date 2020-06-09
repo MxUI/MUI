@@ -85,7 +85,7 @@
 #include <omp.h>
 #endif
 
-#include "stream.h"
+#include "stream_old.h"
 #include "point.h"
 
 namespace mui {

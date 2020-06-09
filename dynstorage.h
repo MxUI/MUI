@@ -54,7 +54,7 @@
 #include <typeinfo>
 #include <type_traits>
 
-#include "stream.h"
+#include "stream_old.h"
 #include "util.h"
 
 namespace mui {

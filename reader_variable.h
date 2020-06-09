@@ -52,7 +52,7 @@
 #include <functional>
 #include <utility>
 #include "message.h"
-#include "stream.h"
+#include "stream_old.h"
 #include "stream_tuple.h"
 #include "stream_string.h"
 

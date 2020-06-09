@@ -51,7 +51,7 @@
 #include <memory>
 
 #include "config.h"
-#include "stream.h"
+#include "stream_old.h"
 #include "stream_string.h"
 
 namespace mui {
