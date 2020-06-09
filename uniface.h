@@ -177,7 +177,14 @@ private:
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
-					if( collide(s,itr->second) ) return true;
+					if( collide(s,itr->second) ){
+						std::cout << "Collide true" << std::endl;
+						return true;
+					}
+					else
+					{
+						std::cout << "Collide false" << std::endl;
+					}
 				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
