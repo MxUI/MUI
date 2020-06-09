@@ -175,8 +175,6 @@ private:
 				end = spans.lower_bound({t,t});
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				std:: cout << "Checking collision against [" << s.bbox().get_min()[0] << "," << s.bbox().get_min()[1] << "," << s.bbox().get_min()[2]
-						   << "] [" << s.bbox().get_max()[0] << "," << s.bbox().get_max()[1] << "," << s.bbox().get_max()[2] << "]" << std::endl;
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
