@@ -560,7 +560,10 @@ private:
 	// triggers communication
 	void acquire() {
 		message m = comm->recv();
-		if( m.has_id() ) readers[m.id()](m);
+		if( m.has_id() ){
+			std:: cout << "Message id rcv: " << m.id() << std::endl;
+			readers[m.id()](m);
+		}
 	}
 
 	void on_recv_confirm( int32_t sender, time_type timestamp ) {

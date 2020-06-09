@@ -70,7 +70,6 @@ private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
-		std::cout << "sending to " << remote_size_ << " peers" << std::endl;
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if( is_sending[i] ){
 				if(bytes->size() > INT_MAX){
