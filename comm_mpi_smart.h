@@ -70,6 +70,7 @@ private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
+		std::cout << "sending to " << remote_size_ << " peers" << std::endl;
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if( is_sending[i] ){
 				if(bytes->size() > INT_MAX){
@@ -86,7 +87,7 @@ private:
 	}
 
 	message recv_impl_() {
-		//test_completion();
+		test_completion();
 		std::vector<char> temp;
 		MPI_Status status;
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
