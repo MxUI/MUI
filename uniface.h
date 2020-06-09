@@ -464,7 +464,7 @@ public:
 			push_buffer.clear();
 		}
 
-		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_enabled);
+		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_sending);
 
 		// Logic combine peer sent lists
 		for(std::size_t i=0; i<comm->remote_size(); ++i){
