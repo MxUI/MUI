@@ -464,7 +464,7 @@ public:
 			push_buffer.clear();
 		}
 
-		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_sending);
+		comm->send(message::make("timestamp", comm->local_rank(), timestamp));
 
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
