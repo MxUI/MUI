@@ -128,7 +128,6 @@ private:
 		}
 		
 		void set_recving( time_type start, time_type timeout, span_t s ) {
-			std::cout << "Recv span" << std::endl;
 			recving_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 		
@@ -432,23 +431,21 @@ public:
 	  */
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    //std::vector<bool> is_enabled(comm->remote_size(), true);
+	    std::vector<bool> is_enabled(comm->remote_size(), true);
 
-	    /*
 	    // Check if peer set to disabled (not linked to time span)
 	    for( std::size_t i=0; i<peers.size(); ++i ) {
 	    	if(peers[i].is_recv_disabled())
 	    		is_enabled[i] = false;
 		}
-		*/
 
 	    // Check for smart send
 	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) &&
 	    	((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				//if(!is_enabled[i]) // Peer is completely disabled
-					//is_sending[i] = false;
-				//else // Check peer using typical smart send procedure
+				if(!is_enabled[i]) // Peer is completely disabled
+					is_sending[i] = false;
+				else // Check peer using typical smart send procedure
 					is_sending[i] = peers[i].is_recving( timestamp, current_span );
 			}
 		}
@@ -468,11 +465,6 @@ public:
 		}
 
 		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_sending);
-
-		// Logic combine peer sent lists
-		//for(std::size_t i=0; i<comm->remote_size(); ++i){
-		//	is_sending[i] = is_sending[i] || is_enabled[i];
-		//}
 
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
@@ -561,7 +553,6 @@ private:
 	void acquire() {
 		message m = comm->recv();
 		if( m.has_id() ){
-			std:: cout << "Message id rcv: " << m.id() << std::endl;
 			readers[m.id()](m);
 		}
 	}
