@@ -489,7 +489,7 @@ public:
 			return (p.is_send_disabled()) || (!p.is_sending(t,recv_span)) ||
 					(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
 	}
-/*
+
 	void barrier( time_type t ) {
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
@@ -501,18 +501,6 @@ public:
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
 			std::cerr << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
-	}
-	*/
-	void barrier( time_type t ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (!p.is_sending(t,recv_span)) || (p.current_t() >= t || p.next_t() > t); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-			std::cerr << "MUI Warning. Communication spends over 5 sec." << std::endl;
 	}
 
 	void announce_send_span( time_type start, time_type timeout, span_t s ){
