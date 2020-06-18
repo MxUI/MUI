@@ -742,18 +742,3 @@ private:
 }
 
 #endif // _UNIFACE_H
-
-// TO-DO
-// [x] in uniface::barrier: give time-out warning  <- requires try_recv
-// [x] void uniface::forget( time_type time );
-// [x] void uniface::forget( time_type begin, time_type end );
-// [x] void uniface::set_memory( time_type length );
-// [x] bool uniface::is_ready( std::string attr );
-// [x] void uniface::forecast( time_type stamp );
-// [x] python wrapper
-// [ ] linear solver
-// [ ] config generator
-// [ ] logger
-// [ ] periodicity policy
-// [ ] shm://domain/interface, create pipes in /dev/shm/interface
-// [ ] void uniface::recommit( time_type stamp, INT version );
