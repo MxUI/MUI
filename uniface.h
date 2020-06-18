@@ -136,7 +136,7 @@ private:
 		}
 		
 		void set_sending(time_type start, time_type timeout, span_t s) {
-			sending_spans.emplace(std::make_pair(start,timeout), std::move(s));
+			sending_spans.emplace(std::make_pair(start,timeout),std::move(s));
 		}
 
 		void set_pts(std::vector<point_type> pts) {
@@ -169,14 +169,15 @@ private:
 		void set_next_t( time_type t ) { next_timestamp = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			auto p = std::make_pair(t+threshold(t),t+threshold(t));
-			auto end = spans.upper_bound(p);
 			bool prefetched = false;
+			auto end = spans.end();
+			if(spans.size() > 1)
+				end = spans.lower_bound({t,t});
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
-					if( collide(s,itr->second) )  return true;
+					if( collide(s,itr->second) ) return true;
 				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
@@ -430,16 +431,22 @@ public:
 	  */
 	int commit( time_type timestamp ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    std::vector<bool> not_disabled(comm->remote_size(), true);
+	    std::vector<bool> is_enabled(comm->remote_size(), true);
 
-	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) && ((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
+	    // Check if peer set to disabled (not linked to time span)
+	    for( std::size_t i=0; i<peers.size(); ++i ) {
+	    	if(peers[i].is_recv_disabled())
+	    		is_enabled[i] = false;
+		}
+
+	    // Check for smart send
+	    if( (((span_start < timestamp) || almost_equal(span_start, timestamp)) &&
+	    	((timestamp < span_timeout) || almost_equal(timestamp, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				if(!peers[i].is_recv_disabled()){
-					is_sending[i] = peers[i].is_recving( timestamp, current_span );
-					not_disabled[i] = true;
-				}
-				else
+				if(!is_enabled[i]) // Peer is completely disabled
 					is_sending[i] = false;
+				else // Check peer using typical smart send procedure
+					is_sending[i] = peers[i].is_recving( timestamp, current_span );
 			}
 		}
 
@@ -457,7 +464,7 @@ public:
 			push_buffer.clear();
 		}
 
-		comm->send(message::make("timestamp", comm->local_rank(), timestamp), not_disabled);
+		comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_sending);
 
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
@@ -471,7 +478,7 @@ public:
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for nonexisting attributes.
 			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-			return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
+			return (p.is_send_disabled()) || (!p.is_sending(t,recv_span)) ||
 					(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); });
 	}
 
@@ -480,7 +487,7 @@ public:
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled() ? true : !p.is_sending(t,recv_span)) ||
+				return (p.is_send_disabled()) || (!p.is_sending(t,recv_span)) ||
 						(((p.current_t() > t) || almost_equal(p.current_t(), t)) || (p.next_t() > t)); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
@@ -545,7 +552,9 @@ private:
 	// triggers communication
 	void acquire() {
 		message m = comm->recv();
-		if( m.has_id() ) readers[m.id()](m);
+		if( m.has_id() ){
+			readers[m.id()](m);
+		}
 	}
 
 	void on_recv_confirm( int32_t sender, time_type timestamp ) {
