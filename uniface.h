@@ -532,6 +532,50 @@ public:
 		return std::count( is_sending.begin(), is_sending.end(), true );
 	}
 
+	/** \brief Serializes pushed data and sends it to remote nodes
+      * Serializes pushed data and sends it to remote nodes.
+      * Returns the actual number of peers contacted
+      */
+    int commit( std::pair<time_type,time_type> timestamp ) {
+        std::vector<bool> is_sending(comm->remote_size(), true);
+        std::vector<bool> is_enabled(comm->remote_size(), true);
+
+        // Check if peer set to disabled (not linked to time span)
+        for( std::size_t i=0; i<peers.size(); ++i ) {
+            if(peers[i].is_recv_disabled())
+                is_enabled[i] = false;
+        }
+
+        // Check for smart send using main value
+        if( (((span_start < timestamp.first) || almost_equal(span_start, timestamp.first)) &&
+            ((timestamp.first < span_timeout) || almost_equal(timestamp.first, span_timeout))) ) {
+            for( std::size_t i=0; i<peers.size(); ++i ) {
+                if(!is_enabled[i]) // Peer is completely disabled
+                    is_sending[i] = false;
+                else // Check peer using typical smart send procedure
+                    is_sending[i] = peers[i].is_recving( timestamp.first, current_span );
+            }
+        }
+
+        if( FIXEDPOINTS ) {
+            if( push_buffer_pts.size() > 0 ) {
+                comm->send(message::make("points",comm->local_rank(),std::move(push_buffer_pts)), is_sending);
+                initialized_pts_ = true;
+            }
+            comm->send(message::make("rawdata",comm->local_rank(),timestamp,std::move(push_buffer_raw)), is_sending);
+            push_buffer_raw.clear();
+            push_buffer_pts.clear();
+        }
+        else {
+            comm->send(message::make("data",timestamp,std::move(push_buffer)), is_sending);
+            push_buffer.clear();
+        }
+
+        comm->send(message::make("timestamp", comm->local_rank(), timestamp), is_sending);
+
+        return std::count( is_sending.begin(), is_sending.end(), true );
+    }
+
 	void forecast( time_type timestamp ) {
 		comm->send(message::make("forecast", comm->local_rank(), timestamp));
 	}
