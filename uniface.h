@@ -566,7 +566,7 @@ public:
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled()) || (!p.is_sending(t,recv_span)) ||
+				return (p.is_send_disabled()) || (!p.is_sending(t.first,recv_span)) ||
 						((((p.current_t() > t.first) || almost_equal(p.current_t(), t.first)) || (p.next_t() > t.first)) &&
 						(((p.current_t_si() > t.second) || almost_equal(p.current_t_si(), t.second)) || (p.next_t_si() > t.second))); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
