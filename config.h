@@ -57,64 +57,67 @@ namespace mui {
 template<typename... TYPES> struct type_list {};
 
 struct one_dim {
-	static const int D = 1;
+	using EXCEPTION = exception_segv;		//- Exception handling type
 
-	using REAL = double;
-	using INT  = int;
-	using point_type = point<REAL,D>;
-	using time_type  = REAL; // INT-typed time stamp might be an alternative
-	using data_types = type_list<int32_t,int64_t,double,float,std::string>;
+	static const bool DEBUG = false;		//- Enable extra debugging output
+	static const int D = 1;					//- Dimensionality of the domain
+	static const bool FIXEDPOINTS = false;	//- Enable optimisations for problems with fixed point structure
 
-	static const bool DEBUG = false;
-	using EXCEPTION = exception_segv;
+	using REAL = double;					//- REAL data type
+	using INT  = int;						//- INT data type
 
-	static const bool FIXEDPOINTS = false;
-	static const bool SUBITER = false;
+	using time_type  = REAL;				//- time_type INT for iteration coupling, REAL for exact coupling
+	using point_type = point<REAL,D>;		//- "point" data type and dimensionality
+	using data_types = type_list<int32_t,	//- Data types that can be used in the interface
+								 int64_t,
+								 double,
+								 float,
+								 std::string
+								>;
 };
 
 struct two_dim {
+	using EXCEPTION = exception_segv;
+
+	static const bool DEBUG = false;
 	static const int D = 2;
+	static const bool FIXEDPOINTS = false;
 
 	using REAL = double;
 	using INT  = int;
+
 	using point_type = point<REAL,D>;
-	using time_type  = REAL; // INT-typed time stamp might be an alternative
-	using data_types = type_list<int32_t,int64_t,double,float,std::string>;
-
-	static const bool DEBUG = false;
-	using EXCEPTION = exception_segv;
-
-	static const bool FIXEDPOINTS = false;
-	static const bool SUBITER = false;
+	using time_type  = REAL;
+	using data_types = type_list<int32_t,
+								 int64_t,
+								 double,
+								 float,
+								 std::string
+								>;
 };
 
 struct three_dim {
+	using EXCEPTION = exception_segv;
+
+	static const bool DEBUG = false;
 	static const int D = 3;
+	static const bool FIXEDPOINTS = false;
 
 	using REAL = double;
 	using INT  = int;
+
 	using point_type = point<REAL,D>;
-	using time_type  = REAL; // INT-typed time stamp might be an alternative
-	using data_types = type_list<int32_t,int64_t,double,float,std::string>;
-
-	static const bool DEBUG = false;
-	using EXCEPTION = exception_segv;
-
-	static const bool FIXEDPOINTS = false;
-	static const bool SUBITER = false;
+	using time_type  = REAL;
+	using data_types = type_list<int32_t,
+								 int64_t,
+								 double,
+								 float,
+								 std::string
+								>;
 };
 
 // backward-compatibility
 struct default_config : three_dim {};
-
-/*
- * user can define his own config like this:
- * struct my_config: mui::crunch {
- *   typedef unsigned int INT;
- *
- *   typedef std::array<REAL,D> point_type;
- *  };
- */
 }
 
 #endif

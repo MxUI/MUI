@@ -63,13 +63,6 @@ public:
 		// to do: initialization
 	}
 
-	// Filter using single value for time
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		// to do: interpolation algorithm
-	}
-
-	// Filter using two values for time (sub iteration)
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
 		// to do: interpolation algorithm

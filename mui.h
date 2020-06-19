@@ -89,15 +89,15 @@ namespace mui {
 #ifdef USE_RBF
 #define SPECIALIZE(SUFFIX,REALTYPE,INTTYPE,DIM) \
 		typedef struct config_##SUFFIX {\
+  	  	  	using EXCEPTION = exception_segv;\
+  	  	  	static const bool DEBUG = false;\
 			static const int D = DIM;\
+			static const bool FIXEDPOINTS = false;\
 			using REAL = REALTYPE;\
 			using INT  = INTTYPE;\
 			using point_type = point<REAL,D>;\
 			using time_type  = REAL;\
-			static const bool DEBUG = false;\
 			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
-			using EXCEPTION = exception_segv;\
-			static const bool FIXEDPOINTS = false;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
@@ -137,15 +137,15 @@ SPECIALIZE(3fx,float,int64_t,3);
 #else
 #define SPECIALIZE(SUFFIX,REALTYPE,INTTYPE,DIM) \
 		typedef struct config_##SUFFIX {\
-			static const int D = DIM;\
-			using REAL = REALTYPE;\
-			using INT  = INTTYPE;\
-			using point_type = point<REAL,D>;\
-			using time_type  = REAL;\
-			static const bool DEBUG = false;\
-			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
-			using EXCEPTION = exception_segv;\
-			static const bool FIXEDPOINTS = false;\
+	  		using EXCEPTION = exception_segv;\
+	  		static const bool DEBUG = false;\
+	  		static const int D = DIM;\
+	  		static const bool FIXEDPOINTS = false;\
+	  		using REAL = REALTYPE;\
+	  		using INT  = INTTYPE;\
+	  		using point_type = point<REAL,D>;\
+	  		using time_type  = REAL;\
+	  		using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\

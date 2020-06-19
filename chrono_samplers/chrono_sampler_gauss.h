@@ -64,23 +64,6 @@ public:
 		cutoff = newcutoff;
 	}
 
-	// Filter using single value for time
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-		REAL wsum = REAL(0);
-		TYPE vsum = TYPE(0);
-		for( auto i: points ) {
-			time_type dt = std::abs(i.first - focus);
-			if ( dt < cutoff ) {
-				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt * dt / sigma );
-				vsum += i.second * w;
-				wsum += w;
-			}
-		}
-		return ( wsum > std::numeric_limits<REAL>::epsilon() ) ? ( vsum / wsum ) : TYPE(0);
-	}
-
-	// Filter using two values for time (sub iteration)
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
 		REAL wsum = REAL(0);

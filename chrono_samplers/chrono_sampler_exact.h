@@ -67,23 +67,10 @@ public:
       tolerance = tol*real_precision;
 	}
 
-	// Filter using single value for time
-	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<time_type, TYPE> > &points ) const {
-	    for( auto i: points ) {
-			if ( std::abs(i.first - focus) <= tolerance ) {
-				return i.second;
-			}
-		}
-		return TYPE();
-	}
-
-	// Filter using two values for time (sub iteration)
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
-		for( auto i: points ) {
-			if ( std::abs(i.first.first - focus.first) <= tolerance
-				 && std::abs(i.first.second - focus.second) <= tolerance) {
+	    for( auto i: points ) {
+			if ( std::abs(i.first.first - focus.first) <= tolerance ) {
 				return i.second;
 			}
 		}
