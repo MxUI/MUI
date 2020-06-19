@@ -88,6 +88,8 @@ public:
 	using time_type  = typename CONFIG::time_type;
 	using data_types = typename CONFIG::data_types;
 	using span_t = geometry::any_shape<CONFIG>;
+	static constexpr time_type time_low = std::numeric_limits<time_type>::lowest();
+	static constexpr time_type time_max = std::numeric_limits<time_type>::max();
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
 	template<typename T> struct add_vp_  { using type = std::vector<std::pair<point_type,T> >; };
@@ -188,10 +190,10 @@ private:
 			// otherwise return true;
 			return !prefetched;
 		}
-		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
-		time_type latest_subiter = std::numeric_limits<time_type>::lowest();
-		time_type next_timestamp = std::numeric_limits<time_type>::lowest();
-		time_type next_subiter = std::numeric_limits<time_type>::lowest();
+		time_type latest_timestamp = time_low;
+		time_type latest_subiter = time_low;
+		time_type next_timestamp = time_low;
+		time_type next_subiter = time_low;
 		spans_type recving_spans;
 		spans_type sending_spans;
 		std::vector<point_type> pts_;
@@ -213,13 +215,13 @@ private: // data members
 	std::unordered_map<std::string, storage_single_t > assigned_values;
 
 	std::vector<peer_state> peers;
-	time_type span_start = std::numeric_limits<time_type>::lowest();
-	time_type span_timeout = std::numeric_limits<time_type>::lowest();
+	time_type span_start = time_low;
+	time_type span_timeout = time_low;
 	span_t current_span;
-	time_type recv_start = std::numeric_limits<time_type>::lowest();
-	time_type recv_timeout = std::numeric_limits<time_type>::lowest();
+	time_type recv_start = time_low;
+	time_type recv_timeout = time_low;
 	span_t recv_span;
-	time_type memory_length = std::numeric_limits<time_type>::max();
+	time_type memory_length = time_max;
 	std::mutex mutex;
 	bool initialized_pts_;
 
@@ -356,17 +358,21 @@ public:
 			acquire();
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),time_low);
 
-		for( auto start = log.lower_bound(curr_time_lower), end = log.upper_bound(curr_time_upper); start != end; ++start ) {
-			std::pair<time_type,time_type> time(start->first.first,std::numeric_limits<time_type>::lowest());
+		auto end = log.end();
+		if(log.size() > 1)
+			end = log.upper_bound(curr_time_upper);
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
+			std::pair<time_type,time_type> time(start->first.first,time_low);
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return t_sampler.filter({t,std::numeric_limits<time_type>::lowest()}, v);
+		return t_sampler.filter({t,time_low}, v);
 	}
 
 	/** \brief Fetch from the interface, blocking with barrier at time=t1,t2
@@ -385,7 +391,11 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),t_sampler.get_upper_bound(t2)+threshold(t2));
 
-		for( auto start = log.lower_bound(curr_time_lower), end = log.upper_bound(curr_time_upper); start != end; ++start ) {
+		auto end = log.end();
+		if(log.size() > 1)
+			end = log.upper_bound(curr_time_upper);
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
 			std::pair<time_type,time_type> time(start->first);
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
@@ -409,12 +419,16 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),time_low);
 
-		for( auto first = log.lower_bound(curr_time_lower), last = log.upper_bound(curr_time_upper); first != last; ++first ){
-			const auto& iter = first->second.find(attr);
-			if( iter == first->second.end() ) continue;
+		auto end = log.end();
+		if(log.size() > 1)
+			end = log.upper_bound(curr_time_upper);
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
+			const auto& iter = start->second.find(attr);
+			if( iter == start->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
 			return_points.reserve(ds.size());
 			for( size_t i=0; i<ds.size(); i++ ) {
@@ -442,9 +456,13 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),t_sampler.get_upper_bound(t2)+threshold(t2));
 
-		for( auto first = log.lower_bound(curr_time_lower), last = log.upper_bound(curr_time_upper); first != last; ++first ){
-			const auto& iter = first->second.find(attr);
-			if( iter == first->second.end() ) continue;
+		auto end = log.end();
+		if(log.size() > 1)
+			end = log.upper_bound(curr_time_upper);
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
+			const auto& iter = start->second.find(attr);
+			if( iter == start->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
 			return_points.reserve(ds.size());
 			for( size_t i=0; i<ds.size(); i++ ) {
@@ -469,12 +487,16 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),time_low);
 
-		for( auto first = log.lower_bound(curr_time_lower), last = log.upper_bound(curr_time_upper); first != last; ++first ){
-			const auto& iter = first->second.find(attr);
-			if( iter == first->second.end() ) continue;
+		auto end = log.end();
+		if(log.size() > 1)
+			end = log.upper_bound(curr_time_upper);
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
+			const auto& iter = start->second.find(attr);
+			if( iter == start->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
 			return_values.reserve(ds.size());
 			for( size_t i=0; i<ds.size(); i++ ) {
@@ -502,9 +524,13 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),t_sampler.get_upper_bound(t2)+threshold(t2));
 
-		for( auto first = log.lower_bound(curr_time_lower), last = log.upper_bound(curr_time_upper); first != last; ++first ){
-			const auto& iter = first->second.find(attr);
-			if( iter == first->second.end() ) continue;
+		auto end = log.end();
+		if(log.size() > 1)
+			end = log.upper_bound(curr_time_upper);
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
+			const auto& iter = start->second.find(attr);
+			if( iter == start->second.end() ) continue;
 			const vec& ds = iter->second.template return_data<TYPE>();
 			return_values.reserve(ds.size());
 			for( size_t i=0; i<ds.size(); i++ ) {
@@ -569,7 +595,7 @@ public:
 
 	/** \brief Tests whether data is available at time t1 (or t1,t2)
 	  */
-	bool is_ready( const std::string& attr, time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) const {
+	bool is_ready( const std::string& attr, time_type t1, time_type t2 = time_low ) const {
 		using logitem_ref_t = typename decltype(log)::const_reference;
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for attributes that don't exist.
@@ -581,7 +607,7 @@ public:
 
 	/** \brief Blocking barrier at t1 (or t1,t2). Initiates receive from remote nodes.
 	  */
-	void barrier( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
+	void barrier( time_type t1, time_type t2 = time_low ) {
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
@@ -628,11 +654,11 @@ public:
 	/** \brief Removes log between (-inf, @end]
 	  */
 	void forget( time_type last, bool reset_log = false ) {
-		std::pair<time_type,time_type> upper_limit(last+threshold(last),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> upper_limit(last+threshold(last),time_low);
 		log.erase(log.begin(), log.upper_bound(upper_limit));
 
 		if(reset_log) {
-			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
+			std::pair<time_type,time_type> curr_time(time_low,time_low);
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time);
@@ -643,12 +669,12 @@ public:
 	/** \brief Removes log between [@first, @last]
 	  */
 	void forget( time_type first, time_type last, bool reset_log = false ) {
-		std::pair<time_type,time_type> lower_limit(first-threshold(first),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> upper_limit(last+threshold(last),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> lower_limit(first-threshold(first),time_low);
+		std::pair<time_type,time_type> upper_limit(last+threshold(last),time_low);
 		log.erase(log.lower_bound(lower_limit), log.upper_bound(upper_limit));
 
 		if(reset_log) {
-			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
+			std::pair<time_type,time_type> curr_time(time_low,time_low);
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time);
