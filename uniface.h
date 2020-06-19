@@ -178,7 +178,7 @@ private:
 			bool prefetched = false;
 			auto end = spans.end();
 			if(spans.size() > 1)
-				end = spans.lower_bound({t,t});
+				end = spans.lower_bound(std::make_pair(t,t));
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
@@ -372,7 +372,7 @@ public:
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return t_sampler.filter({t,time_low}, v);
+		return t_sampler.filter(t, v);
 	}
 
 	/** \brief Fetch from the interface, blocking with barrier at time=t1,t2
@@ -402,7 +402,7 @@ public:
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return t_sampler.filter({t1,t2}, v);
+		return t_sampler.filter(std::make_pair(t1,t2), v);
 	}
 
 	/** \brief Fetch points currently stored in the interface, blocking with barrier at time=t

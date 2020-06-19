@@ -64,14 +64,32 @@ public:
 		cutoff = newcutoff;
 	}
 
+	//- Filter based on single time value
+	template<typename TYPE>
+	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+		REAL wsum = REAL(0);
+		TYPE vsum = TYPE(0);
+		for( auto i: points ) {
+			time_type dt = std::abs(i.first.first - focus);
+			if ( dt < cutoff ) {
+				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt * dt / sigma );
+				vsum += i.second * w;
+				wsum += w;
+			}
+		}
+		return ( wsum > std::numeric_limits<REAL>::epsilon() ) ? ( vsum / wsum ) : TYPE(0);
+	}
+
+	//- Filter based on two time values
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
 		REAL wsum = REAL(0);
 		TYPE vsum = TYPE(0);
 		for( auto i: points ) {
-			time_type dt = std::abs(i.first.first - focus.first);
-			if ( dt < cutoff ) {
-				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt * dt / sigma );
+			time_type dt1 = std::abs(i.first.first - focus.first);
+			time_type dt2 = std::abs(i.first.second - focus.second);
+			if ( dt1 < cutoff && dt2 < cutoff ) {
+				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt1 * dt1 / sigma );
 				vsum += i.second * w;
 				wsum += w;
 			}
