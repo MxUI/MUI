@@ -661,7 +661,8 @@ public:
 			std::pair<time_type,time_type> curr_time(time_low,time_low);
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
-				peers.at(i).set_current_t(curr_time);
+				peers.at(i).set_current_t(curr_time.first);
+				peers.at(i).set_current_sub(curr_time.second);
 			}
 		}
 	}
@@ -677,7 +678,8 @@ public:
 			std::pair<time_type,time_type> curr_time(time_low,time_low);
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
-				peers.at(i).set_current_t(curr_time);
+				peers.at(i).set_current_t(curr_time.first);
+				peers.at(i).set_current_sub(curr_time.second);
 			}
 		}
 	}
