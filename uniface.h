@@ -345,6 +345,32 @@ public:
 		return storage_cast<TYPE&>(n);
 	}
 
+	/** \brief Fetch a single parameter from the interface
+	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
+	  * blocking with barrier at time=t
+	  */
+	template<typename TYPE>
+	TYPE fetch( const std::string& attr, const time_type t) {
+		barrier(t);
+
+		storage_single_t& n = assigned_values[attr];
+		if( !n ) return TYPE();
+		return storage_cast<TYPE&>(n);
+	}
+
+	/** \brief Fetch a single parameter from the interface
+	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
+	  * blocking with barrier at time =t1,t2
+	  */
+	template<typename TYPE>
+	TYPE fetch( const std::string& attr, const time_type t1, const time_type t2) {
+		barrier(t1, t2);
+
+		storage_single_t& n = assigned_values[attr];
+		if( !n ) return TYPE();
+		return storage_cast<TYPE&>(n);
+	}
+
     /** \brief Fetch from the interface, blocking with barrier at time=t
 	  */
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
