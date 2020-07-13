@@ -651,10 +651,26 @@ public:
 		comm->send(message::make("receivingDisable", comm->local_rank()));
 	}
 
-	/** \brief Removes log between (-inf, @end]
+	/** \brief Removes log between (-inf, @last]
 	  */
 	void forget( time_type last, bool reset_log = false ) {
 		std::pair<time_type,time_type> upper_limit(last+threshold(last),time_low);
+		log.erase(log.begin(), log.upper_bound(upper_limit));
+
+		if(reset_log) {
+			std::pair<time_type,time_type> curr_time(time_low,time_low);
+			if(!log.empty()) curr_time = log.rbegin()->first;
+			for(size_t i=0; i<peers.size(); i++) {
+				peers.at(i).set_current_t(curr_time.first);
+				peers.at(i).set_current_sub(curr_time.second);
+			}
+		}
+	}
+
+	/** \brief Removes log between ([-inf,-inf], [@last.first,@last.second]]
+	  */
+	void forget( std::pair<time_type, time_type> last, bool reset_log = false ) {
+		std::pair<time_type,time_type> upper_limit(last.first+threshold(last.first),last.second+threshold(last.second));
 		log.erase(log.begin(), log.upper_bound(upper_limit));
 
 		if(reset_log) {
@@ -672,6 +688,23 @@ public:
 	void forget( time_type first, time_type last, bool reset_log = false ) {
 		std::pair<time_type,time_type> lower_limit(first-threshold(first),time_low);
 		std::pair<time_type,time_type> upper_limit(last+threshold(last),time_low);
+		log.erase(log.lower_bound(lower_limit), log.upper_bound(upper_limit));
+
+		if(reset_log) {
+			std::pair<time_type,time_type> curr_time(time_low,time_low);
+			if(!log.empty()) curr_time = log.rbegin()->first;
+			for(size_t i=0; i<peers.size(); i++) {
+				peers.at(i).set_current_t(curr_time.first);
+				peers.at(i).set_current_sub(curr_time.second);
+			}
+		}
+	}
+
+	/** \brief Removes log between [[@first.first,@first.second], [@last.first,@last.second]]
+	  */
+	void forget( std::pair<time_type, time_type> first, std::pair<time_type, time_type> last, bool reset_log = false ) {
+		std::pair<time_type,time_type> lower_limit(first.first-threshold(first.first),first.second-threshold(first.second));
+		std::pair<time_type,time_type> upper_limit(last.first+threshold(last.first),last.second+threshold(last.second));
 		log.erase(log.lower_bound(lower_limit), log.upper_bound(upper_limit));
 
 		if(reset_log) {
