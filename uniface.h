@@ -279,13 +279,13 @@ public:
 
 	/** \brief Push the value \c value to the parameter \c attr
 	  * Useful if, for example, you wish to pass a parameter
-	  * rather than a field.
+	  * rather than a field without an associated timestamp
 	  */
 	template<typename TYPE>
 	void push( const std::string& attr, const TYPE value ) {
 		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
-	
+
 #ifdef PYTHON_BINDINGS
     template<typename TYPE>
     void push_many(const std::string& attr, const class py::array_t<REAL>& points,
@@ -340,32 +340,6 @@ public:
 	  */
 	template<typename TYPE>
 	TYPE fetch( const std::string& attr ) {
-		storage_single_t& n = assigned_values[attr];
-		if( !n ) return TYPE();
-		return storage_cast<TYPE&>(n);
-	}
-
-	/** \brief Fetch a single parameter from the interface
-	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
-	  * blocking with barrier at time=t
-	  */
-	template<typename TYPE>
-	TYPE fetch( const std::string& attr, const time_type t) {
-		barrier(t);
-
-		storage_single_t& n = assigned_values[attr];
-		if( !n ) return TYPE();
-		return storage_cast<TYPE&>(n);
-	}
-
-	/** \brief Fetch a single parameter from the interface
-	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
-	  * blocking with barrier at time =t1,t2
-	  */
-	template<typename TYPE>
-	TYPE fetch( const std::string& attr, const time_type t1, const time_type t2) {
-		barrier(t1, t2);
-
 		storage_single_t& n = assigned_values[attr];
 		if( !n ) return TYPE();
 		return storage_cast<TYPE&>(n);
