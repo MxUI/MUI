@@ -71,9 +71,8 @@ public:
 	}
 
 	void init( const char URI[], MPI_Comm world ) {
-		if ( initialized ) {
+		if ( initialized )
 			throw( std::runtime_error("MUI Error [comm_mpi.h]: Duplicate MUI communicator initialization") );
-		}
 
 		// check MPI initialization status
 		int init;
@@ -87,9 +86,8 @@ public:
 		if (world == MPI_COMM_WORLD) MPI_Comm_dup( MPI_COMM_WORLD, &world );
 		MPI_Comm_size( world, &global_size_ );
 		MPI_Comm_rank( world, &global_rank_ );
-		if (global_size_ < 2) {
-			std::cerr <<  "MUI Warning [comm_mpi.h]: Number of global ranks less than 2" << std::endl;
-		}
+		if (global_size_ < 2)
+			std::cout <<  "MUI Warning [comm_mpi.h]: Number of global ranks less than 2" << std::endl;
 
 		// get upper bond for tag hash
 		int prime;

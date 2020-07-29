@@ -82,7 +82,8 @@ public:
 	// public typedefs (see config.h for descriptions)
 	static const int  D     = CONFIG::D;
 	static const bool FIXEDPOINTS = CONFIG::FIXEDPOINTS;
-	static const bool SUBITER = CONFIG::SUBITER;
+	static const bool QUIET = CONFIG::QUIET;
+
 	using REAL = typename CONFIG::REAL;
 	using point_type = typename CONFIG::point_type;
 	using time_type  = typename CONFIG::time_type;
@@ -617,8 +618,10 @@ public:
 					    (((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.next_sub() > t2))); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) )
-			std::cerr << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+			if( !QUIET )
+				std::cout << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+		}
 	}
 
 	/** \brief Announces to all remote nodes "I'll send this span"

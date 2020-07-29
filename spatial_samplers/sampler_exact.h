@@ -63,6 +63,8 @@ public:
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
 
+	static const bool QUIET = CONFIG::QUIET;
+
 	sampler_exact( REAL tol = std::numeric_limits<REAL>::epsilon() ) {
 	    INT exponent;
 		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
@@ -79,7 +81,8 @@ public:
 			}
 		}
 
-		std::cerr << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
+		if( !QUIET )
+			std::cout << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
 
 		return OTYPE();
 	}

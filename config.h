@@ -62,6 +62,7 @@ struct one_dim {
 	static const bool DEBUG = false;		//- Enable extra debugging output
 	static const int D = 1;					//- Dimensionality of the domain
 	static const bool FIXEDPOINTS = false;	//- Enable optimisations for problems with fixed point structure
+	static const bool QUIET = false;		//- If the library is quiet then it will only issue critical warning messages
 
 	using REAL = double;					//- REAL data type
 	using INT  = int;						//- INT data type
@@ -82,6 +83,7 @@ struct two_dim {
 	static const bool DEBUG = false;
 	static const int D = 2;
 	static const bool FIXEDPOINTS = false;
+	static const bool QUIET = false;
 
 	using REAL = double;
 	using INT  = int;
@@ -102,6 +104,7 @@ struct three_dim {
 	static const bool DEBUG = false;
 	static const int D = 3;
 	static const bool FIXEDPOINTS = false;
+	static const bool QUIET = false;
 
 	using REAL = double;
 	using INT  = int;

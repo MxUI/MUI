@@ -221,6 +221,7 @@ struct bin_t {
 private:
 	using point_type = typename CONFIG::point_type;
 	static const int D = CONFIG::D;
+	static const bool QUIET = CONFIG::QUIET;
 
 	std::vector<std::size_t> displs;
 	// sorted[displs[i]] is the first element of the i-th bin
@@ -271,8 +272,8 @@ public:
 
 		if(almost_equal(h, static_cast<REAL>(0))){ // if h is still zero (only in the case of all dimensions being zero) then warn the user as this may be a problem
 			h = static_cast<REAL>(1); // in this special case set h to 1 arbitrarily so bins work numerically
-			if(val.size() > 1)
-				std::cerr << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
+			if(val.size() > 1 && !QUIET)
+				std::cout << "MUI Warning [bin.h]: Bin support size fixed to 1.0, check interface dimensionality or problem decomposition." << std::endl;
 		}
 
 		std::size_t nn=1;

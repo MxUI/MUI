@@ -65,6 +65,8 @@ public:
 	using point_type = typename CONFIG::point_type;
 	using EXCEPTION  = typename CONFIG::EXCEPTION;
 
+	static const bool QUIET = CONFIG::QUIET;
+
 	sampler_rbf( REAL r, std::vector<point_type>& pts, bool conservative=false, double cutoff=1e-9, bool polynomial=false ) :
 	r_(r), 
 	initialised_(false), 
@@ -498,7 +500,8 @@ private:
                     connectivityAB_[i].push_back(bestj);
 
                     if ((!warningSent) && (pointsCount > 120) && (n ==0)) {
-                        std::cerr << "MUI Warning [sampler_rbf.h]: RBF search radius too large." << pointsCount << std::endl;
+                        if( !QUIET )
+                        	std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large." << pointsCount << std::endl;
                         warningSent = true;
                     }
 
@@ -543,7 +546,8 @@ private:
                     connectivityAB_[i].push_back(bestj);
 
                     if ((!warningSent) && (pointsCount > 120) && (n ==0)) {
-                        std::cerr << "MUI Warning [sampler_rbf.h]: RBF search radius too large." << std::endl;
+                    	if( !QUIET )
+                    		std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large." << std::endl;
                         warningSent = true;
                     }
                 }

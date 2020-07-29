@@ -93,6 +93,7 @@ namespace mui {
   	  	  	static const bool DEBUG = false;\
 			static const int D = DIM;\
 			static const bool FIXEDPOINTS = false;\
+			static const bool QUIET = false;\
 			using REAL = REALTYPE;\
 			using INT  = INTTYPE;\
 			using point_type = point<REAL,D>;\
@@ -101,6 +102,9 @@ namespace mui {
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
+		DECLARE_SAMPLER_1ARG(sampler_sum_quintic,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_sph_quintic,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_shepard_quintic,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,config_##SUFFIX)\
@@ -141,6 +145,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 	  		static const bool DEBUG = false;\
 	  		static const int D = DIM;\
 	  		static const bool FIXEDPOINTS = false;\
+	  		static const bool QUIET = false;\
 	  		using REAL = REALTYPE;\
 	  		using INT  = INTTYPE;\
 	  		using point_type = point<REAL,D>;\
@@ -149,6 +154,9 @@ SPECIALIZE(3fx,float,int64_t,3);
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
+		DECLARE_SAMPLER_1ARG(sampler_sum_quintic,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_sph_quintic,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_shepard_quintic,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,config_##SUFFIX)\
