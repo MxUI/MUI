@@ -340,9 +340,7 @@ public:
 	  * with the value.
 	  */
 	template<typename TYPE>
-	TYPE fetch( const std::string& attr, bool receive = false ) {
-		if( receive )
-			acquire();
+	TYPE fetch( const std::string& attr ) {
 		storage_single_t& n = assigned_values[attr];
 		if( !n ) return TYPE();
 		return storage_cast<TYPE&>(n);
@@ -357,8 +355,6 @@ public:
 		   ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t));
-		else
-			acquire();
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
@@ -387,8 +383,6 @@ public:
 		   ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
-		else
-			acquire();
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
@@ -416,8 +410,6 @@ public:
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t));
-		else
-			acquire();
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
@@ -450,8 +442,6 @@ public:
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
-		else
-			acquire();
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
@@ -484,8 +474,6 @@ public:
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t));
-		else
-			acquire();
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
@@ -518,8 +506,6 @@ public:
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
-		else
-			acquire();
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
