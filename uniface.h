@@ -340,7 +340,9 @@ public:
 	  * with the value.
 	  */
 	template<typename TYPE>
-	TYPE fetch( const std::string& attr ) {
+	TYPE fetch( const std::string& attr, bool receive = false ) {
+		if( receive )
+			acquire();
 		storage_single_t& n = assigned_values[attr];
 		if( !n ) return TYPE();
 		return storage_cast<TYPE&>(n);
