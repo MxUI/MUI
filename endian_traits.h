@@ -69,7 +69,7 @@
  *
  *      - MUI_FLOAT_BIG_ENDIAN - this will **assume** that the host has a big endian representation of floating values
  *
- *      - MUI_INT_LITTLE_ENDIAN - this will **assume** that the host has a little endian representation of floating values
+ *      - MUI_FLOAT_LITTLE_ENDIAN - this will **assume** that the host has a little endian representation of floating values
  */
 
 #ifndef MUI_ENDIAN_TRAITS_H_
@@ -133,7 +133,7 @@
 #      if defined(__BYTE_ORDER__)
 #        define MUI_CONVERT_INT (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set in compilation options (see endian_traits.h for details)"
 #      endif
 #    endif
 #  endif
@@ -141,7 +141,7 @@
 // Floating points
 #  ifdef MUI_FLOAT_BIG_ENDIAN
 #    ifdef MUI_FLOAT_LITTLE_ENDIAN
-#      error "MUI Error [endian_traits.h]: Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined!"
+#      error "MUI Error [endian_traits.h]: Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined"
 #    else
 #      define MUI_CONVERT_FLOAT false
 #    endif
@@ -153,7 +153,7 @@
 #      if defined(__FLOAT_WORD_ORDER__)
 #        define MUI_CONVERT_FLOAT (__FLOAT_WORD_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set in compilation options (see endian_traits.h for details)"
 #      endif
 #    endif
 #  endif
