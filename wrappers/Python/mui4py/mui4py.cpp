@@ -104,16 +104,29 @@ using std::string;
 #define FETCH_INSTANCE_SINGLE(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
         (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>, const Ttime,\
-        const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::CHRONO_SAMPLER<Tconfig>&, bool, Ttime)) &Tclass::fetch, "") \
+        const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::CHRONO_SAMPLER<Tconfig>&, bool)) &Tclass::fetch, "") \
 
 #define FETCH_INSTANCE_MANY(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch_many_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
         (py::array_t<IO_TYPE,py::array::c_style> (Tclass::*) (const string& attr,const py::array_t<Treal,py::array::c_style> points, const Ttime t,\
         const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>& sampler, const mui::CHRONO_SAMPLER<Tconfig>& t_sampler)) &Tclass::fetch_many, "")
 
+#define FETCH_INSTANCE_SINGLE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
+   .def(replace_str("fetch6_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
+        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>, const Ttime, const Ttime,\
+        const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::CHRONO_SAMPLER<Tconfig>&, bool)) &Tclass::fetch, "")
+
+/* #define FETCH_INSTANCE_MANY6(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
+   .def(replace_str("fetch_many6_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
+        (py::array_t<IO_TYPE,py::array::c_style> (Tclass::*) (const string& attr,const py::array_t<Treal,py::array::c_style> points, const Ttime t1, const Ttime t2\
+        const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>& sampler, const mui::CHRONO_SAMPLER<Tconfig>& t_sampler)) &Tclass::fetch_many6, "") */
+
 #define FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
     FETCH_INSTANCE_MANY(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
     FETCH_INSTANCE_SINGLE(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE)
+
+#define FETCH_INSTANCE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
+    FETCH_INSTANCE_SINGLE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE)
 
 
 #define FETCH_SAMPLER_EXACT(CHRONO_SAMPLER) \
@@ -124,11 +137,25 @@ using std::string;
        FETCH_INSTANCE_SINGLE(sampler_exact,CHRONO_SAMPLER,string)
        // FETCH_INSTANCE(sampler_exact,CHRONO_SAMPLER,bool)
 
+#define FETCH_SAMPLER_EXACT6(CHRONO_SAMPLER) \
+       FETCH_INSTANCE6(sampler_exact,CHRONO_SAMPLER,double) \
+       FETCH_INSTANCE6(sampler_exact,CHRONO_SAMPLER,float) \
+       FETCH_INSTANCE6(sampler_exact,CHRONO_SAMPLER,int64_t) \
+       FETCH_INSTANCE6(sampler_exact,CHRONO_SAMPLER,int32_t)\
+       FETCH_INSTANCE_SINGLE6(sampler_exact,CHRONO_SAMPLER,string)
+       // FETCH_INSTANCE6(sampler_exact,CHRONO_SAMPLER,bool)
+
 #define FETCH_SAMPLER_NUMERICAL(SPATIAL_SAMPLER,CHRONO_SAMPLER) \
        FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,double) \
        FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,float) \
        FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,int64_t) \
        FETCH_INSTANCE(SPATIAL_SAMPLER,CHRONO_SAMPLER,int32_t) 
+
+#define FETCH_SAMPLER_NUMERICAL6(SPATIAL_SAMPLER,CHRONO_SAMPLER) \
+       FETCH_INSTANCE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,double) \
+       FETCH_INSTANCE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,float) \
+       FETCH_INSTANCE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,int64_t) \
+       FETCH_INSTANCE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,int32_t) 
 
 #ifdef USE_RBF
 #define EXPAND_FETCH_NUMERICAL(CHRONO_SAMPLER) \
@@ -142,6 +169,18 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_rbf,CHRONO_SAMPLER)
+	   
+#define EXPAND_FETCH_NUMERICAL6(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_exact,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sum_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_moving_average,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_rbf,CHRONO_SAMPLER)
 
 #define EXPAND_FETCH_EXACT(CHRONO_SAMPLER) \
        FETCH_SAMPLER_EXACT(CHRONO_SAMPLER) \
@@ -154,6 +193,18 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_rbf,CHRONO_SAMPLER)
+
+#define EXPAND_FETCH_EXACT6(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_EXACT6(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sum_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_moving_average,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_rbf,CHRONO_SAMPLER)
 #else
 
 #define EXPAND_FETCH_NUMERICAL(CHRONO_SAMPLER) \
@@ -167,6 +218,17 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER)
 
+#define EXPAND_FETCH_NUMERICAL6(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_exact,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sum_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_moving_average,CHRONO_SAMPLER)
+
 #define EXPAND_FETCH_EXACT(CHRONO_SAMPLER) \
        FETCH_SAMPLER_EXACT(CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
@@ -178,6 +240,17 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_sum_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_moving_average,CHRONO_SAMPLER)
 
+#define EXPAND_FETCH_EXACT6(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_EXACT6(CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_sum_quintic,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_moving_average,CHRONO_SAMPLER)
+
 #endif
 
 #define DEFINE_MUI_UNIFACE_FETCH_5ARGS() \
@@ -185,6 +258,12 @@ using std::string;
        EXPAND_FETCH_NUMERICAL(chrono_sampler_gauss) \
        EXPAND_FETCH_NUMERICAL(chrono_sampler_mean) \
        EXPAND_FETCH_NUMERICAL(chrono_sampler_sum)
+
+#define DEFINE_MUI_UNIFACE_FETCH_6ARGS() \
+       EXPAND_FETCH_EXACT6(chrono_sampler_exact) \
+       EXPAND_FETCH_NUMERICAL6(chrono_sampler_gauss) \
+       EXPAND_FETCH_NUMERICAL6(chrono_sampler_mean) \
+       EXPAND_FETCH_NUMERICAL6(chrono_sampler_sum)
 
 
 #define DECLARE_MUI_CPP2PY_CLASSES_0ARG(FUNCNAME,CLASSNAME)	\
@@ -332,6 +411,7 @@ DECLARE_FUNC_HEADER(uniface) {
     DEFINE_MUI_UNIFACE_PUSH()
     DEFINE_MUI_UNIFACE_FETCH_1ARG()
     DEFINE_MUI_UNIFACE_FETCH_5ARGS()
+    DEFINE_MUI_UNIFACE_FETCH_6ARGS()
 //Temporarily disabled the fetch_point function. Bind the variadic template later.
 //    DEFINE_MUI_UNIFACE_FETCH_POINTS()
     .def(py::init<const string &>());
