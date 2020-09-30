@@ -570,7 +570,7 @@ DECLARE_FUNC_HEADER(sampler_rbf) {
     using Tpoint = typename Tconfig::point_type;
     using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Treal, std::vector<Tpoint> &, bool, Treal, bool>());
+    .def(py::init<Treal, std::vector<Tpoint> &, bool, Treal, bool, const std::string&, bool>());
 }
 
 #endif
