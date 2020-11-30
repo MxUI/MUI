@@ -582,9 +582,20 @@ public:
 		comm->send(message::make("forecast", comm->local_rank(), time));
 	}
 
+	/** \brief Tests whether data is available at time t1
+	  */
+	bool is_ready( const std::string& attr, time_type t1 ) const {
+		using logitem_ref_t = typename decltype(log)::const_reference;
+		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
+			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for attributes that don't exist.
+			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+			return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
+				   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); });
+	}
+
 	/** \brief Tests whether data is available at time t1 (or t1,t2)
 	  */
-	bool is_ready( const std::string& attr, time_type t1, time_type t2 = time_low ) const {
+	bool is_ready( const std::string& attr, time_type t1, time_type t2 ) const {
 		using logitem_ref_t = typename decltype(log)::const_reference;
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for attributes that don't exist.
@@ -594,9 +605,26 @@ public:
 					(((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.current_sub() > t2))); });
 	}
 
+	/** \brief Blocking barrier at t1. Initiates receive from remote nodes.
+	  */
+	void barrier( time_type t1 ) {
+		auto start = std::chrono::system_clock::now();
+		for(;;) {    // barrier must be thread-safe because it is called in fetch()
+			std::lock_guard<std::mutex> lock(mutex);
+			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+				return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
+					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); }) ) break;
+			acquire(); // To avoid infinite-loop when synchronous communication
+		}
+		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+			if( !QUIET )
+				std::cout << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+		}
+	}
+
 	/** \brief Blocking barrier at t1 (or t1,t2). Initiates receive from remote nodes.
 	  */
-	void barrier( time_type t1, time_type t2 = time_low ) {
+	void barrier( time_type t1, time_type t2 ) {
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
