@@ -534,7 +534,7 @@ public:
 	  * Serializes pushed data and sends it to remote nodes.
 	  * Returns the actual number of peers contacted
 	  */
-	int commit( time_type t1, time_type t2 = 0 ) {
+	int commit( time_type t1, time_type t2 = time_low ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
 	    std::vector<bool> is_enabled(comm->remote_size(), true);
 	    std::pair<time_type,time_type> time(t1,t2);
@@ -577,7 +577,7 @@ public:
 
 	/** \brief Sends a forecast of an upcoming time to remote nodes
 	  */
-	void forecast( time_type t1, time_type t2 = 0) {
+	void forecast( time_type t1, time_type t2 = time_low) {
 		std::pair<time_type,time_type> time(t1,t2);
 		comm->send(message::make("forecast", comm->local_rank(), time));
 	}
