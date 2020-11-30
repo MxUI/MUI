@@ -682,6 +682,7 @@ public:
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time.first);
 				peers.at(i).set_current_sub(curr_time.second);
+				std::cout << "MUI: Log reset to: " << curr_time.first << "," << curr_time.second << std::endl;
 			}
 		}
 	}
