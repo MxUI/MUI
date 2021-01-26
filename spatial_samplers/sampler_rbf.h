@@ -402,7 +402,8 @@ private:
                         Eigen::SparseMatrix<REAL> invAA = (solver.solve(I)).sparseView(1e8);
 
                         if( CONFIG::DEBUG ) {
-                            std::cout << "#iterations:     " << solver.iterations() << ". Error: "<< solver.error()<< std::endl;
+                        	std::cout << "MUI [sampler_rbf.h]: invCss iteration count: " << solver.iterations()
+									  << "                          invCss error: " << solver.error() << std::endl;
                         }
 
                         Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (AB * invAA).pruned(1e8);
@@ -681,7 +682,7 @@ private:
 
                     if ((!warningSent) && (pointsCount > 120) && (n ==0)) {
                         if( !QUIET )
-							std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large." << pointsCount << std::endl;
+                        	std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large (No. points found " << pointsCount << ")" << std::endl;
                         warningSent = true;
                     }
 
@@ -730,7 +731,7 @@ private:
 
                     if ((!warningSent) && (pointsCount > 120) && (n ==0)) {
                     	if( !QUIET )
-							std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large." << std::endl;
+                    		std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large (No. points found " << pointsCount << ")" << std::endl;
                         warningSent = true;
                     }
                 }

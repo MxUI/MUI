@@ -76,8 +76,8 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
     for( int i = 0; i < global_size; i++ ) {
         if( global_rank == i ) {
             for( auto &e : map ) {
-            	std::cout << "> rank " << global_rank << " \"" << domain.c_str()
-							<< "\" registered interface " << e.second.c_str()
+            	std::cout << "MUI [lib_mpi_multidomain]: Rank " << global_rank << " \"" << domain
+							<< "\" registered interface " << e.second
 							<< " as " << std::hex << e.first << std::dec << std::endl;
             }
         }
@@ -96,7 +96,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
 
         for( auto &i : all_hashes ) unique_ifs.insert( i );
         n_unique = unique_ifs.size();
-        std::cout << "> " << n_unique << " distinct interfaces found" << std::endl;
+        std::cout << "MUI Info [lib_mpi_multidomain]: " << n_unique << " distinct interface(s) found" << std::endl;
     } else {
         gather( ( int )interfaces.size(), world );
         MPI_Gatherv( my_hashes.data(), my_hashes.size(), MPI_INT, NULL, NULL, NULL, MPI_INT, 0, world );
@@ -115,7 +115,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
             int comm_rank;
             MPI_Comm_rank( comm_ifs, &comm_rank );
             if( comm_rank == 0 ){
-            	std::cout << "> setting up interface " << map[i].c_str() << " [" << std::hex << i
+            	std::cout << "MUI [lib_mpi_multidomain]: Setting up interface " << map[i] << " [" << std::hex << i
             				<< std::dec << "] (rank ids are local to each interface)" << std::endl;
             }
             std::string full_uri( "mpi://" );
