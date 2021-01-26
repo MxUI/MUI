@@ -73,9 +73,9 @@ private:
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if( is_sending[i] ){
 				if(bytes->size() > INT_MAX){
-					std::cerr << "Trying to send more data than it's possible with MPI_Isend.\n"
-						<< "This is likely because there are too much data per MPI rank.\n"
-						<< "The program will now stop. Increase the number of MPI rank and try again." << std::endl;
+					std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
+							  << "This is likely because there is too much data per MPI rank." << std::endl
+							  << "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
 					std::abort();
 				}
 				send_buf.emplace_back(MPI_Request(), bytes);
