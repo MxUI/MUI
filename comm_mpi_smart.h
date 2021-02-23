@@ -68,7 +68,6 @@ public:
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if( is_sending[i] ){
@@ -83,9 +82,12 @@ private:
 				          domain_remote_, &(send_buf.back().first));
 			}
 		}
+		// Block until MPI_Isend calls completed successfully, maximum 60 seconds with printed warnings
+		test_completion_blocking();
 	}
 
 	message recv_impl_() {
+		// Catch any unsent MPI_Isend calls before fetch starts, non-blocking
 		test_completion();
 		std::vector<char> temp;
 		MPI_Status status;
@@ -97,12 +99,36 @@ private:
 		return message::make(std::move(temp));
 	}
 
+	/** \brief Non-blocking check for complete MPI_Isend calls
+     */
 	void test_completion() {
 		for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
 			int test = false;
 			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
 			if( test ) itr = send_buf.erase(itr);
 			else ++itr;
+		}
+	}
+
+	/** \brief Time-limited blocking check for complete MPI_Isend calls
+     */
+	void test_completion_blocking() {
+		int timeout = 0;
+		auto start = std::chrono::system_clock::now();
+		while (send_buf.size() > 0) {
+			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
+				int test = false;
+				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
+				if( test ) itr = send_buf.erase(itr);
+				else ++itr;
+			}
+			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+				timeout++;
+				int time_left = 60 - (timeout*5);
+				if( time_left == 0) break;
+				std::cout << "MUI Warning [comm_mpi_smart.h]: MPI_Isend calls spent over 5 seconds completing, all operations will timeout in "
+						  << time_left << "s" << std::endl;
+			}
 		}
 	}
 };

@@ -406,8 +406,8 @@ public:
     std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
-			barrier(t_sampler.get_upper_bound(t));
+	  if(barrier_enabled)
+	    barrier(t_sampler.get_upper_bound(t));
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
