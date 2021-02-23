@@ -403,7 +403,7 @@ public:
 	/** \brief Fetch points currently stored in the interface, blocking with barrier at time=t
 	 */
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
-    std::vector<point_type>
+	std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 	  if(barrier_enabled)
@@ -499,7 +499,7 @@ public:
 	/** \brief Fetch values currently stored in the interface, blocking with barrier at time=t1,t2
 	 */
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
-    std::vector<TYPE>
+	std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t1, const time_type t2,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
@@ -642,9 +642,9 @@ public:
 	  */
 	void announce_send_span( time_type start, time_type timeout, span_t s ) {
 	    comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(s)));
-		span_start = start;
-		span_timeout = timeout;
-		current_span.swap(s);
+	    span_start = start;
+	    span_timeout = timeout;
+	    current_span.swap(s);
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
