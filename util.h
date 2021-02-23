@@ -58,6 +58,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdint>
+#include <chrono>
 
 // C++ headers
 #include <fstream>
