@@ -84,11 +84,6 @@ public:
 	N_sp_(50),
 	pts_(pts)
 	{
-		if( !CONFIG::FIXEDPOINTS ) {
-			//EXCEPTION(std::runtime_error("Not (yet) implemented for dynamic points."));
-			std::cerr << "MUI Warning [sampler_rbf.h]: RBF not (yet) implemented for dynamic points." << std::endl;
-		}
-
 		//set s to give rbf(r)=cutoff (default 1e-9)
 		s_=std::pow(-std::log(cutoff),0.5) / r_;
 	}
