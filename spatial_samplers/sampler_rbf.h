@@ -82,6 +82,7 @@ public:
 	readMatrix_(readMatrix),
 	fileAddress_(fileAddress),
 	N_sp_(50),
+	M_ap_(50),
 	pts_(pts)
 	{
 		//set s to give rbf(r)=cutoff (default 1e-9)
@@ -147,8 +148,10 @@ private:
 				}
 				CABrow_ = tempV[0];
 				CABcol_ = tempV[1];
-				Hrow_ = tempV[2];
-				Hcol_ = tempV[3];
+				CAArow_ = tempV[2];
+				CAAcol_ = tempV[3];
+				Hrow_ = tempV[4];
+				Hcol_ = tempV[5];
 
             }
 
@@ -177,6 +180,33 @@ private:
                     }
                 }
             }
+
+            std::ifstream inputFileCAA(fileAddress_+"/connectivityAA.dat");
+
+            if (!inputFileCAA) {
+                std::cerr << "Could not locate the file address on the connectivityAA.dat!" << std::endl;
+            } else{
+
+                connectivityAA_.resize(CAArow_);
+
+                for(int i=0; i<CAArow_; ++i){
+
+                    connectivityAA_[i].resize(CAAcol_);
+                    std::string tempS;
+                    while (std::getline(inputFileCAA, tempS)) {
+						// Skips the line if the first two characters are '//'
+						if (tempS[0] == '/' && tempS[1] == '/') continue;
+						std::stringstream lineStream(tempS);
+						std::string tempSS;
+                        std::vector<INT> tempV;
+                        while(std::getline(lineStream, tempSS, ',')) {
+                            tempV.push_back(std::stoi(tempSS));
+                        }
+                        connectivityAA_.push_back(tempV);
+                    }
+                }
+            }
+
 
             H_.resize( Hrow_, Hcol_);
 
@@ -218,7 +248,11 @@ private:
 
             buildConnectivity( data_points, N_sp_ );
 
+            buildConnectivityAA( M_ap_ );
+
             H_.resize( pts_.size(), data_points.size() );
+
+            H_toSmooth_.resize( pts_.size(), data_points.size() );
 
             std::ofstream outputFileMatrixSize(fileAddress_+"/matrixSize.dat");
 
@@ -237,6 +271,10 @@ private:
                 outputFileMatrixSize << "\n";
                 outputFileMatrixSize << "// ****			The number of columns of the Point Connectivity Matrix (N),";
                 outputFileMatrixSize << "\n";
+                outputFileMatrixSize << "// ****			The number of rows of the Point Connectivity Matrix (M), ";
+                outputFileMatrixSize << "\n";
+                outputFileMatrixSize << "// ****			The number of columns of the Point Connectivity Matrix (M),";
+                outputFileMatrixSize << "\n";
                 outputFileMatrixSize << "// ****			The number of rows of the Coupling Matrix (H),";
                 outputFileMatrixSize << "\n";
                 outputFileMatrixSize << "// ****			The number of columns of the Coupling Matrix (H)";
@@ -248,6 +286,10 @@ private:
                 outputFileMatrixSize << connectivityAB_.size();
                 outputFileMatrixSize << ",";
                 outputFileMatrixSize << connectivityAB_[0].size();
+                outputFileMatrixSize << ",";
+                outputFileMatrixSize << connectivityAA_.size();
+                outputFileMatrixSize << ",";
+                outputFileMatrixSize << connectivityAA_[0].size();
                 outputFileMatrixSize << ",";
                 outputFileMatrixSize << H_.rows();
                 outputFileMatrixSize << ",";
@@ -340,9 +382,26 @@ private:
 
                         for( INT j=0 ; j < N_sp_ ; j++) {
                             int glob_j = connectivityAB_[row][j];
-                            H_(row, glob_j) = H_i(0,j);
+                            H_toSmooth_(row, glob_j) = H_i(0,j);
+                            //H_(row, glob_j) = H_i(0,j);
                         }
                     }
+
+                    for( int row=0; row<pts_.size(); row++ ) {
+                        for( INT j=0 ; j < N_sp_ ; j++) {
+                            int glob_j = connectivityAB_[row][j];
+							double temp_sum = 0.;
+
+							for( INT k=0 ; k < M_ap_; k++) {
+								int row_k = connectivityAA_[row][k];
+								temp_sum += H_toSmooth_(row_k, glob_j);
+							}
+
+							temp_sum += H_toSmooth_(row, glob_j);
+							temp_sum /= (M_ap_+1.);
+							H_(row, glob_j)=H_toSmooth_(row, glob_j);
+						}
+					}
 
                 } else{ // Without polynomial terms
 
@@ -737,6 +796,70 @@ private:
 		return;
 	}
 
+	void buildConnectivityAA( const INT MP ) {
+
+        bool warningSent = false;
+
+		std::ofstream outputFileCAA(fileAddress_+"/connectivityAA.dat");
+
+		if (!outputFileCAA) {
+			std::cerr << "Could not locate the file address on the connectivityAA.dat!" << std::endl;
+		} else {
+			outputFileCAA << "// ************************************************************************************************";
+			outputFileCAA << "\n";
+			outputFileCAA << "// **** This is the 'connectivityAA.dat' file of the RBF spatial sampler of the MUI library";
+			outputFileCAA << "\n";
+			outputFileCAA << "// **** This file contains the entire matrix of the Point Connectivity Matrix (M).";
+			outputFileCAA << "\n";
+			outputFileCAA << "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
+			outputFileCAA << "\n";
+			outputFileCAA << "// ************************************************************************************************";
+			outputFileCAA << "\n";
+			outputFileCAA << "// ";
+			outputFileCAA << "\n";
+		}
+
+            connectivityAA_.resize(pts_.size());
+
+            for( INT i=0; i<pts_.size(); i++ ) {
+
+                for( INT n=0; n<MP; n++ ) {
+                    REAL cur = 1e10;
+                    INT bestj = -1;
+                    for( INT j=0; j<pts_.size(); j++ ) {
+
+                        bool added = false;
+                        for( int k=0; k<connectivityAA_[i].size(); k++ ) {
+                            if( connectivityAA_[i][k] == j ) {
+                                added=true;
+                                break;
+                            }
+                        }
+
+                        if(( added ) || (i == j)) {
+                            continue;
+                        }
+
+                        auto d = normsq( pts_[i] - pts_[j] );
+
+                        if( d<cur ) {
+                            cur=d;
+                            bestj = j;
+                        }
+                    }
+
+                    connectivityAA_[i].push_back(bestj);
+
+					outputFileCAA << bestj << ",";
+
+                }
+				outputFileCAA << '\n';
+            }
+
+		outputFileCAA.close();
+		return;
+	}
+
 protected:
 	REAL r_;
 	REAL s_;
@@ -744,6 +867,8 @@ protected:
 	bool initialised_;
     INT CABrow_;
 	INT CABcol_;
+    INT CAArow_;
+	INT CAAcol_;
 	INT Hrow_;
 	INT Hcol_;
 	const bool conservative_;
@@ -753,11 +878,14 @@ protected:
 	const std::string fileAddress_;
 
 	INT N_sp_;
+	INT M_ap_;
 	
 	std::vector<point_type> pts_;
 	Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_;  //< Transformation Matrix
-	
+	Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_toSmooth_;
+
 	std::vector<std::vector<INT> > connectivityAB_;
+	std::vector<std::vector<INT> > connectivityAA_;
 };
 
 }
