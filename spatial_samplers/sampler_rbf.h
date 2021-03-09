@@ -390,16 +390,29 @@ private:
                     for( int row=0; row<pts_.size(); row++ ) {
                         for( INT j=0 ; j < N_sp_ ; j++) {
                             int glob_j = connectivityAB_[row][j];
-							double temp_sum = 0.;
+							REAL h_j_sum = 0.;
+							REAL f_sum = 0.;
 
 							for( INT k=0 ; k < M_ap_; k++) {
-								int row_k = connectivityAA_[row][k];
-								temp_sum += H_toSmooth_(row_k, glob_j);
+								INT row_k=connectivityAA_[row][k];
+								if (row_k==row) {
+									std::cerr << "Invalid row_k value: " << row_k << std::endl;
+									} else{
+										h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
+									}
 							}
 
-							temp_sum += H_toSmooth_(row, glob_j);
-							temp_sum /= (M_ap_+1.);
-							H_(row, glob_j)=H_toSmooth_(row, glob_j);
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT row_k=connectivityAA_[row][k];
+								if (row_k==row) {
+									std::cerr << "Invalid row_k value: " << row_k << std::endl;
+									} else{
+										REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
+										f_sum += w_i*H_toSmooth_(row_k, glob_j);
+									}
+							}
+
+							H_(row, glob_j)=0.5*(f_sum+H_toSmooth_(row, glob_j));
 						}
 					}
 
@@ -668,6 +681,31 @@ private:
 		return w;
 	}
 	
+	///Distances function
+	REAL dist_h_i(INT pts_i, INT pts_j) {
+
+		REAL h_i = 0.0;
+
+		switch (CONFIG::D) {
+			case 1:
+				h_i = std::sqrt( (std::pow((pts_[pts_i][0] - pts_[pts_j][0]),2)));
+				break;
+			case 2:
+				h_i = std::sqrt( (std::pow((pts_[pts_i][0] - pts_[pts_j][0]),2))+
+										(std::pow((pts_[pts_i][1] - pts_[pts_j][1]),2)));
+				break;
+			case 3:
+				h_i = std::sqrt( (std::pow((pts_[pts_i][0] - pts_[pts_j][0]),2))+
+										(std::pow((pts_[pts_i][1] - pts_[pts_j][1]),2))+
+										(std::pow((pts_[pts_i][2] - pts_[pts_j][2]),2)));;
+				break;
+			default:
+				std::cerr << "Wrong number of CONFIG::D" << std::endl;;
+		}
+
+		return h_i;
+	}
+
 	template<template<typename,typename> class CONTAINER>
 	void buildConnectivity( const CONTAINER<ITYPE,CONFIG> &data_points, const INT NP ) {
 
