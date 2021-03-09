@@ -82,7 +82,7 @@ public:
 		}
 
 		if( !QUIET )
-			std::cout << "MUI Warning [sampler_exact.h]: hit nothing" << std::endl;
+			std::cout << "MUI Warning [sampler_exact.h]: Hit nothing, check sampling location..." << std::endl;
 
 		return OTYPE();
 	}

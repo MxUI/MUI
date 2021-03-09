@@ -76,7 +76,6 @@ public:
 		msg.id_size_ = streamed_size(id);
 		std::size_t n = msg.id_size_ + streamed_size(data...);
 		msg.data_.resize(n);
-		
 		auto stream = make_ostream(msg.data_.data());
 		stream << id << std::forward_as_tuple(data...);
 		return msg;

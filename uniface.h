@@ -89,8 +89,6 @@ public:
 	using time_type  = typename CONFIG::time_type;
 	using data_types = typename CONFIG::data_types;
 	using span_t = geometry::any_shape<CONFIG>;
-	static constexpr time_type time_low = std::numeric_limits<time_type>::lowest();
-	static constexpr time_type time_max = std::numeric_limits<time_type>::max();
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
 	template<typename T> struct add_vp_  { using type = std::vector<std::pair<point_type,T> >; };
@@ -191,10 +189,10 @@ private:
 			// otherwise return true;
 			return !prefetched;
 		}
-		time_type latest_timestamp = time_low;
-		time_type latest_subiter = time_low;
-		time_type next_timestamp = time_low;
-		time_type next_subiter = time_low;
+		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
+		time_type latest_subiter = std::numeric_limits<time_type>::lowest();
+		time_type next_timestamp = std::numeric_limits<time_type>::lowest();
+		time_type next_subiter = std::numeric_limits<time_type>::lowest();
 		spans_type recving_spans;
 		spans_type sending_spans;
 		std::vector<point_type> pts_;
@@ -216,13 +214,13 @@ private: // data members
 	std::unordered_map<std::string, storage_single_t > assigned_values;
 
 	std::vector<peer_state> peers;
-	time_type span_start = time_low;
-	time_type span_timeout = time_low;
+	time_type span_start = std::numeric_limits<time_type>::lowest();
+	time_type span_timeout = std::numeric_limits<time_type>::lowest();
 	span_t current_span;
-	time_type recv_start = time_low;
-	time_type recv_timeout = time_low;
+	time_type recv_start = std::numeric_limits<time_type>::lowest();
+	time_type recv_timeout = std::numeric_limits<time_type>::lowest();
 	span_t recv_span;
-	time_type memory_length = time_max;
+	time_type memory_length = std::numeric_limits<time_type>::max();
 	std::mutex mutex;
 	bool initialized_pts_;
 
@@ -357,15 +355,15 @@ public:
 			barrier(t_sampler.get_upper_bound(t));
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),time_low);
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
 
 		auto end = log.end();
 		if(log.size() > 1)
 			end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
-			std::pair<time_type,time_type> time(start->first.first,time_low);
+			std::pair<time_type,time_type> time(start->first.first,std::numeric_limits<time_type>::lowest());
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
 			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
@@ -405,17 +403,17 @@ public:
 	/** \brief Fetch points currently stored in the interface, blocking with barrier at time=t
 	 */
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
-    std::vector<point_type>
+	std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
-			barrier(t_sampler.get_upper_bound(t));
+	  if(barrier_enabled)
+	    barrier(t_sampler.get_upper_bound(t));
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),time_low);
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
 
 		auto end = log.end();
 		if(log.size() > 1)
@@ -478,8 +476,8 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),time_low);
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),time_low);
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
 
 		auto end = log.end();
 		if(log.size() > 1)
@@ -501,7 +499,7 @@ public:
 	/** \brief Fetch values currently stored in the interface, blocking with barrier at time=t1,t2
 	 */
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
-    std::vector<TYPE>
+	std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t1, const time_type t2,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
@@ -534,7 +532,7 @@ public:
 	  * Serializes pushed data and sends it to remote nodes.
 	  * Returns the actual number of peers contacted
 	  */
-	int commit( time_type t1, time_type t2 = 0 ) {
+	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
 	    std::vector<bool> is_enabled(comm->remote_size(), true);
 	    std::pair<time_type,time_type> time(t1,t2);
@@ -577,14 +575,25 @@ public:
 
 	/** \brief Sends a forecast of an upcoming time to remote nodes
 	  */
-	void forecast( time_type t1, time_type t2 = 0) {
+	void forecast( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest()) {
 		std::pair<time_type,time_type> time(t1,t2);
 		comm->send(message::make("forecast", comm->local_rank(), time));
 	}
 
+	/** \brief Tests whether data is available at time t1
+	  */
+	bool is_ready( const std::string& attr, time_type t1 ) const {
+		using logitem_ref_t = typename decltype(log)::const_reference;
+		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
+			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for attributes that don't exist.
+			&& std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+			return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
+				   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); });
+	}
+
 	/** \brief Tests whether data is available at time t1 (or t1,t2)
 	  */
-	bool is_ready( const std::string& attr, time_type t1, time_type t2 = time_low ) const {
+	bool is_ready( const std::string& attr, time_type t1, time_type t2 ) const {
 		using logitem_ref_t = typename decltype(log)::const_reference;
 		return std::any_of(log.begin(), log.end(), [=](logitem_ref_t time_frame) {
 			return time_frame.second.find(attr) != time_frame.second.end(); }) // return false for attributes that don't exist.
@@ -594,9 +603,26 @@ public:
 					(((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.current_sub() > t2))); });
 	}
 
+	/** \brief Blocking barrier at t1. Initiates receive from remote nodes.
+	  */
+	void barrier( time_type t1 ) {
+		auto start = std::chrono::system_clock::now();
+		for(;;) {    // barrier must be thread-safe because it is called in fetch()
+			std::lock_guard<std::mutex> lock(mutex);
+			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+				return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
+					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); }) ) break;
+			acquire(); // To avoid infinite-loop when synchronous communication
+		}
+		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+			if( !QUIET )
+				std::cout << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+		}
+	}
+
 	/** \brief Blocking barrier at t1 (or t1,t2). Initiates receive from remote nodes.
 	  */
-	void barrier( time_type t1, time_type t2 = time_low ) {
+	void barrier( time_type t1, time_type t2 ) {
 		auto start = std::chrono::system_clock::now();
 		for(;;) {    // barrier must be thread-safe because it is called in fetch()
 			std::lock_guard<std::mutex> lock(mutex);
@@ -616,9 +642,9 @@ public:
 	  */
 	void announce_send_span( time_type start, time_type timeout, span_t s ) {
 	    comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(s)));
-		span_start = start;
-		span_timeout = timeout;
-		current_span.swap(s);
+	    span_start = start;
+	    span_timeout = timeout;
+	    current_span.swap(s);
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
@@ -645,11 +671,11 @@ public:
 	/** \brief Removes log between (-inf, @last]
 	  */
 	void forget( time_type last, bool reset_log = false ) {
-		std::pair<time_type,time_type> upper_limit(last+threshold(last),time_low);
+		std::pair<time_type,time_type> upper_limit(last+threshold(last),std::numeric_limits<time_type>::lowest());
 		log.erase(log.begin(), log.upper_bound(upper_limit));
 
 		if(reset_log) {
-			std::pair<time_type,time_type> curr_time(time_low,time_low);
+			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time.first);
@@ -665,7 +691,7 @@ public:
 		log.erase(log.begin(), log.upper_bound(upper_limit));
 
 		if(reset_log) {
-			std::pair<time_type,time_type> curr_time(time_low,time_low);
+			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time.first);
@@ -677,12 +703,12 @@ public:
 	/** \brief Removes log between [@first, @last]
 	  */
 	void forget( time_type first, time_type last, bool reset_log = false ) {
-		std::pair<time_type,time_type> lower_limit(first-threshold(first),time_low);
-		std::pair<time_type,time_type> upper_limit(last+threshold(last),time_low);
+		std::pair<time_type,time_type> lower_limit(first-threshold(first),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> upper_limit(last+threshold(last),std::numeric_limits<time_type>::lowest());
 		log.erase(log.lower_bound(lower_limit), log.upper_bound(upper_limit));
 
 		if(reset_log) {
-			std::pair<time_type,time_type> curr_time(time_low,time_low);
+			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time.first);
@@ -699,7 +725,7 @@ public:
 		log.erase(log.lower_bound(lower_limit), log.upper_bound(upper_limit));
 
 		if(reset_log) {
-			std::pair<time_type,time_type> curr_time(time_low,time_low);
+			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
 				peers.at(i).set_current_t(curr_time.first);

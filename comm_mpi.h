@@ -123,13 +123,14 @@ public:
 		MPI_Comm_remote_size( domain_remote_, &remote_size_ );
 
 		// output for debugging
-		for( int i=0;i<global_size_;i++ ) {
-			if ( i == global_rank_ )
-				std::cout	<<"rank "<<global_rank_<<'\t'
-							<<"identifier "<<URI<<'\t'
-							<<"domain size "<<local_size_<<'\t'
-							<<"peer number "<<remote_size_<<'\t'
-							<<std::endl;
+		for( int i = 0; i < global_size_; i++ ) {
+			if ( i == global_rank_ ) {
+				std::cout	<< "MUI [comm_mpi.h]: rank " << global_rank_ << '\t'
+							<< "identifier " << URI << '\t'
+							<< "domain size " << local_size_ << '\t'
+							<< "peer number " << remote_size_ << '\t'
+							<< std::endl;
+			}
 			MPI_Barrier( world );
 		}
 
