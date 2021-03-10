@@ -136,17 +136,23 @@ class Uniface(CppClass):
     def commit(self, tstamp):
         return self.raw.commit(tstamp)
 
-    def barrier(self, t):
-        self.raw.barrier(t)
+    def barrier(self, t1, t2=None):
+        if t2 is not None:
+            self.raw.barrier(t1, t2)
+        else:
+            self.raw.barrier(t1)
 
     def forget(self, tend, tbegin=0.0):
-        self.raw.forget(tbegin, tend)
+        self.raw.forget(tend, True)
 
     def forecast(self, timestamp):
         self.raw.forecast(timestamp)
 
-    def is_ready(self, attr, t): 
-        self.raw.is_ready(attr, t)
+    def is_ready(self, attr, t1, t2=None):
+        if t2 is not None:
+            self.raw.is_ready(attr, t1, t2)
+        else:
+            self.raw.is_ready(attr, t1)
 
     def set_memory(self, t):
         self.raw.set_memmory(t)
