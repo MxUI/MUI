@@ -383,7 +383,6 @@ private:
                         for( INT j=0 ; j < N_sp_ ; j++) {
                             int glob_j = connectivityAB_[row][j];
                             H_toSmooth_(row, glob_j) = H_i(0,j);
-                            //H_(row, glob_j) = H_i(0,j);
                         }
                     }
 
@@ -477,10 +476,39 @@ private:
 
                         for( INT j=0 ; j < N_sp_ ; j++) {
                             int glob_j = connectivityAB_[row][j];
-                            H_(row, glob_j) = H_i(0,j);
+                            H_toSmooth_(row, glob_j) = H_i(0,j);
                         }
                     }
-                }
+
+                    for( int row=0; row<pts_.size(); row++ ) {
+                        for( INT j=0 ; j < N_sp_ ; j++) {
+                            int glob_j = connectivityAB_[row][j];
+							REAL h_j_sum = 0.;
+							REAL f_sum = 0.;
+
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT row_k=connectivityAA_[row][k];
+								if (row_k==row) {
+									std::cerr << "Invalid row_k value: " << row_k << std::endl;
+									} else{
+										h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
+									}
+							}
+
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT row_k=connectivityAA_[row][k];
+								if (row_k==row) {
+									std::cerr << "Invalid row_k value: " << row_k << std::endl;
+									} else{
+										REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
+										f_sum += w_i*H_toSmooth_(row_k, glob_j);
+									}
+							}
+
+							H_(row, glob_j)=0.5*(f_sum+H_toSmooth_(row, glob_j));
+						}
+					}
+				}
             }else { //conservative
 
                 if (polynomial_){
@@ -568,9 +596,36 @@ private:
 
                     for( INT i=0 ; i < pts_.size() ; i++) {
                         for( INT j=0 ; j < data_points.size() ; j++) {
-                            H_(i, j) = H_more((i+CONFIG::D+1),j);
+                            H_toSmooth_(i, j) = H_more((i+CONFIG::D+1),j);
                         }
                     }
+
+                    for( INT row=0 ; row < pts_.size() ; row++) {
+                        for( INT j=0 ; j < data_points.size() ; j++) {
+							REAL h_j_sum = 0.;
+							REAL f_sum = 0.;
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT row_k=connectivityAA_[row][k];
+								if (row_k==row) {
+									std::cerr << "Invalid row_k value: " << row_k << std::endl;
+									} else{
+										h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
+									}
+							}
+
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT row_k=connectivityAA_[row][k];
+								if (row_k==row) {
+									std::cerr << "Invalid row_k value: " << row_k << std::endl;
+									} else{
+										REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
+										f_sum += w_i*H_toSmooth_(row_k, j);
+									}
+							}
+
+							H_(row, j)=0.5*(f_sum+H_toSmooth_(row, j));
+						}
+					}
 
                 } else{ // Without polynomial terms
 
@@ -636,10 +691,39 @@ private:
 
                             for( INT i=0 ; i < pts_.size() ; i++) {
                                 int glob_i = connectivityAB_[row][i];
-                                H_(glob_i, row) = H_j(i,0);
-                            }
-                        }
-                    }
+                                H_toSmooth_(glob_i, row) = H_j(i,0);
+							}
+						}
+					}
+
+                    for( int row=0; row<data_points.size(); row++ ) {
+                        for( INT i=0 ; i < pts_.size() ; i++) {
+                            int glob_i = connectivityAB_[row][i];
+							REAL h_j_sum = 0.;
+							REAL f_sum = 0.;
+
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT global_k=connectivityAA_[glob_i][k];
+								if (global_k==glob_i) {
+									std::cerr << "Invalid global_k value: " << global_k << std::endl;
+									} else{
+										h_j_sum += std::pow(dist_h_i(glob_i, global_k),(-2));
+									}
+							}
+
+							for( INT k=0 ; k < M_ap_; k++) {
+								INT global_k=connectivityAA_[glob_i][k];
+								if (global_k==glob_i) {
+									std::cerr << "Invalid global_k value: " << global_k << std::endl;
+									} else{
+										REAL w_i=((std::pow(dist_h_i(glob_i, global_k),(-2)))/(h_j_sum));
+										f_sum += w_i*H_toSmooth_(global_k, row);
+									}
+							}
+
+							H_(glob_i, row)=0.5*(f_sum+H_toSmooth_(glob_i, row));
+						}
+					}
                 }
             }
 			if( CONFIG::DEBUG ) {
