@@ -69,7 +69,7 @@ public:
 
 	static const bool QUIET = CONFIG::QUIET;
 
-	sampler_rbf( REAL r, std::vector<point_type>& pts, bool conservative=false, double cutoff=1e-9, bool polynomial=false, const std::string& fileAddress=std::string(), bool readMatrix=false ) :
+	sampler_rbf( REAL r, std::vector<point_type>& pts, bool conservative=false, double cutoff=1e-9, bool polynomial=false, bool smoothFunc=false, const std::string& fileAddress=std::string(), bool readMatrix=false ) :
 	r_(r), 
 	initialised_(false),
 	CABrow_(0),
@@ -79,6 +79,7 @@ public:
 	conservative_(conservative), 
 	consistent_(!conservative),
 	polynomial_(polynomial),
+	smoothFunc_(smoothFunc),
 	readMatrix_(readMatrix),
 	fileAddress_(fileAddress),
 	N_sp_(50),
@@ -180,33 +181,40 @@ private:
                     }
                 }
             }
+            if (smoothFunc_) {
+				std::ifstream inputFileCAA(fileAddress_+"/connectivityAA.dat");
 
-            std::ifstream inputFileCAA(fileAddress_+"/connectivityAA.dat");
+				if (!inputFileCAA) {
+					std::cerr << "Could not locate the file address on the connectivityAA.dat!" << std::endl;
+				} else{
 
-            if (!inputFileCAA) {
-                std::cerr << "Could not locate the file address on the connectivityAA.dat!" << std::endl;
-            } else{
+					if ((CAArow_== 0)||(CAAcol_== 0)) {
+						std::cerr << "Error on the size of connectivityAA matrix in matrixSize.dat! number of rows: " <<
+						CAArow_ << "number of columns: " << CAAcol_ <<
+						". Please make sure the maxtixes were generated with the smoothing function switched on"<< std::endl;
+					} else{
 
-                connectivityAA_.resize(CAArow_);
+						connectivityAA_.resize(CAArow_);
 
-                for(int i=0; i<CAArow_; ++i){
+						for(int i=0; i<CAArow_; ++i){
 
-                    connectivityAA_[i].resize(CAAcol_);
-                    std::string tempS;
-                    while (std::getline(inputFileCAA, tempS)) {
-						// Skips the line if the first two characters are '//'
-						if (tempS[0] == '/' && tempS[1] == '/') continue;
-						std::stringstream lineStream(tempS);
-						std::string tempSS;
-                        std::vector<INT> tempV;
-                        while(std::getline(lineStream, tempSS, ',')) {
-                            tempV.push_back(std::stoi(tempSS));
-                        }
-                        connectivityAA_.push_back(tempV);
-                    }
-                }
-            }
-
+							connectivityAA_[i].resize(CAAcol_);
+							std::string tempS;
+							while (std::getline(inputFileCAA, tempS)) {
+								// Skips the line if the first two characters are '//'
+								if (tempS[0] == '/' && tempS[1] == '/') continue;
+								std::stringstream lineStream(tempS);
+								std::string tempSS;
+								std::vector<INT> tempV;
+								while(std::getline(lineStream, tempSS, ',')) {
+									tempV.push_back(std::stoi(tempSS));
+								}
+								connectivityAA_.push_back(tempV);
+							}
+						}
+					}
+				}
+			}
 
             H_.resize( Hrow_, Hcol_);
 
@@ -248,11 +256,12 @@ private:
 
             buildConnectivity( data_points, N_sp_ );
 
-            buildConnectivityAA( M_ap_ );
-
             H_.resize( pts_.size(), data_points.size() );
 
-            H_toSmooth_.resize( pts_.size(), data_points.size() );
+			if (smoothFunc_) {
+				buildConnectivityAA( M_ap_ );
+				H_toSmooth_.resize( pts_.size(), data_points.size() );
+			}
 
             std::ofstream outputFileMatrixSize(fileAddress_+"/matrixSize.dat");
 
@@ -271,9 +280,9 @@ private:
                 outputFileMatrixSize << "\n";
                 outputFileMatrixSize << "// ****			The number of columns of the Point Connectivity Matrix (N),";
                 outputFileMatrixSize << "\n";
-                outputFileMatrixSize << "// ****			The number of rows of the Point Connectivity Matrix (M), ";
+                outputFileMatrixSize << "// ****			The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
                 outputFileMatrixSize << "\n";
-                outputFileMatrixSize << "// ****			The number of columns of the Point Connectivity Matrix (M),";
+                outputFileMatrixSize << "// ****			The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
                 outputFileMatrixSize << "\n";
                 outputFileMatrixSize << "// ****			The number of rows of the Coupling Matrix (H),";
                 outputFileMatrixSize << "\n";
@@ -287,10 +296,17 @@ private:
                 outputFileMatrixSize << ",";
                 outputFileMatrixSize << connectivityAB_[0].size();
                 outputFileMatrixSize << ",";
-                outputFileMatrixSize << connectivityAA_.size();
-                outputFileMatrixSize << ",";
-                outputFileMatrixSize << connectivityAA_[0].size();
-                outputFileMatrixSize << ",";
+                if (smoothFunc_) {
+					outputFileMatrixSize << connectivityAA_.size();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << connectivityAA_[0].size();
+					outputFileMatrixSize << ",";
+				}else{
+					outputFileMatrixSize << "0";
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << "0";
+					outputFileMatrixSize << ",";
+				}
                 outputFileMatrixSize << H_.rows();
                 outputFileMatrixSize << ",";
                 outputFileMatrixSize << H_.cols();
@@ -380,41 +396,48 @@ private:
 
                         Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (Aas * invCss).pruned(1e8);
 
-                        for( INT j=0 ; j < N_sp_ ; j++) {
-                            int glob_j = connectivityAB_[row][j];
-                            H_toSmooth_(row, glob_j) = H_i(0,j);
-                        }
+                        if (smoothFunc_) {
+							for( INT j=0 ; j < N_sp_ ; j++) {
+								int glob_j = connectivityAB_[row][j];
+								H_toSmooth_(row, glob_j) = H_i(0,j);
+							}
+						}else{
+							for( INT j=0 ; j < N_sp_ ; j++) {
+								int glob_j = connectivityAB_[row][j];
+								H_(row, glob_j) = H_i(0,j);
+							}
+						}
                     }
+					if (smoothFunc_) {
+						for( int row=0; row<pts_.size(); row++ ) {
+							for( INT j=0 ; j < N_sp_ ; j++) {
+								int glob_j = connectivityAB_[row][j];
+								REAL h_j_sum = 0.;
+								REAL f_sum = 0.;
 
-                    for( int row=0; row<pts_.size(); row++ ) {
-                        for( INT j=0 ; j < N_sp_ ; j++) {
-                            int glob_j = connectivityAB_[row][j];
-							REAL h_j_sum = 0.;
-							REAL f_sum = 0.;
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT row_k=connectivityAA_[row][k];
+									if (row_k==row) {
+										std::cerr << "Invalid row_k value: " << row_k << std::endl;
+										} else{
+											h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
+										}
+								}
 
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT row_k=connectivityAA_[row][k];
-								if (row_k==row) {
-									std::cerr << "Invalid row_k value: " << row_k << std::endl;
-									} else{
-										h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
-									}
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT row_k=connectivityAA_[row][k];
+									if (row_k==row) {
+										std::cerr << "Invalid row_k value: " << row_k << std::endl;
+										} else{
+											REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
+											f_sum += w_i*H_toSmooth_(row_k, glob_j);
+										}
+								}
+
+								H_(row, glob_j)=0.5*(f_sum+H_toSmooth_(row, glob_j));
 							}
-
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT row_k=connectivityAA_[row][k];
-								if (row_k==row) {
-									std::cerr << "Invalid row_k value: " << row_k << std::endl;
-									} else{
-										REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
-										f_sum += w_i*H_toSmooth_(row_k, glob_j);
-									}
-							}
-
-							H_(row, glob_j)=0.5*(f_sum+H_toSmooth_(row, glob_j));
 						}
 					}
-
                 } else{ // Without polynomial terms
 
                     for( int row=0; row<pts_.size(); row++ ) {
@@ -474,38 +497,46 @@ private:
 
                         Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (AB * invAA).pruned(1e8);
 
-                        for( INT j=0 ; j < N_sp_ ; j++) {
-                            int glob_j = connectivityAB_[row][j];
-                            H_toSmooth_(row, glob_j) = H_i(0,j);
-                        }
+						if (smoothFunc_) {
+							for( INT j=0 ; j < N_sp_ ; j++) {
+								int glob_j = connectivityAB_[row][j];
+								H_toSmooth_(row, glob_j) = H_i(0,j);
+							}
+						}else{
+							for( INT j=0 ; j < N_sp_ ; j++) {
+								int glob_j = connectivityAB_[row][j];
+								H_(row, glob_j) = H_i(0,j);
+							}
+						}
                     }
+                    if (smoothFunc_) {
+						for( int row=0; row<pts_.size(); row++ ) {
+							for( INT j=0 ; j < N_sp_ ; j++) {
+								int glob_j = connectivityAB_[row][j];
+								REAL h_j_sum = 0.;
+								REAL f_sum = 0.;
 
-                    for( int row=0; row<pts_.size(); row++ ) {
-                        for( INT j=0 ; j < N_sp_ ; j++) {
-                            int glob_j = connectivityAB_[row][j];
-							REAL h_j_sum = 0.;
-							REAL f_sum = 0.;
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT row_k=connectivityAA_[row][k];
+									if (row_k==row) {
+										std::cerr << "Invalid row_k value: " << row_k << std::endl;
+										} else{
+											h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
+										}
+								}
 
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT row_k=connectivityAA_[row][k];
-								if (row_k==row) {
-									std::cerr << "Invalid row_k value: " << row_k << std::endl;
-									} else{
-										h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
-									}
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT row_k=connectivityAA_[row][k];
+									if (row_k==row) {
+										std::cerr << "Invalid row_k value: " << row_k << std::endl;
+										} else{
+											REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
+											f_sum += w_i*H_toSmooth_(row_k, glob_j);
+										}
+								}
+
+								H_(row, glob_j)=0.5*(f_sum+H_toSmooth_(row, glob_j));
 							}
-
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT row_k=connectivityAA_[row][k];
-								if (row_k==row) {
-									std::cerr << "Invalid row_k value: " << row_k << std::endl;
-									} else{
-										REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
-										f_sum += w_i*H_toSmooth_(row_k, glob_j);
-									}
-							}
-
-							H_(row, glob_j)=0.5*(f_sum+H_toSmooth_(row, glob_j));
 						}
 					}
 				}
@@ -594,39 +625,48 @@ private:
                     int r = H_more.rows();
                     int c = H_more.cols();
 
-                    for( INT i=0 ; i < pts_.size() ; i++) {
-                        for( INT j=0 ; j < data_points.size() ; j++) {
-                            H_toSmooth_(i, j) = H_more((i+CONFIG::D+1),j);
-                        }
-                    }
-
-                    for( INT row=0 ; row < pts_.size() ; row++) {
-                        for( INT j=0 ; j < data_points.size() ; j++) {
-							REAL h_j_sum = 0.;
-							REAL f_sum = 0.;
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT row_k=connectivityAA_[row][k];
-								if (row_k==row) {
-									std::cerr << "Invalid row_k value: " << row_k << std::endl;
-									} else{
-										h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
-									}
+                    if (smoothFunc_) {
+						for( INT i=0 ; i < pts_.size() ; i++) {
+							for( INT j=0 ; j < data_points.size() ; j++) {
+								H_toSmooth_(i, j) = H_more((i+CONFIG::D+1),j);
 							}
-
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT row_k=connectivityAA_[row][k];
-								if (row_k==row) {
-									std::cerr << "Invalid row_k value: " << row_k << std::endl;
-									} else{
-										REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
-										f_sum += w_i*H_toSmooth_(row_k, j);
-									}
+						}
+					}else{
+						for( INT i=0 ; i < pts_.size() ; i++) {
+							for( INT j=0 ; j < data_points.size() ; j++) {
+								H_(i, j) = H_more((i+CONFIG::D+1),j);
 							}
-
-							H_(row, j)=0.5*(f_sum+H_toSmooth_(row, j));
 						}
 					}
 
+                    if (smoothFunc_) {
+						for( INT row=0 ; row < pts_.size() ; row++) {
+							for( INT j=0 ; j < data_points.size() ; j++) {
+								REAL h_j_sum = 0.;
+								REAL f_sum = 0.;
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT row_k=connectivityAA_[row][k];
+									if (row_k==row) {
+										std::cerr << "Invalid row_k value: " << row_k << std::endl;
+										} else{
+											h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
+										}
+								}
+
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT row_k=connectivityAA_[row][k];
+									if (row_k==row) {
+										std::cerr << "Invalid row_k value: " << row_k << std::endl;
+										} else{
+											REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
+											f_sum += w_i*H_toSmooth_(row_k, j);
+										}
+								}
+
+								H_(row, j)=0.5*(f_sum+H_toSmooth_(row, j));
+							}
+						}
+					}
                 } else{ // Without polynomial terms
 
                     for( int row=0; row<pts_.size(); row++ ) {
@@ -689,39 +729,47 @@ private:
 
                             Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_j = (invAA * ABTrans).pruned(1e8);
 
-                            for( INT i=0 ; i < pts_.size() ; i++) {
-                                int glob_i = connectivityAB_[row][i];
-                                H_toSmooth_(glob_i, row) = H_j(i,0);
+                            if (smoothFunc_) {
+								for( INT i=0 ; i < pts_.size() ; i++) {
+									int glob_i = connectivityAB_[row][i];
+									H_toSmooth_(glob_i, row) = H_j(i,0);
+								}
+							}else{
+								for( INT i=0 ; i < pts_.size() ; i++) {
+									int glob_i = connectivityAB_[row][i];
+									H_(glob_i, row) = H_j(i,0);
+								}
 							}
 						}
 					}
+                    if (smoothFunc_) {
+						for( int row=0; row<data_points.size(); row++ ) {
+							for( INT i=0 ; i < pts_.size() ; i++) {
+								int glob_i = connectivityAB_[row][i];
+								REAL h_j_sum = 0.;
+								REAL f_sum = 0.;
 
-                    for( int row=0; row<data_points.size(); row++ ) {
-                        for( INT i=0 ; i < pts_.size() ; i++) {
-                            int glob_i = connectivityAB_[row][i];
-							REAL h_j_sum = 0.;
-							REAL f_sum = 0.;
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT global_k=connectivityAA_[glob_i][k];
+									if (global_k==glob_i) {
+										std::cerr << "Invalid global_k value: " << global_k << std::endl;
+										} else{
+											h_j_sum += std::pow(dist_h_i(glob_i, global_k),(-2));
+										}
+								}
 
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT global_k=connectivityAA_[glob_i][k];
-								if (global_k==glob_i) {
-									std::cerr << "Invalid global_k value: " << global_k << std::endl;
-									} else{
-										h_j_sum += std::pow(dist_h_i(glob_i, global_k),(-2));
-									}
+								for( INT k=0 ; k < M_ap_; k++) {
+									INT global_k=connectivityAA_[glob_i][k];
+									if (global_k==glob_i) {
+										std::cerr << "Invalid global_k value: " << global_k << std::endl;
+										} else{
+											REAL w_i=((std::pow(dist_h_i(glob_i, global_k),(-2)))/(h_j_sum));
+											f_sum += w_i*H_toSmooth_(global_k, row);
+										}
+								}
+
+								H_(glob_i, row)=0.5*(f_sum+H_toSmooth_(glob_i, row));
 							}
-
-							for( INT k=0 ; k < M_ap_; k++) {
-								INT global_k=connectivityAA_[glob_i][k];
-								if (global_k==glob_i) {
-									std::cerr << "Invalid global_k value: " << global_k << std::endl;
-									} else{
-										REAL w_i=((std::pow(dist_h_i(glob_i, global_k),(-2)))/(h_j_sum));
-										f_sum += w_i*H_toSmooth_(global_k, row);
-									}
-							}
-
-							H_(glob_i, row)=0.5*(f_sum+H_toSmooth_(glob_i, row));
 						}
 					}
                 }
@@ -931,7 +979,7 @@ private:
 			outputFileCAA << "\n";
 			outputFileCAA << "// **** This is the 'connectivityAA.dat' file of the RBF spatial sampler of the MUI library";
 			outputFileCAA << "\n";
-			outputFileCAA << "// **** This file contains the entire matrix of the Point Connectivity Matrix (M).";
+			outputFileCAA << "// **** This file contains the entire matrix of the Point Connectivity Matrix (M) (for smoothing).";
 			outputFileCAA << "\n";
 			outputFileCAA << "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
 			outputFileCAA << "\n";
@@ -996,6 +1044,7 @@ protected:
 	const bool conservative_;
 	const bool consistent_;
 	const bool polynomial_;
+	const bool smoothFunc_;
     const bool readMatrix_;
 	const std::string fileAddress_;
 
