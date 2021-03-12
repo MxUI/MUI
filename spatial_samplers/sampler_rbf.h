@@ -140,7 +140,7 @@ private:
 		}
 		if(smoothFunc_){
 			if(pts_.size()<=50){
-				M_ap_=pts_.size();
+				M_ap_=(pts_.size()-1);
 			}
 		}
 
