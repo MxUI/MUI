@@ -399,8 +399,9 @@ DECLARE_FUNC_HEADER(uniface) {
     py::class_<Tclass>(m, pyclass_name.c_str())
     .def("commit", (int (Tclass::*)(Ttime)) &Tclass::commit, "")
     .def("forecast", (void (Tclass::*)(Ttime)) &Tclass::forecast, "")
-    .def("is_ready", &Tclass::is_ready, "")
+    //.def("is_ready", &Tclass::is_ready, "")
     .def("barrier", (void (Tclass::*)(Ttime)) &Tclass::barrier, "")
+    .def("barrier", (void (Tclass::*)(Ttime, Ttime)) &Tclass::barrier, "")
     .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
     .def("forget", (void (Tclass::*)(Ttime, Ttime, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
@@ -570,7 +571,7 @@ DECLARE_FUNC_HEADER(sampler_rbf) {
     using Tpoint = typename Tconfig::point_type;
     using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Treal, std::vector<Tpoint> &, bool, Treal, bool, const std::string&, bool>());
+    .def(py::init<Treal, std::vector<Tpoint> &, bool, Treal, bool, bool, const std::string&, bool>());
 }
 
 #endif
