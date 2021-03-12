@@ -129,6 +129,21 @@ private:
 	template<template<typename,typename> class CONTAINER>
 	void computeRBFtransformation( const CONTAINER<ITYPE,CONFIG> &data_points ) {
 
+		if(conservative_){
+			if(pts_.size()<=50){
+				N_sp_=pts_.size();
+			}
+		}else{
+			if(data_points.size()<=50){
+				N_sp_=data_points.size();
+			}
+		}
+		if(smoothFunc_){
+			if(pts_.size()<=50){
+				M_ap_=pts_.size();
+			}
+		}
+
         if (readMatrix_) {
 
             std::ifstream inputFileMatrixSize(fileAddress_+"/matrixSize.dat");
@@ -153,7 +168,6 @@ private:
 				CAAcol_ = tempV[3];
 				Hrow_ = tempV[4];
 				Hcol_ = tempV[5];
-
             }
 
             std::ifstream inputFileCAB(fileAddress_+"/connectivityAB.dat");
@@ -322,8 +336,8 @@ private:
                         Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
                         Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-                        Css.resize((1+N_sp_+CONFIG::D), (1+N_sp_+CONFIG::D));
-                        Aas.resize(1, (1+N_sp_+CONFIG::D));
+						Css.resize((1+N_sp_+CONFIG::D), (1+N_sp_+CONFIG::D));
+						Aas.resize(1, (1+N_sp_+CONFIG::D));
 
                         std::vector<Eigen::Triplet<REAL> > coefsC;
 
@@ -384,17 +398,17 @@ private:
                         Aas.setFromTriplets(coefs.begin(), coefs.end());
 
                         //invert Css
-                        Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(Css.rows(), Css.cols());
-                        I.setIdentity();
-                        Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL> > solver(Css);
-                        solver.setTolerance(1e-6);
-                        Eigen::SparseMatrix<REAL> invCss = (solver.solve(I)).sparseView(1e8);
+						Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(Css.rows(), Css.cols());
+						I.setIdentity();
+						Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL> > solver(Css);
+						solver.setTolerance(1e-6);
+						Eigen::SparseMatrix<REAL> invCss = (solver.solve(I)).sparseView(1e8);
 
-                        if( CONFIG::DEBUG ) {
-                            std::cout << "#iterations of invCss:     " << solver.iterations() << ". Error of invCss: "<< solver.error()<< std::endl;
-                        }
+						if( CONFIG::DEBUG ) {
+							std::cout << "#iterations of invCss:     " << solver.iterations() << ". Error of invCss: "<< solver.error()<< std::endl;
+						}
 
-                        Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (Aas * invCss).pruned(1e8);
+						Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (Aas * invCss).pruned(1e8);
 
                         if (smoothFunc_) {
 							for( INT j=0 ; j < N_sp_ ; j++) {
