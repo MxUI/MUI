@@ -669,76 +669,74 @@ private:
 					}
                 } else{ // Without polynomial terms
 
-                    for( int row=0; row<pts_.size(); row++ ) {
-                        for( int row=0; row<data_points.size(); row++ ) {
-                            Eigen::SparseMatrix<REAL> AA; //< Matrix of radial basis function evaluations between prescribed points
-                            Eigen::SparseMatrix<REAL> AB; //< Matrix of RBF evaluations between prescribed and interpolation points
+					for( int row=0; row<data_points.size(); row++ ) {
+						Eigen::SparseMatrix<REAL> AA; //< Matrix of radial basis function evaluations between prescribed points
+						Eigen::SparseMatrix<REAL> AB; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-                            AA.resize( pts_.size(), pts_.size() );
-                            AB.resize( 1, pts_.size() );
+						AA.resize( pts_.size(), pts_.size() );
+						AB.resize( 1, pts_.size() );
 
-                            std::vector<Eigen::Triplet<REAL> > coefs;
+						std::vector<Eigen::Triplet<REAL> > coefs;
 
-                            //set AA
-                            for( INT i=0 ; i < pts_.size() ; i++) {
-                                for( INT j=i ; j < pts_.size() ; j++) {
+						//set AA
+						for( INT i=0 ; i < pts_.size() ; i++) {
+							for( INT j=i ; j < pts_.size() ; j++) {
 
-                                    int glob_i = connectivityAB_[row][i];
-                                    int glob_j = connectivityAB_[row][j];
+								int glob_i = connectivityAB_[row][i];
+								int glob_j = connectivityAB_[row][j];
 
-                                    auto d = normsq( pts_[glob_i] - pts_[glob_j] );
-                                    if ( d < r_*r_ ) {
-                                        REAL w = rbf(d);
-                                        coefs.push_back( Eigen::Triplet<REAL>(i, j , w ) );
-                                        if( i!=j ) {
-                                            coefs.push_back( Eigen::Triplet<REAL>( j, i, w ) );
-                                        }
-                                    }
-                                }
-                            }
-
-                            AA.reserve(coefs.size());
-                            AA.setFromTriplets(coefs.begin(), coefs.end());
-
-                            //set AB
-                            coefs.clear();
-                            for( INT j=0 ; j < pts_.size() ; j++) {
-                                int glob_j = connectivityAB_[row][j];
-
-                                auto d = normsq( data_points[row].first - pts_[glob_j] );
-                                if ( d < r_*r_ ) {
-                                        coefs.push_back( Eigen::Triplet<REAL>(0, j, rbf(d) ) );
-                                    }
-                            }
-
-                            AB.reserve(coefs.size());
-                            AB.setFromTriplets(coefs.begin(), coefs.end());
-
-                            //invert AA
-                            Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(AA.rows(), AA.cols());
-                            I.setIdentity();
-                            Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL> > solver(AA);
-                            solver.setTolerance(1e-6);
-                            Eigen::SparseMatrix<REAL> invAA = (solver.solve(I)).sparseView(1e8);
-
-                            if( CONFIG::DEBUG ) {
-                                std::cout << "#iterations:     " << solver.iterations() << ". Error: "<< solver.error()<< std::endl;
-                            }
-
-                            Eigen::SparseMatrix<REAL> ABTrans = AB.transpose();
-
-                            Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_j = (invAA * ABTrans).pruned(1e8);
-
-                            if (smoothFunc_) {
-								for( INT i=0 ; i < pts_.size() ; i++) {
-									int glob_i = connectivityAB_[row][i];
-									H_toSmooth_(glob_i, row) = H_j(i,0);
+								auto d = normsq( pts_[glob_i] - pts_[glob_j] );
+								if ( d < r_*r_ ) {
+									REAL w = rbf(d);
+									coefs.push_back( Eigen::Triplet<REAL>(i, j , w ) );
+									if( i!=j ) {
+										coefs.push_back( Eigen::Triplet<REAL>( j, i, w ) );
+									}
 								}
-							}else{
-								for( INT i=0 ; i < pts_.size() ; i++) {
-									int glob_i = connectivityAB_[row][i];
-									H_(glob_i, row) = H_j(i,0);
+							}
+						}
+
+						AA.reserve(coefs.size());
+						AA.setFromTriplets(coefs.begin(), coefs.end());
+
+						//set AB
+						coefs.clear();
+						for( INT j=0 ; j < pts_.size() ; j++) {
+							int glob_j = connectivityAB_[row][j];
+
+							auto d = normsq( data_points[row].first - pts_[glob_j] );
+							if ( d < r_*r_ ) {
+									coefs.push_back( Eigen::Triplet<REAL>(0, j, rbf(d) ) );
 								}
+						}
+
+						AB.reserve(coefs.size());
+						AB.setFromTriplets(coefs.begin(), coefs.end());
+
+						//invert AA
+						Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(AA.rows(), AA.cols());
+						I.setIdentity();
+						Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL> > solver(AA);
+						solver.setTolerance(1e-6);
+						Eigen::SparseMatrix<REAL> invAA = (solver.solve(I)).sparseView(1e8);
+
+						if( CONFIG::DEBUG ) {
+							std::cout << "#iterations:     " << solver.iterations() << ". Error: "<< solver.error()<< std::endl;
+						}
+
+						Eigen::SparseMatrix<REAL> ABTrans = AB.transpose();
+
+						Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_j = (invAA * ABTrans).pruned(1e8);
+
+						if (smoothFunc_) {
+							for( INT i=0 ; i < pts_.size() ; i++) {
+								int glob_i = connectivityAB_[row][i];
+								H_toSmooth_(glob_i, row) = H_j(i,0);
+							}
+						}else{
+							for( INT i=0 ; i < pts_.size() ; i++) {
+								int glob_i = connectivityAB_[row][i];
+								H_(glob_i, row) = H_j(i,0);
 							}
 						}
 					}
