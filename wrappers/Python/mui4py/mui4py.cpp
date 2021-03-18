@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Filename: mui4py.cpp
 Created: Oct 28, 2018
-Author: Eduardo Ramos Fernandez
+Author: Eduardo Ramos Fernandez, W. Liu
 Description: MUI Python bindings
 */
 
@@ -568,10 +568,11 @@ template <template <typename Type0, typename Type1, typename Type2> class Tclass
 DECLARE_FUNC_HEADER(sampler_rbf) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
+    using Tint = typename Tconfig::INT;
     using Tpoint = typename Tconfig::point_type;
     using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Treal, std::vector<Tpoint> &, bool, Treal, bool, bool, const std::string&, bool>());
+    .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool, bool, const std::string&, Treal>());
 }
 
 #endif

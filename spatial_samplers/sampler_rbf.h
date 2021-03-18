@@ -40,7 +40,7 @@
 
 /**
  * @file sampler_rbf.h
- * @author A. Skillen
+ * @author A. Skillen, W. Liu
  * @date November 2018
  * @brief Spatial sampler using Gaussian Radial Basis Function interpolation.
  */
@@ -106,7 +106,7 @@ public:
  *    The default value of cutoff is 1e-9
  */
 
-	sampler_rbf( REAL r, std::vector<point_type>& pts, INT basisFunc=0, bool conservative=false, bool polynomial=false, bool smoothFunc=false, bool readMatrix=false, const std::string& fileAddress=std::string(), double cutoff=1e-9 ) :
+	sampler_rbf( REAL r, std::vector<point_type>& pts, INT basisFunc=0, bool conservative=false, bool polynomial=false, bool smoothFunc=false, bool readMatrix=false, const std::string& fileAddress=std::string(), REAL cutoff=1e-9 ) :
 	r_(r), 
 	initialised_(false),
 	CABrow_(0),
