@@ -40,7 +40,7 @@
 
 /**
  * @file sampler_rbf.h
- * @author A. Skillen
+ * @author A. Skillen, W. Liu
  * @date November 2018
  * @brief Spatial sampler using Gaussian Radial Basis Function interpolation.
  */
@@ -69,7 +69,44 @@ public:
 
 	static const bool QUIET = CONFIG::QUIET;
 
-	sampler_rbf( REAL r, std::vector<point_type>& pts, bool conservative=false, double cutoff=1e-9, bool polynomial=false, bool smoothFunc=false, const std::string& fileAddress=std::string(), bool readMatrix=false ) :
+/**
+ * Input parameters:
+ * 1.REAL r:
+ *    r is the searching radius
+ * 2. std::vector<point_type>& pts:
+ *    pts is vector of points that pre-set for RBF interpolation
+ * 3. INT basisFunc:
+ *    basisFunc is a parameter for basis function selection. Implemented functions are as follows:
+ *    Gaussian(default): basisFunc_=0
+ *    Wendland's C0:     basisFunc_=1
+ *    Wendland's C2:     basisFunc_=2
+ *    Wendland's C4:     basisFunc_=3
+ *    Wendland's C6:     basisFunc_=4
+ * 4. bool conservative:
+ *    conservative is a boolen switch on the mode of RBF interpolation:
+ *    consistent mode(default): conservative=false
+ *    conservative mode:        conservative=true
+ * 5. bool polynomial:
+ *    polynomial is a boolen switch on the polynomial term of the transformation matrix:
+ *    without polynomial terms(default): polynomial=false
+ *    with polynomial terms:             polynomial=true
+ * 6. bool smoothFunc:
+ *    smoothFunc is a boolen switch on the smoothing function of the transformation matrix:
+ *    without smoothing function(default): smoothFunc=false
+ *    with smoothing function:             smoothFunc=true
+ * 7. bool readMatrix:
+ *    readMatrix is a parameter to select whether to construct transformation matrix or read matrix from file:
+ *    construct transformation matrix and write it to file(default): readMatrix=false
+ *    read transformation matrix from file:                          readMatrix=true
+ * 8. const std::string& fileAddress:
+ *    fileAddress is a parameter to set the address that the transformation matrix I/O.
+ *    The default value of fileAddress is an empty string.
+ * 9. double cutoff:
+ *    cutoff is a parameter to set the cut-off of the Gaussian basis function (only valid for basisFunc_=0).
+ *    The default value of cutoff is 1e-9
+ */
+
+	sampler_rbf( REAL r, std::vector<point_type>& pts, INT basisFunc=0, bool conservative=false, bool polynomial=false, bool smoothFunc=false, bool readMatrix=false, const std::string& fileAddress=std::string(), REAL cutoff=1e-9 ) :
 	r_(r), 
 	initialised_(false),
 	CABrow_(0),
@@ -84,6 +121,7 @@ public:
 	fileAddress_(fileAddress),
 	N_sp_(50),
 	M_ap_(50),
+	basisFunc_(basisFunc),
 	pts_(pts)
 	{
 		//set s to give rbf(r)=cutoff (default 1e-9)
@@ -347,9 +385,9 @@ private:
                                 int glob_i = connectivityAB_[row][i];
                                 int glob_j = connectivityAB_[row][j];
 
-                                auto d = normsq( data_points[glob_i].first - data_points[glob_j].first );
+                                auto d = norm( data_points[glob_i].first - data_points[glob_j].first );
 
-                                if ( d < r_*r_ ) {
+                                if ( d < r_ ) {
                                     REAL w = rbf(d);
                                     coefsC.push_back( Eigen::Triplet<REAL>(i, j, w ) );
 
@@ -381,9 +419,9 @@ private:
                         for( INT j=0 ; j < N_sp_ ; j++) {
                             int glob_j = connectivityAB_[row][j];
 
-                            auto d = normsq( pts_[row] - data_points[glob_j].first );
+                            auto d = norm( pts_[row] - data_points[glob_j].first );
 
-                            if ( d < r_*r_ ) {
+                            if ( d < r_ ) {
                                 coefs.push_back( Eigen::Triplet<REAL>(0, j, rbf(d) ) );
                             }
                         }
@@ -469,8 +507,8 @@ private:
                                 int glob_i = connectivityAB_[row][i];
                                 int glob_j = connectivityAB_[row][j];
 
-                                auto d = normsq( data_points[glob_i].first - data_points[glob_j].first );
-                                if ( d < r_*r_ ) {
+                                auto d = norm( data_points[glob_i].first - data_points[glob_j].first );
+                                if ( d < r_ ) {
                                     REAL w = rbf(d);
                                     coefs.push_back( Eigen::Triplet<REAL>(i, j , w ) );
                                     if( i!=j ) {
@@ -488,8 +526,8 @@ private:
                         for( INT j=0 ; j < N_sp_ ; j++) {
                             int glob_j = connectivityAB_[row][j];
 
-                            auto d = normsq( pts_[row] - data_points[glob_j].first );
-                            if ( d < r_*r_ ) {
+                            auto d = norm( pts_[row] - data_points[glob_j].first );
+                            if ( d < r_ ) {
                                 coefs.push_back( Eigen::Triplet<REAL>(0, j, rbf(d) ) );
                             }
                         }
@@ -570,9 +608,9 @@ private:
                     for( INT i=0 ; i < pts_.size() ; i++) {
                         for( INT j=i ; j < pts_.size() ; j++) {
 
-                            auto d = normsq( pts_[i] - pts_[j] );
+                            auto d = norm( pts_[i] - pts_[j] );
 
-                            if ( d < r_*r_ ) {
+                            if ( d < r_ ) {
                                 REAL w = rbf(d);
                                 coefsC.push_back( Eigen::Triplet<REAL>((i+CONFIG::D+1), (j+CONFIG::D+1), w ) );
 
@@ -602,9 +640,9 @@ private:
                     for( INT i=0 ; i < data_points.size() ; i++) {
                         for( INT j=0 ; j < pts_.size() ; j++) {
 
-                            auto d = normsq( data_points[i].first - pts_[j] );
+                            auto d = norm( data_points[i].first - pts_[j] );
 
-                            if ( d < r_*r_ ) {
+                            if ( d < r_ ) {
                                 coefs.push_back( Eigen::Triplet<REAL>(i, (j+CONFIG::D+1), rbf(d) ) );
                             }
                         }
@@ -699,8 +737,8 @@ private:
 								int glob_i = connectivityAB_[row][i];
 								int glob_j = connectivityAB_[row][j];
 
-								auto d = normsq( pts_[glob_i] - pts_[glob_j] );
-								if ( d < r_*r_ ) {
+								auto d = norm( pts_[glob_i] - pts_[glob_j] );
+								if ( d < r_ ) {
 									REAL w = rbf(d);
 									coefs.push_back( Eigen::Triplet<REAL>(i, j , w ) );
 									if( i!=j ) {
@@ -718,8 +756,8 @@ private:
 						for( INT j=0 ; j < pts_.size() ; j++) {
 							int glob_j = connectivityAB_[row][j];
 
-							auto d = normsq( data_points[row].first - pts_[glob_j] );
-							if ( d < r_*r_ ) {
+							auto d = norm( data_points[row].first - pts_[glob_j] );
+							if ( d < r_ ) {
 									coefs.push_back( Eigen::Triplet<REAL>(0, j, rbf(d) ) );
 								}
 						}
@@ -814,15 +852,58 @@ private:
 		initialised_ = true;
 	}
 
+	///Radial basis function
 	REAL rbf( point_type x1, point_type x2 ) {
-		auto d = normsq( x1 - x2 );
+		auto d = norm( x1 - x2 );
 		return rbf(d);
 	}
 	
-	///Gaussian radial basis function 
 	REAL rbf(REAL d) {
-		REAL w = ( d < r_*r_ ) ? std::exp( -(s_*s_ * d) ) : 0.0;
-		return w;
+
+		REAL w = 0.0;
+
+		switch(basisFunc_) {
+
+		   case 0:
+			  //Gaussian
+			  w = ( d < r_ ) ? std::exp( -(s_*s_ * d * d) ) : 0.0;
+			  return w;
+			  break;
+
+		   case 1:
+			  //Wendland's C0
+			  w = std::pow(( 1. - d ), 2);
+			  return w;
+			  break;
+
+		   case 2:
+			  //Wendland's C2
+			  w = (std::pow((1. - d), 4))*((4 * d) + 1);
+			  return w;
+			  break;
+
+		   case 3:
+			  //Wendland's C4
+			  w = (std::pow((1. - d), 6))*((35 * d * d)+(18 * d) + 3);
+			  return w;
+			  break;
+
+		   case 4:
+			  //Wendland's C6
+			  w = (std::pow((1. - d), 8))*((32 * d * d * d)+(25 * d * d)+(8 * d) + 1);
+			  return w;
+			  break;
+
+		   default :
+			  std::cerr << "MUI Error [sampler_rbf.h]: invalid RBF basis function number (" << basisFunc_ << ")" << std::endl
+			  << "Please set the RBF basis function number (basisFunc_) as: "<< std::endl 
+			  << "basisFunc_=0 (Gaussian); "<< std::endl
+			  << "basisFunc_=1 (Wendland's C0); " << std::endl
+			  << "basisFunc_=2 (Wendland's C2); " << std::endl
+			  << "basisFunc_=3 (Wendland's C4); " << std::endl
+			  << "basisFunc_=4 (Wendland's C6); " << std::endl;
+		}
+
 	}
 	
 	///Distances function
@@ -1058,6 +1139,7 @@ protected:
 	const bool polynomial_;
 	const bool smoothFunc_;
     const bool readMatrix_;
+    const INT basisFunc_;
 	const std::string fileAddress_;
 
 	INT N_sp_;
