@@ -64,7 +64,10 @@ private:
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
 public:
 	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
-	virtual ~comm_mpi_smart() {}
+	virtual ~comm_mpi_smart() {
+	  // Ensure any incomplete sends are complete before destruction
+	  test_completion_blocking();
+	}
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
@@ -82,8 +85,8 @@ private:
 				          domain_remote_, &(send_buf.back().first));
 			}
 		}
-		// Block until MPI_Isend calls completed successfully, maximum 60 seconds with printed warnings
-		test_completion_blocking();
+		// Catch any unsent MPI_Isend calls before fetch starts, non-blocking
+		test_completion();
 	}
 
 	message recv_impl_() {
