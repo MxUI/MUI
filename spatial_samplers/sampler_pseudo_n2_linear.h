@@ -54,7 +54,7 @@
 namespace mui {
 
 template<typename CONFIG=default_config, typename O_TP=typename CONFIG::REAL, typename I_TP=O_TP>
-class sampler_pseudo_nearest2_linear {
+class sampler_pseudo_n2_linear {
 public:
 	using OTYPE      = O_TP;
 	using ITYPE      = I_TP;
@@ -62,7 +62,7 @@ public:
 	using INT        = typename CONFIG::INT;
 	using point_type = typename CONFIG::point_type;
 
-	sampler_pseudo_nearest2_linear( REAL h_ ) : h(h_) {}
+	sampler_pseudo_n2_linear( REAL h_ ) : h(h_) {}
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
