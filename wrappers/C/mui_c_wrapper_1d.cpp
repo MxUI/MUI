@@ -468,7 +468,7 @@ mui_sampler_sum_quintic_1t* mui_create_sampler_sum_quintic_1t(double r) {
 	return new mui_sampler_sum_quintic_1t(static_cast<mui::mui_c_wrapper_1D::REAL>(r));
 }
 
-//#ifdef USE_RBF
+#ifdef USE_RBF
 // Radial Basis Function sampler
 mui_sampler_rbf_1f* mui_create_sampler_rbf_1f(float r, mui_point_1f *points, int points_count, int basis_func,
 		int conservative, int polynomial, int smoothFunc, int readMatrix, const char *file_address, float cutoff) {
@@ -524,7 +524,7 @@ mui_sampler_rbf_1t* mui_create_sampler_rbf_1t(double r, mui_point_1t *points, in
 			static_cast<bool>(conservative), static_cast<bool>(polynomial), static_cast<bool>(smoothFunc),
 			static_cast<bool>(readMatrix), std::string(file_address), static_cast<mui::mui_c_wrapper_1D::REAL>(cutoff));
 }
-//#endif
+#endif
 
 /*******************************************
  * Destroy 1D spatial samplers              *
