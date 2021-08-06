@@ -1,7 +1,8 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+* Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
+*                    S. M. Longshaw                                          *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,61 +39,19 @@
 *****************************************************************************/
 
 /**
- * @file sampler_pseudo_n2_linear.h
- * @author Y. H. Tang
- * @date 10 October 2014
- * @brief Spatial sampler that provides a value at a point using a
- * pseudo-linear n^2 interpolation.
+ * @file mui_c_wrapper_general.h
+ * @author S. M. Longshaw (derived from original 3D wrapper by Y. H. Tang)
+ * @date Aug 4, 2021
+ * @brief Header file for C wrapper for general MUI functions with no
+ *        associated dimensionality
  */
 
-#ifndef MUI_SAMPLER_PSEUDO_N2_LINEAR_H_
-#define MUI_SAMPLER_PSEUDO_N2_LINEAR_H_
+#ifndef MUI_C_WRAPPER_GENERAL_H_
+#define MUI_C_WRAPPER_GENERAL_H_
 
-#include "../config.h"
-#include "../sampler.h"
+#include "mpi.h"
 
-namespace mui {
+MPI_Comm mui_mpi_split_by_app();
+MPI_Comm mui_mpi_split_by_app_threaded(int argc, char **argv, int threadType, int *thread_support);
 
-template<typename CONFIG=default_config, typename O_TP=typename CONFIG::REAL, typename I_TP=O_TP>
-class sampler_pseudo_n2_linear {
-public:
-	using OTYPE      = O_TP;
-	using ITYPE      = I_TP;
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using point_type = typename CONFIG::point_type;
-
-	sampler_pseudo_n2_linear( REAL h_ ) : h(h_) {}
-
-	template<template<typename,typename> class CONTAINER>
-	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		REAL r2min_1st = std::numeric_limits<REAL>::max();
-		REAL r2min_2nd = std::numeric_limits<REAL>::max();
-		OTYPE value_1st = 0, value_2nd = 0;
-		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-			REAL dr2 = normsq( focus - data_points[i].first );
-			if ( dr2 < r2min_1st ) {
-				r2min_2nd = r2min_1st;
-				value_2nd = value_1st;
-				r2min_1st = dr2;
-				value_1st = data_points[i].second ;
-			} else if ( dr2 < r2min_2nd ) {
-				r2min_2nd = dr2;
-				value_2nd = data_points[i].second ;
-			}
-		}
-		REAL r1 = std::sqrt( r2min_1st );
-		REAL r2 = std::sqrt( r2min_2nd );
-		return ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
-	}
-
-	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
-		return geometry::sphere<CONFIG>( focus, h );
-	}
-protected:
-	REAL h;
-};
-
-}
-
-#endif /* MUI_SAMPLER_NN_H_ */
+#endif /* MUI_C_WRAPPER_GENERAL_H_ */

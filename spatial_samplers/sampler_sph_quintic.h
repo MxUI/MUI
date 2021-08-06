@@ -41,8 +41,11 @@
  * @file sampler_sph_quintic.h
  * @author X. Bian
  * @date 21 July 2014
- * @brief Spatial sampler that provides a value at a point using SPH
- * interpolation with a quintic kernel.
+ * @brief Spatial sampler that provides a value at a point using a Smoothed Particle
+ * Hydrodynamics (SPH) derived interpolation method with a quintic spline kernel.
+ *
+ * M. Liu, & G. Liu, Smoothed particle hydrodynamics (SPH): an overview and recent
+ * developments,Archives of computational methods in engineering, 17.1 (2010), pp. 25-76.
  */
 
 #ifndef MUI_SAMPLER_SPH_QUINTIC_H_

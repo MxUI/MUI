@@ -902,6 +902,8 @@ private:
 			  << "basisFunc_=2 (Wendland's C2); " << std::endl
 			  << "basisFunc_=3 (Wendland's C4); " << std::endl
 			  << "basisFunc_=4 (Wendland's C6); " << std::endl;
+			  return 0;
+			  break;
 		}
 
 	}

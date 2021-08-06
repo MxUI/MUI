@@ -107,7 +107,7 @@ namespace mui {
 		DECLARE_SAMPLER_1ARG(sampler_shepard_quintic,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_n2_linear,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
@@ -159,7 +159,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_1ARG(sampler_shepard_quintic,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,config_##SUFFIX)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_n2_linear,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
@@ -213,7 +213,7 @@ struct config_custom {
 		using point##SUFFIX = point<CONFIG::REAL,CONFIG::D>;\
 		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,CONFIG)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest2_linear,SUFFIX,CONFIG)\
+		DECLARE_SAMPLER_1ARG(sampler_pseudo_n2_linear,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_rbf,SUFFIX,CONFIG)\
