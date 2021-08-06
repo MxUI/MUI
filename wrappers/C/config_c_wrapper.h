@@ -56,63 +56,63 @@
 namespace mui {
 
 struct mui_c_wrapper_1D {
-	using EXCEPTION = exception_segv;		    //- Exception handling type
+	using EXCEPTION = exception_segv;			//- Exception handling type
 
-	static const bool DEBUG = false;		    //- Enable extra debugging output
-	static const int D = 1;					        //- Dimensionality of the domain
-	static const bool FIXEDPOINTS = false;	//- Enable optimisations for problems with fixed point structure
-	static const bool QUIET = false;		    //- If the library is quiet then it will only issue critical warning messages
+	static const bool DEBUG = false;			//- Enable extra debugging output
+	static const int D = 1;						//- Dimensionality of the domain
+	static const bool FIXEDPOINTS = false;		//- Enable optimisations for problems with fixed point structure
+	static const bool QUIET = false;			//- If the library is quiet then it will only issue critical warning messages
 
-	using REAL = double;					          //- REAL data type
-	using INT  = int;						            //- INT data type
+	using REAL = double;						//- REAL data type
+	using INT = int;							//- INT data type
 
-	using time_type  = REAL;				        //- time_type INT for iteration coupling, REAL for exact coupling
-	using point_type = point<REAL,D>;		    //- "point" data type and dimensionality
-	using data_types = type_list<int32_t,	  //- Data types that can be used in the interface
-								               int64_t,
-								               double,
-								               float
-								               >;
+	using time_type = REAL;						//- time_type INT for iteration coupling, REAL for exact coupling
+	using point_type = point<REAL,D>;			//- "point" data type and dimensionality
+	using data_types = type_list<int32_t,		//- Data types that can be used in the interface
+	int64_t,
+	double,
+	float
+	>;
 };
 
 struct mui_c_wrapper_2D {
-  using EXCEPTION = exception_segv;       //- Exception handling type
+	using EXCEPTION = exception_segv;			//- Exception handling type
 
-  static const bool DEBUG = false;        //- Enable extra debugging output
-  static const int D = 2;                 //- Dimensionality of the domain
-  static const bool FIXEDPOINTS = false;  //- Enable optimisations for problems with fixed point structure
-  static const bool QUIET = false;        //- If the library is quiet then it will only issue critical warning messages
+	static const bool DEBUG = false;			//- Enable extra debugging output
+	static const int D = 2;						//- Dimensionality of the domain
+	static const bool FIXEDPOINTS = false;		//- Enable optimisations for problems with fixed point structure
+	static const bool QUIET = false;			//- If the library is quiet then it will only issue critical warning messages
 
-  using REAL = double;                    //- REAL data type
-  using INT  = int;                       //- INT data type
+	using REAL = double;						//- REAL data type
+	using INT = int;							//- INT data type
 
-  using time_type  = REAL;                //- time_type INT for iteration coupling, REAL for exact coupling
-  using point_type = point<REAL,D>;       //- "point" data type and dimensionality
-  using data_types = type_list<int32_t,   //- Data types that can be used in the interface
-                               int64_t,
-                               double,
-                               float
-                               >;
+	using time_type = REAL;						//- time_type INT for iteration coupling, REAL for exact coupling
+	using point_type = point<REAL,D>;			//- "point" data type and dimensionality
+	using data_types = type_list<int32_t,		//- Data types that can be used in the interface
+	int64_t,
+	double,
+	float
+	>;
 };
 
 struct mui_c_wrapper_3D {
-  using EXCEPTION = exception_segv;       //- Exception handling type
+	using EXCEPTION = exception_segv;			//- Exception handling type
 
-  static const bool DEBUG = false;        //- Enable extra debugging output
-  static const int D = 3;                 //- Dimensionality of the domain
-  static const bool FIXEDPOINTS = false;  //- Enable optimisations for problems with fixed point structure
-  static const bool QUIET = false;        //- If the library is quiet then it will only issue critical warning messages
+	static const bool DEBUG = false;			//- Enable extra debugging output
+	static const int D = 3;						//- Dimensionality of the domain
+	static const bool FIXEDPOINTS = false;		//- Enable optimisations for problems with fixed point structure
+	static const bool QUIET = false;			//- If the library is quiet then it will only issue critical warning messages
 
-  using REAL = double;                    //- REAL data type
-  using INT  = int;                       //- INT data type
+	using REAL = double;						//- REAL data type
+	using INT = int;							//- INT data type
 
-  using time_type  = REAL;                //- time_type INT for iteration coupling, REAL for exact coupling
-  using point_type = point<REAL,D>;       //- "point" data type and dimensionality
-  using data_types = type_list<int32_t,   //- Data types that can be used in the interface
-                               int64_t,
-                               double,
-                               float
-                               >;
+	using time_type = REAL;						//- time_type INT for iteration coupling, REAL for exact coupling
+	using point_type = point<REAL,D>;			//- "point" data type and dimensionality
+	using data_types = type_list<int32_t,		//- Data types that can be used in the interface
+	int64_t,
+	double,
+	float
+	>;
 };
 
 }

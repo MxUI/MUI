@@ -59,137 +59,136 @@
 // Include 3D MUI functions
 #include "mui_c_wrapper_3d.h"
 
-int main( int argc, char **argv )
-{
-  /*********************
-  * 1D interface       *
-  *********************/
+int main(int argc, char **argv) {
+	/*********************
+	 * 1D interface       *
+	 *********************/
 
-  // Create URI in the format mpi://[domain]_1d/interface_name
-  char *uri1d = (char*)malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
-  strcpy(uri1d, "mpi://");
-  strcat(uri1d, argv[1]);
-  strcat(uri1d, "_1d/");
-  strcat(uri1d, argv[2]);
-  strcat(uri1d, "\0");
+	// Create URI in the format mpi://[domain]_1d/interface_name
+	char *uri1d = (char*) malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
+	strcpy(uri1d, "mpi://");
+	strcat(uri1d, argv[1]);
+	strcat(uri1d, "_1d/");
+	strcat(uri1d, argv[2]);
+	strcat(uri1d, "\0");
 
 	// Create MUI interface
-  mui_uniface_1d *uniface1d = mui_create_uniface_1d( (const char*)uri1d );
+	mui_uniface_1d *uniface1d = mui_create_uniface_1d((const char*) uri1d);
 
-  // Define point for push
+	// Define point for push
 	mui_point_1d push_point1d = { 0 };
 
 	// Push value=1 through the MUI interface with the tag "position" at location=push_point
-	mui_push_1d( uniface1d, "position", push_point1d, 1 );
+	mui_push_1d(uniface1d, "position", push_point1d, 1);
 
 	// Commit (transmit) the pushed value at time=0
-	mui_commit_1d( uniface1d, 0 );
+	mui_commit_1d(uniface1d, 0);
 
 	// Create spatial and temporal samplers for fetch operation
-	mui_sampler_exact_1d *spatial_sampler1d = mui_create_sampler_exact_1d( 1e-37 );
-	mui_chrono_sampler_exact_1d *temporal_sampler1d = mui_create_chrono_sampler_exact_1d( 1e-37 );
+	mui_sampler_exact_1d *spatial_sampler1d = mui_create_sampler_exact_1d(1e-37);
+	mui_chrono_sampler_exact_1d *temporal_sampler1d = mui_create_chrono_sampler_exact_1d(1e-37);
 
 	// Define point for fetch
 	mui_point_1d fetch_point1d = { 0 };
 
 	// Fetch the value for tag "position" at fetch_point at time=0
-	double result1d = mui_fetch_exact_exact_1d( uniface1d, "position", fetch_point1d, 0, spatial_sampler1d, temporal_sampler1d );
+	double result1d = mui_fetch_exact_exact_1d(uniface1d, "position", fetch_point1d, 0, spatial_sampler1d,
+			temporal_sampler1d);
 
-	printf( "Fetched 1D interface value = %f \n", result1d );
+	printf("Fetched 1D interface value = %f \n", result1d);
 
 	// Destroy created 1D MUI objects
-	mui_destroy_sampler_exact_1d( spatial_sampler1d );
-	mui_destroy_chrono_sampler_exact_1d( temporal_sampler1d );
+	mui_destroy_sampler_exact_1d(spatial_sampler1d);
+	mui_destroy_chrono_sampler_exact_1d(temporal_sampler1d);
 	free(uri1d);
 
 	/*********************
-  * 2D interface       *
-  *********************/
+	 * 2D interface       *
+	 *********************/
 
 	// Create URI in the format mpi://[domain]_2d/interface_name
-  char *uri2d = (char*)malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
-  strcpy(uri2d, "mpi://");
-  strcat(uri2d, argv[1]);
-  strcat(uri2d, "_2d/");
-  strcat(uri2d, argv[2]);
-  strcat(uri2d, "\0");
+	char *uri2d = (char*) malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
+	strcpy(uri2d, "mpi://");
+	strcat(uri2d, argv[1]);
+	strcat(uri2d, "_2d/");
+	strcat(uri2d, argv[2]);
+	strcat(uri2d, "\0");
 
-  // Create MUI interface
-  mui_uniface_2d *uniface2d = mui_create_uniface_2d( (const char*)uri2d );
+	// Create MUI interface
+	mui_uniface_2d *uniface2d = mui_create_uniface_2d((const char*) uri2d);
 
-  // Define point for push
-  mui_point_2d push_point2d = { 0, 0 };
+	// Define point for push
+	mui_point_2d push_point2d = { 0, 0 };
 
-  // Push value=1 through the MUI interface with the tag "position" at location=push_point
-  mui_push_2d( uniface2d, "position", push_point2d, 1 );
+	// Push value=1 through the MUI interface with the tag "position" at location=push_point
+	mui_push_2d(uniface2d, "position", push_point2d, 1);
 
-  // Commit (transmit) the pushed value at time=0
-  mui_commit_2d( uniface2d, 0 );
+	// Commit (transmit) the pushed value at time=0
+	mui_commit_2d(uniface2d, 0);
 
-  // Create spatial and temporal samplers for fetch operation
-  mui_sampler_exact_2d *spatial_sampler2d = mui_create_sampler_exact_2d( 1e-37 );
-  mui_chrono_sampler_exact_2d *temporal_sampler2d = mui_create_chrono_sampler_exact_2d( 1e-37 );
+	// Create spatial and temporal samplers for fetch operation
+	mui_sampler_exact_2d *spatial_sampler2d = mui_create_sampler_exact_2d(1e-37);
+	mui_chrono_sampler_exact_2d *temporal_sampler2d = mui_create_chrono_sampler_exact_2d(1e-37);
 
-  // Define point for fetch
-  mui_point_2d fetch_point2d = { 0, 0 };
+	// Define point for fetch
+	mui_point_2d fetch_point2d = { 0, 0 };
 
-  // Fetch the value for tag "position" at fetch_point at time=0
-  double result2d = mui_fetch_exact_exact_2d( uniface2d, "position", fetch_point2d, 0, spatial_sampler2d, temporal_sampler2d );
+	// Fetch the value for tag "position" at fetch_point at time=0
+	double result2d = mui_fetch_exact_exact_2d(uniface2d, "position", fetch_point2d, 0, spatial_sampler2d,
+			temporal_sampler2d);
 
-  printf( "Fetched 2D interface value = %f \n", result2d );
+	printf("Fetched 2D interface value = %f \n", result2d);
 
-  // Destroy created 2D MUI objects
-  mui_destroy_sampler_exact_2d( spatial_sampler2d );
-  mui_destroy_chrono_sampler_exact_2d( temporal_sampler2d );
-  free(uri2d);
+	// Destroy created 2D MUI objects
+	mui_destroy_sampler_exact_2d(spatial_sampler2d);
+	mui_destroy_chrono_sampler_exact_2d(temporal_sampler2d);
+	free(uri2d);
 
-  /*********************
-  * 3D interface       *
-  *********************/
+	/*********************
+	 * 3D interface       *
+	 *********************/
 
-  // Create URI in the format mpi://[domain]_3d/interface_name
-  char *uri3d = (char*)malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
-  strcpy(uri3d, "mpi://");
-  strcat(uri3d, argv[1]);
-  strcat(uri3d, "_3d/");
-  strcat(uri3d, argv[2]);
-  strcat(uri3d, "\0");
+	// Create URI in the format mpi://[domain]_3d/interface_name
+	char *uri3d = (char*) malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
+	strcpy(uri3d, "mpi://");
+	strcat(uri3d, argv[1]);
+	strcat(uri3d, "_3d/");
+	strcat(uri3d, argv[2]);
+	strcat(uri3d, "\0");
 
-  // Create MUI interface
-  mui_uniface_3d *uniface3d = mui_create_uniface_3d( (const char*)uri3d );
+	// Create MUI interface
+	mui_uniface_3d *uniface3d = mui_create_uniface_3d((const char*) uri3d);
 
-  // Define point for push
-  mui_point_3d push_point3d = { 0, 0, 0 };
+	// Define point for push
+	mui_point_3d push_point3d = { 0, 0, 0 };
 
-  // Push value=1 through the MUI interface with the tag "position" at location=push_point
-  mui_push_3d( uniface3d, "position", push_point3d, 1 );
+	// Push value=1 through the MUI interface with the tag "position" at location=push_point
+	mui_push_3d(uniface3d, "position", push_point3d, 1);
 
-  // Commit (transmit) the pushed value at time=0
-  mui_commit_3d( uniface3d, 0 );
+	// Commit (transmit) the pushed value at time=0
+	mui_commit_3d(uniface3d, 0);
 
-  // Create spatial and temporal samplers for fetch operation
-  mui_sampler_exact_3d *spatial_sampler3d = mui_create_sampler_exact_3d( 1e-37 );
-  mui_chrono_sampler_exact_3d *temporal_sampler3d = mui_create_chrono_sampler_exact_3d( 1e-37 );
+	// Create spatial and temporal samplers for fetch operation
+	mui_sampler_exact_3d *spatial_sampler3d = mui_create_sampler_exact_3d(1e-37);
+	mui_chrono_sampler_exact_3d *temporal_sampler3d = mui_create_chrono_sampler_exact_3d(1e-37);
 
-  // Define point for fetch
-  mui_point_3d fetch_point3d = { 0, 0, 0 };
+	// Define point for fetch
+	mui_point_3d fetch_point3d = { 0, 0, 0 };
 
-  // Fetch the value for tag "position" at fetch_point at time=0
-  double result3d = mui_fetch_exact_exact_3d( uniface3d, "position", fetch_point3d, 0, spatial_sampler3d, temporal_sampler3d );
+	// Fetch the value for tag "position" at fetch_point at time=0
+	double result3d = mui_fetch_exact_exact_3d(uniface3d, "position", fetch_point3d, 0, spatial_sampler3d,
+			temporal_sampler3d);
 
-  printf( "Fetched 3D interface value = %f \n", result3d );
+	printf("Fetched 3D interface value = %f \n", result3d);
 
-  // Destroy created 3D MUI objects
-  mui_destroy_sampler_exact_3d( spatial_sampler3d );
-  mui_destroy_chrono_sampler_exact_3d( temporal_sampler3d );
+	// Destroy created 3D MUI objects
+	mui_destroy_sampler_exact_3d(spatial_sampler3d);
+	mui_destroy_chrono_sampler_exact_3d(temporal_sampler3d);
 
-  // Destroy created MUI interfaces note: calls MPI_Finalize()
-  mui_destroy_uniface_1d( uniface1d );
-  mui_destroy_uniface_2d( uniface2d );
-  mui_destroy_uniface_3d( uniface3d );
+	// Destroy created MUI interfaces note: calls MPI_Finalize()
+	mui_destroy_uniface_1d(uniface1d);
+	mui_destroy_uniface_2d(uniface2d);
+	mui_destroy_uniface_3d(uniface3d);
 
 	return 0;
 }
-
-
-

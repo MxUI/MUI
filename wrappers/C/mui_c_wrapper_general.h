@@ -52,6 +52,6 @@
 #include "mpi.h"
 
 MPI_Comm mui_mpi_split_by_app();
-MPI_Comm mui_mpi_split_by_app_threaded( int argc, char **argv, int threadType, int* thread_support );
+MPI_Comm mui_mpi_split_by_app_threaded(int argc, char **argv, int threadType, int *thread_support);
 
 #endif /* MUI_C_WRAPPER_GENERAL_H_ */
