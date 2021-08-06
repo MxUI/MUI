@@ -1,2 +1,4 @@
 *.o
-unit_test.x
+*.a
+*.so
+unit_test_c_wrapper

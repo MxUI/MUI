@@ -65,12 +65,14 @@ private:
 public:
 	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
 	virtual ~comm_mpi_smart() {
-	  // Ensure any incomplete sends are complete before destruction
+	  // Call MPI_Test in blocking loop on any remaining MPI_Isend messages in buffer and if complete, pop before destruction
 	  test_completion_blocking();
 	}
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
+	  // Call non-blocking MPI_Test on MPI_Isend messages in buffer and if complete, pop
+    test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
 			if( is_sending[i] ){
@@ -85,8 +87,8 @@ private:
 				          domain_remote_, &(send_buf.back().first));
 			}
 		}
-		// Catch any unsent MPI_Isend calls before fetch starts, non-blocking
-		test_completion();
+		// Call non-blocking MPI_Test on MPI_Isend messages in buffer and if complete, pop
+    test_completion();
 	}
 
 	message recv_impl_() {
