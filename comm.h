@@ -64,6 +64,9 @@ public:
 	virtual int local_rank() const { return 0; }
 	virtual int local_size() const { return 1; }
 	virtual int remote_size() const { return 1; }
+	virtual std::string uri_host() const { return std::string(); }
+	virtual std::string uri_path() const { return std::string(); }
+	virtual std::string uri_protocol() const { return std::string(); }
 
 	// send message
 	void send( message msg, const std::vector<bool> &is_sending ) {
