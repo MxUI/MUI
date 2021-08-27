@@ -39,15 +39,15 @@
 *****************************************************************************/
 
 /**
- * @file config_c_wrapper.h
+ * @file config_f_wrapper.h
  * @author S. M. Longshaw
- * @date 12 July 2021
+ * @date 11 August 2021
  * @brief File containing data structures defining all data types used
- *        by an interface using the C wrapper - based on original config.h.
+ *        by an interface using the Fortran wrapper - based on original config.h.
  */
 
-#ifndef CONFIG_C_WRAPPER_H
-#define CONFIG_C_WRAPPER_H
+#ifndef CONFIG_F_WRAPPER_H
+#define CONFIG_F_WRAPPER_H
 
 #include "../../util.h"
 #include "../../dim.h"
@@ -55,7 +55,7 @@
 
 namespace mui {
 
-struct mui_c_wrapper_1D {
+struct mui_f_wrapper_1D {
 	using EXCEPTION = exception_segv;			//- Exception handling type
 
 	static const bool DEBUG = false;			//- Enable extra debugging output
@@ -75,7 +75,7 @@ struct mui_c_wrapper_1D {
 	>;
 };
 
-struct mui_c_wrapper_2D {
+struct mui_f_wrapper_2D {
 	using EXCEPTION = exception_segv;			//- Exception handling type
 
 	static const bool DEBUG = false;			//- Enable extra debugging output
@@ -95,7 +95,7 @@ struct mui_c_wrapper_2D {
 	>;
 };
 
-struct mui_c_wrapper_3D {
+struct mui_f_wrapper_3D {
 	using EXCEPTION = exception_segv;			//- Exception handling type
 
 	static const bool DEBUG = false;			//- Enable extra debugging output

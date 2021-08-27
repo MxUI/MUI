@@ -63,7 +63,8 @@ public:
 	comm_mpi(const char URI[], MPI_Comm world ) :
 		domain_local_(0), domain_remote_(0),
 		local_size_(0), local_rank_(0), remote_size_(0), global_size_(0), global_rank_(0),
-		initialized(false), init_by_me(false) {
+		initialized(false), init_by_me(false), uri_host_(std::string()), uri_path_(std::string()),
+		uri_protocol_(std::string()) {
 		init(URI, world);
 	}
 	virtual ~comm_mpi() {
@@ -100,6 +101,9 @@ public:
 
 		// parse URI, split the world using domain tag
 		uri desc(URI);
+		uri_host_ = desc.host();
+		uri_path_ = desc.path();
+		uri_protocol_ = desc.protocol();
 		int domain_hash = std::hash<std::string>()( desc.host() );
 		domain_hash=std::abs(domain_hash);
 		int ifs_hash    = std::hash<std::string>()( desc.path() );
@@ -146,6 +150,9 @@ public:
 	virtual int remote_size() const { return remote_size_; }
 	virtual int global_size() const { return global_size_; }
 	virtual int global_rank() const { return global_rank_; }
+	virtual std::string uri_host() const { return uri_host_; }
+	virtual std::string uri_path() const { return uri_path_; }
+	virtual std::string uri_protocol() const { return uri_protocol_; }
 
 protected:
 	MPI_Comm domain_local_;
@@ -155,6 +162,9 @@ protected:
 	int remote_size_;
 	int global_size_;
 	int global_rank_;
+	std::string uri_host_;
+	std::string uri_path_;
+	std::string uri_protocol_;
 private:
 	bool initialized, init_by_me;
 };

@@ -67,12 +67,14 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
     MPI_Comm_rank( world, &global_rank );
 
     std::map<int, std::string> map;
+
     std::vector<int> my_hashes;
     for( auto &i : interfaces ) {
         auto h = std::hash<std::string>()( i );
         my_hashes.push_back( h );
         map[h] = i;
     }
+
     for( int i = 0; i < global_size; i++ ) {
         if( global_rank == i ) {
             for( auto &e : map ) {
@@ -87,7 +89,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
     int n_unique;
     std::set<int> unique_ifs;
     if( global_rank == 0 ) {
-        std::vector<int> nifs = gather( ( int )interfaces.size(), world );
+        std::vector<int> nifs = gather( static_cast<int>(interfaces.size()), world );
         std::vector<int> displs( global_size + 1, 0 );
         std::partial_sum( nifs.begin(), nifs.end(), displs.begin() + 1 );
 
@@ -101,26 +103,27 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
         gather( ( int )interfaces.size(), world );
         MPI_Gatherv( my_hashes.data(), my_hashes.size(), MPI_INT, NULL, NULL, NULL, MPI_INT, 0, world );
     }
+
     MPI_Barrier( world );
     MPI_Bcast( &n_unique, 1, MPI_INT, 0, world );
     std::vector<int> uniq_hashes( n_unique );
     if( global_rank == 0 ) uniq_hashes.assign( unique_ifs.begin(), unique_ifs.end() );
     MPI_Bcast( uniq_hashes.data(), n_unique, MPI_INT, 0, world );
 
-    std::vector<std::unique_ptr<uniface<CONFIG>>> unifaces;
+    std::vector<uniface<CONFIG>*> unifaces;
     for( auto &i : uniq_hashes ) {
         MPI_Comm comm_ifs;
         if( map.find( i ) != map.end() ) {
             MPI_Comm_split( world, 1, global_rank, &comm_ifs );
             int comm_rank;
             MPI_Comm_rank( comm_ifs, &comm_rank );
-            if( comm_rank == 0 ){
+            if( comm_rank == 0 ) {
             	std::cout << "MUI [lib_mpi_multidomain]: Setting up interface " << map[i] << " [" << std::hex << i
             				<< std::dec << "] (rank ids are local to each interface)" << std::endl;
             }
             std::string full_uri( "mpi://" );
             full_uri = full_uri + domain + "/" + map[i];
-            unifaces.push_back( std::unique_ptr<uniface<CONFIG>>(new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) )) );
+            unifaces.push_back( new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) ) );
         } else {
             MPI_Comm_split( world, 0, global_rank, &comm_ifs );
         }
@@ -128,7 +131,19 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
         MPI_Barrier( world );
     }
 
-    return unifaces;
+    // Sort return vector into original interface order (order can be mangled due to use of hash values)
+	std::vector<std::unique_ptr<uniface<CONFIG>>> unifaces_sorted;
+
+	for (const auto &orig_inter : interfaces) {
+		for (auto &uni : unifaces) {
+			if( uni->uri_path().compare(orig_inter) == 0 ) {
+				unifaces_sorted.push_back( std::unique_ptr<uniface<CONFIG>>(uni) );
+				break;
+			}
+		}
+	}
+
+	return unifaces_sorted;
 }
 
   // Ensure all interfaces in the range of the two iterators have hit sync_all

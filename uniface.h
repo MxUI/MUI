@@ -740,6 +740,24 @@ public:
 		memory_length = length;
 	}
 	
+	/** \brief Returns the URI host (domain) for the created uniface
+	 */
+	std::string uri_host() {
+		return comm->uri_host();
+	}
+
+	/** \brief Returns the URI path (name) for the created uniface
+	 */
+	std::string uri_path() {
+		return comm->uri_path();
+	}
+
+	/** \brief Returns the URI protocol for the created uniface
+	 */
+	std::string uri_protocol() {
+		return comm->uri_protocol();
+	}
+
 private:
 	/** \brief Triggers communication
 	  */
