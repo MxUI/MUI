@@ -9,6 +9,7 @@ set (mui_h
 	config.h
 	dim.h
 	dynstorage.h
+	endian_traits.h
 	exception.h
 	geometry.h
 	lib_dispatcher.h

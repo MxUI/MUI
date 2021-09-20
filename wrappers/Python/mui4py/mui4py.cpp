@@ -162,7 +162,7 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_exact,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -174,7 +174,7 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL6(sampler_exact,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -186,7 +186,7 @@ using std::string;
        FETCH_SAMPLER_EXACT(CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -198,7 +198,7 @@ using std::string;
        FETCH_SAMPLER_EXACT6(CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -211,7 +211,7 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL(sampler_exact,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -222,7 +222,7 @@ using std::string;
        FETCH_SAMPLER_NUMERICAL6(sampler_exact,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -233,7 +233,7 @@ using std::string;
        FETCH_SAMPLER_EXACT(CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -244,7 +244,7 @@ using std::string;
        FETCH_SAMPLER_EXACT6(CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_gauss,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_nearest_neighbor,CHRONO_SAMPLER) \
-       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest2_linear,CHRONO_SAMPLER) \
+       FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_n2_linear,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_pseudo_nearest_neighbor,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_shepard_quintic,CHRONO_SAMPLER) \
        FETCH_SAMPLER_NUMERICAL6(sampler_sph_quintic,CHRONO_SAMPLER) \
@@ -511,9 +511,9 @@ DECLARE_FUNC_HEADER(sampler_nearest_neighbor) {
     .def(py::init<>());
 }
 
-//SPATIAL_SAMPLER_PSEUDO_NEAREST2_LINEAR CLASS//
+//SPATIAL_sampler_pseudo_n2_linear CLASS//
 template <template <typename Type0, typename Type1, typename Type2> class TclassTemplate, typename Tconfig, typename TArg1=void>
-DECLARE_FUNC_HEADER(sampler_pseudo_nearest2_linear) {
+DECLARE_FUNC_HEADER(sampler_pseudo_n2_linear) {
     string pyclass_name = get_pyclass_name(name, typestr, arg1);
     using Treal = typename Tconfig::REAL;
     using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
@@ -700,7 +700,7 @@ PYBIND11_MODULE(mui4py_mod, m) {
         DECLARE_MUI_CPP2PY_CLASSES_1ARG(sampler_nearest_neighbor,sampler_nearest_neighbor,T)
    FOR_EACH(EXPAND_SPATIAL_NEAREST_NEIGHBOR_SAMPLER,double,float,int32_t,int64_t)
    #define EXPAND_SPATIAL_PSEUDO_NEAREST2_LINEAR_SAMPLER(T) \
-        DECLARE_MUI_CPP2PY_CLASSES_1ARG(sampler_pseudo_nearest2_linear,sampler_pseudo_nearest2_linear,T)
+        DECLARE_MUI_CPP2PY_CLASSES_1ARG(sampler_pseudo_n2_linear,sampler_pseudo_n2_linear,T)
    FOR_EACH(EXPAND_SPATIAL_PSEUDO_NEAREST2_LINEAR_SAMPLER,double,float,int32_t,int64_t)
    #define EXPAND_SPATIAL_PSEUDO_NEAREST_NEIGHBOR_SAMPLER(T) \
         DECLARE_MUI_CPP2PY_CLASSES_1ARG(sampler_pseudo_nearest_neighbor,sampler_pseudo_nearest_neighbor,T)

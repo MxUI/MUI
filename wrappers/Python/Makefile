@@ -19,7 +19,7 @@ endif
 CFLAGS_D += -DCOMPILER_VERSION_STR=$(CC_VERSION_STR) -DMPI_VERSION_STR=$(MPI_VERSION_STR) -DCOMPILER_CONFIG_STR=$(CC_CONFIG_STR) -DPYTHON_BINDINGS
 ifeq ($(USE_RBF),True)
     CFLAGS += -fpermissive
-    INC_TPARTY += -I../../thirdParty/eigen
+    INC_TPARTY += -I/usr/include/eigen3
     CFLAGS_D +=  -DUSE_RBF
 endif
 EXTENSION_SUFFIX = $(shell python3-config --extension-suffix)
