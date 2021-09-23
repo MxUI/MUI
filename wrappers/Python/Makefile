@@ -1,8 +1,8 @@
 COMPILER ?= GCC
 CC	= mpic++
-CFLAGS	= -Wall -std=c++11 -O3
+CFLAGS	= -Wall -std=c++11 -O3 -Wno-unused-local-typedefs -Wno-comment -Wno-reorder -Wno-permissive
 LDFLAGS = -shared
-USE_RBF = False
+USE_RBF = True
 include $(COMPILER).make
 INC_MPI4PY = -I$(shell python3 -c "import mpi4py;print(mpi4py.get_include())")
 INC_PYBIND = $(shell python3 -m pybind11 --includes)
@@ -40,11 +40,12 @@ $(TARGET_LIB): $(OBJS)
 	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) $(INC_TPARTY) $< -o $@
 
 .PHONY: package meta-package clean-package clean-mod clean-all install pip-install clean-obj
-package: mui4py_mod
+
+mui4py-package: mui4py_mod
 	@python setup.py sdist
 	rm -rf mui4py.egg-info
 
-meta-package:
+mui4py-meta-package:
 	@ echo "Not implemented yet."
 
 clean-package:

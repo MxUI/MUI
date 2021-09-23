@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(USE_RBF "Include RBF support" OFF)
 option(C_WRAPPER "Compile C wrapper" OFF)
 option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF) #ToDo: Add Fortran wrapper compilation
-option(PYTHON_WRAPPER "Compile Python wrapper" OFF) #ToDo: Add Python wrapper compilation
+option(PYTHON_WRAPPER "Compile Python wrapper" OFF)
 
 include(sourcelist.cmake)
 
@@ -76,4 +76,6 @@ if(FORTRAN_WRAPPER)
 endif(FORTRAN_WRAPPER)
 
 if(PYTHON_WRAPPER)
+	add_custom_target(mui4py ALL COMMAND $(MAKE) mui4py-package
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 endif(PYTHON_WRAPPER)
