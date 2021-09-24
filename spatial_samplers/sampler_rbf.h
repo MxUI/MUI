@@ -954,7 +954,7 @@ private:
 
                         bool added = false;
                         for( size_t k=0; k<connectivityAB_[i].size(); k++ ) {
-                            if( connectivityAB_[i][k] == j ) {
+                            if( connectivityAB_[i][k] == static_cast<INT>(j) ) {
                                 added=true;
                                 break;
                             }
@@ -1003,7 +1003,7 @@ private:
 
                         bool added = false;
                         for( size_t k=0; k<connectivityAB_[i].size(); k++ ) {
-                            if( connectivityAB_[i][k] == j ) {
+                            if( connectivityAB_[i][k] == static_cast<INT>(j) ) {
                                 added=true;
                                 break;
                             }
@@ -1073,7 +1073,7 @@ private:
 
                         bool added = false;
                         for( size_t k=0; k<connectivityAA_[i].size(); k++ ) {
-                            if( connectivityAA_[i][k] == j ) {
+                            if( connectivityAA_[i][k] == static_cast<INT>(j) ) {
                                 added=true;
                                 break;
                             }
