@@ -4574,4 +4574,67 @@ void mui_set_forget_length_1t(mui_uniface_1t *uniface, double length) {
 	uniface->set_memory(length);
 }
 
+// Obtain original URI host value from existing interface
+const char* mui_uri_host_1f(mui_uniface_1f *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_1fx(mui_uniface_1fx *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_1d(mui_uniface_1d *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_1dx(mui_uniface_1dx *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_1t(mui_uniface_1t *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+// Obtain original URI path value from existing interface
+const char* mui_uri_path_1f(mui_uniface_1f *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_1fx(mui_uniface_1fx *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_1d(mui_uniface_1d *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_1dx(mui_uniface_1dx *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_1t(mui_uniface_1t *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+// Obtain original URI protocol value from existing interface
+const char* mui_uri_protocol_1f(mui_uniface_1f *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_1fx(mui_uniface_1fx *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_1d(mui_uniface_1d *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_1dx(mui_uniface_1dx *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_1t(mui_uniface_1t *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
 }
