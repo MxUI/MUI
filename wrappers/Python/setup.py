@@ -44,10 +44,10 @@ setup(
       name='mui4py',
       version='0.1',
       description='Python bindings for MUI coupling library.',
-      url='',
+      url='http://mxui.github.io',
       author='Eduardo Ramos Fernandez',
       author_email='eduardo.rf159@gmail.com',
-      license='Apache v2',
+      license='Apache v2.0',
       packages=['mui4py'],
       install_requires=[
             'mpi4py',

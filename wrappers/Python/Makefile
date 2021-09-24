@@ -1,8 +1,8 @@
-COMPILER ?= GCC
-CC	= mpic++
-CFLAGS	= -Wall -std=c++11 -O3
+COMPILER ?= GNU
+CC = mpic++
+CFLAGS = -Wall -std=c++11 -O3 -Wno-unused-local-typedefs -Wno-comment -Wno-reorder
 LDFLAGS = -shared
-USE_RBF = False
+USE_RBF = True
 include $(COMPILER).make
 INC_MPI4PY = -I$(shell python3 -c "import mpi4py;print(mpi4py.get_include())")
 INC_PYBIND = $(shell python3 -m pybind11 --includes)
@@ -17,13 +17,11 @@ else ifeq ($(PYTHON_INT_SIZE),32)
 	CFLAGS_D = -DPYTHON_INT_32
 endif
 CFLAGS_D += -DCOMPILER_VERSION_STR=$(CC_VERSION_STR) -DMPI_VERSION_STR=$(MPI_VERSION_STR) -DCOMPILER_CONFIG_STR=$(CC_CONFIG_STR) -DPYTHON_BINDINGS
-ifeq ($(USE_RBF),True)
-    CFLAGS += -fpermissive
-    INC_TPARTY += -I../../thirdParty/eigen
-    CFLAGS_D +=  -DUSE_RBF
+ifdef USE_RBF
+	CFLAGS += -fpermissive
+	CFLAGS_D +=  -DUSE_RBF
 endif
-EXTENSION_SUFFIX = $(shell python3-config --extension-suffix)
-TARGET_LIB = mui4py/mui4py_mod$(EXTENSION_SUFFIX)
+TARGET_LIB = mui4py/mui4py_mod.so
 SRCS = mui4py/mui4py.cpp
 OBJS = $(SRCS:.cpp=.o)
 
@@ -37,15 +35,16 @@ $(TARGET_LIB): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 %.o: %.cpp
-	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) $(INC_TPARTY) $< -o $@
+	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) -I$(INC_EIGEN) $< -o $@
 
 .PHONY: package meta-package clean-package clean-mod clean-all install pip-install clean-obj
+
 package: mui4py_mod
-	@python setup.py sdist
+	@python3 setup.py sdist
 	rm -rf mui4py.egg-info
 
 meta-package:
-	@ echo "Not implemented yet."
+	@echo "Not implemented yet"
 
 clean-package:
 	rm -rf mui4py.egg-info
@@ -62,8 +61,8 @@ clean-obj:
 clean-all: clean-package clean-mod clean-obj
 
 install:
-	@python setup.py install
+	@python3 setup.py install
 
 pip-install:
-	@pip install dist/mui4py*.tar.gz
+	@pip3 install dist/mui4py*.tar.gz
 
