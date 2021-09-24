@@ -165,7 +165,7 @@ public:
 
 private:
 	template<template<typename,typename> class CONTAINER>
-	void computeRBFtransformation( const CONTAINER<ITYPE,CONFIG> &data_points ) {
+	void computeRBFtransformation( const CONTAINER<ITYPE,CONFIG> &data_points ) const {
 
 		if(conservative_){
 			if(pts_.size()<=50){
