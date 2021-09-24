@@ -129,7 +129,7 @@ public:
 	}
 
 	template<template<typename,typename> class CONTAINER>
-	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) {
 		if( !initialised_ )
 			computeRBFtransformation( data_points );
 
@@ -165,7 +165,7 @@ public:
 
 private:
 	template<template<typename,typename> class CONTAINER>
-	void computeRBFtransformation( const CONTAINER<ITYPE,CONFIG> &data_points ) const {
+	void computeRBFtransformation( const CONTAINER<ITYPE,CONFIG> &data_points ) {
 
 		if(conservative_){
 			if(pts_.size()<=50){
