@@ -1347,5 +1347,20 @@ void mui_set_forget_length_1fx(mui_uniface_1fx *uniface, float length);
 void mui_set_forget_length_1d(mui_uniface_1d *uniface, double length);
 void mui_set_forget_length_1dx(mui_uniface_1dx *uniface, double length);
 void mui_set_forget_length_1t(mui_uniface_1t *uniface, double length);
+const char* mui_uri_host_1f(mui_uniface_1f *uniface);
+const char* mui_uri_host_1fx(mui_uniface_1fx *uniface);
+const char* mui_uri_host_1d(mui_uniface_1d *uniface);
+const char* mui_uri_host_1dx(mui_uniface_1dx *uniface);
+const char* mui_uri_host_1t(mui_uniface_1t *uniface);
+const char* mui_uri_path_1f(mui_uniface_1f *uniface);
+const char* mui_uri_path_1fx(mui_uniface_1fx *uniface);
+const char* mui_uri_path_1d(mui_uniface_1d *uniface);
+const char* mui_uri_path_1dx(mui_uniface_1dx *uniface);
+const char* mui_uri_path_1t(mui_uniface_1t *uniface);
+const char* mui_uri_protocol_1f(mui_uniface_1f *uniface);
+const char* mui_uri_protocol_1fx(mui_uniface_1fx *uniface);
+const char* mui_uri_protocol_1d(mui_uniface_1d *uniface);
+const char* mui_uri_protocol_1dx(mui_uniface_1dx *uniface);
+const char* mui_uri_protocol_1t(mui_uniface_1t *uniface);
 
 #endif /* MUI_C_WRAPPER_1D_H_ */

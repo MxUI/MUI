@@ -4650,7 +4650,7 @@ void mui_announce_recv_span_2t_box(mui_uniface_2t *uniface, double box_1_1, doub
 			static_cast<mui::mui_c_wrapper_2D::time_type>(t_timeout), bound_box);
 }
 
-// Receive span announce using 1D sphere geometry
+// Receive span announce using 2d sphere geometry
 void mui_announce_recv_span_2f_sphere(mui_uniface_2f *uniface, mui_point_2f centre, float radius, float t_start,
 		float t_timeout) {
 	mui::geometry::sphere2f bound_sphere(mui::point2f(centre.point_1, centre.point_2), radius);
@@ -4909,6 +4909,69 @@ void mui_set_forget_length_2dx(mui_uniface_2dx *uniface, double length) {
 
 void mui_set_forget_length_2t(mui_uniface_2t *uniface, double length) {
 	uniface->set_memory(length);
+}
+
+// Obtain original URI host value from existing interface
+const char* mui_uri_host_2f(mui_uniface_2f *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_2fx(mui_uniface_2fx *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_2d(mui_uniface_2d *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_2dx(mui_uniface_2dx *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+const char* mui_uri_host_2t(mui_uniface_2t *uniface) {
+	return uniface->uri_host().c_str();
+}
+
+// Obtain original URI path value from existing interface
+const char* mui_uri_path_2f(mui_uniface_2f *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_2fx(mui_uniface_2fx *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_2d(mui_uniface_2d *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_2dx(mui_uniface_2dx *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+const char* mui_uri_path_2t(mui_uniface_2t *uniface) {
+	return uniface->uri_path().c_str();
+}
+
+// Obtain original URI protocol value from existing interface
+const char* mui_uri_protocol_2f(mui_uniface_2f *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_2fx(mui_uniface_2fx *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_2d(mui_uniface_2d *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_2dx(mui_uniface_2dx *uniface) {
+	return uniface->uri_protocol().c_str();
+}
+
+const char* mui_uri_protocol_2t(mui_uniface_2t *uniface) {
+	return uniface->uri_protocol().c_str();
 }
 
 }
