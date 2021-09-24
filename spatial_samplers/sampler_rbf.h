@@ -469,7 +469,7 @@ private:
 
 								for( INT k=0 ; k < M_ap_; k++) {
 									INT row_k=connectivityAA_[row][k];
-									if (row_k==row) {
+									if (row_k==static_cast<INT>(row)) {
 										std::cerr << "Invalid row_k value: " << row_k << std::endl;
 										} else{
 											h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
@@ -478,7 +478,7 @@ private:
 
 								for( INT k=0 ; k < M_ap_; k++) {
 									INT row_k=connectivityAA_[row][k];
-									if (row_k==row) {
+									if (row_k==static_cast<INT>(row)) {
 										std::cerr << "Invalid row_k value: " << row_k << std::endl;
 										} else{
 											REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
@@ -570,7 +570,7 @@ private:
 
 								for( INT k=0 ; k < M_ap_; k++) {
 									INT row_k=connectivityAA_[row][k];
-									if (row_k==row) {
+									if (row_k==static_cast<INT>(row)) {
 										std::cerr << "Invalid row_k value: " << row_k << std::endl;
 										} else{
 											h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
@@ -579,7 +579,7 @@ private:
 
 								for( INT k=0 ; k < M_ap_; k++) {
 									INT row_k=connectivityAA_[row][k];
-									if (row_k==row) {
+									if (row_k==static_cast<INT>(row)) {
 										std::cerr << "Invalid row_k value: " << row_k << std::endl;
 										} else{
 											REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
@@ -655,8 +655,6 @@ private:
                     Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
 
                     Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_more = (invCss * AasTrans).pruned(1e8);
-                    int r = H_more.rows();
-                    int c = H_more.cols();
 
                     if (smoothFunc_) {
 						for( size_t i=0 ; i < pts_.size() ; i++) {
@@ -679,7 +677,7 @@ private:
 								REAL f_sum = 0.;
 								for( INT k=0 ; k < M_ap_; k++) {
 									INT row_k=connectivityAA_[row][k];
-									if (row_k==row) {
+									if (row_k==static_cast<INT>(row)) {
 										std::cerr << "Invalid row_k value: " << row_k << std::endl;
 										} else{
 											h_j_sum += std::pow(dist_h_i(row, row_k),(-2));
@@ -688,7 +686,7 @@ private:
 
 								for( INT k=0 ; k < M_ap_; k++) {
 									INT row_k=connectivityAA_[row][k];
-									if (row_k==row) {
+									if (row_k==static_cast<INT>(row)) {
 										std::cerr << "Invalid row_k value: " << row_k << std::endl;
 										} else{
 											REAL w_i=((std::pow(dist_h_i(row, row_k),(-2)))/(h_j_sum));
