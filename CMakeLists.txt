@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MUI VERSION 1.1.2 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
+project(MUI VERSION 1.1.3 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
