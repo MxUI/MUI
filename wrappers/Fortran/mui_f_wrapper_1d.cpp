@@ -221,27 +221,27 @@ typedef mui::chrono_sampler_sum<mui::mui_f_wrapper_1D> mui_chrono_sampler_sum_1t
  ****************************************/
 
 // 1D interface with float=single and int=int32
-void mui_create_uniface_1f_f(mui_uniface_1f** ret, const char *URI) {
+void mui_create_uniface_1f_f(mui_uniface_1f** ret, const char* URI) {
 	*ret = new mui_uniface_1f(URI);
 }
 
 // 1D interface with float=single and int=int64
-void mui_create_uniface_1fx_f(mui_uniface_1fx** ret, const char *URI) {
+void mui_create_uniface_1fx_f(mui_uniface_1fx** ret, const char* URI) {
 	*ret = new mui_uniface_1fx(URI);
 }
 
 // 1D interface with float=double and int=int32
-void mui_create_uniface_1d_f(mui_uniface_1d** ret, const char *URI) {
+void mui_create_uniface_1d_f(mui_uniface_1d** ret, const char* URI) {
 	*ret = new mui_uniface_1d(URI);
 }
 
 // 1D interface with float=double and int=int64
-void mui_create_uniface_1dx_f(mui_uniface_1dx** ret, const char *URI) {
+void mui_create_uniface_1dx_f(mui_uniface_1dx** ret, const char* URI) {
 	*ret = new mui_uniface_1dx(URI);
 }
 
 // 1D interface using config from config_f_wrapper.h
-void mui_create_uniface_1t_f(mui_uniface_1t** ret, const char *URI) {
+void mui_create_uniface_1t_f(mui_uniface_1t** ret, const char* URI) {
 	*ret = new mui_uniface_1t(URI);
 }
 
@@ -249,23 +249,23 @@ void mui_create_uniface_1t_f(mui_uniface_1t** ret, const char *URI) {
  * Destroy MUI interface                 *
  ****************************************/
 
-void mui_destroy_uniface_1f_f(mui_uniface_1f *uniface) {
+void mui_destroy_uniface_1f_f(mui_uniface_1f* uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1fx_f(mui_uniface_1fx *uniface) {
+void mui_destroy_uniface_1fx_f(mui_uniface_1fx* uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1d_f(mui_uniface_1d *uniface) {
+void mui_destroy_uniface_1d_f(mui_uniface_1d* uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1dx_f(mui_uniface_1dx *uniface) {
+void mui_destroy_uniface_1dx_f(mui_uniface_1dx* uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1t_f(mui_uniface_1t *uniface) {
+void mui_destroy_uniface_1t_f(mui_uniface_1t* uniface) {
 	delete uniface;
 }
 
@@ -531,212 +531,212 @@ void mui_create_sampler_rbf_1t_f(mui_sampler_rbf_1t** ret, double* r, mui_point_
  *******************************************/
 
 // Exact sampler
-void mui_destroy_sampler_exact_1f_f(mui_sampler_exact_1f *sampler) {
+void mui_destroy_sampler_exact_1f_f(mui_sampler_exact_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_exact_1fx_f(mui_sampler_exact_1fx *sampler) {
+void mui_destroy_sampler_exact_1fx_f(mui_sampler_exact_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_exact_1d_f(mui_sampler_exact_1d *sampler) {
+void mui_destroy_sampler_exact_1d_f(mui_sampler_exact_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_exact_1dx_f(mui_sampler_exact_1dx *sampler) {
+void mui_destroy_sampler_exact_1dx_f(mui_sampler_exact_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_exact_1t_f(mui_sampler_exact_1t *sampler) {
+void mui_destroy_sampler_exact_1t_f(mui_sampler_exact_1t* sampler) {
 	delete sampler;
 }
 
 // Gauss sampler
-void mui_destroy_sampler_gauss_1f_f(mui_sampler_gauss_1f *sampler) {
+void mui_destroy_sampler_gauss_1f_f(mui_sampler_gauss_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_gauss_1fx_f(mui_sampler_gauss_1fx *sampler) {
+void mui_destroy_sampler_gauss_1fx_f(mui_sampler_gauss_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_gauss_1d_f(mui_sampler_gauss_1d *sampler) {
+void mui_destroy_sampler_gauss_1d_f(mui_sampler_gauss_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_gauss_1dx_f(mui_sampler_gauss_1dx *sampler) {
+void mui_destroy_sampler_gauss_1dx_f(mui_sampler_gauss_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_gauss_1t_f(mui_sampler_gauss_1t *sampler) {
+void mui_destroy_sampler_gauss_1t_f(mui_sampler_gauss_1t* sampler) {
 	delete sampler;
 }
 
 // Moving average sampler
-void mui_destroy_sampler_moving_average_1f_f(mui_sampler_moving_average_1f *sampler) {
+void mui_destroy_sampler_moving_average_1f_f(mui_sampler_moving_average_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_moving_average_1fx_f(mui_sampler_moving_average_1fx *sampler) {
+void mui_destroy_sampler_moving_average_1fx_f(mui_sampler_moving_average_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_moving_average_1d_f(mui_sampler_moving_average_1d *sampler) {
+void mui_destroy_sampler_moving_average_1d_f(mui_sampler_moving_average_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_moving_average_1dx_f(mui_sampler_moving_average_1dx *sampler) {
+void mui_destroy_sampler_moving_average_1dx_f(mui_sampler_moving_average_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_moving_average_1t_f(mui_sampler_moving_average_1t *sampler) {
+void mui_destroy_sampler_moving_average_1t_f(mui_sampler_moving_average_1t* sampler) {
 	delete sampler;
 }
 
 // Nearest neighbour sampler
-void mui_destroy_sampler_nearest_neighbor_1f_f(mui_sampler_nearest_neighbor_1f *sampler) {
+void mui_destroy_sampler_nearest_neighbor_1f_f(mui_sampler_nearest_neighbor_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_nearest_neighbor_1fx_f(mui_sampler_nearest_neighbor_1fx *sampler) {
+void mui_destroy_sampler_nearest_neighbor_1fx_f(mui_sampler_nearest_neighbor_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_nearest_neighbor_1d_f(mui_sampler_nearest_neighbor_1d *sampler) {
+void mui_destroy_sampler_nearest_neighbor_1d_f(mui_sampler_nearest_neighbor_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_nearest_neighbor_1dx_f(mui_sampler_nearest_neighbor_1dx *sampler) {
+void mui_destroy_sampler_nearest_neighbor_1dx_f(mui_sampler_nearest_neighbor_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_nearest_neighbor_1t_f(mui_sampler_nearest_neighbor_1t *sampler) {
+void mui_destroy_sampler_nearest_neighbor_1t_f(mui_sampler_nearest_neighbor_1t* sampler) {
 	delete sampler;
 }
 
 // Pseudo-linear n^2 interpolation sampler
-void mui_destroy_sampler_pseudo_nearest2_linear_1f_f(mui_sampler_pseudo_nearest_neighbor_1f *sampler) {
+void mui_destroy_sampler_pseudo_nearest2_linear_1f_f(mui_sampler_pseudo_nearest_neighbor_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_1fx_f(mui_sampler_pseudo_nearest_neighbor_1fx *sampler) {
+void mui_destroy_sampler_pseudo_nearest2_linear_1fx_f(mui_sampler_pseudo_nearest_neighbor_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_1d_f(mui_sampler_pseudo_nearest_neighbor_1d *sampler) {
+void mui_destroy_sampler_pseudo_nearest2_linear_1d_f(mui_sampler_pseudo_nearest_neighbor_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_1dx_f(mui_sampler_pseudo_nearest_neighbor_1dx *sampler) {
+void mui_destroy_sampler_pseudo_nearest2_linear_1dx_f(mui_sampler_pseudo_nearest_neighbor_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_1t_f(mui_sampler_pseudo_nearest_neighbor_1t *sampler) {
+void mui_destroy_sampler_pseudo_nearest2_linear_1t_f(mui_sampler_pseudo_nearest_neighbor_1t* sampler) {
 	delete sampler;
 }
 
 // Pseudo-linear nearest neighbour interpolation sampler
-void mui_destroy_sampler_pseudo_nearest_neighbor_1f_f(mui_sampler_pseudo_nearest_neighbor_1f *sampler) {
+void mui_destroy_sampler_pseudo_nearest_neighbor_1f_f(mui_sampler_pseudo_nearest_neighbor_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest_neighbor_1fx_f(mui_sampler_pseudo_nearest_neighbor_1fx *sampler) {
+void mui_destroy_sampler_pseudo_nearest_neighbor_1fx_f(mui_sampler_pseudo_nearest_neighbor_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest_neighbor_1d_f(mui_sampler_pseudo_nearest_neighbor_1d *sampler) {
+void mui_destroy_sampler_pseudo_nearest_neighbor_1d_f(mui_sampler_pseudo_nearest_neighbor_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest_neighbor_1dx_f(mui_sampler_pseudo_nearest_neighbor_1dx *sampler) {
+void mui_destroy_sampler_pseudo_nearest_neighbor_1dx_f(mui_sampler_pseudo_nearest_neighbor_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest_neighbor_1t_f(mui_sampler_pseudo_nearest_neighbor_1t *sampler) {
+void mui_destroy_sampler_pseudo_nearest_neighbor_1t_f(mui_sampler_pseudo_nearest_neighbor_1t* sampler) {
 	delete sampler;
 }
 
 // Shepard interpolation with a quintic kernel sampler
-void mui_destroy_sampler_shepard_quintic_1f_f(mui_sampler_shepard_quintic_1f *sampler) {
+void mui_destroy_sampler_shepard_quintic_1f_f(mui_sampler_shepard_quintic_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_shepard_quintic_1fx_f(mui_sampler_shepard_quintic_1fx *sampler) {
+void mui_destroy_sampler_shepard_quintic_1fx_f(mui_sampler_shepard_quintic_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_shepard_quintic_1d_f(mui_sampler_shepard_quintic_1d *sampler) {
+void mui_destroy_sampler_shepard_quintic_1d_f(mui_sampler_shepard_quintic_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_shepard_quintic_1dx_f(mui_sampler_shepard_quintic_1dx *sampler) {
+void mui_destroy_sampler_shepard_quintic_1dx_f(mui_sampler_shepard_quintic_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_shepard_quintic_1t_f(mui_sampler_shepard_quintic_1t *sampler) {
+void mui_destroy_sampler_shepard_quintic_1t_f(mui_sampler_shepard_quintic_1t* sampler) {
 	delete sampler;
 }
 
 // SPH derived interpolation method with a quintic spline kernel sampler
-void mui_destroy_sampler_sph_quintic_1f_f(mui_sampler_sph_quintic_1f *sampler) {
+void mui_destroy_sampler_sph_quintic_1f_f(mui_sampler_sph_quintic_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sph_quintic_1fx_f(mui_sampler_sph_quintic_1fx *sampler) {
+void mui_destroy_sampler_sph_quintic_1fx_f(mui_sampler_sph_quintic_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sph_quintic_1d_f(mui_sampler_sph_quintic_1d *sampler) {
+void mui_destroy_sampler_sph_quintic_1d_f(mui_sampler_sph_quintic_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sph_quintic_1dx_f(mui_sampler_sph_quintic_1dx *sampler) {
+void mui_destroy_sampler_sph_quintic_1dx_f(mui_sampler_sph_quintic_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sph_quintic_1t_f(mui_sampler_sph_quintic_1t *sampler) {
+void mui_destroy_sampler_sph_quintic_1t_f(mui_sampler_sph_quintic_1t* sampler) {
 	delete sampler;
 }
 
 // Summation with a quintic kernel sampler
-void mui_destroy_sampler_sum_quintic_1f_f(mui_sampler_sum_quintic_1f *sampler) {
+void mui_destroy_sampler_sum_quintic_1f_f(mui_sampler_sum_quintic_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sum_quintic_1fx_f(mui_sampler_sum_quintic_1fx *sampler) {
+void mui_destroy_sampler_sum_quintic_1fx_f(mui_sampler_sum_quintic_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sum_quintic_1d_f(mui_sampler_sum_quintic_1d *sampler) {
+void mui_destroy_sampler_sum_quintic_1d_f(mui_sampler_sum_quintic_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sum_quintic_1dx_f(mui_sampler_sum_quintic_1dx *sampler) {
+void mui_destroy_sampler_sum_quintic_1dx_f(mui_sampler_sum_quintic_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_sum_quintic_1t_f(mui_sampler_sum_quintic_1t *sampler) {
+void mui_destroy_sampler_sum_quintic_1t_f(mui_sampler_sum_quintic_1t* sampler) {
 	delete sampler;
 }
 
 #ifdef USE_RBF
-void mui_destroy_sampler_rbf_1f_f(mui_sampler_rbf_1f *sampler) {
+void mui_destroy_sampler_rbf_1f_f(mui_sampler_rbf_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_rbf_1fx_f(mui_sampler_rbf_1fx *sampler) {
+void mui_destroy_sampler_rbf_1fx_f(mui_sampler_rbf_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_rbf_1d_f(mui_sampler_rbf_1d *sampler) {
+void mui_destroy_sampler_rbf_1d_f(mui_sampler_rbf_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_rbf_1dx_f(mui_sampler_rbf_1dx *sampler) {
+void mui_destroy_sampler_rbf_1dx_f(mui_sampler_rbf_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_sampler_rbf_1t_f(mui_sampler_rbf_1t *sampler) {
+void mui_destroy_sampler_rbf_1t_f(mui_sampler_rbf_1t* sampler) {
 	delete sampler;
 }
 #endif
@@ -836,86 +836,86 @@ void mui_create_chrono_sampler_sum_1t_f(mui_chrono_sampler_sum_1t** ret, double*
  * Destroy temporal samplers                *
  *******************************************/
 
-void mui_destroy_chrono_sampler_exact_1f_f(mui_chrono_sampler_exact_1f *sampler) {
+void mui_destroy_chrono_sampler_exact_1f_f(mui_chrono_sampler_exact_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_exact_1fx_f(mui_chrono_sampler_exact_1fx *sampler) {
+void mui_destroy_chrono_sampler_exact_1fx_f(mui_chrono_sampler_exact_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_exact_1d_f(mui_chrono_sampler_exact_1d *sampler) {
+void mui_destroy_chrono_sampler_exact_1d_f(mui_chrono_sampler_exact_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_exact_1dx_f(mui_chrono_sampler_exact_1dx *sampler) {
+void mui_destroy_chrono_sampler_exact_1dx_f(mui_chrono_sampler_exact_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_exact_1t_f(mui_chrono_sampler_exact_1t *sampler) {
+void mui_destroy_chrono_sampler_exact_1t_f(mui_chrono_sampler_exact_1t* sampler) {
 	delete sampler;
 }
 
 // Gauss temporal sampler
-void mui_destroy_chrono_sampler_gauss_1f_f(mui_chrono_sampler_gauss_1f *sampler) {
+void mui_destroy_chrono_sampler_gauss_1f_f(mui_chrono_sampler_gauss_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_gauss_1fx_f(mui_chrono_sampler_gauss_1fx *sampler) {
+void mui_destroy_chrono_sampler_gauss_1fx_f(mui_chrono_sampler_gauss_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_gauss_1d_f(mui_chrono_sampler_gauss_1d *sampler) {
+void mui_destroy_chrono_sampler_gauss_1d_f(mui_chrono_sampler_gauss_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_gauss_1dx_f(mui_chrono_sampler_gauss_1dx *sampler) {
+void mui_destroy_chrono_sampler_gauss_1dx_f(mui_chrono_sampler_gauss_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_gauss_1t_f(mui_chrono_sampler_gauss_1t *sampler) {
+void mui_destroy_chrono_sampler_gauss_1t_f(mui_chrono_sampler_gauss_1t* sampler) {
 	delete sampler;
 }
 
 // Mean temporal sampler
-void mui_destroy_chrono_sampler_mean_1f_f(mui_chrono_sampler_mean_1f *sampler) {
+void mui_destroy_chrono_sampler_mean_1f_f(mui_chrono_sampler_mean_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_mean_1fx_f(mui_chrono_sampler_mean_1fx *sampler) {
+void mui_destroy_chrono_sampler_mean_1fx_f(mui_chrono_sampler_mean_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_mean_1d_f(mui_chrono_sampler_mean_1d *sampler) {
+void mui_destroy_chrono_sampler_mean_1d_f(mui_chrono_sampler_mean_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_mean_1dx_f(mui_chrono_sampler_mean_1dx *sampler) {
+void mui_destroy_chrono_sampler_mean_1dx_f(mui_chrono_sampler_mean_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_mean_1t_f(mui_chrono_sampler_mean_1t *sampler) {
+void mui_destroy_chrono_sampler_mean_1t_f(mui_chrono_sampler_mean_1t* sampler) {
 	delete sampler;
 }
 
 // Sum temporal sampler
-void mui_destroy_chrono_sampler_sum_1f_f(mui_chrono_sampler_sum_1f *sampler) {
+void mui_destroy_chrono_sampler_sum_1f_f(mui_chrono_sampler_sum_1f* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_sum_1fx_f(mui_chrono_sampler_sum_1fx *sampler) {
+void mui_destroy_chrono_sampler_sum_1fx_f(mui_chrono_sampler_sum_1fx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_sum_1d_f(mui_chrono_sampler_sum_1d *sampler) {
+void mui_destroy_chrono_sampler_sum_1d_f(mui_chrono_sampler_sum_1d* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_sum_1dx_f(mui_chrono_sampler_sum_1dx *sampler) {
+void mui_destroy_chrono_sampler_sum_1dx_f(mui_chrono_sampler_sum_1dx* sampler) {
 	delete sampler;
 }
 
-void mui_destroy_chrono_sampler_sum_1t_f(mui_chrono_sampler_sum_1t *sampler) {
+void mui_destroy_chrono_sampler_sum_1t_f(mui_chrono_sampler_sum_1t* sampler) {
 	delete sampler;
 }
 
@@ -924,8 +924,8 @@ void mui_destroy_chrono_sampler_sum_1t_f(mui_chrono_sampler_sum_1t *sampler) {
  ******************************************/
 
 // Standard push functions
-void mui_push_1f_f(mui_uniface_1f *uniface, const char* attr, mui_point_1f* point, float* value) {
-	uniface->push(std::string(attr), mui::point1f(point->point_1), *value);
+void mui_push_1f_f(mui_uniface_1f *uniface, const char* attr, float* point_1, float* value) {
+	uniface->push(std::string(attr), mui::point1f(*point_1), *value);
 }
 
 void mui_push_1fx_f(mui_uniface_1fx *uniface, const char* attr, mui_point_1fx* point, float* value) {
@@ -1035,7 +1035,7 @@ void mui_forecast_1dx_f(mui_uniface_1dx *uniface, double* t) {
 }
 
 void mui_forecast_1t_f(mui_uniface_1t *uniface, double* t) {
-	uniface->forecast(static_cast<mui::mui_f_wrapper_1D::time_type>(t));
+	uniface->forecast(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
 }
 
 // Forecast using two time values
@@ -3701,9 +3701,9 @@ void mui_fetch_points_sum_1t_pair_f(mui_uniface_1t *uniface, const char *attr, d
  ********************************************************************/
 
 // Temporal sampler: exact
-void mui_fetch_values_exact_1f(mui_uniface_1f *uniface, const char *attr, float t,
+void mui_fetch_values_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float *t,
 		mui_chrono_sampler_exact_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3711,9 +3711,9 @@ void mui_fetch_values_exact_1f(mui_uniface_1f *uniface, const char *attr, float 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1fx(mui_uniface_1fx *uniface, const char *attr, float t,
+void mui_fetch_values_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
 		mui_chrono_sampler_exact_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3721,9 +3721,9 @@ void mui_fetch_values_exact_1fx(mui_uniface_1fx *uniface, const char *attr, floa
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1d(mui_uniface_1d *uniface, const char *attr, double t,
+void mui_fetch_values_exact_1d_f(mui_uniface_1d *uniface, const char *attr, double *t,
 		mui_chrono_sampler_exact_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3731,9 +3731,9 @@ void mui_fetch_values_exact_1d(mui_uniface_1d *uniface, const char *attr, double
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
+void mui_fetch_values_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
 		mui_chrono_sampler_exact_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3741,10 +3741,10 @@ void mui_fetch_values_exact_1dx(mui_uniface_1dx *uniface, const char *attr, doub
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1t(mui_uniface_1t *uniface, const char *attr, double t,
+void mui_fetch_values_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
 		mui_chrono_sampler_exact_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -3753,9 +3753,9 @@ void mui_fetch_values_exact_1t(mui_uniface_1t *uniface, const char *attr, double
 }
 
 // Temporal sampler: gauss
-void mui_fetch_values_gauss_1f(mui_uniface_1f *uniface, const char *attr, float t,
+void mui_fetch_values_gauss_1f_f(mui_uniface_1f *uniface, const char *attr, float *t,
 		mui_chrono_sampler_gauss_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3763,9 +3763,9 @@ void mui_fetch_values_gauss_1f(mui_uniface_1f *uniface, const char *attr, float 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1fx(mui_uniface_1fx *uniface, const char *attr, float t,
+void mui_fetch_values_gauss_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
 		mui_chrono_sampler_gauss_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3773,9 +3773,9 @@ void mui_fetch_values_gauss_1fx(mui_uniface_1fx *uniface, const char *attr, floa
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1d(mui_uniface_1d *uniface, const char *attr, double t,
+void mui_fetch_values_gauss_1d_f(mui_uniface_1d *uniface, const char *attr, double *t,
 		mui_chrono_sampler_gauss_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3783,9 +3783,9 @@ void mui_fetch_values_gauss_1d(mui_uniface_1d *uniface, const char *attr, double
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
+void mui_fetch_values_gauss_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
 		mui_chrono_sampler_gauss_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3793,10 +3793,10 @@ void mui_fetch_values_gauss_1dx(mui_uniface_1dx *uniface, const char *attr, doub
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1t(mui_uniface_1t *uniface, const char *attr, double t,
+void mui_fetch_values_gauss_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
 		mui_chrono_sampler_gauss_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -3805,9 +3805,9 @@ void mui_fetch_values_gauss_1t(mui_uniface_1t *uniface, const char *attr, double
 }
 
 // Temporal sampler: mean
-void mui_fetch_values_mean_1f(mui_uniface_1f *uniface, const char *attr, float t,
+void mui_fetch_values_mean_1f_f(mui_uniface_1f *uniface, const char *attr, float *t,
 		mui_chrono_sampler_mean_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3815,9 +3815,9 @@ void mui_fetch_values_mean_1f(mui_uniface_1f *uniface, const char *attr, float t
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1fx(mui_uniface_1fx *uniface, const char *attr, float t,
+void mui_fetch_values_mean_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
 		mui_chrono_sampler_mean_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3825,9 +3825,9 @@ void mui_fetch_values_mean_1fx(mui_uniface_1fx *uniface, const char *attr, float
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1d(mui_uniface_1d *uniface, const char *attr, double t,
+void mui_fetch_values_mean_1d_f(mui_uniface_1d *uniface, const char *attr, double *t,
 		mui_chrono_sampler_mean_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3835,9 +3835,9 @@ void mui_fetch_values_mean_1d(mui_uniface_1d *uniface, const char *attr, double 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
+void mui_fetch_values_mean_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
 		mui_chrono_sampler_mean_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3845,10 +3845,10 @@ void mui_fetch_values_mean_1dx(mui_uniface_1dx *uniface, const char *attr, doubl
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1t(mui_uniface_1t *uniface, const char *attr, double t,
+void mui_fetch_values_mean_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
 		mui_chrono_sampler_mean_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -3857,9 +3857,9 @@ void mui_fetch_values_mean_1t(mui_uniface_1t *uniface, const char *attr, double 
 }
 
 // Temporal sampler: sum
-void mui_fetch_values_sum_1f(mui_uniface_1f *uniface, const char *attr, float t,
+void mui_fetch_values_sum_1f_f(mui_uniface_1f *uniface, const char *attr, float *t,
 		mui_chrono_sampler_sum_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3867,9 +3867,9 @@ void mui_fetch_values_sum_1f(mui_uniface_1f *uniface, const char *attr, float t,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1fx(mui_uniface_1fx *uniface, const char *attr, float t,
+void mui_fetch_values_sum_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
 		mui_chrono_sampler_sum_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3877,9 +3877,9 @@ void mui_fetch_values_sum_1fx(mui_uniface_1fx *uniface, const char *attr, float 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1d(mui_uniface_1d *uniface, const char *attr, double t,
+void mui_fetch_values_sum_1d_f(mui_uniface_1d *uniface, const char *attr, double *t,
 		mui_chrono_sampler_sum_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3887,9 +3887,9 @@ void mui_fetch_values_sum_1d(mui_uniface_1d *uniface, const char *attr, double t
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
+void mui_fetch_values_sum_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
 		mui_chrono_sampler_sum_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3897,10 +3897,10 @@ void mui_fetch_values_sum_1dx(mui_uniface_1dx *uniface, const char *attr, double
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1t(mui_uniface_1t *uniface, const char *attr, double t,
+void mui_fetch_values_sum_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
 		mui_chrono_sampler_sum_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), *t, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -3913,9 +3913,9 @@ void mui_fetch_values_sum_1t(mui_uniface_1t *uniface, const char *attr, double t
  *********************************************************************/
 
 // Temporal sampler: exact
-void mui_fetch_values_exact_1f_pair(mui_uniface_1f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_exact_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3923,9 +3923,9 @@ void mui_fetch_values_exact_1f_pair(mui_uniface_1f *uniface, const char *attr, f
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_exact_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3933,9 +3933,9 @@ void mui_fetch_values_exact_1fx_pair(mui_uniface_1fx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1d_pair(mui_uniface_1d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_exact_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3943,9 +3943,9 @@ void mui_fetch_values_exact_1d_pair(mui_uniface_1d *uniface, const char *attr, d
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_exact_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3953,10 +3953,10 @@ void mui_fetch_values_exact_1dx_pair(mui_uniface_1dx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_exact_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -3965,9 +3965,9 @@ void mui_fetch_values_exact_1t_pair(mui_uniface_1t *uniface, const char *attr, d
 }
 
 // Temporal sampler: gauss
-void mui_fetch_values_gauss_1f_pair(mui_uniface_1f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_gauss_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_gauss_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3975,9 +3975,9 @@ void mui_fetch_values_gauss_1f_pair(mui_uniface_1f *uniface, const char *attr, f
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_gauss_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_gauss_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3985,9 +3985,9 @@ void mui_fetch_values_gauss_1fx_pair(mui_uniface_1fx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1d_pair(mui_uniface_1d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_gauss_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_gauss_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -3995,9 +3995,9 @@ void mui_fetch_values_gauss_1d_pair(mui_uniface_1d *uniface, const char *attr, d
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_gauss_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_gauss_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4005,10 +4005,10 @@ void mui_fetch_values_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_gauss_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_gauss_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4017,9 +4017,9 @@ void mui_fetch_values_gauss_1t_pair(mui_uniface_1t *uniface, const char *attr, d
 }
 
 // Temporal sampler: mean
-void mui_fetch_values_mean_1f_pair(mui_uniface_1f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_mean_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_mean_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4027,9 +4027,9 @@ void mui_fetch_values_mean_1f_pair(mui_uniface_1f *uniface, const char *attr, fl
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_mean_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_mean_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4037,9 +4037,9 @@ void mui_fetch_values_mean_1fx_pair(mui_uniface_1fx *uniface, const char *attr, 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1d_pair(mui_uniface_1d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_mean_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_mean_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4047,9 +4047,9 @@ void mui_fetch_values_mean_1d_pair(mui_uniface_1d *uniface, const char *attr, do
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_mean_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_mean_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4057,10 +4057,10 @@ void mui_fetch_values_mean_1dx_pair(mui_uniface_1dx *uniface, const char *attr, 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_mean_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_mean_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4069,9 +4069,9 @@ void mui_fetch_values_mean_1t_pair(mui_uniface_1t *uniface, const char *attr, do
 }
 
 // Temporal sampler: sum
-void mui_fetch_values_sum_1f_pair(mui_uniface_1f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_sum_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_sum_1f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4079,9 +4079,9 @@ void mui_fetch_values_sum_1f_pair(mui_uniface_1f *uniface, const char *attr, flo
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_sum_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2,
 		mui_chrono_sampler_sum_1fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4089,9 +4089,9 @@ void mui_fetch_values_sum_1fx_pair(mui_uniface_1fx *uniface, const char *attr, f
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1d_pair(mui_uniface_1d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_sum_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_sum_1d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4099,9 +4099,9 @@ void mui_fetch_values_sum_1d_pair(mui_uniface_1d *uniface, const char *attr, dou
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_sum_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_sum_1dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4109,10 +4109,10 @@ void mui_fetch_values_sum_1dx_pair(mui_uniface_1dx *uniface, const char *attr, d
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_sum_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2,
 		mui_chrono_sampler_sum_1t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), *t_1, *t_2, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4124,23 +4124,23 @@ void mui_fetch_values_sum_1t_pair(mui_uniface_1t *uniface, const char *attr, dou
  * MUI functions for single parameter fetch *
  ********************************************/
 
-float mui_fetch_1f_param(mui_uniface_1f *uniface, const char *attr) {
+float mui_fetch_1f_param_f(mui_uniface_1f *uniface, const char *attr) {
 	return uniface->fetch<float>(std::string(attr));
 }
 
-float mui_fetch_1fx_param(mui_uniface_1fx *uniface, const char *attr) {
+float mui_fetch_1fx_param_f(mui_uniface_1fx *uniface, const char *attr) {
 	return uniface->fetch<float>(std::string(attr));
 }
 
-double mui_fetch_1d_param(mui_uniface_1d *uniface, const char *attr) {
+double mui_fetch_1d_param_f(mui_uniface_1d *uniface, const char *attr) {
 	return uniface->fetch<double>(std::string(attr));
 }
 
-double mui_fetch_1dx_param(mui_uniface_1dx *uniface, const char *attr) {
+double mui_fetch_1dx_param_f(mui_uniface_1dx *uniface, const char *attr) {
 	return uniface->fetch<double>(std::string(attr));
 }
 
-double mui_fetch_1t_param(mui_uniface_1t *uniface, const char *attr) {
+double mui_fetch_1t_param_f(mui_uniface_1t *uniface, const char *attr) {
 	mui::mui_f_wrapper_1D::REAL ret_val = uniface->fetch<mui::mui_f_wrapper_1D::REAL>(std::string(attr));
 	return static_cast<double>(ret_val);
 }
@@ -4150,46 +4150,46 @@ double mui_fetch_1t_param(mui_uniface_1t *uniface, const char *attr) {
  ******************************************/
 
 // Data ready test using single time value
-int mui_is_ready_1f(mui_uniface_1f *uniface, const char *attr, float t) {
-	return uniface->is_ready(std::string(attr), t);
+int mui_is_ready_1f(mui_uniface_1f *uniface, const char *attr, float *t) {
+	return uniface->is_ready(std::string(attr), *t);
 }
 
-int mui_is_ready_1fx(mui_uniface_1fx *uniface, const char *attr, float t) {
-	return uniface->is_ready(std::string(attr), t);
+int mui_is_ready_1fx(mui_uniface_1fx *uniface, const char *attr, float *t) {
+	return uniface->is_ready(std::string(attr), *t);
 }
 
-int mui_is_ready_1d(mui_uniface_1d *uniface, const char *attr, double t) {
-	return uniface->is_ready(std::string(attr), t);
+int mui_is_ready_1d(mui_uniface_1d *uniface, const char *attr, double *t) {
+	return uniface->is_ready(std::string(attr), *t);
 }
 
-int mui_is_ready_1dx(mui_uniface_1dx *uniface, const char *attr, double t) {
-	return uniface->is_ready(std::string(attr), t);
+int mui_is_ready_1dx(mui_uniface_1dx *uniface, const char *attr, double *t) {
+	return uniface->is_ready(std::string(attr), *t);
 }
 
-int mui_is_ready_1t(mui_uniface_1t *uniface, const char *attr, double t) {
-	return uniface->is_ready(std::string(attr), static_cast<mui::mui_f_wrapper_1D::time_type>(t));
+int mui_is_ready_1t(mui_uniface_1t *uniface, const char *attr, double *t) {
+	return uniface->is_ready(std::string(attr), static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
 }
 
 // Data ready test using two time values
-int mui_is_ready_1f_pair(mui_uniface_1f *uniface, const char *attr, float t_1, float t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_1f_pair(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2) {
+	return uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-int mui_is_ready_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float t_1, float t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2) {
+	return uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-int mui_is_ready_1d_pair(mui_uniface_1d *uniface, const char *attr, double t_1, double t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_1d_pair(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2) {
+	return uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-int mui_is_ready_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double t_1, double t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2) {
+	return uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-int mui_is_ready_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, double t_2) {
-	return uniface->is_ready(std::string(attr), static_cast<mui::mui_f_wrapper_1D::time_type>(t_1),
-			static_cast<mui::mui_f_wrapper_1D::time_type>(t_2));
+int mui_is_ready_1t_pair(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2) {
+	return uniface->is_ready(std::string(attr), static_cast<mui::mui_f_wrapper_1D::time_type>(*t_1),
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_2));
 }
 
 /******************************************
@@ -4197,196 +4197,196 @@ int mui_is_ready_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, 
  ******************************************/
 
 // Send span announce using 1D box geometry
-void mui_announce_send_span_1f_box(mui_uniface_1f *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
-	mui::point1f point_1(box_1_1);
-	mui::point1f point_2(box_2_1);
+void mui_announce_send_span_1f_box_f(mui_uniface_1f *uniface, float *box_1_1, float *box_2_1, float *t_start,
+		float *t_timeout) {
+	mui::point1f point_1(*box_1_1);
+	mui::point1f point_2(*box_2_1);
 	mui::geometry::box1f bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_send_span_1fx_box(mui_uniface_1fx *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
-	mui::point1fx point_1(box_1_1);
-	mui::point1fx point_2(box_2_1);
+void mui_announce_send_span_1fx_box_f(mui_uniface_1fx *uniface, float *box_1_1, float *box_2_1, float *t_start,
+		float *t_timeout) {
+	mui::point1fx point_1(*box_1_1);
+	mui::point1fx point_2(*box_2_1);
 	mui::geometry::box1fx bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_send_span_1d_box(mui_uniface_1d *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
-	mui::point1d point_1(box_1_1);
-	mui::point1d point_2(box_2_1);
+void mui_announce_send_span_1d_box_f(mui_uniface_1d *uniface, double *box_1_1, double *box_2_1, double *t_start,
+		double *t_timeout) {
+	mui::point1d point_1(*box_1_1);
+	mui::point1d point_2(*box_2_1);
 	mui::geometry::box1d bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_send_span_1dx_box(mui_uniface_1dx *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
-	mui::point1dx point_1(box_1_1);
-	mui::point1dx point_2(box_2_1);
+void mui_announce_send_span_1dx_box_f(mui_uniface_1dx *uniface, double *box_1_1, double *box_2_1, double *t_start,
+		double *t_timeout) {
+	mui::point1dx point_1(*box_1_1);
+	mui::point1dx point_2(*box_2_1);
 	mui::geometry::box1dx bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_send_span_1t_box(mui_uniface_1t *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
-	mui::mui_f_wrapper_1D::point_type point_1(static_cast<mui::mui_f_wrapper_1D::REAL>(box_1_1));
-	mui::mui_f_wrapper_1D::point_type point_2(static_cast<mui::mui_f_wrapper_1D::REAL>(box_2_1));
+void mui_announce_send_span_1t_box_f(mui_uniface_1t *uniface, double *box_1_1, double *box_2_1, double *t_start,
+		double *t_timeout) {
+	mui::mui_f_wrapper_1D::point_type point_1(static_cast<mui::mui_f_wrapper_1D::REAL>(*box_1_1));
+	mui::mui_f_wrapper_1D::point_type point_2(static_cast<mui::mui_f_wrapper_1D::REAL>(*box_2_1));
 	mui::geometry::box<mui::mui_f_wrapper_1D> bound_box(point_1, point_2);
-	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_f_wrapper_1D::time_type>(t_timeout), bound_box);
+	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_1D::time_type>(*t_start),
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_timeout), bound_box);
 }
 
 // Send span announce using 1D sphere geometry
-void mui_announce_send_span_1f_sphere(mui_uniface_1f *uniface, mui_point_1f centre, float radius, float t_start,
-		float t_timeout) {
-	mui::geometry::sphere1f bound_sphere(mui::point1f(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+void mui_announce_send_span_1f_sphere_f(mui_uniface_1f *uniface, mui_point_1f *centre, float *radius, float *t_start,
+		float *t_timeout) {
+	mui::geometry::sphere1f bound_sphere(mui::point1f(centre->point_1), *radius);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_send_span_1fx_sphere(mui_uniface_1fx *uniface, mui_point_1fx centre, float radius, float t_start,
-		float t_timeout) {
-	mui::geometry::sphere1fx bound_sphere(mui::point1fx(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+void mui_announce_send_span_1fx_sphere_f(mui_uniface_1fx *uniface, mui_point_1fx *centre, float *radius, float *t_start,
+		float *t_timeout) {
+	mui::geometry::sphere1fx bound_sphere(mui::point1fx(centre->point_1), *radius);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_send_span_1d_sphere(mui_uniface_1d *uniface, mui_point_1d centre, double radius, double t_start,
-		double t_timeout) {
-	mui::geometry::sphere1d bound_sphere(mui::point1d(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+void mui_announce_send_span_1d_sphere_f(mui_uniface_1d *uniface, mui_point_1d *centre, double *radius, double *t_start,
+		double *t_timeout) {
+	mui::geometry::sphere1d bound_sphere(mui::point1d(centre->point_1), *radius);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_send_span_1dx_sphere(mui_uniface_1dx *uniface, mui_point_1dx centre, double radius, double t_start,
-		double t_timeout) {
-	mui::geometry::sphere1dx bound_sphere(mui::point1dx(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+void mui_announce_send_span_1dx_sphere_f(mui_uniface_1dx *uniface, mui_point_1dx *centre, double *radius, double *t_start,
+		double *t_timeout) {
+	mui::geometry::sphere1dx bound_sphere(mui::point1dx(centre->point_1), *radius);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_send_span_1t_sphere(mui_uniface_1t *uniface, mui_point_1t centre, double radius, double t_start,
-		double t_timeout) {
+void mui_announce_send_span_1t_sphere_f(mui_uniface_1t *uniface, mui_point_1t *centre, double *radius, double *t_start,
+		double *t_timeout) {
 	mui::geometry::sphere<mui::mui_f_wrapper_1D> bound_sphere(
-			mui::mui_f_wrapper_1D::point_type(static_cast<mui::mui_f_wrapper_1D::REAL>(centre.point_1)),
-			static_cast<mui::mui_f_wrapper_1D::REAL>(radius));
-	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_f_wrapper_1D::time_type>(t_timeout), bound_sphere);
+			mui::mui_f_wrapper_1D::point_type(static_cast<mui::mui_f_wrapper_1D::REAL>(centre->point_1)),
+			static_cast<mui::mui_f_wrapper_1D::REAL>(*radius));
+	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_1D::time_type>(*t_start),
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_timeout), bound_sphere);
 }
 
 // Receive span announce using 1D box geometry
-void mui_announce_recv_span_1f_box(mui_uniface_1f *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
-	mui::point1f point_1(box_1_1);
-	mui::point1f point_2(box_2_1);
+void mui_announce_recv_span_1f_box_f(mui_uniface_1f *uniface, float *box_1_1, float *box_2_1, float *t_start,
+		float *t_timeout) {
+	mui::point1f point_1(*box_1_1);
+	mui::point1f point_2(*box_2_1);
 	mui::geometry::box1f bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_recv_span_1fx_box(mui_uniface_1fx *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
-	mui::point1fx point_1(box_1_1);
-	mui::point1fx point_2(box_2_1);
+void mui_announce_recv_span_1fx_box_f(mui_uniface_1fx *uniface, float *box_1_1, float *box_2_1, float *t_start,
+		float *t_timeout) {
+	mui::point1fx point_1(*box_1_1);
+	mui::point1fx point_2(*box_2_1);
 	mui::geometry::box1fx bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_recv_span_1d_box(mui_uniface_1d *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
-	mui::point1d point_1(box_1_1);
-	mui::point1d point_2(box_2_1);
+void mui_announce_recv_span_1d_box_f(mui_uniface_1d *uniface, double *box_1_1, double *box_2_1, double *t_start,
+		double *t_timeout) {
+	mui::point1d point_1(*box_1_1);
+	mui::point1d point_2(*box_2_1);
 	mui::geometry::box1d bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_recv_span_1dx_box(mui_uniface_1dx *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
-	mui::point1dx point_1(box_1_1);
-	mui::point1dx point_2(box_2_1);
+void mui_announce_recv_span_1dx_box_f(mui_uniface_1dx *uniface, double *box_1_1, double *box_2_1, double *t_start,
+		double *t_timeout) {
+	mui::point1dx point_1(*box_1_1);
+	mui::point1dx point_2(*box_2_1);
 	mui::geometry::box1dx bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
 }
 
-void mui_announce_recv_span_1t_box(mui_uniface_1t *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
-	mui::mui_f_wrapper_1D::point_type point_1(static_cast<mui::mui_f_wrapper_1D::REAL>(box_1_1));
-	mui::mui_f_wrapper_1D::point_type point_2(static_cast<mui::mui_f_wrapper_1D::REAL>(box_2_1));
+void mui_announce_recv_span_1t_box_f(mui_uniface_1t *uniface, double *box_1_1, double *box_2_1, double *t_start,
+		double *t_timeout) {
+	mui::mui_f_wrapper_1D::point_type point_1(static_cast<mui::mui_f_wrapper_1D::REAL>(*box_1_1));
+	mui::mui_f_wrapper_1D::point_type point_2(static_cast<mui::mui_f_wrapper_1D::REAL>(*box_2_1));
 	mui::geometry::box<mui::mui_f_wrapper_1D> bound_box(point_1, point_2);
-	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_f_wrapper_1D::time_type>(t_timeout), bound_box);
+	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_1D::time_type>(*t_start),
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_timeout), bound_box);
 }
 
 // Receive span announce using 1D sphere geometry
-void mui_announce_recv_span_1f_sphere(mui_uniface_1f *uniface, mui_point_1f centre, float radius, float t_start,
-		float t_timeout) {
-	mui::geometry::sphere1f bound_sphere(mui::point1f(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+void mui_announce_recv_span_1f_sphere_f(mui_uniface_1f *uniface, mui_point_1f *centre, float *radius, float *t_start,
+		float *t_timeout) {
+	mui::geometry::sphere1f bound_sphere(mui::point1f(centre->point_1), *radius);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_recv_span_1fx_sphere(mui_uniface_1fx *uniface, mui_point_1fx centre, float radius, float t_start,
-		float t_timeout) {
-	mui::geometry::sphere1fx bound_sphere(mui::point1fx(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+void mui_announce_recv_span_1fx_sphere_f(mui_uniface_1fx *uniface, mui_point_1fx *centre, float *radius, float *t_start,
+		float *t_timeout) {
+	mui::geometry::sphere1fx bound_sphere(mui::point1fx(centre->point_1), *radius);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_recv_span_1d_sphere(mui_uniface_1d *uniface, mui_point_1d centre, double radius, double t_start,
-		double t_timeout) {
-	mui::geometry::sphere1d bound_sphere(mui::point1d(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+void mui_announce_recv_span_1d_sphere_f(mui_uniface_1d *uniface, mui_point_1d *centre, double *radius, double *t_start,
+		double *t_timeout) {
+	mui::geometry::sphere1d bound_sphere(mui::point1d(centre->point_1), *radius);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_recv_span_1dx_sphere(mui_uniface_1dx *uniface, mui_point_1dx centre, double radius, double t_start,
-		double t_timeout) {
-	mui::geometry::sphere1dx bound_sphere(mui::point1dx(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+void mui_announce_recv_span_1dx_sphere_f(mui_uniface_1dx *uniface, mui_point_1dx *centre, double *radius, double *t_start,
+		double *t_timeout) {
+	mui::geometry::sphere1dx bound_sphere(mui::point1dx(centre->point_1), *radius);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
 }
 
-void mui_announce_recv_span_1t_sphere(mui_uniface_1t *uniface, mui_point_1t centre, double radius, double t_start,
-		double t_timeout) {
+void mui_announce_recv_span_1t_sphere_f(mui_uniface_1t *uniface, mui_point_1t *centre, double *radius, double *t_start,
+		double *t_timeout) {
 	mui::geometry::sphere<mui::mui_f_wrapper_1D> bound_sphere(
-			mui::mui_f_wrapper_1D::point_type(static_cast<mui::mui_f_wrapper_1D::REAL>(centre.point_1)),
-			static_cast<mui::mui_f_wrapper_1D::REAL>(radius));
-	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_f_wrapper_1D::time_type>(t_timeout), bound_sphere);
+			mui::mui_f_wrapper_1D::point_type(static_cast<mui::mui_f_wrapper_1D::REAL>(centre->point_1)),
+			static_cast<mui::mui_f_wrapper_1D::REAL>(*radius));
+	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_1D::time_type>(*t_start),
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_timeout), bound_sphere);
 }
 
 // Send disable announce (local call per MPI rank)
-void mui_announce_send_disable_1f(mui_uniface_1f *uniface) {
+void mui_announce_send_disable_1f_f(mui_uniface_1f *uniface) {
 	uniface->announce_send_disable();
 }
 
-void mui_announce_send_disable_1fx(mui_uniface_1fx *uniface) {
+void mui_announce_send_disable_1fx_f(mui_uniface_1fx *uniface) {
 	uniface->announce_send_disable();
 }
 
-void mui_announce_send_disable_1d(mui_uniface_1d *uniface) {
+void mui_announce_send_disable_1d_f(mui_uniface_1d *uniface) {
 	uniface->announce_send_disable();
 }
 
-void mui_announce_send_disable_1dx(mui_uniface_1dx *uniface) {
+void mui_announce_send_disable_1dx_f(mui_uniface_1dx *uniface) {
 	uniface->announce_send_disable();
 }
 
-void mui_announce_send_disable_1t(mui_uniface_1t *uniface) {
+void mui_announce_send_disable_1t_f(mui_uniface_1t *uniface) {
 	uniface->announce_send_disable();
 }
 
 // Receive disable announce (local call per MPI rank)
-void mui_announce_recv_disable_1f(mui_uniface_1f *uniface) {
+void mui_announce_recv_disable_1f_f(mui_uniface_1f *uniface) {
 	uniface->announce_recv_disable();
 }
 
-void mui_announce_recv_disable_1fx(mui_uniface_1fx *uniface) {
+void mui_announce_recv_disable_1fx_f(mui_uniface_1fx *uniface) {
 	uniface->announce_recv_disable();
 }
 
-void mui_announce_recv_disable_1d(mui_uniface_1d *uniface) {
+void mui_announce_recv_disable_1d_f(mui_uniface_1d *uniface) {
 	uniface->announce_recv_disable();
 }
 
-void mui_announce_recv_disable_1dx(mui_uniface_1dx *uniface) {
+void mui_announce_recv_disable_1dx_f(mui_uniface_1dx *uniface) {
 	uniface->announce_recv_disable();
 }
 
-void mui_announce_recv_disable_1t(mui_uniface_1t *uniface) {
+void mui_announce_recv_disable_1t_f(mui_uniface_1t *uniface) {
 	uniface->announce_recv_disable();
 }
 
@@ -4395,46 +4395,46 @@ void mui_announce_recv_disable_1t(mui_uniface_1t *uniface) {
  ******************************************/
 
 // Barrier at single time value
-void mui_barrier_1f(mui_uniface_1f *uniface, float t) {
-	uniface->barrier(t);
+void mui_barrier_1f_f(mui_uniface_1f *uniface, float *t) {
+	uniface->barrier(*t);
 }
 
-void mui_barrier_1fx(mui_uniface_1fx *uniface, float t) {
-	uniface->barrier(t);
+void mui_barrier_1fx_f(mui_uniface_1fx *uniface, float *t) {
+	uniface->barrier(*t);
 }
 
-void mui_barrier_1d(mui_uniface_1d *uniface, double t) {
-	uniface->barrier(t);
+void mui_barrier_1d_f(mui_uniface_1d *uniface, double *t) {
+	uniface->barrier(*t);
 }
 
-void mui_barrier_1dx(mui_uniface_1dx *uniface, double t) {
-	uniface->barrier(t);
+void mui_barrier_1dx_f(mui_uniface_1dx *uniface, double *t) {
+	uniface->barrier(*t);
 }
 
-void mui_barrier_1t(mui_uniface_1t *uniface, double t) {
-	uniface->barrier(static_cast<mui::mui_f_wrapper_1D::time_type>(t));
+void mui_barrier_1t_f(mui_uniface_1t *uniface, double *t) {
+	uniface->barrier(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
 }
 
 // Barrier at two time values
-void mui_barrier_1f_pair(mui_uniface_1f *uniface, float t_1, float t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_1f_pair_f(mui_uniface_1f *uniface, float *t_1, float *t_2) {
+	uniface->barrier(*t_1, *t_2);
 }
 
-void mui_barrier_1fx_pair(mui_uniface_1fx *uniface, float t_1, float t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_1fx_pair_f(mui_uniface_1fx *uniface, float *t_1, float *t_2) {
+	uniface->barrier(*t_1, *t_2);
 }
 
-void mui_barrier_1d_pair(mui_uniface_1d *uniface, double t_1, double t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_1d_pair_f(mui_uniface_1d *uniface, double *t_1, double *t_2) {
+	uniface->barrier(*t_1, *t_2);
 }
 
-void mui_barrier_1dx_pair(mui_uniface_1dx *uniface, double t_1, double t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_1dx_pair_f(mui_uniface_1dx *uniface, double *t_1, double *t_2) {
+	uniface->barrier(*t_1, *t_2);
 }
 
-void mui_barrier_1t_pair(mui_uniface_1t *uniface, double t_1, double t_2) {
-	uniface->barrier(static_cast<mui::mui_f_wrapper_1D::time_type>(t_1),
-			static_cast<mui::mui_f_wrapper_1D::time_type>(t_2));
+void mui_barrier_1t_pair_f(mui_uniface_1t *uniface, double *t_1, double *t_2) {
+	uniface->barrier(static_cast<mui::mui_f_wrapper_1D::time_type>(*t_1),
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_2));
 }
 
 /******************************************
@@ -4442,136 +4442,136 @@ void mui_barrier_1t_pair(mui_uniface_1t *uniface, double t_1, double t_2) {
  ******************************************/
 
 // Forget log between [-inf, upper]
-void mui_forget_upper_1f(mui_uniface_1f *uniface, float upper, int reset_log) {
-	uniface->forget(upper, static_cast<bool>(reset_log));
+void mui_forget_upper_1f_f(mui_uniface_1f *uniface, float *upper, int *reset_log) {
+	uniface->forget(*upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1fx(mui_uniface_1fx *uniface, float upper, int reset_log) {
-	uniface->forget(upper, static_cast<bool>(reset_log));
+void mui_forget_upper_1fx_f(mui_uniface_1fx *uniface, float *upper, int *reset_log) {
+	uniface->forget(*upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1d(mui_uniface_1d *uniface, double upper, int reset_log) {
-	uniface->forget(upper, static_cast<bool>(reset_log));
+void mui_forget_upper_1d_f(mui_uniface_1d *uniface, double *upper, int *reset_log) {
+	uniface->forget(*upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1dx(mui_uniface_1dx *uniface, double upper, int reset_log) {
-	uniface->forget(upper, static_cast<bool>(reset_log));
+void mui_forget_upper_1dx_f(mui_uniface_1dx *uniface, double *upper, int *reset_log) {
+	uniface->forget(*upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1t(mui_uniface_1t *uniface, double upper, int reset_log) {
-	uniface->forget(static_cast<mui::mui_f_wrapper_1D::time_type>(upper), static_cast<bool>(reset_log));
+void mui_forget_upper_1t_f(mui_uniface_1t *uniface, double *upper, int *reset_log) {
+	uniface->forget(static_cast<mui::mui_f_wrapper_1D::time_type>(*upper), static_cast<bool>(*reset_log));
 }
 
 // Forget log between [-inf, -inf], [upper_1, upper_2]
-void mui_forget_upper_1f_pair(mui_uniface_1f *uniface, float upper_1, float upper_2, int reset_log) {
-	std::pair<float, float> forget_time(upper_1, upper_2);
-	uniface->forget(forget_time, static_cast<bool>(reset_log));
+void mui_forget_upper_1f_pair_f(mui_uniface_1f *uniface, float *upper_1, float *upper_2, int *reset_log) {
+	std::pair<float, float> forget_time(*upper_1, *upper_2);
+	uniface->forget(forget_time, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1fx_pair(mui_uniface_1fx *uniface, float upper_1, float upper_2, int reset_log) {
-	std::pair<float, float> forget_time(upper_1, upper_2);
-	uniface->forget(forget_time, static_cast<bool>(reset_log));
+void mui_forget_upper_1fx_pair_f(mui_uniface_1fx *uniface, float *upper_1, float *upper_2, int *reset_log) {
+	std::pair<float, float> forget_time(*upper_1, *upper_2);
+	uniface->forget(forget_time, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1d_pair(mui_uniface_1d *uniface, double upper_1, double upper_2, int reset_log) {
-	std::pair<double, double> forget_time(upper_1, upper_2);
-	uniface->forget(forget_time, static_cast<bool>(reset_log));
+void mui_forget_upper_1d_pair_f(mui_uniface_1d *uniface, double *upper_1, double *upper_2, int *reset_log) {
+	std::pair<double, double> forget_time(*upper_1, *upper_2);
+	uniface->forget(forget_time, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1dx_pair(mui_uniface_1dx *uniface, double upper_1, double upper_2, int reset_log) {
-	std::pair<double, double> forget_time(upper_1, upper_2);
-	uniface->forget(forget_time, static_cast<bool>(reset_log));
+void mui_forget_upper_1dx_pair_f(mui_uniface_1dx *uniface, double *upper_1, double *upper_2, int *reset_log) {
+	std::pair<double, double> forget_time(*upper_1, *upper_2);
+	uniface->forget(forget_time, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_upper_1t_pair(mui_uniface_1t *uniface, double upper_1, double upper_2, int reset_log) {
-	mui::mui_f_wrapper_1D::time_type time_1 = static_cast<mui::mui_f_wrapper_1D::time_type>(upper_1);
-	mui::mui_f_wrapper_1D::time_type time_2 = static_cast<mui::mui_f_wrapper_1D::time_type>(upper_2);
+void mui_forget_upper_1t_pair_f(mui_uniface_1t *uniface, double *upper_1, double *upper_2, int *reset_log) {
+	mui::mui_f_wrapper_1D::time_type time_1 = static_cast<mui::mui_f_wrapper_1D::time_type>(*upper_1);
+	mui::mui_f_wrapper_1D::time_type time_2 = static_cast<mui::mui_f_wrapper_1D::time_type>(*upper_2);
 	std::pair<mui::mui_f_wrapper_1D::time_type, mui::mui_f_wrapper_1D::time_type> forget_time(time_1, time_2);
-	uniface->forget(forget_time, static_cast<bool>(reset_log));
+	uniface->forget(forget_time, static_cast<bool>(*reset_log));
 }
 
 // Forget log between [lower, upper]
-void mui_forget_lower_upper_1f(mui_uniface_1f *uniface, float lower, float upper, int reset_log) {
-	uniface->forget(lower, upper, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1f_f(mui_uniface_1f *uniface, float *lower, float *upper, int *reset_log) {
+	uniface->forget(*lower, *upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1fx(mui_uniface_1fx *uniface, float lower, float upper, int reset_log) {
-	uniface->forget(lower, upper, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1fx_f(mui_uniface_1fx *uniface, float *lower, float *upper, int *reset_log) {
+	uniface->forget(*lower, *upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1d(mui_uniface_1d *uniface, double lower, double upper, int reset_log) {
-	uniface->forget(lower, upper, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1d_f(mui_uniface_1d *uniface, double *lower, double *upper, int *reset_log) {
+	uniface->forget(*lower, *upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1dx(mui_uniface_1dx *uniface, double lower, double upper, int reset_log) {
-	uniface->forget(lower, upper, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1dx_f(mui_uniface_1dx *uniface, double *lower, double *upper, int *reset_log) {
+	uniface->forget(*lower, *upper, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1t(mui_uniface_1t *uniface, double lower, double upper, int reset_log) {
-	mui::mui_f_wrapper_1D::time_type forget_time_1 = static_cast<mui::mui_f_wrapper_1D::time_type>(lower);
-	mui::mui_f_wrapper_1D::time_type forget_time_2 = static_cast<mui::mui_f_wrapper_1D::time_type>(upper);
-	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1t_f(mui_uniface_1t *uniface, double *lower, double *upper, int *reset_log) {
+	mui::mui_f_wrapper_1D::time_type forget_time_1 = static_cast<mui::mui_f_wrapper_1D::time_type>(*lower);
+	mui::mui_f_wrapper_1D::time_type forget_time_2 = static_cast<mui::mui_f_wrapper_1D::time_type>(*upper);
+	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(*reset_log));
 }
 
 // Forget log between [lower_1, lower_2], [upper_1, upper_2]
-void mui_forget_lower_upper_1f_pair(mui_uniface_1f *uniface, float lower_1, float lower_2, float upper_1, float upper_2,
-		int reset_log) {
-	std::pair<float, float> forget_time_1(lower_1, lower_2);
-	std::pair<float, float> forget_time_2(upper_1, upper_2);
-	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1f_pair_f(mui_uniface_1f *uniface, float *lower_1, float *lower_2, float *upper_1, float *upper_2,
+		int *reset_log) {
+	std::pair<float, float> forget_time_1(*lower_1, *lower_2);
+	std::pair<float, float> forget_time_2(*upper_1, *upper_2);
+	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1fx_pair(mui_uniface_1fx *uniface, float lower_1, float lower_2, float upper_1,
-		float upper_2, int reset_log) {
-	std::pair<float, float> forget_time_1(lower_1, lower_2);
-	std::pair<float, float> forget_time_2(upper_1, upper_2);
-	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1fx_pair_f(mui_uniface_1fx *uniface, float *lower_1, float *lower_2, float *upper_1,
+		float *upper_2, int *reset_log) {
+	std::pair<float, float> forget_time_1(*lower_1, *lower_2);
+	std::pair<float, float> forget_time_2(*upper_1, *upper_2);
+	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1d_pair(mui_uniface_1d *uniface, double lower_1, double lower_2, double upper_1,
-		double upper_2, int reset_log) {
-	std::pair<double, double> forget_time_1(lower_1, lower_2);
-	std::pair<double, double> forget_time_2(upper_1, upper_2);
-	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1d_pair_f(mui_uniface_1d *uniface, double *lower_1, double *lower_2, double *upper_1,
+		double *upper_2, int *reset_log) {
+	std::pair<double, double> forget_time_1(*lower_1, *lower_2);
+	std::pair<double, double> forget_time_2(*upper_1, *upper_2);
+	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1dx_pair(mui_uniface_1dx *uniface, double lower_1, double lower_2, double upper_1,
-		double upper_2, int reset_log) {
-	std::pair<double, double> forget_time_1(lower_1, lower_2);
-	std::pair<double, double> forget_time_2(upper_1, upper_2);
-	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
+void mui_forget_lower_upper_1dx_pair_f(mui_uniface_1dx *uniface, double *lower_1, double *lower_2, double *upper_1,
+		double *upper_2, int *reset_log) {
+	std::pair<double, double> forget_time_1(*lower_1, *lower_2);
+	std::pair<double, double> forget_time_2(*upper_1, *upper_2);
+	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(*reset_log));
 }
 
-void mui_forget_lower_upper_1t_pair(mui_uniface_1t *uniface, double lower_1, double lower_2, double upper_1,
-		double upper_2, int reset_log) {
-	mui::mui_f_wrapper_1D::time_type time_1 = static_cast<mui::mui_f_wrapper_1D::time_type>(lower_1);
-	mui::mui_f_wrapper_1D::time_type time_2 = static_cast<mui::mui_f_wrapper_1D::time_type>(lower_2);
-	mui::mui_f_wrapper_1D::time_type time_3 = static_cast<mui::mui_f_wrapper_1D::time_type>(upper_1);
-	mui::mui_f_wrapper_1D::time_type time_4 = static_cast<mui::mui_f_wrapper_1D::time_type>(upper_2);
+void mui_forget_lower_upper_1t_pair_f(mui_uniface_1t *uniface, double *lower_1, double *lower_2, double *upper_1,
+		double *upper_2, int *reset_log) {
+	mui::mui_f_wrapper_1D::time_type time_1 = static_cast<mui::mui_f_wrapper_1D::time_type>(*lower_1);
+	mui::mui_f_wrapper_1D::time_type time_2 = static_cast<mui::mui_f_wrapper_1D::time_type>(*lower_2);
+	mui::mui_f_wrapper_1D::time_type time_3 = static_cast<mui::mui_f_wrapper_1D::time_type>(*upper_1);
+	mui::mui_f_wrapper_1D::time_type time_4 = static_cast<mui::mui_f_wrapper_1D::time_type>(*upper_2);
 	std::pair<mui::mui_f_wrapper_1D::time_type, mui::mui_f_wrapper_1D::time_type> forget_time_1(time_1, time_2);
 	std::pair<mui::mui_f_wrapper_1D::time_type, mui::mui_f_wrapper_1D::time_type> forget_time_2(time_3, time_4);
-	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
+	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(*reset_log));
 }
 
 // Set to forget log between [-inf, current-length] automatically
-void mui_set_forget_length_1f(mui_uniface_1f *uniface, float length) {
-	uniface->set_memory(length);
+void mui_set_forget_length_1f_f(mui_uniface_1f *uniface, float *length) {
+	uniface->set_memory(*length);
 }
 
-void mui_set_forget_length_1fx(mui_uniface_1fx *uniface, float length) {
-	uniface->set_memory(length);
+void mui_set_forget_length_1fx_f(mui_uniface_1fx *uniface, float *length) {
+	uniface->set_memory(*length);
 }
 
-void mui_set_forget_length_1d(mui_uniface_1d *uniface, double length) {
-	uniface->set_memory(length);
+void mui_set_forget_length_1d_f(mui_uniface_1d *uniface, double *length) {
+	uniface->set_memory(*length);
 }
 
-void mui_set_forget_length_1dx(mui_uniface_1dx *uniface, double length) {
-	uniface->set_memory(length);
+void mui_set_forget_length_1dx_f(mui_uniface_1dx *uniface, double *length) {
+	uniface->set_memory(*length);
 }
 
-void mui_set_forget_length_1t(mui_uniface_1t *uniface, double length) {
-	uniface->set_memory(length);
+void mui_set_forget_length_1t_f(mui_uniface_1t *uniface, double *length) {
+	uniface->set_memory(*length);
 }
 
 }
