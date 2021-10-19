@@ -56,7 +56,11 @@ program main
   !Local variables
   character(len=1024) :: arg
   type(c_ptr), target :: uniface_1f
-  real(c_double) :: zero=0.0_c_double
+  type(c_ptr), target :: spatial_sampler_exact_1f
+  type(c_ptr), target :: chrono_sampler_exact_1f
+  real(c_float) :: zero=0.0_c_float
+  real(c_float) :: tolerance=1e-8_c_float
+  real(c_float) :: fetch_result
 
   !Read in URI from command line
   if (command_argument_count()==1) then
@@ -67,9 +71,18 @@ program main
     stop 0
   endif
 
+  call mui_create_sampler_exact_1f_f(spatial_sampler_exact_1f, tolerance)
+  call mui_create_chrono_sampler_exact_1f_f(chrono_sampler_exact_1f, tolerance)
   call mui_create_uniface_1f_f(uniface_1f, trim(arg)//c_null_char)
 
-  call mui_push_1f_f(uniface_1f, "position"//c_null_char, zero, zero)
+  call mui_push_1f_f(uniface_1f, "position"//c_null_char, zero, tolerance)
+
+  call mui_commit_1f(uniface_1f, zero)
+
+  fetch_result = mui_fetch_exact_exact_1f_f(uniface_1f, "position"//c_null_char, zero, zero, &
+                                            spatial_sampler_exact_1f, chrono_sampler_exact_1f)
+
+  write (*,*) fetch_result
 
   call mui_destroy_uniface_1f_f(uniface_1f)
 end program main

@@ -55,23 +55,23 @@ module mui_1d_f
   public
 
   type, bind(C) :: mui_point_1f_t
-    real(kind=c_float) :: point_1
+    real(c_float) :: point_1
   end type mui_point_1f_t
 
   type, bind(C) :: mui_point_1fx_t
-    real(kind=c_float) :: point_1
+    real(c_float) :: point_1
   end type mui_point_1fx_t
 
   type, bind(C) :: mui_point_1d_t
-    real(kind=c_double) :: point_1
+    real(c_double) :: point_1
   end type mui_point_1d_t
 
   type, bind(C) :: mui_point_1dx_t
-    real(kind=c_double) :: point_1
+    real(c_double) :: point_1
   end type mui_point_1dx_t
 
   type, bind(C) :: mui_point_1t_t
-    real(kind=c_double) :: point_1
+    real(c_double) :: point_1
   end type mui_point_1t_t
 
   interface
@@ -83,35 +83,35 @@ module mui_1d_f
     subroutine mui_create_uniface_1f_f(uniface,domain) bind(c)
       import :: c_ptr,c_char
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: domain(*)
+      character(c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_1f_f
 
     !1D interface with float=single and int=int64
     subroutine mui_create_uniface_1fx_f(uniface,domain) bind(c)
       import :: c_ptr,c_char
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: domain(*)
+      character(c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_1fx_f
 
     !1D interface with float=double and int=int32
     subroutine mui_create_uniface_1d_f(uniface,domain) bind(c)
       import :: c_ptr,c_char
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: domain(*)
+      character(c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_1d_f
 
     !1D interface with float=double and int=int64
     subroutine mui_create_uniface_1dx_f(uniface,domain) bind(c)
       import :: c_ptr,c_char
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: domain(*)
+      character(c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_1dx_f
 
     !1D interface using config from config_f_wrapper.h
     subroutine mui_create_uniface_1t_f(uniface,domain) bind(c)
       import :: c_ptr,c_char
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: domain(*)
+      character(c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_1t_f
 
     !****************************************
@@ -120,7 +120,7 @@ module mui_1d_f
 
     subroutine mui_destroy_uniface_1f_f(uniface) bind(c)
       import :: c_ptr
-      type(c_ptr), intent(in), target :: uniface
+      type(c_ptr), intent(in), value :: uniface
     end subroutine mui_destroy_uniface_1f_f
 
     subroutine mui_destroy_uniface_1fx_f(uniface) bind(c)
@@ -149,96 +149,96 @@ module mui_1d_f
 
     !Exact sampler
 
-    subroutine mui_create_sampler_exact_1f_f(uniface,tolerance) bind(c)
+    subroutine mui_create_sampler_exact_1f_f(sampler,tolerance) bind(c)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in) :: tolerance
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_1f_f
 
     subroutine mui_create_sampler_exact_1fx_f(uniface,tolerance) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in) :: tolerance
+      real(c_float), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_1fx_f
 
     subroutine mui_create_sampler_exact_1d_f(uniface,tolerance) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: tolerance
+      real(c_double), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_1d_f
 
     subroutine mui_create_sampler_exact_1dx_f(uniface,tolerance) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: tolerance
+      real(c_double), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_1dx_f
 
     subroutine mui_create_sampler_exact_1t_f(uniface,tolerance) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: tolerance
+      real(c_double), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_1t_f
 
     !Gauss sampler
     subroutine mui_create_sampler_gauss_1f_f(uniface,r,h) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in) :: r,h
+      real(c_float), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_1f_f
 
     subroutine mui_create_sampler_gauss_1fx_f(uniface,r,h) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in) :: r,h
+      real(c_float), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_1fx_f
 
     subroutine mui_create_sampler_gauss_1d_f(uniface,r,h) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: r,h
+      real(c_double), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_1d_f
 
     subroutine mui_create_sampler_gauss_1dx_f(uniface,r,h) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: r,h
+      real(c_double), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_1dx_f
 
     subroutine mui_create_sampler_gauss_1t_f(uniface,r,h) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: r,h
+      real(c_double), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_1t_f
 
     !Moving average sampler
     subroutine mui_create_sampler_moving_average_1f_f(uniface,bbox_1) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in) :: bbox_1
+      real(c_float), intent(in) :: bbox_1
     end subroutine mui_create_sampler_moving_average_1f_f
 
     subroutine mui_create_sampler_moving_average_1fx_f(uniface,bbox_1) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in) :: bbox_1
+      real(c_float), intent(in) :: bbox_1
     end subroutine mui_create_sampler_moving_average_1fx_f
 
     subroutine mui_create_sampler_moving_average_1d_f(uniface,bbox_1) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: bbox_1
+      real(c_double), intent(in) :: bbox_1
     end subroutine mui_create_sampler_moving_average_1d_f
 
     subroutine mui_create_sampler_moving_average_1dx_f(uniface,bbox_1) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: bbox_1
+      real(c_double), intent(in) :: bbox_1
     end subroutine mui_create_sampler_moving_average_1dx_f
 
     subroutine mui_create_sampler_moving_average_1t_f(uniface,bbox_1) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in) :: bbox_1
+      real(c_double), intent(in) :: bbox_1
     end subroutine mui_create_sampler_moving_average_1t_f
 
     !Nearest neighbour sampler
@@ -271,131 +271,131 @@ module mui_1d_f
     subroutine mui_create_sampler_pseudo_n2_linear_1f_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_1f_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_1fx_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_1fx_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_1d_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_1d_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_1dx_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_1dx_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_1t_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_1t_f
 
     !Pseudo-linear nearest neighbour interpolation sampler
     subroutine mui_create_sampler_pseudo_nearest_neighbor_1f_f(uniface,h) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: h
+      real(c_float), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_1f_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_1fx_f(uniface,h) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: h
+      real(c_float), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_1fx_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_1d_f(uniface,h) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: h
+      real(c_double), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_1d_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_1dx_f(uniface,h) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: h
+      real(c_double), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_1dx_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_1t_f(uniface,h) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: h
+      real(c_double), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_1t_f
 
     !Shepard interpolation with a quintic kernel sampler
     subroutine mui_create_sampler_shepard_quintic_1f_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_1f_f
 
     subroutine mui_create_sampler_shepard_quintic_1fx_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_1fx_f
 
     subroutine mui_create_sampler_shepard_quintic_1d_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_1d_f
 
     subroutine mui_create_sampler_shepard_quintic_1dx_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_1dx_f
 
     subroutine mui_create_sampler_shepard_quintic_1t_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_1t_f
 
     !SPH derived interpolation method with a quintic spline kernel sampler
     subroutine mui_create_sampler_sph_quintic_1f_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_1f_f
 
     subroutine mui_create_sampler_sph_quintic_1fx_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_1fx_f
 
     subroutine mui_create_sampler_sph_quintic_1d_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_1d_f
 
     subroutine mui_create_sampler_sph_quintic_1dx_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_1dx_f
 
     subroutine mui_create_sampler_sph_quintic_1t_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_1t_f
 
     !Summation with a quintic kernel sampler
     subroutine mui_create_sampler_sum_quintic_1f_f(uniface,r) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_float), intent(in), target :: r
+      real(c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_1f_f
 
     subroutine mui_create_sampler_sum_quintic_1fx_f(uniface,r) bind(c)
@@ -407,19 +407,19 @@ module mui_1d_f
     subroutine mui_create_sampler_sum_quintic_1d_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_1d_f
 
     subroutine mui_create_sampler_sum_quintic_1dx_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_1dx_f
 
     subroutine mui_create_sampler_sum_quintic_1t_f(uniface,r) bind(c)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: uniface(*)
-      real(kind=c_double), intent(in), target :: r
+      real(c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_1t_f
 
 #ifdef USE_RBF
@@ -429,10 +429,10 @@ module mui_1d_f
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_float,mui_point_1f_t
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: file_address(*)
+      character(c_char), intent(in) :: file_address(*)
       type(mui_point_1f_t), intent(in), target :: points(*)
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(kind=c_float), intent(in), target :: r,cutoff
+      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
+      real(c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1f_f
 
     subroutine mui_create_sampler_rbf_1f_f(uniface,r,points,points_count, &
@@ -440,10 +440,10 @@ module mui_1d_f
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_float,mui_point_1f_t
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: file_address(*)
+      character(c_char), intent(in) :: file_address(*)
       type(mui_point_1f_t), intent(in), target :: points(*)
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(kind=c_float), intent(in), target :: r,cutoff
+      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
+      real(c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1f_f
 
     subroutine mui_create_sampler_rbf_1fx_f(uniface,r,points,points_count, &
@@ -451,10 +451,10 @@ module mui_1d_f
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_double,mui_point_1fx_t
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: file_address(*)
+      character(c_char), intent(in) :: file_address(*)
       type(mui_point_1fx_t), intent(in), target :: points(*)
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(kind=c_double), intent(in), target :: r,cutoff
+      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
+      real(c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1fx_f
 
     subroutine mui_create_sampler_rbf_1d_f(uniface,r,points,points_count, &
@@ -462,10 +462,10 @@ module mui_1d_f
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_double,mui_point_1d_t
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: file_address(*)
+      character(c_char), intent(in) :: file_address(*)
       type(mui_point_1d_t), intent(in), target :: points(*)
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(kind=c_double), intent(in), target :: r,cutoff
+      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
+      real(c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1d_f
 
     subroutine mui_create_sampler_rbf_1dx_f(uniface,r,points,points_count, &
@@ -473,10 +473,10 @@ module mui_1d_f
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_double,mui_point_1dx_t
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: file_address(*)
+      character(c_char), intent(in) :: file_address(*)
       type(mui_point_1dx_t), intent(in), target :: points(*)
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(kind=c_double), intent(in), target :: r,cutoff
+      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
+      real(c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1dx_f
 
     subroutine mui_create_sampler_rbf_1t_f(uniface,r,points,points_count, &
@@ -484,19 +484,38 @@ module mui_1d_f
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_double,mui_point_1t_t
       type(c_ptr), intent(out), target :: uniface(*)
-      character(kind=c_char), intent(in) :: file_address(*)
+      character(c_char), intent(in) :: file_address(*)
       type(mui_point_1t_t), intent(in), target :: points(*)
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(kind=c_double), intent(in), target :: r,cutoff
+      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
+      real(c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1t_f
 #endif
 
+    subroutine mui_create_chrono_sampler_exact_1f_f(sampler,tolerance) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: tolerance
+    end subroutine mui_create_chrono_sampler_exact_1f_f
+
     subroutine mui_push_1f_f(uniface,attr,point_1,value) bind(c)
-      import :: c_ptr,c_char,c_double
+      import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface
-      character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double),intent(in) :: point_1,value
+      character(c_char), intent(in) :: attr(*)
+      real(c_float), intent(in) :: point_1,value
     end subroutine mui_push_1f_f
+
+    real(c_float) function mui_fetch_exact_exact_1f_f(uniface,attr,point_1,t,spatial_sampler,temporal_sampler) bind(c)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
+      character(c_char), intent(in) :: attr(*)
+      real(c_float), intent(in) :: point_1,t
+    end function mui_fetch_exact_exact_1f_f
+
+    subroutine mui_commit_1f(uniface,t) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t
+    end subroutine mui_commit_1f
 
   end interface 
 

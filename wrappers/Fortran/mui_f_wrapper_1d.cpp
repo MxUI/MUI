@@ -1065,9 +1065,9 @@ void mui_forecast_1t_pair_f(mui_uniface_1t *uniface, double* t_1, double* t_2) {
  ********************************************************/
 
 // Spatial sampler: exact; temporal sampler: exact
-float mui_fetch_exact_exact_1f_f(mui_uniface_1f *uniface, const char *attr, mui_point_1f* point, float* t,
+float mui_fetch_exact_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
 		mui_sampler_exact_1f *spatial_sampler, mui_chrono_sampler_exact_1f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point1f(point->point_1), *t, *spatial_sampler, *temporal_sampler);
+	return uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_exact_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx* point, float* t,
