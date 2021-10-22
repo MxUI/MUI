@@ -1,4 +1,4 @@
-set (mui_h 
+set (mui_h
 	bin.h
 	comm_factory.h
 	comm.h
@@ -52,4 +52,4 @@ set (mui_h
 	chrono_samplers/chrono_sampler_mean.h
 	chrono_samplers/chrono_sampler_null.h
 	chrono_samplers/chrono_sampler_sum.h
-	)
+)
