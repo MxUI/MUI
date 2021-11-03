@@ -19,13 +19,13 @@ As a header-only library using MUI in your own source code is straight forward, 
 
 1. Include "mui.h" in your code and add appropriate paths to your compiler, if you wish to utilise a wrapper then go to the /wrappers folder and utilise the Makefile build system in each to generate compiled libraries to link against, any associated header files are also located here.
 2. (preferred) Utilise the provided CMake build files to create a local or system-wide installation of the library. In this case there are a number of CMake parameters you should consider:
-	2.1. CMAKE_INSTALL_PREFIX=[path] - Set the path to install the library, otherwise the system default will be used
-	2.2. CMAKE_BUILD_TYPE=Release/Debug/.. - Set the compilation type (only changes options for compiled wrappers)
-	2.3. USE_RBF=ON/OFF - If set to ON then a dependency on Eigen is created
-	2.4. C_WRAPPER=ON/OFF - Specifies whether to compile the C wrapper during installation
-	2.5. FORTRAN_WRAPPER=ON/OFF - Specifies whether to compile the Fortran wrapper during installation
-	2.6. PYTHON_WRAPPER=ON/OFF - Specifies whether to compile the Python wrapper during installation, relies on a working Python3 toolchain
-	2.7. PIP_INSTALL=ON/OFF - Only applies if PYTHON_WRAPPER=ON, uses system default pip3 command
+	1. CMAKE_INSTALL_PREFIX=[path] - Set the path to install the library, otherwise the system default will be used
+	2. CMAKE_BUILD_TYPE=Release/Debug/.. - Set the compilation type (only changes options for compiled wrappers)
+	3. USE_RBF=ON/OFF - If set to ON then a dependency on Eigen is created
+	4. C_WRAPPER=ON/OFF - Specifies whether to compile the C wrapper during installation
+	5. FORTRAN_WRAPPER=ON/OFF - Specifies whether to compile the Fortran wrapper during installation
+	6. PYTHON_WRAPPER=ON/OFF - Specifies whether to compile the Python wrapper during installation, relies on a working Python3 toolchain
+	7. PIP_INSTALL=ON/OFF - Only applies if PYTHON_WRAPPER=ON, uses system default pip3 command
 
 <sup>1</sup> Only true if the Radial Basis Function (RBF) spatila interpolation scheme is included at compile-time.
 
