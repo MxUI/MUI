@@ -1,0 +1,9 @@
+set(MUI_VERSION 1.1.13)
+
+@PACKAGE_INIT@
+
+set_and_check(MUI_INCLUDE_DIR "@PACKAGE_MUI_INCLUDE_INSTALL_DIR@")
+set_and_check(MUI_LIB_DIR "@PACKAGE_MUI_LIB_INSTALL_DIR@")
+set_and_check(MUI_BASE_DIR "@PACKAGE_MUI_INSTALL_DIR@")
+
+check_required_components(MUI)

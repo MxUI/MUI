@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MUI VERSION 1.1.2 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
+project(MUI VERSION 1.1.3 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,7 +13,8 @@ option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF) #ToDo: Add Fortran wrapper
 option(PYTHON_WRAPPER "Compile Python wrapper" OFF)
 option(PIP_INSTALL "Install compiled Python wrapper using pip" OFF)
 
-include(sourcelist.cmake)
+include(CMakePackageConfigHelpers)
+include(CMake/sourcelist.cmake)
 
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
@@ -29,55 +30,55 @@ if(USE_RBF)
 	endif()
 endif(USE_RBF)
 
-add_library(mui INTERFACE)
+add_library(MUI INTERFACE)
 
-target_include_directories (mui INTERFACE
+target_include_directories (MUI INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 	$<INSTALL_INTERFACE:include>)
 
 if(USE_RBF)
-	target_link_libraries(mui INTERFACE Eigen3::Eigen)
+	target_link_libraries(MUI INTERFACE Eigen3::Eigen)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_RBF")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_RBF")
 endif(USE_RBF)
 
-target_compile_definitions(mui INTERFACE LIBRARY_HEADER_ONLY)
+target_compile_definitions(MUI INTERFACE LIBRARY_HEADER_ONLY)
 
-install(TARGETS mui EXPORT muiTargets INCLUDES DESTINATION include LIBRARY DESTINATION lib)
+install(TARGETS MUI EXPORT muiTargets INCLUDES DESTINATION include LIBRARY DESTINATION lib)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include
 	FILES_MATCHING PATTERN "*.h"
 	PATTERN ".git" EXCLUDE
 	PATTERN "build" EXCLUDE
-	PATTERN "wrappers/Python" EXCLUDE)
+	PATTERN "wrappers/Python" EXCLUDE
+	PATTERN "CMake" EXCLUDE)
 
-install(EXPORT muiTargets DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cmake/)
-install(FILES mui-config.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/mui/cmake)
+install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/)
 
 if(C_WRAPPER)
 	message("-- MUI C wrapper: Selected")
 
-	add_library(mui_c_wrapper SHARED
+	add_library(MUI_C_wrapper SHARED
 		./wrappers/C/mui_c_wrapper_general.cpp
 		./wrappers/C/mui_c_wrapper_1d.cpp
 		./wrappers/C/mui_c_wrapper_2d.cpp
 		./wrappers/C/mui_c_wrapper_3d.cpp)
-	set_target_properties(mui_c_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_general.h)
-	set_target_properties(mui_c_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_1d.h)
-	set_target_properties(mui_c_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_2d.h)
-	set_target_properties(mui_c_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_3d.h)
-	set_target_properties(mui_c_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/config_c_wrapper.h)
-	target_include_directories(mui_c_wrapper PRIVATE .)
+	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_general.h)
+	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_1d.h)
+	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_2d.h)
+	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_3d.h)
+	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/config_c_wrapper.h)
+	target_include_directories(MUI_C_wrapper PRIVATE .)
 
 	if(USE_RBF)
-    		target_link_libraries(mui_c_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
+    		target_link_libraries(MUI_C_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
 	else()
-    		target_link_libraries(mui_c_wrapper ${MPI_CXX_LIBRARIES})
+    		target_link_libraries(MUI_C_wrapper ${MPI_CXX_LIBRARIES})
 	endif(USE_RBF)
 
-	install(TARGETS mui_c_wrapper
-    		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
-    		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/wrappers/C/)
+	install(TARGETS MUI_C_wrapper
+    		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/
+    		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/C/)
 endif(C_WRAPPER)
 
 if(FORTRAN_WRAPPER)
@@ -115,5 +116,16 @@ if(PYTHON_WRAPPER)
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 		add_dependencies(mui4py_pip mui4py)
 	endif(PIP_INSTALL)
+endif(PYTHON_WRAPPER)
 
-	endif(PYTHON_WRAPPER)
+set(MUI_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include CACHE STRING "Location of MUI header files")
+set(MUI_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib CACHE STRING "Location of MUI wrapper libraries")
+set(MUI_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION} CACHE STRING "Base location of MUI installation")
+
+configure_package_config_file(CMake/MUIConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/MUIConfig.cmake
+  INSTALL_DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake
+  PATH_VARS MUI_INCLUDE_INSTALL_DIR MUI_LIB_INSTALL_DIR MUI_INSTALL_DIR)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MUIConfig.cmake
+        DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake )
