@@ -1,6 +1,6 @@
 .cproject
 .project
-/.settings
+.settings/
 /Debug
 /Release
 /build
