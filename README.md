@@ -11,7 +11,7 @@ The source code is dual-licensed under either the GNU General Purpose License v3
 
 ## Installation
 
-MUI is a C++ header-only library with two dependencies - an MPI implementation that supports the MPMD paradigm and the linear algebra library [Eigen](https://gitlab.com/libeigen/eigen.git)<sup>1</sup>. 
+MUI is a C++ header-only library with two dependencies - an MPI implementation that supports the MPMD paradigm and the linear algebra library <a href="https://gitlab.com/libeigen/eigen.git" target="_blank">Eigen</a><sup>1</sup>. 
 
 Wrappers are provided for C, Fortran and Python, these require compilation and therefore when using MUI with any of thee languages the library can no longer be considered header-only.
 
@@ -35,7 +35,7 @@ As a header-only library using MUI in your own source code is straight forward, 
 
 ## Contact
 
-Should you have any question please do not hesitate to contact the developers, a list can be found within the MxUI [about](https://mxui.github.io/about.html) page.
+Should you have any question please do not hesitate to contact the developers, a list can be found within the MxUI <a href="https://mxui.github.io/about.html" target="_blank">about</a> page.
 
 ## Examples
 
