@@ -306,6 +306,7 @@ public:
 		if( initialize_query_(bx,lda,lh) ) return map;
 		map.reserve(lda[D-1]*12);
 		set_map_<D-1>::apply( 0, lda, lh, displs, map );
+		map.shrink_to_fit();
 		return map;
 	}
 
