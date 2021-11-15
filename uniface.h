@@ -830,8 +830,7 @@ private:
 	/** \brief Handles "data" messages
 	  */
 	void on_recv_rawdata( int32_t sender, std::pair<time_type,time_type> timestamp, frame_raw_type frame ) {
-		frame_type buf = associate( sender, frame );
-		on_recv_data( timestamp, buf );
+		on_recv_data( timestamp, associate( sender, frame ) );
 	}
 
 	/** \brief Handles "receivingSpan" messages
@@ -876,11 +875,12 @@ private:
     
 	/** \brief Associates raw data and stored point data together
 	  */
-	frame_type associate( int32_t sender, frame_raw_type& frame ) {
+	inline frame_type associate( int32_t sender, frame_raw_type& frame ) {
 		frame_type buf;
+		const auto& pts = peers.at(sender).pts();
+
 		for( auto& p: frame ) {
 			const auto& data = storage_cast<const std::vector<std::pair<size_t,REAL> >&>(p.second);
-			const auto& pts = peers.at(sender).pts();
 
 			buf.insert(std::make_pair(p.first, storage_t(std::vector<std::pair<point_type,REAL> >())));
 			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(buf[p.first]);
