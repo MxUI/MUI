@@ -27,7 +27,7 @@ As a header-only library using MUI in your own source code is straight forward, 
 	6. PYTHON_WRAPPER=ON/OFF - Specifies whether to compile the Python wrapper during installation, relies on a working Python3 toolchain
 	7. PIP_INSTALL=ON/OFF - Only applies if PYTHON_WRAPPER=ON, uses system default pip3 command
 
-<sup>1</sup> Only true if the Radial Basis Function (RBF) spatila interpolation scheme is included at compile-time.
+<sup>1</sup> Only true if the Radial Basis Function (RBF) spatial interpolation scheme is included at compile-time.
 
 ## Publication
 
