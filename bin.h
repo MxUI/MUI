@@ -238,6 +238,7 @@ public:
 			h = 1.0;
 			return;
 		}
+
 		// calculate h & n
 		min = max = val[0].first;
 		for( std::size_t i=1; i<val.size(); ++i ){

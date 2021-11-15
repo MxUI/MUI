@@ -91,16 +91,16 @@ public:
 	using span_t = geometry::any_shape<CONFIG>;
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
-	template<typename T> struct add_vp_  { using type = std::vector<std::pair<point_type,T> >; };
-	template<typename T> struct add_v_   { using type = std::vector<T>; };
-	template<typename T> struct def_storage_;
+	template<typename T> struct add_vp_ { using type = std::vector<std::pair<point_type,T> >; };
+		template<typename T> struct def_storage_;
 	template<typename... TYPES> struct def_storage_<type_list<TYPES...> >{
 		using type = storage<typename add_vp_<TYPES>::type...>;
 	};
 
+	template<typename T> struct add_vi_ { using type = std::vector<std::pair<size_t, T> >; };
 	template<typename T> struct def_storage_raw_;
 	template<typename... TYPES> struct def_storage_raw_<type_list<TYPES...> >{
-		using type = storage<typename add_v_<TYPES>::type...>;
+		using type = storage<typename add_vi_<TYPES>::type...>;
 	};
 
 	template<typename T> struct def_storage_single_;
@@ -108,15 +108,15 @@ private:
 		using type = storage<TYPES...>;
 	};
 
-	// internal typedefinitions
+	// internal typedefinitions for full frame
 	using storage_t = typename def_storage_<data_types>::type;
 	using spatial_t = spatial_storage<bin_t<CONFIG>,storage_t,CONFIG>;
 	using frame_type = std::unordered_map<std::string, storage_t>;
 	using bin_frame_type = std::unordered_map<std::string, spatial_t>;
-
+	// internal typdefinitions for data values only (static points)
 	using storage_raw_t = typename def_storage_raw_<data_types>::type;
 	using frame_raw_type = std::unordered_map<std::string, storage_raw_t>;
-
+	// internal typedefinitions for single value
 	using storage_single_t = typename def_storage_single_<data_types>::type;
 
 	struct peer_state {
@@ -140,7 +140,7 @@ private:
 			sending_spans.emplace(std::make_pair(start,end), std::move(s));
 		}
 
-		void set_pts(std::vector<point_type> pts) {
+		void set_pts(std::vector<point_type>& pts) {
 			pts_ = pts;
 		}
 
@@ -223,11 +223,12 @@ private: // data members
 	time_type memory_length = std::numeric_limits<time_type>::max();
 	std::mutex mutex;
 	bool initialized_pts_;
+	size_t fixedPointCount_;
 
 public:
 	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
 	uniface( std::string const &URI ) : uniface( comm_factory::create_comm(URI.c_str()) ) {}
-	uniface( communicator* comm_ ) : comm(comm_), initialized_pts_(false) {
+	uniface( communicator* comm_ ) : comm(comm_), initialized_pts_(false), fixedPointCount_(0) {
 		using namespace std::placeholders;
 
 		peers.resize(comm->remote_size());
@@ -264,10 +265,15 @@ public:
     template<typename TYPE>
 	void push( const std::string& attr, const point_type& loc, const TYPE& value ) {
 		if( FIXEDPOINTS ) {
+			// If this push is before first commit then build local points list
 			if( !initialized_pts_ ) push_buffer_pts.emplace_back( loc );
+
 			storage_raw_t& n = push_buffer_raw[attr];
-			if( !n ) n = storage_raw_t(std::vector<TYPE>());
-			storage_cast<std::vector<TYPE>&>(n).emplace_back( value );
+			if( !n ) n = storage_raw_t(std::vector<std::pair<size_t,TYPE> >());
+			storage_cast<std::vector<std::pair<size_t,TYPE> >&>(n).emplace_back( fixedPointCount_, value );
+
+			// Increment counter for flat fixed point list
+			fixedPointCount_++;
 		} 
 		else {
 			storage_t& n = push_buffer[attr];
@@ -566,11 +572,15 @@ public:
 		}
 
 		if( FIXEDPOINTS ) {
+			// This only happens during the first commit
 			if( push_buffer_pts.size() > 0 ) {
 				comm->send( message::make("points",comm->local_rank(),std::move(push_buffer_pts)),is_sending );
 				initialized_pts_ = true;
 				push_buffer_pts.clear();
 			}
+
+			// Reset counter for flat point structure
+			fixedPointCount_ = 0;
 
 			if( push_buffer_raw.size() > 0 ) {
 				comm->send( message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)),is_sending );
@@ -820,7 +830,8 @@ private:
 	/** \brief Handles "data" messages
 	  */
 	void on_recv_rawdata( int32_t sender, std::pair<time_type,time_type> timestamp, frame_raw_type frame ) {
-		on_recv_data( timestamp, associate( sender, frame ) );
+		frame_type buf = associate( sender, frame );
+		on_recv_data( timestamp, buf );
 	}
 
 	/** \brief Handles "receivingSpan" messages
@@ -863,24 +874,22 @@ private:
 			assigned_values.insert( std::pair<std::string, storage_single_t>( attr, data ) );
 	}
     
-	/** \brief Associates raw data and point data together after both received
+	/** \brief Associates raw data and stored point data together
 	  */
 	frame_type associate( int32_t sender, frame_raw_type& frame ) {
 		frame_type buf;
-		for( auto& p: frame ){
-			const auto& data = storage_cast<const std::vector<REAL>&>(p.second);
+		for( auto& p: frame ) {
+			const auto& data = storage_cast<const std::vector<std::pair<size_t,REAL> >&>(p.second);
 			const auto& pts = peers.at(sender).pts();
 
 			buf.insert(std::make_pair(p.first, storage_t(std::vector<std::pair<point_type,REAL> >())));
 			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(buf[p.first]);
 
-			assert( pts.size() == data.size() );
+		    data_store.resize(data.size());
 
-			data_store.resize(data.size());
-
-			for( std::size_t i=0; i<data.size(); i++ ){
-				data_store[i].first = pts[i];
-				data_store[i].second = data[i];
+			for( size_t i=0; i<data.size(); i++ ) {
+				data_store[i].first = pts[data[i].first];
+				data_store[i].second = data[i].second;
 			}
 		}
 
