@@ -174,17 +174,14 @@ private:
 		void set_next_sub( time_type t ) { next_subiter = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
+			auto end = spans.upper_bound(std::make_pair(t,t));
 			bool prefetched = false;
-			auto end = spans.end();
-			if(spans.size() > 1)
-				end = spans.lower_bound(std::make_pair(t,t));
 
-			for( auto itr = spans.begin(); itr != end; ++itr ) {
-			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
+			for( auto itr = spans.begin(); itr != end; ++itr )
+				if( t < itr->first.second || almost_equal(t, itr->first.second) ){
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
 				}
-			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
 			return !prefetched;
@@ -364,12 +361,9 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
 													   std::numeric_limits<time_type>::lowest());
 
-		auto end = log.end();
-		if(log.size() > 1) {
-			std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
-														   std::numeric_limits<time_type>::lowest());
-			end = log.upper_bound(curr_time_upper);
-		}
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
+																   std::numeric_limits<time_type>::lowest());
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
 			const auto& iter = start->second.find(attr);
@@ -394,12 +388,9 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
 													   t_sampler.get_lower_bound(t2)-threshold(t2));
 
-		auto end = log.end();
-		if(log.size() > 1) {
-			std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
-														   t_sampler.get_upper_bound(t2)+threshold(t2));
-			end = log.upper_bound(curr_time_upper);
-		}
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
+																   t_sampler.get_upper_bound(t2)+threshold(t2));
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
 			const auto& iter = start->second.find(attr);
@@ -425,12 +416,9 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
 													   std::numeric_limits<time_type>::lowest());
 
-		auto end = log.end();
-		if(log.size() > 1) {
-			std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
-														   std::numeric_limits<time_type>::lowest());
-			end = log.upper_bound(curr_time_upper);
-		}
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
+																   std::numeric_limits<time_type>::lowest());
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -460,12 +448,9 @@ public:
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
 													   t_sampler.get_lower_bound(t2)-threshold(t2));
 
-		auto end = log.end();
-		if(log.size() > 1) {
-			std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
-														   t_sampler.get_upper_bound(t2)+threshold(t2));
-			end = log.upper_bound(curr_time_upper);
-		}
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
+																   t_sampler.get_upper_bound(t2)+threshold(t2));
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -497,9 +482,7 @@ public:
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
 													   std::numeric_limits<time_type>::lowest());
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -531,9 +514,7 @@ public:
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
 													   t_sampler.get_upper_bound(t2)+threshold(t2));
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -566,7 +547,7 @@ public:
 	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				if(is_sending[i]) // Peer is not already disabled so check using smart send
+				if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
 			}
 		}
