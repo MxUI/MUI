@@ -177,11 +177,12 @@ private:
 			auto end = spans.upper_bound(std::make_pair(t,t));
 			bool prefetched = false;
 
-			for( auto itr = spans.begin(); itr != end; ++itr )
+			for( auto itr = spans.begin(); itr != end; ++itr ) {
 				if( t < itr->first.second || almost_equal(t, itr->first.second) ){
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
 				}
+			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
 			return !prefetched;
