@@ -91,16 +91,16 @@ public:
 	using span_t = geometry::any_shape<CONFIG>;
 private:
 	// meta functions to split tuple and add vector<pair<point_type,_1> >
-	template<typename T> struct add_vp_  { using type = std::vector<std::pair<point_type,T> >; };
-	template<typename T> struct add_v_   { using type = std::vector<T>; };
-	template<typename T> struct def_storage_;
+	template<typename T> struct add_vp_ { using type = std::vector<std::pair<point_type,T> >; };
+		template<typename T> struct def_storage_;
 	template<typename... TYPES> struct def_storage_<type_list<TYPES...> >{
 		using type = storage<typename add_vp_<TYPES>::type...>;
 	};
 
+	template<typename T> struct add_vi_ { using type = std::vector<std::pair<size_t, T> >; };
 	template<typename T> struct def_storage_raw_;
 	template<typename... TYPES> struct def_storage_raw_<type_list<TYPES...> >{
-		using type = storage<typename add_v_<TYPES>::type...>;
+		using type = storage<typename add_vi_<TYPES>::type...>;
 	};
 
 	template<typename T> struct def_storage_single_;
@@ -108,15 +108,15 @@ private:
 		using type = storage<TYPES...>;
 	};
 
-	// internal typedefinitions
+	// internal typedefinitions for full frame
 	using storage_t = typename def_storage_<data_types>::type;
 	using spatial_t = spatial_storage<bin_t<CONFIG>,storage_t,CONFIG>;
 	using frame_type = std::unordered_map<std::string, storage_t>;
 	using bin_frame_type = std::unordered_map<std::string, spatial_t>;
-
+	// internal typdefinitions for data values only (static points)
 	using storage_raw_t = typename def_storage_raw_<data_types>::type;
 	using frame_raw_type = std::unordered_map<std::string, storage_raw_t>;
-
+	// internal typedefinitions for single value
 	using storage_single_t = typename def_storage_single_<data_types>::type;
 
 	struct peer_state {
@@ -140,7 +140,7 @@ private:
 			sending_spans.emplace(std::make_pair(start,end), std::move(s));
 		}
 
-		void set_pts(std::vector<point_type> pts) {
+		void set_pts(std::vector<point_type>& pts) {
 			pts_ = pts;
 		}
 
@@ -174,13 +174,11 @@ private:
 		void set_next_sub( time_type t ) { next_subiter = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
+			auto end = spans.upper_bound(std::make_pair(t,t));
 			bool prefetched = false;
-			auto end = spans.end();
-			if(spans.size() > 1)
-				end = spans.lower_bound(std::make_pair(t,t));
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-			    if( (t < itr->first.second) || almost_equal(t, itr->first.second) ) {
+				if( t < itr->first.second || almost_equal(t, itr->first.second) ){
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
 				}
@@ -223,11 +221,12 @@ private: // data members
 	time_type memory_length = std::numeric_limits<time_type>::max();
 	std::mutex mutex;
 	bool initialized_pts_;
+	size_t fixedPointCount_;
 
 public:
 	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
 	uniface( std::string const &URI ) : uniface( comm_factory::create_comm(URI.c_str()) ) {}
-	uniface( communicator* comm_ ) : comm(comm_), initialized_pts_(false) {
+	uniface( communicator* comm_ ) : comm(comm_), initialized_pts_(false), fixedPointCount_(0) {
 		using namespace std::placeholders;
 
 		peers.resize(comm->remote_size());
@@ -262,12 +261,17 @@ public:
      * data must be pushed in the same order that the points were previously pushed.
      */
     template<typename TYPE>
-	void push( const std::string& attr, const point_type loc, const TYPE value ) {
+	void push( const std::string& attr, const point_type& loc, const TYPE& value ) {
 		if( FIXEDPOINTS ) {
+			// If this push is before first commit then build local points list
 			if( !initialized_pts_ ) push_buffer_pts.emplace_back( loc );
+
 			storage_raw_t& n = push_buffer_raw[attr];
-			if( !n ) n = storage_raw_t(std::vector<TYPE>());
-			storage_cast<std::vector<TYPE>&>(n).emplace_back( value );
+			if( !n ) n = storage_raw_t(std::vector<std::pair<size_t,TYPE> >());
+			storage_cast<std::vector<std::pair<size_t,TYPE> >&>(n).emplace_back( fixedPointCount_, value );
+
+			// Increment counter for flat fixed point list
+			fixedPointCount_++;
 		} 
 		else {
 			storage_t& n = push_buffer[attr];
@@ -281,7 +285,7 @@ public:
 	  * rather than a field without an associated timestamp
 	  */
 	template<typename TYPE>
-	void push( const std::string& attr, const TYPE value ) {
+	void push( const std::string& attr, const TYPE& value ) {
 		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
 
@@ -348,25 +352,24 @@ public:
 	  */
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	fetch( const std::string& attr,const point_type focus, const time_type t,
+	fetch( const std::string& attr,const point_type& focus, const time_type t,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t));
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
+													   std::numeric_limits<time_type>::lowest());
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
+																   std::numeric_limits<time_type>::lowest());
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
-			std::pair<time_type,time_type> time(start->first.first,std::numeric_limits<time_type>::lowest());
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
-			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
+			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
 		return t_sampler.filter(t, v);
@@ -376,25 +379,24 @@ public:
 	  */
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	fetch( const std::string& attr,const point_type focus, const time_type t1, const time_type t2,
+	fetch( const std::string& attr,const point_type& focus, const time_type t1, const time_type t2,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
 		if(barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),t_sampler.get_upper_bound(t2)+threshold(t2));
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
+													   t_sampler.get_lower_bound(t2)-threshold(t2));
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
+																   t_sampler.get_upper_bound(t2)+threshold(t2));
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
-			std::pair<time_type,time_type> time(start->first);
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
-			v.emplace_back( time, iter->second.build_and_query_ts( focus, sampler, additional... ) );
+			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
 		return t_sampler.filter(std::make_pair(t1,t2), v);
@@ -412,12 +414,12 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
+													   std::numeric_limits<time_type>::lowest());
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
+																   std::numeric_limits<time_type>::lowest());
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -444,12 +446,12 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),t_sampler.get_upper_bound(t2)+threshold(t2));
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
+													   t_sampler.get_lower_bound(t2)-threshold(t2));
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
+																   t_sampler.get_upper_bound(t2)+threshold(t2));
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -476,12 +478,12 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),std::numeric_limits<time_type>::lowest());
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
+													   std::numeric_limits<time_type>::lowest());
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
+													   std::numeric_limits<time_type>::lowest());
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -508,12 +510,12 @@ public:
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
 
-		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),t_sampler.get_lower_bound(t2)-threshold(t2));
-		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),t_sampler.get_upper_bound(t2)+threshold(t2));
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
+													   t_sampler.get_lower_bound(t2)-threshold(t2));
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
+													   t_sampler.get_upper_bound(t2)+threshold(t2));
 
-		auto end = log.end();
-		if(log.size() > 1)
-			end = log.upper_bound(curr_time_upper);
+		auto end = log.upper_bound(curr_time_upper);
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -534,43 +536,49 @@ public:
 	  */
 	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
 	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    std::vector<bool> is_enabled(comm->remote_size(), true);
 	    std::pair<time_type,time_type> time(t1,t2);
 
 	    // Check if peer set to disabled (not linked to time span)
 	    for( std::size_t i=0; i<peers.size(); ++i ) {
 	    	if(peers[i].is_recv_disabled())
-	    		is_enabled[i] = false;
-		}
+	    		is_sending[i] = false;
+	    }
 
 	    // Check for smart send based on t1
 	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
 			for( std::size_t i=0; i<peers.size(); ++i ) {
-				if(!is_enabled[i]) // Peer is completely disabled
-					is_sending[i] = false;
-				else // Check peer using typical smart send procedure
+				if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
 			}
 		}
 
 		if( FIXEDPOINTS ) {
+			// This only happens during the first commit
 			if( push_buffer_pts.size() > 0 ) {
-				comm->send(message::make("points",comm->local_rank(),std::move(push_buffer_pts)), is_sending);
+				comm->send( message::make("points",comm->local_rank(),std::move(push_buffer_pts)),is_sending );
 				initialized_pts_ = true;
+				push_buffer_pts.clear();
 			}
-			comm->send(message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)), is_sending);
-			push_buffer_raw.clear();
-			push_buffer_pts.clear();
+
+			// Reset counter for flat point structure
+			fixedPointCount_ = 0;
+
+			if( push_buffer_raw.size() > 0 ) {
+				comm->send( message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)),is_sending );
+				push_buffer_raw.clear();
+			}
 		}
 		else {
-			comm->send(message::make("data",time,std::move(push_buffer)), is_sending);
-			push_buffer.clear();
+			if( push_buffer.size() > 0 ) {
+				comm->send( message::make("data",time,std::move(push_buffer)),is_sending );
+				push_buffer.clear();
+			}
 		}
 
-		comm->send(message::make("timestamp",comm->local_rank(),time), is_sending);
+		comm->send( message::make("timestamp",comm->local_rank(),time),is_sending );
 
-		return std::count( is_sending.begin(), is_sending.end(), true );
+		return std::count( is_sending.begin(),is_sending.end(),true );
 	}
 
 	/** \brief Sends a forecast of an upcoming time to remote nodes
@@ -804,8 +812,7 @@ private:
 	/** \brief Handles "data" messages
 	  */
 	void on_recv_rawdata( int32_t sender, std::pair<time_type,time_type> timestamp, frame_raw_type frame ) {
-		frame_type buf = associate( sender, frame );
-		on_recv_data( timestamp, buf );
+		on_recv_data( timestamp, associate( sender, frame ) );
 	}
 
 	/** \brief Handles "receivingSpan" messages
@@ -848,25 +855,23 @@ private:
 			assigned_values.insert( std::pair<std::string, storage_single_t>( attr, data ) );
 	}
     
-	/** \brief Associates raw data and point data together after both received
+	/** \brief Associates raw data and stored point data together
 	  */
-	frame_type associate( int32_t sender, frame_raw_type& frame ) {
+	inline frame_type associate( int32_t sender, frame_raw_type& frame ) {
 		frame_type buf;
-		for( auto& p: frame ){
-			storage_t& n = buf[p.first];
-			if( !n ) n = storage_t(std::vector<std::pair<point_type,REAL> >());
+		const auto& pts = peers.at(sender).pts();
 
-			const std::vector<REAL>& data = storage_cast<const std::vector<REAL>&>(p.second);
-			const std::vector<point_type>& pts = peers.at(sender).pts();
+		for( auto& p: frame ) {
+			const auto& data = storage_cast<const std::vector<std::pair<size_t,REAL> >&>(p.second);
 
-			assert( pts.size() == data.size() );
+			buf.insert(std::make_pair(p.first, storage_t(std::vector<std::pair<point_type,REAL> >())));
+			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(buf[p.first]);
 
-			std::vector<std::pair<point_type,REAL> >& data_store = storage_cast<std::vector<std::pair<point_type,REAL> >&>(n);
+		    data_store.resize(data.size());
 
-			data_store.reserve(data.size());
-
-			for( std::size_t i=0; i<data.size(); i++ ){
-				data_store.emplace_back( pts[i], data[i] );
+			for( size_t i=0; i<data.size(); i++ ) {
+				data_store[i].first = pts[data[i].first];
+				data_store[i].second = data[i].second;
 			}
 		}
 

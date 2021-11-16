@@ -238,6 +238,7 @@ public:
 			h = 1.0;
 			return;
 		}
+
 		// calculate h & n
 		min = max = val[0].first;
 		for( std::size_t i=1; i<val.size(); ++i ){
@@ -306,6 +307,7 @@ public:
 		if( initialize_query_(bx,lda,lh) ) return map;
 		map.reserve(lda[D-1]*12);
 		set_map_<D-1>::apply( 0, lda, lh, displs, map );
+		map.shrink_to_fit();
 		return map;
 	}
 

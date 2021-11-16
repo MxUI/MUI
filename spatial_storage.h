@@ -110,23 +110,25 @@ public:
 			rhs.destroy_if_bin_();
 		}
 	}
-	
 
 	// no lock internally; it's job of uniface because
 	// we need more large lock if there is no rw-lock.
 	template<typename REGION, typename FOCUS, typename SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	query(const REGION& reg, const FOCUS& f, SAMPLER& s, ADDITIONAL && ... additional) const {
+		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
 		if( data_.empty() )
-			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >(),std::vector<bool>()), additional... );
-		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
-		                                             "Bin not built yet. Internal data corrupted."));
-		const auto& st = storage_cast<const std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >& >(data_);
+			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), additional... );
+		if( !is_built() )
+			EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error, bin not built before inspection, internal data corrupt."));
+
+		const vec& st = storage_cast<const vec&>(data_);
+
 		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
 	}
 
 	void build() {
-		if( is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Build error. Cannot build twice."));
+		if( is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Build error, cannot build bin twice."));
 		if( !data_.empty() ){
 			data_.apply_visitor(construct_{(void*)&bin_});
 			is_bin_ = true;
@@ -150,13 +152,13 @@ public:
 		if( !storage ) return;
 		if( !data_ ) data_ = std::move(storage);
 		else if( data_.which() == storage.which() ) data_.apply_visitor(insert_{storage});
-		else EXCEPTION(bad_storage_id("MUI Error [spatial_storage.h]: Insert error. Type doesn't match."));
+		else EXCEPTION(bad_storage_id("MUI Error [spatial_storage.h]: Insert error, type doesn't match."));
 	}
 
 	template<typename TYPE>
-        const std::vector<std::pair<point_type,TYPE> >& return_data() {
-                return storage_cast<const std::vector<std::pair<point_type,TYPE> >& >(data_);
-        }
+	const std::vector<std::pair<point_type,TYPE> >& return_data() {
+		return storage_cast<const std::vector<std::pair<point_type,TYPE> >& >(data_);
+	}
 
 
 	bool is_built() const { return is_bin_; }

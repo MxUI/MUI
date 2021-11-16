@@ -61,7 +61,7 @@ struct one_dim {
 
 	static const bool DEBUG = false;		//- Enable extra debugging output
 	static const int D = 1;					//- Dimensionality of the domain
-	static const bool FIXEDPOINTS = false;	//- Enable optimisations for problems with fixed point structure
+	static const bool FIXEDPOINTS = false;	//- Optimise for fixed structures - points, and order in which parameters sent must be unchanging between time frames
 	static const bool QUIET = false;		//- If the library is quiet then it will only issue critical warning messages
 
 	using REAL = double;					//- REAL data type
