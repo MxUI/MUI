@@ -62,7 +62,7 @@ program main
   endif 
 
   call mui_create_uniface3d_f(uniface, trim(arg)//c_null_char)
-  call mui_push_f(uniface, "position"//c_null_char, zero, zero, zero, zero)
+  !call mui_push_f(uniface, "position"//c_null_char, zero, zero, zero, zero)
 
   call mui_destroy_uniface3d_f(uniface)
 end program main
