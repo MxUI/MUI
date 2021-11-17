@@ -5016,6 +5016,10 @@ void mui_set_forget_length_3t(mui_uniface_3t *uniface, double length) {
 	uniface->set_memory(length);
 }
 
+/******************************************
+ * MUI URI functions                      *
+ ******************************************/
+
 // Obtain original URI host value from existing interface
 const char* mui_uri_host_3f(mui_uniface_3f *uniface) {
 	return uniface->uri_host().c_str();

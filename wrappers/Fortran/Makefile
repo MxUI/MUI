@@ -24,13 +24,13 @@ default: mui_f_wrapper_1d.o
 	 @echo "************************************************************"
 	 @echo "*              Fortran wrapper usage                       *"
 	 @echo "*                                                          *"
-	 @echo "* Step 1) include mui_c_wapper_[1d/2d/3d].h in C source    *"
-	 @echo "* Step 2) Compile with a C compiler & link against library *"
+	 @echo "* Step 1) Include compiled 1D/2D/3D module                 *"
+	 @echo "* Step 2) Compile with f2003 compliant compiler            *"
 	 @echo "************************************************************"
-	 
+
 mui_f_wrapper_1d.o: mui_f_wrapper_1d.cpp
 	 @echo "Generating Fortran-wrapper 1D object file..."
 	 ${CCX} ${CXXFLAGS} -c mui_f_wrapper_1d.cpp -o mui_f_wrapper_1d.o
 
 clean:
-	 rm -rf *.o *.mod unit_test_fortran_wrapper.x
+	 rm -rf *.o *.mod unit_test.x
