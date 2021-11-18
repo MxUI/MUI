@@ -816,6 +816,7 @@ void mui_create_chrono_sampler_sum_1t_f(mui_chrono_sampler_sum_1t** ret, double*
  * Destroy temporal samplers                *
  *******************************************/
 
+// Exact temporal sampler
 void mui_destroy_chrono_sampler_exact_1f_f(mui_chrono_sampler_exact_1f* sampler) {
 	delete sampler;
 }
@@ -951,44 +952,44 @@ void mui_push_1t_param_f(mui_uniface_1t *uniface, const char* attr, double* valu
  ******************************************/
 
 // Commit using one time value
-void mui_commit_1f(mui_uniface_1f *uniface, float* t) {
+void mui_commit_1f_f(mui_uniface_1f *uniface, float* t) {
 	uniface->commit(*t);
 }
 
-void mui_commit_1fx(mui_uniface_1fx *uniface, float* t) {
+void mui_commit_1fx_f(mui_uniface_1fx *uniface, float* t) {
 	uniface->commit(*t);
 }
 
-void mui_commit_1d(mui_uniface_1d *uniface, double* t) {
+void mui_commit_1d_f(mui_uniface_1d *uniface, double* t) {
 	uniface->commit(*t);
 }
 
-void mui_commit_1dx(mui_uniface_1dx *uniface, double* t) {
+void mui_commit_1dx_f(mui_uniface_1dx *uniface, double* t) {
 	uniface->commit(*t);
 }
 
-void mui_commit_1t(mui_uniface_1t *uniface, double* t) {
+void mui_commit_1t_f(mui_uniface_1t *uniface, double* t) {
 	uniface->commit(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
 }
 
 // Commit using two time values
-void mui_commit_1f_pair(mui_uniface_1f *uniface, float* t_1, float* t_2) {
+void mui_commit_1f_pair_f(mui_uniface_1f *uniface, float* t_1, float* t_2) {
 	uniface->commit(*t_1, *t_2);
 }
 
-void mui_commit_1fx_pair(mui_uniface_1fx *uniface, float* t_1, float* t_2) {
+void mui_commit_1fx_pair_f(mui_uniface_1fx *uniface, float* t_1, float* t_2) {
 	uniface->commit(*t_1, *t_2);
 }
 
-void mui_commit_1d_pair(mui_uniface_1d *uniface, double* t_1, double* t_2) {
+void mui_commit_1d_pair_f(mui_uniface_1d *uniface, double* t_1, double* t_2) {
 	uniface->commit(*t_1, *t_2);
 }
 
-void mui_commit_1dx_pair(mui_uniface_1dx *uniface, double* t_1, double* t_2) {
+void mui_commit_1dx_pair_f(mui_uniface_1dx *uniface, double* t_1, double* t_2) {
 	uniface->commit(*t_1, *t_2);
 }
 
-void mui_commit_1t_pair(mui_uniface_1t *uniface, double* t_1, double* t_2) {
+void mui_commit_1t_pair_f(mui_uniface_1t *uniface, double* t_1, double* t_2) {
 	uniface->commit(static_cast<mui::mui_f_wrapper_1D::time_type>(*t_1),
 			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_2));
 }

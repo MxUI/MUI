@@ -414,27 +414,15 @@ module mui_1d_f
       real(c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1f_f
 
-    subroutine mui_create_sampler_rbf_1f_f(sampler,r,points,points_count, &
+    subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points,points_count, &
                basis_func,conservative,polynomial,smoothFunc,readMatrix, &
                file_address,cutoff) bind(c)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(out), target :: sampler(*)
-      type(c_ptr), intent(in), target :: points(*)
       character(c_char), intent(in) :: file_address(*)
       type(c_ptr), intent(in), target :: points(*)
       integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(c_float), intent(in), target :: r,cutoff
-    end subroutine mui_create_sampler_rbf_1f_f
-
-    subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points,points_count, &
-               basis_func,conservative,polynomial,smoothFunc,readMatrix, &
-               file_address,cutoff) bind(c)
-      import :: c_ptr,c_int,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
-      character(c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points(*)
-      integer(c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
-      real(c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1fx_f
 
     subroutine mui_create_sampler_rbf_1d_f(sampler,r,points,points_count, &
@@ -475,6 +463,267 @@ module mui_1d_f
     !* Destroy 1D spatial samplers            *
     !******************************************
 
+    !Exact sampler
+    subroutine mui_destroy_sampler_exact_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_exact_1f_f
+
+    subroutine mui_destroy_sampler_exact_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_exact_1fx_f
+
+    subroutine mui_destroy_sampler_exact_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_exact_1d_f
+
+    subroutine mui_destroy_sampler_exact_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_exact_1dx_f
+
+    subroutine mui_destroy_sampler_exact_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_exact_1t_f
+
+    !Gaussian sampler
+    subroutine mui_destroy_sampler_gauss_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_gauss_1f_f
+
+    subroutine mui_destroy_sampler_gauss_1f_fx(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_gauss_1fx_f
+
+    subroutine mui_destroy_sampler_gauss_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_gauss_1d_f
+
+    subroutine mui_destroy_sampler_gauss_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_gauss_1dx_f
+
+    subroutine mui_destroy_sampler_gauss_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_gauss_1t_f
+
+    !Moving average sampler
+    subroutine mui_destroy_sampler_moving_average_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_moving_average_1f_f
+
+    subroutine mui_destroy_sampler_moving_average_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_moving_average_1fx_f
+
+    subroutine mui_destroy_sampler_moving_average_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_moving_average_1d_f
+
+    subroutine mui_destroy_sampler_moving_average_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_moving_average_1dx_f
+
+    subroutine mui_destroy_sampler_moving_average_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_moving_average_1t_f
+
+    !Nearest neighbour sampler
+    subroutine mui_destroy_sampler_nearest_neighbor_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_nearest_neighbor_1f_f
+
+    subroutine mui_destroy_sampler_nearest_neighbor_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_nearest_neighbor_1fx_f
+
+    subroutine mui_destroy_sampler_nearest_neighbor_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_nearest_neighbor_1d_f
+
+    subroutine mui_destroy_sampler_nearest_neighbor_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_nearest_neighbor_1dx_f
+
+    subroutine mui_destroy_sampler_nearest_neighbor_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_nearest_neighbor_1t_f
+
+    !Pseudo-linear n^2 interpolation sampler
+    subroutine mui_destroy_sampler_pseudo_nearest2_linear_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_1f_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest2_linear_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_1fx_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest2_linear_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_1d_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest2_linear_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_1dx_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest2_linear_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_1t_f
+
+    !Pseudo-linear nearest neighbour interpolation sampler
+    subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1f_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1fx_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1d_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1dx_f
+
+    subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_pseudo_nearest_neighbor_1t_f
+
+    !Shepard interpolation with a quintic kernel sampler
+    subroutine mui_destroy_sampler_shepard_quintic_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_shepard_quintic_1f_f
+
+    subroutine mui_destroy_sampler_shepard_quintic_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_shepard_quintic_1fx_f
+
+    subroutine mui_destroy_sampler_shepard_quintic_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_shepard_quintic_1d_f
+
+    subroutine mui_destroy_sampler_shepard_quintic_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_shepard_quintic_1dx_f
+
+    subroutine mui_destroy_sampler_shepard_quintic_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_shepard_quintic_1t_f
+
+    !SPH derived interpolation method with a quintic spline kernel sampler
+    subroutine mui_destroy_sampler_sph_quintic_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sph_quintic_1f_f
+
+    subroutine mui_destroy_sampler_sph_quintic_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sph_quintic_1fx_f
+
+    subroutine mui_destroy_sampler_sph_quintic_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sph_quintic_1d_f
+
+    subroutine mui_destroy_sampler_sph_quintic_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sph_quintic_1dx_f
+
+    subroutine mui_destroy_sampler_sph_quintic_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sph_quintic_1t_f
+
+    !Summation with a quintic kernel sampler
+    subroutine mui_destroy_sampler_sum_quintic_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sum_quintic_1f_f
+
+    subroutine mui_destroy_sampler_sum_quintic_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sum_quintic_1fx_f
+
+    subroutine mui_destroy_sampler_sum_quintic_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sum_quintic_1d_f
+
+    subroutine mui_destroy_sampler_sum_quintic_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sum_quintic_1dx_f
+
+    subroutine mui_destroy_sampler_sum_quintic_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_sum_quintic_1t_f
+
+#ifdef USE_RBF
+    !Radial Basis Function sampler
+    subroutine mui_destroy_sampler_rbf_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_rbf_1f_f
+
+    subroutine mui_destroy_sampler_rbf_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_rbf_1fx_f
+
+    subroutine mui_destroy_sampler_rbf_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_rbf_1d_f
+
+    subroutine mui_destroy_sampler_rbf_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_rbf_1dx_f
+
+    subroutine mui_destroy_sampler_rbf_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_sampler_rbf_1t_f
+#endif
 
     !******************************************
     !* Create temporal samplers               *
@@ -487,15 +736,236 @@ module mui_1d_f
       real(c_float),intent(in) :: tolerance
     end subroutine mui_create_chrono_sampler_exact_1f_f
 
+    subroutine mui_create_chrono_sampler_exact_1fx_f(sampler,tolerance) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: tolerance
+    end subroutine mui_create_chrono_sampler_exact_1fx_f
+
+    subroutine mui_create_chrono_sampler_exact_1d_f(sampler,tolerance) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: tolerance
+    end subroutine mui_create_chrono_sampler_exact_1d_f
+
+    subroutine mui_create_chrono_sampler_exact_1dx_f(sampler,tolerance) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: tolerance
+    end subroutine mui_create_chrono_sampler_exact_1dx_f
+
+    subroutine mui_create_chrono_sampler_exact_1t_f(sampler,tolerance) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: tolerance
+    end subroutine mui_create_chrono_sampler_exact_1t_f
+
+    !Gauss temporal sampler
+    subroutine mui_create_chrono_sampler_gauss_1f_f(sampler,cutoff,sigma) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: cutoff,sigma
+    end subroutine mui_create_chrono_sampler_gauss_1f_f
+
+    subroutine mui_create_chrono_sampler_gauss_1fx_f(sampler,cutoff,sigma) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: cutoff,sigma
+    end subroutine mui_create_chrono_sampler_gauss_1fx_f
+
+    subroutine mui_create_chrono_sampler_gauss_1d_f(sampler,cutoff,sigma) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: cutoff,sigma
+    end subroutine mui_create_chrono_sampler_gauss_1d_f
+
+    subroutine mui_create_chrono_sampler_gauss_1dx_f(sampler,cutoff,sigma) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: cutoff,sigma
+    end subroutine mui_create_chrono_sampler_gauss_1dx_f
+
+    subroutine mui_create_chrono_sampler_gauss_1t_f(sampler,cutoff,sigma) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: cutoff,sigma
+    end subroutine mui_create_chrono_sampler_gauss_1t_f
+
+    !Mean temporal sampler
+    subroutine mui_create_chrono_sampler_mean_1f_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_mean_1f_f
+
+    subroutine mui_create_chrono_sampler_mean_1fx_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_mean_1fx_f
+
+    subroutine mui_create_chrono_sampler_mean_1d_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_mean_1d_f
+
+    subroutine mui_create_chrono_sampler_mean_1dx_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_mean_1dx_f
+
+    subroutine mui_create_chrono_sampler_mean_1t_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_mean_1t_f
+
+    !Sum temporal sampler
+    subroutine mui_create_chrono_sampler_sum_1f_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_sum_1f_f
+
+    subroutine mui_create_chrono_sampler_sum_1fx_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_float),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_sum_1fx_f
+
+    subroutine mui_create_chrono_sampler_sum_1d_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_sum_1d_f
+
+    subroutine mui_create_chrono_sampler_sum_1dx_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_sum_1dx_f
+
+    subroutine mui_create_chrono_sampler_sum_1t_f(sampler,lower,upper) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: sampler(*)
+      real(c_double),intent(in) :: lower,upper
+    end subroutine mui_create_chrono_sampler_sum_1t_f
+
     !******************************************
     !* Destroy temporal samplers              *
     !******************************************
 
+    !Exact temporal sampler
+    subroutine mui_destroy_chrono_sampler_exact_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_exact_1f_f
+
+    subroutine mui_destroy_chrono_sampler_exact_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_exact_1fx_f
+
+    subroutine mui_destroy_chrono_sampler_exact_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_exact_1d_f
+
+    subroutine mui_destroy_chrono_sampler_exact_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_exact_1dx_f
+
+    subroutine mui_destroy_chrono_sampler_exact_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_exact_1t_f
+
+    !Gauss temporal sampler
+    subroutine mui_destroy_chrono_sampler_gauss_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_gauss_1f_f
+
+    subroutine mui_destroy_chrono_sampler_gauss_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_gauss_1fx_f
+
+    subroutine mui_destroy_chrono_sampler_gauss_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_gauss_1d_f
+
+    subroutine mui_destroy_chrono_sampler_gauss_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_gauss_1dx_f
+
+    subroutine mui_destroy_chrono_sampler_gauss_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_gauss_1t_f
+
+    !Mean temporal sampler
+    subroutine mui_destroy_chrono_sampler_mean_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_mean_1f_f
+
+    subroutine mui_destroy_chrono_sampler_mean_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_mean_1fx_f
+
+    subroutine mui_destroy_chrono_sampler_mean_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_mean_1d_f
+
+    subroutine mui_destroy_chrono_sampler_mean_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_mean_1dx_f
+
+    subroutine mui_destroy_chrono_sampler_mean_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_mean_1t_f
+
+    !Sum temporal sampler
+    subroutine mui_destroy_chrono_sampler_sum_1f_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_sum_1f_f
+
+    subroutine mui_destroy_chrono_sampler_sum_1fx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_sum_1fx_f
+
+    subroutine mui_destroy_chrono_sampler_sum_1d_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_sum_1d_f
+
+    subroutine mui_destroy_chrono_sampler_sum_1dx_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_sum_1dx_f
+
+    subroutine mui_destroy_chrono_sampler_sum_1t_f(sampler) bind(c)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: sampler
+    end subroutine mui_destroy_chrono_sampler_sum_1t_f
 
     !******************************************
     !* MUI functions for data push            *
     !******************************************
 
+    !Standard push functions
     subroutine mui_push_1f_f(uniface,attr,point_1,value) bind(c)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface
@@ -503,20 +973,201 @@ module mui_1d_f
       real(c_float), intent(in) :: point_1,value
     end subroutine mui_push_1f_f
 
+    subroutine mui_push_1f_fx(uniface,attr,point_1,value) bind(c)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_float), intent(in) :: point_1,value
+    end subroutine mui_push_1fx_f
+
+    subroutine mui_push_1d_f(uniface,attr,point_1,value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: point_1,value
+    end subroutine mui_push_1d_f
+
+    subroutine mui_push_1dx_f(uniface,attr,point_1,value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: point_1,value
+    end subroutine mui_push_1dx_f
+
+    subroutine mui_push_1t_f(uniface,attr,point_1,value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: point_1,value
+    end subroutine mui_push_1t_f
+
+    !Single parameter push functions
+    subroutine mui_push_1f_param_f(uniface,attr,value) bind(c)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_float), intent(in) :: value
+    end subroutine mui_push_1f_param_f
+
+    subroutine mui_push_1fx_param_f(uniface,attr,value) bind(c)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_float), intent(in) :: value
+    end subroutine mui_push_1fx_param_f
+
+    subroutine mui_push_1d_param_f(uniface,attr,value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: value
+    end subroutine mui_push_1d_param_f
+
+    subroutine mui_push_1dx_param_f(uniface,attr,value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: value
+    end subroutine mui_push_1dx_param_f
+
+    subroutine mui_push_1t_param_f(uniface,attr,value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: value
+    end subroutine mui_push_1t_param_f
+
     !******************************************
     !* MUI functions for data commit          *
     !******************************************
 
-    subroutine mui_commit_1f(uniface,t) bind(c)
+    !Commit using one time value
+    subroutine mui_commit_1f_f(uniface,t) bind(c)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
       real(c_float), intent(in) :: t
-    end subroutine mui_commit_1f
+    end subroutine mui_commit_1f_f
+
+    subroutine mui_commit_1fx_f(uniface,t) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t
+    end subroutine mui_commit_1fx_f
+
+    subroutine mui_commit_1d_f(uniface,t) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t
+    end subroutine mui_commit_1d_f
+
+    subroutine mui_commit_1dx_f(uniface,t) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t
+    end subroutine mui_commit_1dx_f
+
+    subroutine mui_commit_1t_f(uniface,t) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t
+    end subroutine mui_commit_1t_f
+
+    !Commit using two time values
+    subroutine mui_commit_1f_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t1,t2
+    end subroutine mui_commit_1f_pair_f
+
+    subroutine mui_commit_1fx_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t1,t2
+    end subroutine mui_commit_1fx_pair_f
+
+    subroutine mui_commit_1d_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t1,t2
+    end subroutine mui_commit_1d_pair_f
+
+    subroutine mui_commit_1dx_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t1,t2
+    end subroutine mui_commit_1dx_pair_f
+
+    subroutine mui_commit_1t_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t1,t2
+    end subroutine mui_commit_1t_pair_f
 
     !******************************************
     !* MUI functions for data forecast        *
     !******************************************
 
+    !Forecast using one time value
+    subroutine mui_forecast_1f_f(uniface,t) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t
+    end subroutine mui_forecast_1f_f
+
+    subroutine mui_forecast_1fx_f(uniface,t) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t
+    end subroutine mui_forecast_1fx_f
+
+    subroutine mui_forecast_1d_f(uniface,t) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t
+    end subroutine mui_forecast_1d_f
+
+    subroutine mui_forecast_1dx_f(uniface,t) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t
+    end subroutine mui_forecast_1dx_f
+
+    subroutine mui_forecast_1t_f(uniface,t) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t
+    end subroutine mui_forecast_1t_f
+
+    !Commit using two time values
+    subroutine mui_forecast_1f_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t1,t2
+    end subroutine mui_forecast_1f_pair_f
+
+    subroutine mui_forecast_1fx_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: uniface
+      real(c_float), intent(in) :: t1,t2
+    end subroutine mui_forecast_1fx_pair_f
+
+    subroutine mui_forecast_1d_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t1,t2
+    end subroutine mui_forecast_1d_pair_f
+
+    subroutine mui_forecast_1dx_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t1,t2
+    end subroutine mui_forecast_1dx_pair_f
+
+    subroutine mui_forecast_1t_pair_f(uniface,t1,t2) bind(c)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: uniface
+      real(c_double), intent(in) :: t1,t2
+    end subroutine mui_forecast_1t_pair_f
 
     !*********************************************************
     !* MUI functions for 1D data fetch using one time value  *
@@ -530,6 +1181,38 @@ module mui_1d_f
       real(c_float), intent(in) :: point_1,t
       real(c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_1f_f
+
+    subroutine mui_fetch_exact_exact_1fx_f(uniface,attr,point_1,t,spatial_sampler,temporal_sampler,return_value) bind(c)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
+      character(c_char), intent(in) :: attr(*)
+      real(c_float), intent(in) :: point_1,t
+      real(c_float), intent(out) :: return_value
+    end subroutine mui_fetch_exact_exact_1fx_f
+
+    subroutine mui_fetch_exact_exact_1d_f(uniface,attr,point_1,t,spatial_sampler,temporal_sampler,return_value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: point_1,t
+      real(c_double), intent(out) :: return_value
+    end subroutine mui_fetch_exact_exact_1d_f
+
+    subroutine mui_fetch_exact_exact_1dx_f(uniface,attr,point_1,t,spatial_sampler,temporal_sampler,return_value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: point_1,t
+      real(c_double), intent(out) :: return_value
+    end subroutine mui_fetch_exact_exact_1dx_f
+
+    subroutine mui_fetch_exact_exact_1t_f(uniface,attr,point_1,t,spatial_sampler,temporal_sampler,return_value) bind(c)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
+      character(c_char), intent(in) :: attr(*)
+      real(c_double), intent(in) :: point_1,t
+      real(c_double), intent(out) :: return_value
+    end subroutine mui_fetch_exact_exact_1t_f
 
     !*********************************************************
     !* MUI functions for 1D data fetch using two time values *
