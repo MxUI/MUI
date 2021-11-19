@@ -237,6 +237,7 @@ void mui_destroy_uniface_1fx_f(mui_uniface_1fx* uniface) {
 }
 
 void mui_destroy_uniface_1d_f(mui_uniface_1d* uniface) {
+	std::cout << "deleting uniface: " << uniface->uri_path() << std::endl;
 	delete uniface;
 }
 
@@ -1104,7 +1105,7 @@ void mui_fetch_exact_gauss_1t_f(mui_uniface_1t *uniface, const char *attr, doubl
 }
 
 // Spatial sampler: exact; temporal sampler: mean
-void mui_fetch_exact_mean_1f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+void mui_fetch_exact_mean_1f_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
 		mui_sampler_exact_1f *spatial_sampler, mui_chrono_sampler_mean_1f *temporal_sampler, float *return_value) {
 	*return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
@@ -1242,6 +1243,35 @@ void mui_fetch_gauss_mean_1dx_f(mui_uniface_1dx *uniface, const char *attr, doub
 
 void mui_fetch_gauss_mean_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
 		mui_sampler_gauss_1t *spatial_sampler, mui_chrono_sampler_mean_1t *temporal_sampler, double *return_value) {
+	mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+	*return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+			static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+// Spatial sampler: gauss; temporal sampler: sum
+void mui_fetch_gauss_sum_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+		mui_sampler_gauss_1f *spatial_sampler, mui_chrono_sampler_sum_1f *temporal_sampler, float *return_value) {
+	*return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_gauss_sum_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+		mui_sampler_gauss_1fx *spatial_sampler, mui_chrono_sampler_sum_1fx *temporal_sampler, float *return_value) {
+	*return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_gauss_sum_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+		mui_sampler_gauss_1d *spatial_sampler, mui_chrono_sampler_sum_1d *temporal_sampler, double *return_value) {
+	*return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_gauss_sum_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+		mui_sampler_gauss_1dx *spatial_sampler, mui_chrono_sampler_sum_1dx *temporal_sampler, double *return_value) {
+	*return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_gauss_sum_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+		mui_sampler_gauss_1t *spatial_sampler, mui_chrono_sampler_sum_1t *temporal_sampler, double *return_value) {
 	mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
 	*return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
 			static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -1480,7 +1510,7 @@ void mui_fetch_nearest_neighbor_sum_1t_f(mui_uniface_1t *uniface, const char *at
 
 }
 
-// Spatial sampler: nearest neighbor; temporal sampler: exact
+// Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
 void mui_fetch_pseudo_nearest_neighbor_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
 		mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_chrono_sampler_exact_1f *temporal_sampler, float *return_value) {
 	*return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
@@ -4096,44 +4126,44 @@ void mui_fetch_1t_param_f(mui_uniface_1t *uniface, const char *attr, float *retu
  ******************************************/
 
 // Data ready test using single time value
-void mui_is_ready_1f(mui_uniface_1f *uniface, const char *attr, float *t, int *return_value) {
+void mui_is_ready_1f_f(mui_uniface_1f *uniface, const char *attr, float *t, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t);
 }
 
-void mui_is_ready_1fx(mui_uniface_1fx *uniface, const char *attr, float *t, int *return_value) {
+void mui_is_ready_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t);
 }
 
-void mui_is_ready_1d(mui_uniface_1d *uniface, const char *attr, double *t, int *return_value) {
+void mui_is_ready_1d_f(mui_uniface_1d *uniface, const char *attr, double *t, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t);
 }
 
-void mui_is_ready_1dx(mui_uniface_1dx *uniface, const char *attr, double *t, int *return_value) {
+void mui_is_ready_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t);
 }
 
-void mui_is_ready_1t(mui_uniface_1t *uniface, const char *attr, double *t, int *return_value) {
+void mui_is_ready_1t_f(mui_uniface_1t *uniface, const char *attr, double *t, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
 }
 
 // Data ready test using two time values
-void mui_is_ready_1f_pair(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2, int *return_value) {
+void mui_is_ready_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t_1, float *t_2, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-void mui_is_ready_1fx_pair(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2, int *return_value) {
+void mui_is_ready_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t_1, float *t_2, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-void mui_is_ready_1d_pair(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2, int *return_value) {
+void mui_is_ready_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t_1, double *t_2, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-void mui_is_ready_1dx_pair(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2, int *return_value) {
+void mui_is_ready_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t_1, double *t_2, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), *t_1, *t_2);
 }
 
-void mui_is_ready_1t_pair(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2, int *return_value) {
+void mui_is_ready_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t_1, double *t_2, int *return_value) {
 	*return_value = uniface->is_ready(std::string(attr), static_cast<mui::mui_f_wrapper_1D::time_type>(*t_1),
 			static_cast<mui::mui_f_wrapper_1D::time_type>(*t_2));
 }

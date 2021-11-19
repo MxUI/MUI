@@ -47,41 +47,60 @@
 !             and associated sampler objects
 
 program main
-  use iso_c_binding, only : c_ptr,c_null_char,c_double
-  use iso_fortran_env, only : error_unit
+  use iso_c_binding, only : c_ptr,c_null_char,c_int,c_float,c_double
+  use, intrinsic:: iso_fortran_env, only: stdout=>output_unit, stdin=>input_unit, stderr=>error_unit
   use mui_1d_f
 
   implicit none
 
   !Local variables
-  character(len=1024) :: arg
-  type(c_ptr), target :: uniface_1f
-  type(c_ptr), target :: spatial_sampler_exact_1f
-  type(c_ptr), target :: chrono_sampler_exact_1f
-  real(c_float) :: zero=0.0_c_float
-  real(c_float) :: send_value=1.0_c_float
-  real(c_float) :: tolerance=1e-8_c_float
-  real(c_float) :: fetch_result
+  character(len=1024) :: arg_domain
+  character(len=1024) :: arg_interface
+  character(:), allocatable :: uri
+  type(c_ptr), target :: uniface_1d
+  type(c_ptr), target :: spatial_sampler_exact_1d
+  type(c_ptr), target :: chrono_sampler_exact_1d
+  real(c_double) :: tolerance=1e-37_c_double
+  real(c_double) :: push_point_1=0.0_c_double
+  real(c_double) :: fetch_point_1=0.0_c_double
+  real(c_double) :: commit_time=0.0_c_double
+  real(c_double) :: fetch_time=0.0_c_double
+  real(c_double) :: send_value=1.0_c_double
+  real(c_double) :: fetch_result=-1_c_double
 
   !Read in URI from command line
-  if (command_argument_count()==1) then
-    call get_command_argument(1,arg)
+  if (command_argument_count()==2) then
+    call get_command_argument(1,arg_domain)
+    call get_command_argument(2,arg_interface)
   else
-    ! this shall be properly handled via MPI
-    write(error_unit,*)"Wrong number of arguments passed"
+    print *,"Wrong number of arguments passed: [domain] [interface]"
     stop 0
   endif
 
-  call mui_create_sampler_exact_1f_f(spatial_sampler_exact_1f, tolerance)
-  call mui_create_chrono_sampler_exact_1f_f(chrono_sampler_exact_1f, tolerance)
-  call mui_create_uniface_1f_f(uniface_1f, trim(arg)//c_null_char)
+  uri = "mpi://" // trim(arg_domain) // "/" // trim(arg_interface) // "_1d"
 
-  call mui_push_1f_f(uniface_1f, "value"//c_null_char, zero, send_value)
+  !Create MUI interface
+  call mui_create_uniface_1d_f(uniface_1d, trim(uri)//c_null_char)
 
-  call mui_commit_1f(uniface_1f, zero)
+  !Push send_value=1 through the MUI interface with the tag "position" at location={push_point}={0}
+  call mui_push_1d_f(uniface_1d, "position"//c_null_char, push_point_1, send_value)
 
-  call mui_fetch_exact_exact_1f_f(uniface_1f, "value"//c_null_char, zero, zero, &
-       spatial_sampler_exact_1f, chrono_sampler_exact_1f, fetch_result)
+  !Commit (transmit) the pushed value at commit_time=0
+  call mui_commit_1d_f(uniface_1d, commit_time)
 
-  call mui_destroy_uniface_1f_f(uniface_1f)
+  !Create spatial and temporal samplers for fetch operation
+  call mui_create_sampler_exact_1d_f(spatial_sampler_exact_1d, tolerance)
+  call mui_create_chrono_sampler_exact_1d_f(chrono_sampler_exact_1d, tolerance)
+
+  !Fetch the value for tag "position" at location={fetch_point}={0} at fetch_time=0
+  call mui_fetch_exact_exact_1d_f(uniface_1d, "position"//c_null_char, fetch_point_1, fetch_time, &
+       spatial_sampler_exact_1d, chrono_sampler_exact_1d, fetch_result)
+
+  print *, "Fetched 1D interface value = ",fetch_result
+
+  !Destroy created 1D MUI objects
+  call mui_destroy_sampler_exact_1d_f(spatial_sampler_exact_1d)
+  call mui_destroy_chrono_sampler_exact_1d_f(chrono_sampler_exact_1d)
+  call mui_destroy_uniface_1d_f(uniface_1d)
+
 end program main

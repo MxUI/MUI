@@ -20,7 +20,9 @@ endif
 
 default: mui_f_wrapper_1d.o
 	 @echo "Compiling unit test code..."
-	 ${FC} ${FFLAGS} mui_f_wrapper_1d.F90 unit_test.F90 mui_f_wrapper_1d.o -o unit_test.x -lstdc++ -lmpi_cxx
+	 ${FC} ${FFLAGS} mui_f_wrapper_1d.F90 unit_test.F90 mui_f_wrapper_1d.o -o unit_test_fortran_wrapper.x -lstdc++ -lmpi_cxx
+	 @echo "Launching unit test code..."
+	 ${MPI} -np 1 ./unit_test_fortran_wrapper.x domain1 interface : -np 1 ./unit_test_fortran_wrapper.x domain2 interface
 	 @echo "************************************************************"
 	 @echo "*              Fortran wrapper usage                       *"
 	 @echo "*                                                          *"
@@ -33,4 +35,4 @@ mui_f_wrapper_1d.o: mui_f_wrapper_1d.cpp
 	 ${CCX} ${CXXFLAGS} -c mui_f_wrapper_1d.cpp -o mui_f_wrapper_1d.o
 
 clean:
-	 rm -rf *.o *.mod unit_test.x
+	 rm -rf *.o *.mod unit_test_fortran_wrapper.x
