@@ -200,52 +200,65 @@ typedef mui::chrono_sampler_sum<mui::mui_f_wrapper_1D> mui_chrono_sampler_sum_1t
  ****************************************/
 
 // 1D interface with float=single and int=int32
-void mui_create_uniface_1f_f(mui_uniface_1f** ret, const char* URI) {
+void mui_create_uniface_1f_f(mui_uniface_1f **ret, const char *URI) {
 	*ret = new mui_uniface_1f(URI);
 }
 
 // 1D interface with float=single and int=int64
-void mui_create_uniface_1fx_f(mui_uniface_1fx** ret, const char* URI) {
+void mui_create_uniface_1fx_f(mui_uniface_1fx **ret, const char *URI) {
 	*ret = new mui_uniface_1fx(URI);
 }
 
 // 1D interface with float=double and int=int32
-void mui_create_uniface_1d_f(mui_uniface_1d** ret, const char* URI) {
+void mui_create_uniface_1d_f(mui_uniface_1d **ret, const char *URI) {
 	*ret = new mui_uniface_1d(URI);
 }
 
 // 1D interface with float=double and int=int64
-void mui_create_uniface_1dx_f(mui_uniface_1dx** ret, const char* URI) {
+void mui_create_uniface_1dx_f(mui_uniface_1dx **ret, const char *URI) {
 	*ret = new mui_uniface_1dx(URI);
 }
 
 // 1D interface using config from config_f_wrapper.h
-void mui_create_uniface_1t_f(mui_uniface_1t** ret, const char* URI) {
+void mui_create_uniface_1t_f(mui_uniface_1t **ret, const char *URI) {
 	*ret = new mui_uniface_1t(URI);
+}
+
+void mui_create_uniface_multi_1f_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_1f ***unifaces ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<(*interface_count); i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	std::vector<std::unique_ptr<mui_uniface_1f > > created_unifaces;
+	mui::create_uniface<mui::uniface<mui::config_1f> >(domain, interface_names);
+/*
+	for(size_t i=0; i<created_unifaces.size(); i++)
+		*unifaces[i] = created_unifaces[i].release();
+*/
 }
 
 /****************************************
  * Destroy MUI interface                 *
  ****************************************/
 
-void mui_destroy_uniface_1f_f(mui_uniface_1f* uniface) {
+void mui_destroy_uniface_1f_f(mui_uniface_1f *uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1fx_f(mui_uniface_1fx* uniface) {
+void mui_destroy_uniface_1fx_f(mui_uniface_1fx *uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1d_f(mui_uniface_1d* uniface) {
-	std::cout << "deleting uniface: " << uniface->uri_path() << std::endl;
+void mui_destroy_uniface_1d_f(mui_uniface_1d *uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1dx_f(mui_uniface_1dx* uniface) {
+void mui_destroy_uniface_1dx_f(mui_uniface_1dx *uniface) {
 	delete uniface;
 }
 
-void mui_destroy_uniface_1t_f(mui_uniface_1t* uniface) {
+void mui_destroy_uniface_1t_f(mui_uniface_1t *uniface) {
 	delete uniface;
 }
 
@@ -254,19 +267,19 @@ void mui_destroy_uniface_1t_f(mui_uniface_1t* uniface) {
  ******************************************/
 
 // Exact sampler
-void mui_create_sampler_exact_1f_f(mui_sampler_exact_1f** ret, float* tolerance) {
+void mui_create_sampler_exact_1f_f(mui_sampler_exact_1f **ret, float *tolerance) {
 	*ret = new mui_sampler_exact_1f(*tolerance);
 }
 
-void mui_create_sampler_exact_1fx_f(mui_sampler_exact_1fx** ret, float* tolerance) {
+void mui_create_sampler_exact_1fx_f(mui_sampler_exact_1fx **ret, float *tolerance) {
 	*ret = new mui_sampler_exact_1fx(*tolerance);
 }
 
-void mui_create_sampler_exact_1d_f(mui_sampler_exact_1d** ret, double* tolerance) {
+void mui_create_sampler_exact_1d_f(mui_sampler_exact_1d **ret, double *tolerance) {
 	*ret = new mui_sampler_exact_1d(*tolerance);
 }
 
-void mui_create_sampler_exact_1dx_f(mui_sampler_exact_1dx** ret, double* tolerance) {
+void mui_create_sampler_exact_1dx_f(mui_sampler_exact_1dx** ret, double *tolerance) {
 	*ret = new mui_sampler_exact_1dx(*tolerance);
 }
 
@@ -275,15 +288,15 @@ void mui_create_sampler_exact_1t_f(mui_sampler_exact_1t** ret, double* tolerance
 }
 
 // Gauss sampler
-void mui_create_sampler_gauss_1f_f(mui_sampler_gauss_1f** ret, float* r, float* h) {
+void mui_create_sampler_gauss_1f_f(mui_sampler_gauss_1f **ret, float* r, float* h) {
 	*ret = new mui_sampler_gauss_1f(*r, *h);
 }
 
-void mui_create_sampler_gauss_1fx_f(mui_sampler_gauss_1fx** ret, float* r, float* h) {
+void mui_create_sampler_gauss_1fx_f(mui_sampler_gauss_1fx **ret, float* r, float* h) {
 	*ret = new mui_sampler_gauss_1fx(*r, *h);
 }
 
-void mui_create_sampler_gauss_1d_f(mui_sampler_gauss_1d** ret, double* r, double* h) {
+void mui_create_sampler_gauss_1d_f(mui_sampler_gauss_1d **ret, double* r, double* h) {
 	*ret = new mui_sampler_gauss_1d(*r, *h);
 }
 
@@ -297,17 +310,17 @@ void mui_create_sampler_gauss_1t_f(mui_sampler_gauss_1t** ret, double* r, double
 }
 
 // Moving average sampler
-void mui_create_sampler_moving_average_1f_f(mui_sampler_moving_average_1f** ret, float* bbox_1) {
+void mui_create_sampler_moving_average_1f_f(mui_sampler_moving_average_1f **ret, float* bbox_1) {
 	mui::point1f bbox(*bbox_1);
 	*ret = new mui_sampler_moving_average_1f(bbox);
 }
 
-void mui_create_sampler_moving_average_1fx_f(mui_sampler_moving_average_1fx** ret, float* bbox_1) {
+void mui_create_sampler_moving_average_1fx_f(mui_sampler_moving_average_1fx **ret, float* bbox_1) {
 	mui::point1fx bbox(*bbox_1);
 	*ret = new mui_sampler_moving_average_1fx(bbox);
 }
 
-void mui_create_sampler_moving_average_1d_f(mui_sampler_moving_average_1d** ret, double* bbox_1) {
+void mui_create_sampler_moving_average_1d_f(mui_sampler_moving_average_1d **ret, double* bbox_1) {
 	mui::point1d bbox(*bbox_1);
 	*ret = new mui_sampler_moving_average_1d(bbox);
 }
@@ -323,15 +336,15 @@ void mui_create_sampler_moving_average_1t_f(mui_sampler_moving_average_1t** ret,
 }
 
 // Nearest neighbour sampler
-void mui_create_sampler_nearest_neighbor_1f_f(mui_sampler_nearest_neighbor_1f** ret) {
+void mui_create_sampler_nearest_neighbor_1f_f(mui_sampler_nearest_neighbor_1f **ret) {
 	*ret = new mui_sampler_nearest_neighbor_1f();
 }
 
-void mui_create_sampler_nearest_neighbor_1fx_f(mui_sampler_nearest_neighbor_1fx** ret) {
+void mui_create_sampler_nearest_neighbor_1fx_f(mui_sampler_nearest_neighbor_1fx **ret) {
 	*ret = new mui_sampler_nearest_neighbor_1fx();
 }
 
-void mui_create_sampler_nearest_neighbor_1d_f(mui_sampler_nearest_neighbor_1d** ret) {
+void mui_create_sampler_nearest_neighbor_1d_f(mui_sampler_nearest_neighbor_1d **ret) {
 	*ret = new mui_sampler_nearest_neighbor_1d();
 }
 
@@ -344,15 +357,15 @@ void mui_create_sampler_nearest_neighbor_1t_f(mui_sampler_nearest_neighbor_1t** 
 }
 
 // Pseudo-linear n^2 interpolation sampler
-void mui_create_sampler_pseudo_n2_linear_1f_f(mui_sampler_pseudo_n2_linear_1f** ret, float* r) {
+void mui_create_sampler_pseudo_n2_linear_1f_f(mui_sampler_pseudo_n2_linear_1f **ret, float* r) {
 	*ret = new mui_sampler_pseudo_n2_linear_1f(*r);
 }
 
-void mui_create_sampler_pseudo_n2_linear_1fx_f(mui_sampler_pseudo_n2_linear_1fx** ret, float* r) {
+void mui_create_sampler_pseudo_n2_linear_1fx_f(mui_sampler_pseudo_n2_linear_1fx **ret, float* r) {
 	*ret = new mui_sampler_pseudo_n2_linear_1fx(*r);
 }
 
-void mui_create_sampler_pseudo_n2_linear_1d_f(mui_sampler_pseudo_n2_linear_1d** ret, double* r) {
+void mui_create_sampler_pseudo_n2_linear_1d_f(mui_sampler_pseudo_n2_linear_1d **ret, double* r) {
 	*ret = new mui_sampler_pseudo_n2_linear_1d(*r);
 }
 
@@ -365,15 +378,15 @@ void mui_create_sampler_pseudo_n2_linear_1t_f(mui_sampler_pseudo_n2_linear_1t** 
 }
 
 // Pseudo-linear nearest neighbour interpolation sampler
-void mui_create_sampler_pseudo_nearest_neighbor_1f_f(mui_sampler_pseudo_nearest_neighbor_1f** ret, float* h) {
+void mui_create_sampler_pseudo_nearest_neighbor_1f_f(mui_sampler_pseudo_nearest_neighbor_1f **ret, float* h) {
 	*ret = new mui_sampler_pseudo_nearest_neighbor_1f(*h);
 }
 
-void mui_create_sampler_pseudo_nearest_neighbor_1fx_f(mui_sampler_pseudo_nearest_neighbor_1fx** ret, float* h) {
+void mui_create_sampler_pseudo_nearest_neighbor_1fx_f(mui_sampler_pseudo_nearest_neighbor_1fx **ret, float* h) {
 	*ret = new mui_sampler_pseudo_nearest_neighbor_1fx(*h);
 }
 
-void mui_create_sampler_pseudo_nearest_neighbor_1d_f(mui_sampler_pseudo_nearest_neighbor_1d** ret, double* h) {
+void mui_create_sampler_pseudo_nearest_neighbor_1d_f(mui_sampler_pseudo_nearest_neighbor_1d **ret, double* h) {
 	*ret = new mui_sampler_pseudo_nearest_neighbor_1d(*h);
 }
 
@@ -386,15 +399,15 @@ void mui_create_sampler_pseudo_nearest_neighbor_1t_f(mui_sampler_pseudo_nearest_
 }
 
 // Shepard interpolation with a quintic kernel sampler
-void mui_create_sampler_shepard_quintic_1f_f(mui_sampler_shepard_quintic_1f** ret, float* r) {
+void mui_create_sampler_shepard_quintic_1f_f(mui_sampler_shepard_quintic_1f **ret, float* r) {
 	*ret = new mui_sampler_shepard_quintic_1f(*r);
 }
 
-void mui_create_sampler_shepard_quintic_1fx_f(mui_sampler_shepard_quintic_1fx** ret, float* r) {
+void mui_create_sampler_shepard_quintic_1fx_f(mui_sampler_shepard_quintic_1fx **ret, float* r) {
 	*ret = new mui_sampler_shepard_quintic_1fx(*r);
 }
 
-void mui_create_sampler_shepard_quintic_1d_f(mui_sampler_shepard_quintic_1d** ret, double* r) {
+void mui_create_sampler_shepard_quintic_1d_f(mui_sampler_shepard_quintic_1d **ret, double* r) {
 	*ret = new mui_sampler_shepard_quintic_1d(*r);
 }
 
@@ -407,15 +420,15 @@ void mui_create_sampler_shepard_quintic_1t_f(mui_sampler_shepard_quintic_1t** re
 }
 
 // SPH derived interpolation method with a quintic spline kernel sampler
-void mui_create_sampler_sph_quintic_1f_f(mui_sampler_sph_quintic_1f** ret, float* r) {
+void mui_create_sampler_sph_quintic_1f_f(mui_sampler_sph_quintic_1f **ret, float* r) {
 	*ret = new mui_sampler_sph_quintic_1f(*r);
 }
 
-void mui_create_sampler_sph_quintic_1fx_f(mui_sampler_sph_quintic_1fx** ret, float* r) {
+void mui_create_sampler_sph_quintic_1fx_f(mui_sampler_sph_quintic_1fx **ret, float* r) {
 	*ret = new mui_sampler_sph_quintic_1fx(*r);
 }
 
-void mui_create_sampler_sph_quintic_1d_f(mui_sampler_sph_quintic_1d** ret, double* r) {
+void mui_create_sampler_sph_quintic_1d_f(mui_sampler_sph_quintic_1d **ret, double* r) {
 	*ret = new mui_sampler_sph_quintic_1d(*r);
 }
 
@@ -428,15 +441,15 @@ void mui_create_sampler_sph_quintic_1t_f(mui_sampler_sph_quintic_1t** ret, doubl
 }
 
 // Summation with a quintic kernel sampler
-void mui_create_sampler_sum_quintic_1f_f(mui_sampler_sum_quintic_1f** ret, float* r) {
+void mui_create_sampler_sum_quintic_1f_f(mui_sampler_sum_quintic_1f **ret, float* r) {
 	*ret = new mui_sampler_sum_quintic_1f(*r);
 }
 
-void mui_create_sampler_sum_quintic_1fx_f(mui_sampler_sum_quintic_1fx** ret, float* r) {
+void mui_create_sampler_sum_quintic_1fx_f(mui_sampler_sum_quintic_1fx **ret, float* r) {
 	*ret = new mui_sampler_sum_quintic_1fx(*r);
 }
 
-void mui_create_sampler_sum_quintic_1d_f(mui_sampler_sum_quintic_1d** ret, double* r) {
+void mui_create_sampler_sum_quintic_1d_f(mui_sampler_sum_quintic_1d **ret, double* r) {
 	*ret = new mui_sampler_sum_quintic_1d(*r);
 }
 
@@ -450,7 +463,7 @@ void mui_create_sampler_sum_quintic_1t_f(mui_sampler_sum_quintic_1t** ret, doubl
 
 #ifdef USE_RBF
 // Radial Basis Function sampler
-void mui_create_sampler_rbf_1f_f(mui_sampler_rbf_1f** ret, float* r, float** point_1, int* points_count, int* basis_func,
+void mui_create_sampler_rbf_1f_f(mui_sampler_rbf_1f **ret, float* r, float** point_1, int* points_count, int* basis_func,
 		int* conservative, int* polynomial, int* smoothFunc, int* readMatrix, const char* file_address, float* cutoff) {
 	std::vector<mui::point1f> pts(*points_count);
 	for (size_t i = 0; i < points_count; i++) {
@@ -461,7 +474,7 @@ void mui_create_sampler_rbf_1f_f(mui_sampler_rbf_1f** ret, float* r, float** poi
 			static_cast<bool>(*smoothFunc), static_cast<bool>(*readMatrix), std::string(file_address), *cutoff);
 }
 
-void mui_create_sampler_rbf_1fx_f(mui_sampler_rbf_1fx** ret, float* r, float** point_1, int* points_count, int* basis_func,
+void mui_create_sampler_rbf_1fx_f(mui_sampler_rbf_1fx **ret, float* r, float** point_1, int* points_count, int* basis_func,
 		int* conservative, int* polynomial, int* smoothFunc, int* readMatrix, const char* file_address, float* cutoff) {
 	std::vector<mui::point1fx> pts(*points_count);
 	for (size_t i = 0; i < points_count; i++) {
@@ -472,7 +485,7 @@ void mui_create_sampler_rbf_1fx_f(mui_sampler_rbf_1fx** ret, float* r, float** p
 			static_cast<bool>(*smoothFunc), static_cast<bool>(*readMatrix), std::string(file_address), *cutoff);
 }
 
-void mui_create_sampler_rbf_1d_f(mui_sampler_rbf_1d** ret, double* r, double** point_1, int* points_count, int* basis_func,
+void mui_create_sampler_rbf_1d_f(mui_sampler_rbf_1d **ret, double* r, double** point_1, int* points_count, int* basis_func,
 		int* conservative, int* polynomial, int* smoothFunc, int* readMatrix, const char* file_address, double* cutoff) {
 	std::vector<mui::point1d> pts(*points_count);
 	for (size_t i = 0; i < points_count; i++) {
@@ -727,15 +740,15 @@ void mui_destroy_sampler_rbf_1t_f(mui_sampler_rbf_1t* sampler) {
  *******************************************/
 
 // Exact temporal sampler
-void mui_create_chrono_sampler_exact_1f_f(mui_chrono_sampler_exact_1f** ret, float* tolerance) {
+void mui_create_chrono_sampler_exact_1f_f(mui_chrono_sampler_exact_1f **ret, float* tolerance) {
 	*ret = new mui_chrono_sampler_exact_1f(*tolerance);
 }
 
-void mui_create_chrono_sampler_exact_1fx_f(mui_chrono_sampler_exact_1fx** ret, float* tolerance) {
+void mui_create_chrono_sampler_exact_1fx_f(mui_chrono_sampler_exact_1fx **ret, float* tolerance) {
 	*ret = new mui_chrono_sampler_exact_1fx(*tolerance);
 }
 
-void mui_create_chrono_sampler_exact_1d_f(mui_chrono_sampler_exact_1d** ret, double* tolerance) {
+void mui_create_chrono_sampler_exact_1d_f(mui_chrono_sampler_exact_1d **ret, double* tolerance) {
 	*ret = new mui_chrono_sampler_exact_1d(*tolerance);
 }
 
@@ -748,15 +761,15 @@ void mui_create_chrono_sampler_exact_1t_f(mui_chrono_sampler_exact_1t** ret, dou
 }
 
 // Gauss temporal sampler
-void mui_create_chrono_sampler_gauss_1f_f(mui_chrono_sampler_gauss_1f** ret, float* cutoff, float* sigma) {
+void mui_create_chrono_sampler_gauss_1f_f(mui_chrono_sampler_gauss_1f **ret, float* cutoff, float* sigma) {
 	*ret = new mui_chrono_sampler_gauss_1f(*cutoff, *sigma);
 }
 
-void mui_create_chrono_sampler_gauss_1fx_f(mui_chrono_sampler_gauss_1fx** ret, float* cutoff, float* sigma) {
+void mui_create_chrono_sampler_gauss_1fx_f(mui_chrono_sampler_gauss_1fx **ret, float* cutoff, float* sigma) {
 	*ret = new mui_chrono_sampler_gauss_1fx(*cutoff, *sigma);
 }
 
-void mui_create_chrono_sampler_gauss_1d_f(mui_chrono_sampler_gauss_1d** ret, double* cutoff, double* sigma) {
+void mui_create_chrono_sampler_gauss_1d_f(mui_chrono_sampler_gauss_1d **ret, double* cutoff, double* sigma) {
 	*ret = new mui_chrono_sampler_gauss_1d(*cutoff, *sigma);
 }
 
@@ -770,15 +783,15 @@ void mui_create_chrono_sampler_gauss_1t_f(mui_chrono_sampler_gauss_1t** ret, dou
 }
 
 // Mean temporal sampler
-void mui_create_chrono_sampler_mean_1f_f(mui_chrono_sampler_mean_1f** ret, float* lower, float* upper) {
+void mui_create_chrono_sampler_mean_1f_f(mui_chrono_sampler_mean_1f **ret, float* lower, float* upper) {
 	*ret = new mui_chrono_sampler_mean_1f(*lower, *upper);
 }
 
-void mui_create_chrono_sampler_mean_1fx_f(mui_chrono_sampler_mean_1fx** ret, float* lower, float* upper) {
+void mui_create_chrono_sampler_mean_1fx_f(mui_chrono_sampler_mean_1fx **ret, float* lower, float* upper) {
 	*ret = new mui_chrono_sampler_mean_1fx(*lower, *upper);
 }
 
-void mui_create_chrono_sampler_mean_1d_f(mui_chrono_sampler_mean_1d** ret, double* lower, double* upper) {
+void mui_create_chrono_sampler_mean_1d_f(mui_chrono_sampler_mean_1d **ret, double* lower, double* upper) {
 	*ret = new mui_chrono_sampler_mean_1d(*lower, *upper);
 }
 
@@ -792,15 +805,15 @@ void mui_create_chrono_sampler_mean_1t_f(mui_chrono_sampler_mean_1t** ret, doubl
 }
 
 // Sum temporal sampler
-void mui_create_chrono_sampler_sum_1f_f(mui_chrono_sampler_sum_1f** ret, float* lower, float* upper) {
+void mui_create_chrono_sampler_sum_1f_f(mui_chrono_sampler_sum_1f **ret, float* lower, float* upper) {
 	*ret = new mui_chrono_sampler_sum_1f(*lower, *upper);
 }
 
-void mui_create_chrono_sampler_sum_1fx_f(mui_chrono_sampler_sum_1fx** ret, float* lower, float* upper) {
+void mui_create_chrono_sampler_sum_1fx_f(mui_chrono_sampler_sum_1fx **ret, float* lower, float* upper) {
 	*ret = new mui_chrono_sampler_sum_1fx(*lower, *upper);
 }
 
-void mui_create_chrono_sampler_sum_1d_f(mui_chrono_sampler_sum_1d** ret, double* lower, double* upper) {
+void mui_create_chrono_sampler_sum_1d_f(mui_chrono_sampler_sum_1d **ret, double* lower, double* upper) {
 	*ret = new mui_chrono_sampler_sum_1d(*lower, *upper);
 }
 

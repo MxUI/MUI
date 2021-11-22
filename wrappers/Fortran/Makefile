@@ -2,10 +2,9 @@
 FC=mpifort
 CCX=mpic++
 MPI=mpirun
-AR=ar
 
 # C compilation flags
-FFLAGS = -O3 -std=f2003 -cpp -g -fcheck=all -Wall
+FFLAGS = -O3 -cpp -std=f2003 -fcheck=all -Wall -g
 # C++ compilation flags
 CXXFLAGS = -O3 -std=c++11 -fpic -g
 
@@ -20,7 +19,7 @@ endif
 
 default: mui_f_wrapper_1d.o
 	 @echo "Compiling unit test code..."
-	 ${FC} ${FFLAGS} mui_f_wrapper_1d.F90 unit_test.F90 mui_f_wrapper_1d.o -o unit_test_fortran_wrapper.x -lstdc++ -lmpi_cxx
+	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 unit_test.f90 mui_f_wrapper_1d.o -o unit_test_fortran_wrapper.x -lstdc++ -lmpi_cxx
 	 @echo "Launching unit test code..."
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper.x domain1 interface : -np 1 ./unit_test_fortran_wrapper.x domain2 interface
 	 @echo "************************************************************"
