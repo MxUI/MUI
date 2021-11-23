@@ -22,9 +22,11 @@ default: mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wra
 	 ${CCX} -shared -o libmui_c_wrapper.so mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 ${AR} rcs libmui_c_wrapper.a mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 @echo "Compiling and linking unit test code..."
-	 ${CC} ${CFLAGS} unit_test.c -o unit_test_c_wrapper -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
+	 ${CC} ${CFLAGS} unit_test_single.c -o unit_test_c_wrapper_single -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
+	 ${CC} ${CFLAGS} unit_test_multi.c -o unit_test_c_wrapper_multi -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
 	 @echo "Launching unit test code..."
-	 ${MPI} -np 1 ./unit_test_c_wrapper domain1 interface : -np 1 ./unit_test_c_wrapper domain2 interface
+	 ${MPI} -np 1 ./unit_test_c_wrapper_single domain1 interface : -np 1 ./unit_test_c_wrapper_single domain2 interface
+	 ${MPI} -np 1 ./unit_test_c_wrapper_multi domain1 interface : -np 1 ./unit_test_c_wrapper_multi domain2 interface
 	 @echo "************************************************************"
 	 @echo "*                    C wrapper usage                       *"
 	 @echo "*                                                          *"

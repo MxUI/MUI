@@ -224,18 +224,74 @@ void mui_create_uniface_1t_f(mui_uniface_1t **ret, const char *URI) {
 	*ret = new mui_uniface_1t(URI);
 }
 
+// Set of 1D interfaces with float=single and int=int32
 void mui_create_uniface_multi_1f_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_1f ***unifaces ){
 	std::vector<std::string> interface_names;
 
 	for(size_t i=0; i<(*interface_count); i++)
 		interface_names.push_back(std::string(interfaces[i]));
 
-	std::vector<std::unique_ptr<mui_uniface_1f > > created_unifaces;
-	mui::create_uniface<mui::uniface<mui::config_1f> >(domain, interface_names);
-/*
-	for(size_t i=0; i<created_unifaces.size(); i++)
+	auto created_unifaces = mui::create_uniface<mui::config_1f>(domain, interface_names);
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
 		*unifaces[i] = created_unifaces[i].release();
-*/
+	}
+}
+
+// Set of 1D interfaces with float=single and int=int64
+void mui_create_uniface_multi_1fx_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_1fx ***unifaces ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<(*interface_count); i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_1fx>(domain, interface_names);
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		*unifaces[i] = created_unifaces[i].release();
+	}
+}
+
+// Set of 1D interfaces with float=double and int=int32
+void mui_create_uniface_multi_1d_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_1d ***unifaces ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<(*interface_count); i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_1d>(domain, interface_names);
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		*unifaces[i] = created_unifaces[i].release();
+	}
+}
+
+// Set of 1D interfaces with float=double and int=int64
+void mui_create_uniface_multi_1dx_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_1dx ***unifaces ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<(*interface_count); i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_1dx>(domain, interface_names);
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		*unifaces[i] = created_unifaces[i].release();
+	}
+}
+
+// Set of 1D interfaces using config from config_f_wrapper.h
+void mui_create_uniface_multi_1t_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_1t ***unifaces ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<(*interface_count); i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::mui_f_wrapper_1D>(domain, interface_names);
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		*unifaces[i] = created_unifaces[i].release();
+	}
 }
 
 /****************************************

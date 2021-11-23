@@ -166,12 +166,19 @@ typedef struct mui_chrono_sampler_sum_1d mui_chrono_sampler_sum_1d;
 typedef struct mui_chrono_sampler_sum_1dx mui_chrono_sampler_sum_1dx;
 typedef struct mui_chrono_sampler_sum_1t mui_chrono_sampler_sum_1t;
 
-// MUI uniface creation
+// MUI single uniface creation
 mui_uniface_1f* mui_create_uniface_1f(const char *URI);
 mui_uniface_1fx* mui_create_uniface_1fx(const char *URI);
 mui_uniface_1d* mui_create_uniface_1d(const char *URI);
 mui_uniface_1dx* mui_create_uniface_1dx(const char *URI);
 mui_uniface_1t* mui_create_uniface_1t(const char *URI);
+
+// MUI multi uniface creation
+mui_uniface_1f** mui_create_uniface_multi_1f( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_1fx** mui_create_uniface_multi_1fx( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_1d** mui_create_uniface_multi_1d( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_1dx** mui_create_uniface_multi_1dx( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_1t** mui_create_uniface_multi_1t( const char *domain, const char **interfaces, int interface_count );
 
 // MUI uniface destruction
 void mui_destroy_uniface_1f(mui_uniface_1f *uniface);
