@@ -178,6 +178,13 @@ mui_uniface_2d* mui_create_uniface_2d(const char *URI);
 mui_uniface_2dx* mui_create_uniface_2dx(const char *URI);
 mui_uniface_2t* mui_create_uniface_2t(const char *URI);
 
+// MUI multi uniface creation
+mui_uniface_2f** mui_create_uniface_multi_2f( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_2fx** mui_create_uniface_multi_2fx( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_2d** mui_create_uniface_multi_2d( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_2dx** mui_create_uniface_multi_2dx( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_2t** mui_create_uniface_multi_2t( const char *domain, const char **interfaces, int interface_count );
+
 // MUI uniface destruction
 void mui_destroy_uniface_2f(mui_uniface_2f *uniface);
 void mui_destroy_uniface_2fx(mui_uniface_2fx *uniface);

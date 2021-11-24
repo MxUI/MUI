@@ -183,6 +183,13 @@ mui_uniface_3d* mui_create_uniface_3d(const char *URI);
 mui_uniface_3dx* mui_create_uniface_3dx(const char *URI);
 mui_uniface_3t* mui_create_uniface_3t(const char *URI);
 
+// MUI multi uniface creation
+mui_uniface_3f** mui_create_uniface_multi_3f( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_3fx** mui_create_uniface_multi_3fx( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_3d** mui_create_uniface_multi_3d( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_3dx** mui_create_uniface_multi_3dx( const char *domain, const char **interfaces, int interface_count );
+mui_uniface_3t** mui_create_uniface_multi_3t( const char *domain, const char **interfaces, int interface_count );
+
 // MUI uniface destruction
 void mui_destroy_uniface_3f(mui_uniface_3f *uniface);
 void mui_destroy_uniface_3fx(mui_uniface_3fx *uniface);

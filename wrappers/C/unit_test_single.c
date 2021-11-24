@@ -60,6 +60,10 @@
 #include "mui_c_wrapper_3d.h"
 
 int main(int argc, char **argv) {
+
+	// No need to call mui_mpi_split_by_app() function first as with the _multi example
+	// as direct uniface creation also called MPI_Init()
+
 	/***********************
 	 * Single 1D interface *
 	 ***********************/
@@ -185,7 +189,7 @@ int main(int argc, char **argv) {
 	mui_destroy_sampler_exact_3d(spatial_sampler3d);
 	mui_destroy_chrono_sampler_exact_3d(temporal_sampler3d);
 
-	// Destroy created MUI interfaces note: calls MPI_Finalize()
+	// Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
 	mui_destroy_uniface_1d(uniface1d);
 	mui_destroy_uniface_2d(uniface2d);
 	mui_destroy_uniface_3d(uniface3d);

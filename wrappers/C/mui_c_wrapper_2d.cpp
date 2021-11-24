@@ -250,6 +250,96 @@ mui_uniface_2t* mui_create_uniface_2t(const char *URI) {
 	return new mui_uniface_2t(URI);
 }
 
+// Set of 2D interfaces with float=single and int=int32
+mui_uniface_2f** mui_create_uniface_multi_2f( const char *domain, const char **interfaces, int interface_count ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<interface_count; i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_2f>(domain, interface_names);
+
+	mui_uniface_2f** unifaces = new mui_uniface_2f*[created_unifaces.size()];
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		unifaces[i] = created_unifaces[i].release();
+	}
+
+	return unifaces;
+}
+
+// Set of 2D interfaces with float=single and int=int64
+mui_uniface_2fx** mui_create_uniface_multi_2fx( const char *domain, const char **interfaces, int interface_count ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<interface_count; i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_2fx>(domain, interface_names);
+
+	mui_uniface_2fx** unifaces = new mui_uniface_2fx*[created_unifaces.size()];
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		unifaces[i] = created_unifaces[i].release();
+	}
+
+	return unifaces;
+}
+
+// Set of 1D interfaces with float=double and int=int32
+mui_uniface_2d** mui_create_uniface_multi_2d( const char *domain, const char **interfaces, int interface_count ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<interface_count; i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_2d>(domain, interface_names);
+
+	mui_uniface_2d** unifaces = new mui_uniface_2d*[created_unifaces.size()];
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		unifaces[i] = created_unifaces[i].release();
+	}
+
+	return unifaces;
+}
+
+// Set of 1D interfaces with float=double and int=int64
+mui_uniface_2dx** mui_create_uniface_multi_2dx( const char *domain, const char **interfaces, int interface_count ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<interface_count; i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::config_2dx>(domain, interface_names);
+
+	mui_uniface_2dx** unifaces = new mui_uniface_2dx*[created_unifaces.size()];
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		unifaces[i] = created_unifaces[i].release();
+	}
+
+	return unifaces;
+}
+
+// Set of 1D interfaces using config from config_c_wrapper.h
+mui_uniface_2t** mui_create_uniface_multi_2t( const char *domain, const char **interfaces, int interface_count ){
+	std::vector<std::string> interface_names;
+
+	for(size_t i=0; i<interface_count; i++)
+		interface_names.push_back(std::string(interfaces[i]));
+
+	auto created_unifaces = mui::create_uniface<mui::mui_c_wrapper_2D>(domain, interface_names);
+
+	mui_uniface_2t** unifaces = new mui_uniface_2t*[created_unifaces.size()];
+
+	for(size_t i=0; i<created_unifaces.size(); i++) {
+		unifaces[i] = created_unifaces[i].release();
+	}
+
+	return unifaces;
+}
+
 /****************************************
  * Destroy MUI interface                 *
  ****************************************/
