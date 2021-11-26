@@ -95,12 +95,12 @@ module mui_1d_f
     end subroutine mui_create_uniface_1t_f
 
     !Set of 1D interfaces with float=single and int=int32
-    subroutine mui_create_uniface_multi_1f_f(domain,interfaces,interface_count,unifaces) bind(C)
-      import :: c_ptr,c_char,c_int
-      integer(kind=c_int), intent(in) :: interface_count
-      type(c_ptr), intent(out), dimension(interface_count), target :: unifaces(*)
-      character(kind=c_char), intent(in), dimension(interface_count) :: domain(*)
-    end subroutine mui_create_uniface_multi_1f_f
+    !subroutine mui_create_uniface_multi_1f_f(domain,interfaces,interface_count,unifaces) bind(C)
+    !  import :: c_ptr,c_char,c_int
+    !  integer(kind=c_int), intent(in) :: interface_count
+    !  type(c_ptr), intent(out), dimension(interface_count), target :: unifaces(*)
+    !  character(kind=c_char), intent(in), dimension(interface_count) :: domain(*)
+    !end subroutine mui_create_uniface_multi_1f_f
 
     !****************************************
     !* Destroy MUI interface                *
