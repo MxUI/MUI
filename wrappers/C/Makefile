@@ -20,7 +20,7 @@ endif
 
 default: mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 @echo "Compiling and linking MUI C wrapper..."
-	 ${CCX} -shared -o libmui_c_wrapper.so mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
+	 ${CCX} ${CFLAGS} -shared -o libmui_c_wrapper.so mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 ${AR} rcs libmui_c_wrapper.a mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 @echo "************************************************************"
 	 @echo "*                    C wrapper usage                       *"

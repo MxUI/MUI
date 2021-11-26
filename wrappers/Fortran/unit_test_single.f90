@@ -40,7 +40,7 @@
 !
 !** File Details **
 !
-!Filename: unit_test.f90
+!Filename: unit_test_single.f90
 !Created: 18 October 2021
 !Author: S. M. Longshaw (derived from original 3D unit test by S. Kudo)
 !Description: Unit test for Fortran wrapper to create and manage 1D MUI interfaces
@@ -52,6 +52,13 @@ program main
   use mui_1d_f
 
   implicit none
+
+  !No need to call mui_mpi_split_by_app() function first as with the _multi example
+  !as direct uniface creation also called MPI_Init()
+
+  !***********************
+  !* Single 1D interface *
+  !***********************
 
   !Local variables
   character(len=1024) :: arg_domain
@@ -101,6 +108,16 @@ program main
   !Destroy created 1D MUI objects
   call mui_destroy_sampler_exact_1d_f(spatial_sampler_exact_1d)
   call mui_destroy_chrono_sampler_exact_1d_f(chrono_sampler_exact_1d)
+
+  !***********************
+  !* Single 2D interface *
+  !***********************
+
+  !***********************
+  !* Single 3D interface *
+  !***********************
+
+  !Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
   call mui_destroy_uniface_1d_f(uniface_1d)
 
 end program main
