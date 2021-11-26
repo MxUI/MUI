@@ -120,7 +120,7 @@ private:
 	using storage_single_t = typename def_storage_single_<data_types>::type;
 
 	struct peer_state {
-		peer_state() : disable_send(false), disable_recv(false) {}
+		peer_state() : disable_send(false), disable_recv(false), ss_stat(false) {}
 
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
@@ -164,6 +164,14 @@ private:
 			return disable_recv;
 		}
 
+		void set_ss_status(bool status) {
+			ss_stat = status;
+		}
+
+		bool ss_status() const {
+			return ss_stat;
+		}
+
 		time_type current_t() const { return latest_timestamp; }
 		time_type current_sub() const { return latest_subiter; }
 		time_type next_t() const { return next_timestamp; }
@@ -197,6 +205,7 @@ private:
 		std::unordered_map<std::string, storage_single_t> assigned_vals_;
 		bool disable_send;
 		bool disable_recv;
+		bool ss_stat;
 	};
 
 private: // data members
@@ -231,6 +240,8 @@ public:
 
 		peers.resize(comm->remote_size());
 
+		readers.link("smartsend", reader_variables<int32_t, bool >(
+					 std::bind(&uniface::on_recv_ss, this, _1, _2)));
 		readers.link("timestamp", reader_variables<int32_t, std::pair<time_type,time_type> >(
 					 std::bind(&uniface::on_recv_confirm, this, _1, _2)));
 		readers.link("forecast", reader_variables<int32_t, std::pair<time_type,time_type>>(
@@ -530,6 +541,13 @@ public:
 		return return_values;
 	}
 
+	/** \brief Sends message to peers to allow barrier_ss to release
+	 */
+	int commit_ss() {
+		comm->send( message::make("smartsend",comm->local_rank(),true) );
+		return comm->remote_size();
+	}
+
 	/** \brief Serializes pushed data and sends it to remote nodes
 	  * Serializes pushed data and sends it to remote nodes.
 	  * Returns the actual number of peers contacted
@@ -539,7 +557,7 @@ public:
 	    std::pair<time_type,time_type> time(t1,t2);
 
 	    // Check if peer set to disabled (not linked to time span)
-	    for( std::size_t i=0; i<peers.size(); ++i ) {
+	    for( size_t i=0; i<peers.size(); ++i ) {
 	    	if(peers[i].is_recv_disabled())
 	    		is_sending[i] = false;
 	    }
@@ -547,7 +565,7 @@ public:
 	    // Check for smart send based on t1
 	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
-			for( std::size_t i=0; i<peers.size(); ++i ) {
+			for( size_t i=0; i<peers.size(); ++i ) {
 				if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
 			}
@@ -611,6 +629,25 @@ public:
 					(((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.current_sub() > t2))); });
 	}
 
+	/** \brief Blocking barrier for smart send. Initiates receive from remote nodes.
+	  */
+	void barrier_ss() {
+		auto start = std::chrono::system_clock::now();
+		for(;;) {
+			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+				return (p.ss_status()); }) ) break;
+			acquire(); // To avoid infinite-loop when synchronous communication
+		}
+		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+			if( !QUIET )
+				std::cout << "MUI Warning [uniface.h]: Smart Send barrier spent over 5 seconds" << std::endl;
+		}
+		// Reset peer status for next smart send message
+		for(size_t i=0; i<peers.size(); i++) {
+			peers[i].set_ss_status(false);
+		}
+	}
+
 	/** \brief Blocking barrier at t1. Initiates receive from remote nodes.
 	  */
 	void barrier( time_type t1 ) {
@@ -624,7 +661,7 @@ public:
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
 			if( !QUIET )
-				std::cout << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+				std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
 		}
 	}
 
@@ -642,7 +679,7 @@ public:
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
 			if( !QUIET )
-				std::cout << "MUI Warning [uniface.h]: Communication barrier spends over 5 seconds" << std::endl;
+				std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
 		}
 	}
 
@@ -774,6 +811,12 @@ private:
 		if( m.has_id() ){
 			readers[m.id()](m);
 		}
+	}
+
+	/** \brief Handles "timestamp" messages
+	  */
+	void on_recv_ss( int32_t sender, bool status ) {
+		peers.at(sender).set_ss_status(status);
 	}
 
 	/** \brief Handles "timestamp" messages
