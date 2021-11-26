@@ -565,6 +565,7 @@ public:
 	    // Check for smart send based on t1
 	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
+	    	std::cout << "MUI enter SS check" << std::endl;
 			for( size_t i=0; i<peers.size(); ++i ) {
 				if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
