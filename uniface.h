@@ -182,9 +182,9 @@ private:
 		void set_next_sub( time_type t ) { next_subiter = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			auto p = std::make_pair(t,t);
-			auto end = spans.lower_bound(p);
 			bool prefetched = false;
+			auto end = spans.lower_bound(std::make_pair(t,t));
+			if( spans.size() == 1 ) end = spans.end();
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 				if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
@@ -192,6 +192,7 @@ private:
 					if( collide(s,itr->second) ) return true;
 				}
 			}
+
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
 			return !prefetched;
@@ -378,6 +379,8 @@ public:
 																   std::numeric_limits<time_type>::lowest());
 		auto end = log.upper_bound(curr_time_upper);
 
+		if( log.size() == 1 ) end = log.end();
+
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
@@ -404,6 +407,8 @@ public:
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
 																   t_sampler.get_upper_bound(t2)+threshold(t2));
 		auto end = log.upper_bound(curr_time_upper);
+
+		if( log.size() == 1 ) end = log.end();
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
 			const auto& iter = start->second.find(attr);
@@ -432,6 +437,8 @@ public:
 		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
 																   std::numeric_limits<time_type>::lowest());
 		auto end = log.upper_bound(curr_time_upper);
+
+		if( log.size() == 1 ) end = log.end();
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -465,6 +472,8 @@ public:
 																   t_sampler.get_upper_bound(t2)+threshold(t2));
 		auto end = log.upper_bound(curr_time_upper);
 
+		if( log.size() == 1 ) end = log.end();
+
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
@@ -496,6 +505,8 @@ public:
 													   std::numeric_limits<time_type>::lowest());
 
 		auto end = log.upper_bound(curr_time_upper);
+
+		if( log.size() == 1 ) end = log.end();
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
@@ -529,6 +540,8 @@ public:
 
 		auto end = log.upper_bound(curr_time_upper);
 
+		if( log.size() == 1 ) end = log.end();
+
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ){
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
@@ -559,7 +572,7 @@ public:
 
 	    // Check if peer set to disabled (not linked to time span)
 	    for( size_t i=0; i<peers.size(); ++i ) {
-	    	if(peers[i].is_recv_disabled())
+	    	if( peers[i].is_recv_disabled() )
 	    		is_sending[i] = false;
 	    }
 
@@ -687,10 +700,10 @@ public:
 	/** \brief Announces to all remote nodes "I'll send this span"
 	  */
 	void announce_send_span( time_type start, time_type timeout, span_t s ) {
-	    comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(s)));
-	    span_start = start;
-	    span_timeout = timeout;
-	    current_span.swap(s);
+		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(s)));
+		span_start = start;
+		span_timeout = timeout;
+		current_span.swap(s);
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
