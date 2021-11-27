@@ -196,6 +196,7 @@ private:
 			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
+			std::cout << "returning " << !prefetched << std::endl;
 			return !prefetched;
 		}
 		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
