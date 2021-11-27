@@ -183,8 +183,9 @@ private:
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
 			auto p = std::make_pair(t,t);
-			auto end = spans.upper_bound(p);
+			auto end = spans.lower_bound(p);
 			bool prefetched = false;
+			std::cout << "span size: " << spans.size() << std::endl;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 				if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
@@ -194,7 +195,6 @@ private:
 			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
-			std::cout << "returning: " << !prefetched << std::endl;
 			return !prefetched;
 		}
 		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
