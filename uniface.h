@@ -193,7 +193,6 @@ private:
 			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
-			std::cout << "returning " << !prefetched << std::endl;
 			return !prefetched;
 		}
 		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
@@ -558,16 +557,16 @@ public:
 	    std::pair<time_type,time_type> time(t1,t2);
 
 	    // Check if peer set to disabled (not linked to time span)
-	    for( size_t i=0; i<peers.size(); ++i ) {
-	    	if(peers[i].is_recv_disabled())
-	    		is_sending[i] = false;
-	    }
+	    //for( size_t i=0; i<peers.size(); ++i ) {
+	    //	if(peers[i].is_recv_disabled())
+	    //		is_sending[i] = false;
+	    //}
 
 	    // Check for smart send based on t1
 	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
 			for( size_t i=0; i<peers.size(); ++i ) {
-				if( is_sending[i] ) // Peer is not already disabled so check using smart send
+				//if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
 			}
 		}
