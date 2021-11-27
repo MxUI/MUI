@@ -187,8 +187,7 @@ private:
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				//if( t < itr->first.second || almost_equal(t, itr->first.second) ){
-				if( t <= itr->first.second ) {
+				if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
 				}
