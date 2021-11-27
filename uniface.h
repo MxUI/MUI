@@ -181,11 +181,11 @@ private:
 		void set_next_t( time_type t ) { next_timestamp = t; }
 		void set_next_sub( time_type t ) { next_subiter = t; }
 	private:
+		/*
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
 			auto p = std::make_pair(t,t);
-			auto end = spans.lower_bound(p);
+			auto end = spans.upper_bound(p);
 			bool prefetched = false;
-			std::cout << "span size: " << spans.size() << std::endl;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
 				if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
@@ -193,6 +193,21 @@ private:
 					if( collide(s,itr->second) ) return true;
 				}
 			}
+			// if prefetched at t, but no overlap region, then return false;
+			// otherwise return true;
+			return !prefetched;
+		}
+		*/
+		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
+			auto p = std::make_pair(t,t);
+			auto end = spans.upper_bound(p);
+			bool prefetched = false;
+
+			for( auto itr = spans.begin(); itr != end; ++itr )
+				if( t <= itr->first.second ){
+					prefetched = true;
+					if( collide(s,itr->second) ) return true;
+				}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
 			return !prefetched;
