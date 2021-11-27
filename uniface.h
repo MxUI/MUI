@@ -568,6 +568,8 @@ public:
 			for( size_t i=0; i<peers.size(); ++i ) {
 				//if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
+
+				if(!is_sending[i]) std::cout << "is_sending[i] set negative" << std::endl;
 			}
 		}
 
