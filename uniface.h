@@ -637,7 +637,6 @@ public:
 		for(;;) {
 			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
 				return (p.ss_status()); }) ) break;
-			std::cout << "enter barrier_ss acquire loop" << std::endl;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
 		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
@@ -818,6 +817,7 @@ private:
 	/** \brief Handles "timestamp" messages
 	  */
 	void on_recv_ss( int32_t sender, bool status ) {
+		if( status ) std::cout << "positive statuis rcv" << std::endl;
 		peers.at(sender).set_ss_status(status);
 	}
 
