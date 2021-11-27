@@ -187,13 +187,14 @@ private:
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				//if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
+				if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
-				//}
+				}
 			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
+			std::cout << "returning: " << !prefetched << std::endl;
 			return !prefetched;
 		}
 		time_type latest_timestamp = std::numeric_limits<time_type>::lowest();
