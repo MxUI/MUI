@@ -187,10 +187,10 @@ private:
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
-				if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
+				//if( t < itr->first.second || almost_equal(t, itr->first.second) ) {
 					prefetched = true;
 					if( collide(s,itr->second) ) return true;
-				}
+				//}
 			}
 			// if prefetched at t, but no overlap region, then return false;
 			// otherwise return true;
@@ -566,7 +566,6 @@ public:
 	    // Check for smart send based on t1
 	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
-	    	std::cout << "span pass" << std::endl;
 			for( size_t i=0; i<peers.size(); ++i ) {
 				if( is_sending[i] ) // Peer is not already disabled so check using smart send
 					is_sending[i] = peers[i].is_recving( t1, current_span );
