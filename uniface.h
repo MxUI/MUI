@@ -182,7 +182,7 @@ private:
 		void set_next_sub( time_type t ) { next_subiter = t; }
 	private:
 		bool scan_spans_(time_type t, const span_t& s, const spans_type& spans ) const {
-			auto end = spans.upper_bound(std::make_pair(t,t));
+			auto end = spans.lower_bound(std::make_pair(t,t));
 			bool prefetched = false;
 
 			for( auto itr = spans.begin(); itr != end; ++itr ) {
