@@ -700,10 +700,11 @@ public:
 	/** \brief Announces to all remote nodes "I'll send this span"
 	  */
 	void announce_send_span( time_type start, time_type timeout, span_t s ) {
-		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(s)));
 		span_start = start;
 		span_timeout = timeout;
+		span_t tmp = s;
 		current_span.swap(s);
+		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(tmp)));
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
@@ -715,10 +716,11 @@ public:
 	/** \brief Announces to all remote nodes "I'm receiving this span"
 	  */
 	void announce_recv_span( time_type start, time_type timeout, span_t s ) {
-		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(s)));
 		recv_start = start;
 		recv_timeout = timeout;
+		span_t tmp = s;
 		recv_span.swap(s);
+		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(tmp)));
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for receive"
