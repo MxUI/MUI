@@ -87,8 +87,6 @@ private:
 				          domain_remote_, &(send_buf.back().first));
 		 	}
 		}
-		// Call non-blocking MPI_Test on MPI_Isend messages in buffer and if complete, pop
-		test_completion();
 	}
 
 	message recv_impl_() {
