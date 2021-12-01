@@ -83,10 +83,14 @@ private:
     }
 
 		for( int i = 0 ; i < remote_size_ ; i++ ) {
-			if( is_sending[i] ){
+			if( is_sending[i] ) {
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
+				// Immediate test to try and maintain a clear buffer
+				int test = false;
+        MPI_Test(&(send_buf.back().first),&test,MPI_STATUS_IGNORE);
+        if( test ) send_buf.pop_back();
 		 	}
 		}
 		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
