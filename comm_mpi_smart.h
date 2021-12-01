@@ -83,9 +83,11 @@ private:
 							  << "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
 					std::abort();
 				}
+				std::cout << "MPI_Isend start" << std::endl;
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
+				std::cout << "MPI_Isend returned" << std::endl;
 		 	}
 		}
 		test_completion();
