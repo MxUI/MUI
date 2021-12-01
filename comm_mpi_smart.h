@@ -86,14 +86,9 @@ private:
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
-
-				// Issue non-blocking MPI_Test to ensure command completion as quickly as possible, if not
-				// complete here then future call to test_completion will pop from buffer
-				int test = false;
-				MPI_Test(&send_buf.back().first,&test,MPI_STATUS_IGNORE);
-				if( test ) send_buf.pop_back();
 		 	}
 		}
+		test_completion_blocking();
 	}
 
 	message recv_impl_() {
