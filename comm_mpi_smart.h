@@ -74,6 +74,7 @@ private:
 		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
+
 		for( int i = 0 ; i < remote_size_ ; i++ ) {
 			if( is_sending[i] ){
 				if(bytes->size() > INT_MAX){
@@ -83,12 +84,13 @@ private:
 					std::abort();
 				}
 				send_buf.emplace_back(MPI_Request(), bytes);
-				MPI_Issend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
+				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
+
 				// Issue non-blocking MPI_Test to ensure command completion as quickly as possible, if not
 				// complete here then future call to test_completion will pop from buffer
 				int test = false;
-				MPI_Test(&(send_buf.back().first),&test,MPI_STATUS_IGNORE);
+				MPI_Test(&send_buf.back().first,&test,MPI_STATUS_IGNORE);
 				if( test ) send_buf.pop_back();
 		 	}
 		}
