@@ -102,11 +102,14 @@ private:
 		test_completion();
 		std::vector<char> temp;
 		MPI_Status status;
-		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
+		MPI_Message msg;
+		MPI_Mprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, domain_remote_, &msg, &status);
+		//MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
 		int count;
 		MPI_Get_count(&status,MPI_BYTE,&count);
 		temp.resize(count);
-		MPI_Recv( temp.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
+		MPI_Mrecv(temp.data(), count, MPI_BYTE, &msg, &status);
+		//MPI_Recv( temp.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
 		return message::make(std::move(temp));
 	}
 
