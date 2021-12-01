@@ -112,7 +112,7 @@ private:
 	/** \brief Non-blocking check for complete MPI_Isend calls
 	 */
 	void test_completion() {
-	  std::cout << "send_buf: " << send_buf.size() << std::endl;
+	  if( send_buf.size() > 0) std::cout << "send_buf: " << send_buf.size() << std::endl;
 		for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
 			int test = false;
 			MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
