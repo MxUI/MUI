@@ -264,9 +264,9 @@ public:
 		readers.link("assignedVals", reader_variables<std::string, storage_single_t>(
 					 std::bind(&uniface::on_recv_assignedVals, this, _1, _2)));
 		readers.link("receivingSpan", reader_variables<int32_t, time_type, time_type, span_t>(
-		             std::bind(&uniface::on_recv_span, this, _1, _2, _3, _4)));
+		       std::bind(&uniface::on_recv_span, this, _1, _2, _3, _4)));
 		readers.link("sendingSpan", reader_variables<int32_t, time_type, time_type, span_t>(
-		             std::bind(&uniface::on_send_span, this, _1, _2, _3, _4)));
+		       std::bind(&uniface::on_send_span, this, _1, _2, _3, _4)));
 		readers.link("receivingDisable", reader_variables<int32_t>(
 					 std::bind(&uniface::on_send_disable, this, _1)));
 		readers.link("sendingDisable", reader_variables<int32_t>(
@@ -285,11 +285,11 @@ public:
 		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
     
-    /** \brief Push data with tag "attr" to buffer
-     * Push data with tag "attr" to bcuffer. If using CONFIG::FIXEDPOINTS=true,
-     * data must be pushed in the same order that the points were previously pushed.
-     */
-    template<typename TYPE>
+  /** \brief Push data with tag "attr" to buffer
+   * Push data with tag "attr" to bcuffer. If using CONFIG::FIXEDPOINTS=true,
+   * data must be pushed in the same order that the points were previously pushed.
+   */
+  template<typename TYPE>
 	void push( const std::string& attr, const point_type& loc, const TYPE& value ) {
 		if( FIXEDPOINTS ) {
 			// If this push is before first commit then build local points list
@@ -356,11 +356,12 @@ public:
     }
 
 #endif
-    /** \brief Fetch a single parameter from the interface
-	  * Overloaded \c fetch to fetch a single parameter of name \c attr.
-	  * There is no barrier on this fetch as there is no time associated
-	  * with the value.
-	  */
+
+  /** \brief Fetch a single parameter from the interface
+    * Overloaded \c fetch to fetch a single parameter of name \c attr.
+    * There is no barrier on this fetch as there is no time associated
+    * with the value.
+    */
 	template<typename TYPE>
 	TYPE fetch( const std::string& attr ) {
 		storage_single_t& n = assigned_values[attr];
@@ -368,8 +369,8 @@ public:
 		return storage_cast<TYPE&>(n);
 	}
 
-    /** \brief Fetch from the interface, blocking with barrier at time=t
-	  */
+  /** \brief Fetch from the interface, blocking with barrier at time=t
+   */
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type& focus, const time_type t,
@@ -398,7 +399,7 @@ public:
 	}
 
 	/** \brief Fetch from the interface, blocking with barrier at time=t1,t2
-	  */
+	 */
 	template<class SAMPLER, class TIME_SAMPLER, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type& focus, const time_type t1, const time_type t2,
@@ -678,42 +679,76 @@ public:
 		}
 	}
 
+	/** \brief Blocking barrier for Smart Send send values. Initiates receive from remote nodes.
+    */
+  void barrier_ss_send( ) {
+    auto start = std::chrono::system_clock::now();
+    for(;;) {    // barrier must be thread-safe because it is called in fetch()
+      std::lock_guard<std::mutex> lock(mutex);
+      if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+        return (p.ss_send_status()); }) ) break;
+      acquire(); // To avoid infinite-loop when synchronous communication
+    }
+    if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+      if( !QUIET )
+        std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
+    }
+    for(size_t i=0; i<peers.size(); i++) {
+      peers[i].set_ss_send_status(false);
+    }
+  }
+
+  /** \brief Blocking barrier for Smart Send receive values. Initiates receive from remote nodes.
+    */
+  void barrier_ss_recv( ) {
+    auto start = std::chrono::system_clock::now();
+    for(;;) {    // barrier must be thread-safe because it is called in fetch()
+      std::lock_guard<std::mutex> lock(mutex);
+      if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
+        return (p.ss_recv_status()); }) ) break;
+      acquire(); // To avoid infinite-loop when synchronous communication
+    }
+    if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+      if( !QUIET )
+        std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
+    }
+    for(size_t i=0; i<peers.size(); i++) {
+      peers[i].set_ss_recv_status(false);
+    }
+  }
+
 	/** \brief Announces to all remote nodes using non-blocking peer-to-peer approach "I'll send this span"
 	  */
-	void announce_send_span( time_type start, time_type timeout, span_t s, bool blocking = false) {
+	void announce_send_span( time_type start, time_type timeout, span_t s, bool synchronised = false) {
 		span_start = start;
 		span_timeout = timeout;
 		current_span.swap(s);
 		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(current_span)));
-
-		if( blocking ) barrier_ss_send();
+		if( synchronised ) barrier_ss_send();
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
 	  */
-	void announce_send_disable( bool blocking = false ) {
+	void announce_send_disable( bool synchronised = false ) {
 		comm->send(message::make("sendingDisable", comm->local_rank()));
-
-		if( blocking ) barrier_ss_send_disable();
+		if( synchronised ) barrier_ss_send();
 	}
 
 	/** \brief Announces to all remote nodes using non-blocking peer-to-peer approach "I'm receiving this span"
 	  */
-	void announce_recv_span( time_type start, time_type timeout, span_t s, bool blocking = false ) {
+	void announce_recv_span( time_type start, time_type timeout, span_t s, bool synchronised = false ) {
 		recv_start = start;
 		recv_timeout = timeout;
 		recv_span.swap(s);
 		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(recv_span)));
-
-		if( blocking ) barrier_ss_recv();
+		if( synchronised ) barrier_ss_recv();
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for receive"
 	  */
-	void announce_recv_disable( bool blocking = false ) {
+	void announce_recv_disable( bool synchronised = false ) {
 		comm->send(message::make("receivingDisable", comm->local_rank()));
-
-		if( blocking ) barrier_ss_recv_disable();
+		if( synchronised ) barrier_ss_recv();
 	}
 
 	/** \brief Removes log between (-inf, @last]
@@ -859,38 +894,28 @@ private:
 	  */
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
 		peers.at(sender).set_recving(start,timeout,std::move(s));
+		peers.at(sender).set_ss_recv_status(true);
 	}
 
 	/** \brief Handles "sendingSpan" messages
 	  */
 	void on_send_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
 		peers.at(sender).set_sending(start,timeout,std::move(s));
+		peers.at(sender).set_ss_send_status(true);
 	}
 
 	/** \brief Handles "sendingDisable" messages
 	  */
 	void on_recv_disable( int32_t sender ) {
 		peers.at(sender).set_recv_disable();
+		peers.at(sender).set_ss_recv_status(true);
 	}
 
 	/** \brief Handles "receivingDisable" messages
 	  */
 	void on_send_disable( int32_t sender ) {
 		peers.at(sender).set_send_disable();
-	}
-
-	/** \brief Handles "ss_send" messages
-	  */
-	void on_recv_ss_send( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		peers.at(sender).set_sending(start,timeout,std::move(s));
 		peers.at(sender).set_ss_send_status(true);
-	}
-
-	/** \brief Handles "ss_recv" messages
-	  */
-	void on_recv_ss_recv( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		peers.at(sender).set_recving(start,timeout,std::move(s));
-		peers.at(sender).set_ss_recv_status(true);
 	}
 
 	/** \brief Handles "points" messages
