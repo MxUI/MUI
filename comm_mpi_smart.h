@@ -65,13 +65,13 @@ private:
 public:
 	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
 	virtual ~comm_mpi_smart() {
-		// Call MPI_Test in blocking loop on any remaining MPI_Isend messages in buffer and if complete, pop before destruction
+		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
 		test_completion_blocking();
 	}
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-		// Call non-blocking MPI_Test on MPI_Isend messages in buffer and if complete, pop
+		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 		for( int i = 0 ; i < remote_size_ ; i++ ){
@@ -85,6 +85,11 @@ private:
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0, 
 				          domain_remote_, &(send_buf.back().first));
+				// Issue non-blocking MPI_Test to ensure command completion as quickly as possible, if not
+				// complete here then future call to test_completion will pop from buffer
+				int test = false;
+				MPI_Test(&(send_buf.back().first),&test,MPI_STATUS_IGNORE);
+				if( test ) send_buf.pop_back();
 		 	}
 		}
 	}

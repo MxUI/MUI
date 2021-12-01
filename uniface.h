@@ -120,7 +120,7 @@ private:
 	using storage_single_t = typename def_storage_single_<data_types>::type;
 
 	struct peer_state {
-		peer_state() : disable_send(false), disable_recv(false), ss_stat(false) {}
+		peer_state() : disable_send(false), disable_recv(false), ss_stat_send(false), ss_stat_recv(false) {}
 
 		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
@@ -164,12 +164,20 @@ private:
 			return disable_recv;
 		}
 
-		void set_ss_status(bool status) {
-			ss_stat = status;
+		void set_ss_send_status(bool status) {
+			ss_stat_send = status;
 		}
 
-		bool ss_status() const {
-			return ss_stat;
+		bool ss_send_status() const {
+			return ss_stat_send;
+		}
+
+		void set_ss_recv_status(bool status) {
+			ss_stat_recv = status;
+		}
+
+		bool ss_recv_status() const {
+			return ss_stat_recv;
 		}
 
 		time_type current_t() const { return latest_timestamp; }
@@ -207,7 +215,8 @@ private:
 		std::unordered_map<std::string, storage_single_t> assigned_vals_;
 		bool disable_send;
 		bool disable_recv;
-		bool ss_stat;
+		bool ss_stat_send;
+		bool ss_stat_recv;
 	};
 
 private: // data members
@@ -242,8 +251,6 @@ public:
 
 		peers.resize(comm->remote_size());
 
-		readers.link("smartsend", reader_variables<int32_t, bool >(
-					 std::bind(&uniface::on_recv_ss, this, _1, _2)));
 		readers.link("timestamp", reader_variables<int32_t, std::pair<time_type,time_type> >(
 					 std::bind(&uniface::on_recv_confirm, this, _1, _2)));
 		readers.link("forecast", reader_variables<int32_t, std::pair<time_type,time_type>>(
@@ -268,9 +275,18 @@ public:
 
 	uniface( const uniface& ) = delete;
 	uniface& operator=( const uniface& ) = delete;
+
+	/** \brief Announce the value \c value with the parameter \c attr
+	  * Useful if, for example, you wish to pass a parameter
+	  * rather than a field without an associated timestamp
+	  */
+	template<typename TYPE>
+	void push( const std::string& attr, const TYPE& value ) {
+		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
+	}
     
     /** \brief Push data with tag "attr" to buffer
-     * Push data with tag "attr" to buffer. If using CONFIG::FIXEDPOINTS=true,
+     * Push data with tag "attr" to bcuffer. If using CONFIG::FIXEDPOINTS=true,
      * data must be pushed in the same order that the points were previously pushed.
      */
     template<typename TYPE>
@@ -291,15 +307,6 @@ public:
 			if( !n ) n = storage_t(std::vector<std::pair<point_type,TYPE> >());
 			storage_cast<std::vector<std::pair<point_type,TYPE> >&>(n).emplace_back( loc, value );
 		}
-	}
-
-	/** \brief Push the value \c value to the parameter \c attr
-	  * Useful if, for example, you wish to pass a parameter
-	  * rather than a field without an associated timestamp
-	  */
-	template<typename TYPE>
-	void push( const std::string& attr, const TYPE& value ) {
-		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
 
 #ifdef PYTHON_BINDINGS
@@ -555,13 +562,6 @@ public:
 		return return_values;
 	}
 
-	/** \brief Sends message to peers to allow barrier_ss to release
-	 */
-	int commit_ss() {
-		comm->send( message::make("smartsend",comm->local_rank(),true) );
-		return comm->remote_size();
-	}
-
 	/** \brief Serializes pushed data and sends it to remote nodes
 	  * Serializes pushed data and sends it to remote nodes.
 	  * Returns the actual number of peers contacted
@@ -643,25 +643,6 @@ public:
 					(((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.current_sub() > t2))); });
 	}
 
-	/** \brief Blocking barrier for smart send. Initiates receive from remote nodes.
-	  */
-	void barrier_ss() {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.ss_status()); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
-			if( !QUIET )
-				std::cout << "MUI Warning [uniface.h]: Smart Send barrier spent over 5 seconds" << std::endl;
-		}
-		// Reset peer status for next smart send message
-		for(size_t i=0; i<peers.size(); i++) {
-			peers[i].set_ss_status(false);
-		}
-	}
-
 	/** \brief Blocking barrier at t1. Initiates receive from remote nodes.
 	  */
 	void barrier( time_type t1 ) {
@@ -697,36 +678,42 @@ public:
 		}
 	}
 
-	/** \brief Announces to all remote nodes "I'll send this span"
+	/** \brief Announces to all remote nodes using non-blocking peer-to-peer approach "I'll send this span"
 	  */
-	void announce_send_span( time_type start, time_type timeout, span_t s ) {
+	void announce_send_span( time_type start, time_type timeout, span_t s, bool blocking = false) {
 		span_start = start;
 		span_timeout = timeout;
-		span_t tmp = s;
 		current_span.swap(s);
-		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(tmp)));
+		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(current_span)));
+
+		if( blocking ) barrier_ss_send();
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
 	  */
-	void announce_send_disable() {
+	void announce_send_disable( bool blocking = false ) {
 		comm->send(message::make("sendingDisable", comm->local_rank()));
+
+		if( blocking ) barrier_ss_send_disable();
 	}
 
-	/** \brief Announces to all remote nodes "I'm receiving this span"
+	/** \brief Announces to all remote nodes using non-blocking peer-to-peer approach "I'm receiving this span"
 	  */
-	void announce_recv_span( time_type start, time_type timeout, span_t s ) {
+	void announce_recv_span( time_type start, time_type timeout, span_t s, bool blocking = false ) {
 		recv_start = start;
 		recv_timeout = timeout;
-		span_t tmp = s;
 		recv_span.swap(s);
-		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(tmp)));
+		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(recv_span)));
+
+		if( blocking ) barrier_ss_recv();
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for receive"
 	  */
-	void announce_recv_disable() {
+	void announce_recv_disable( bool blocking = false ) {
 		comm->send(message::make("receivingDisable", comm->local_rank()));
+
+		if( blocking ) barrier_ss_recv_disable();
 	}
 
 	/** \brief Removes log between (-inf, @last]
@@ -831,12 +818,6 @@ private:
 
 	/** \brief Handles "timestamp" messages
 	  */
-	void on_recv_ss( int32_t sender, bool status ) {
-		peers.at(sender).set_ss_status(status);
-	}
-
-	/** \brief Handles "timestamp" messages
-	  */
 	void on_recv_confirm( int32_t sender, std::pair<time_type,time_type> timestamp ) {
 		peers.at(sender).set_current_t(timestamp.first);
 		peers.at(sender).set_current_sub(timestamp.second);
@@ -896,6 +877,20 @@ private:
 	  */
 	void on_send_disable( int32_t sender ) {
 		peers.at(sender).set_send_disable();
+	}
+
+	/** \brief Handles "ss_send" messages
+	  */
+	void on_recv_ss_send( int32_t sender, time_type start, time_type timeout, span_t s ) {
+		peers.at(sender).set_sending(start,timeout,std::move(s));
+		peers.at(sender).set_ss_send_status(true);
+	}
+
+	/** \brief Handles "ss_recv" messages
+	  */
+	void on_recv_ss_recv( int32_t sender, time_type start, time_type timeout, span_t s ) {
+		peers.at(sender).set_recving(start,timeout,std::move(s));
+		peers.at(sender).set_ss_recv_status(true);
 	}
 
 	/** \brief Handles "points" messages
