@@ -88,7 +88,7 @@ private:
 				          domain_remote_, &(send_buf.back().first));
 		 	}
 		}
-		test_completion_blocking();
+		test_completion();
 	}
 
 	message recv_impl_() {
