@@ -67,12 +67,14 @@ public:
 
 	template<template<typename,typename> class CONTAINER>
 	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		REAL  wsum = 0;
+		REAL exp_val = -0.5/h;
+		REAL r2 = r*r;
+	  REAL  wsum = 0;
 		OTYPE vsum = 0;
 		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-			auto d = normsq( focus - data_points[i].first );
-			if ( d < r*r ) {
-			    REAL w = nh * std::exp( (REAL(-0.5)/h) * d );
+			REAL d = normsq( focus - data_points[i].first );
+			if ( d < r2 ) {
+			  REAL w = nh * std::exp( exp_val * d );
 				vsum += data_points[i].second * w;
 				wsum += w;
 			}
