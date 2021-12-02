@@ -63,7 +63,7 @@ class comm_mpi_smart : public comm_mpi {
 private:
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
 public:
-	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
+	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world, bool quiet) {}
 	virtual ~comm_mpi_smart() {
 		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
 		test_completion_blocking();
@@ -124,28 +124,12 @@ private:
 	/** \brief Time-limited blocking check for complete MPI_Isend calls
 	 */
 	void test_completion_blocking() {
-	  std::cout << "MUI Warning [comm_mpi_smart.h]: MPI_Isend messages outstanding at communicator close, "
-	                "enforcing receive with blocking MPI_Wait" << std::endl;
-	  //int timeout = 0;
-		//auto start = std::chrono::system_clock::now();
-		while (send_buf.size() > 0) {
+	  while (send_buf.size() > 0) {
 			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
 				//int test = false;
 				MPI_Wait(&(itr->first), MPI_STATUS_IGNORE);
 				itr = send_buf.erase(itr);
-				//MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				//if( test ) itr = send_buf.erase(itr);
-				//else ++itr;
 			}
-			/*
-			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
-				timeout++;
-				int time_left = 60 - (timeout*5);
-				if( time_left == 0) break;
-				std::cout << "MUI Warning [comm_mpi_smart.h]: MPI_Isend calls spent over 5 seconds completing, all operations will timeout in "
-						  << time_left << "s" << std::endl;
-			}
-			*/
 		}
 	}
 };
