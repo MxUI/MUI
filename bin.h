@@ -250,7 +250,7 @@ public:
 		}
 
 		size_t zero_count=0;
-		REAL vol = abs(max[0]-min[0]);
+		REAL vol = std::abs(max[0]-min[0]);
 		if(almost_equal(vol, static_cast<REAL>(0))) { // check if first dimension is zero size, if so set to 1
 			vol = 1.0;
 			zero_count++;
@@ -307,7 +307,6 @@ public:
 		if( initialize_query_(bx,lda,lh) ) return map;
 		map.reserve(lda[D-1]*12);
 		set_map_<D-1>::apply( 0, lda, lh, displs, map );
-		map.shrink_to_fit();
 		return map;
 	}
 
@@ -322,8 +321,7 @@ public:
 	REAL domain_size() {
 		REAL dim_size = norm(max-min);
 		// Special case if domain only contains a single point
-		if(almost_equal(dim_size, static_cast<REAL>(0)))
-			dim_size = 1.0;
+		if(dim_size == 0) dim_size = 1.0;
 		return dim_size;
 	}
 
