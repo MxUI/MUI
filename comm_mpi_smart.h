@@ -124,15 +124,20 @@ private:
 	/** \brief Time-limited blocking check for complete MPI_Isend calls
 	 */
 	void test_completion_blocking() {
-		int timeout = 0;
-		auto start = std::chrono::system_clock::now();
+	  std::cout << "MUI Warning [comm_mpi_smart.h]: MPI_Isend messages outstanding at communicator close, "
+	                "enforcing receive with blocking MPI_Wait" << std::endl;
+	  //int timeout = 0;
+		//auto start = std::chrono::system_clock::now();
 		while (send_buf.size() > 0) {
 			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
-				int test = false;
-				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				if( test ) itr = send_buf.erase(itr);
-				else ++itr;
+				//int test = false;
+				MPI_Wait(&(itr->first), MPI_STATUS_IGNORE);
+				itr = send_buf.erase(itr);
+				//MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
+				//if( test ) itr = send_buf.erase(itr);
+				//else ++itr;
 			}
+			/*
 			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
 				timeout++;
 				int time_left = 60 - (timeout*5);
@@ -140,6 +145,7 @@ private:
 				std::cout << "MUI Warning [comm_mpi_smart.h]: MPI_Isend calls spent over 5 seconds completing, all operations will timeout in "
 						  << time_left << "s" << std::endl;
 			}
+			*/
 		}
 	}
 };
