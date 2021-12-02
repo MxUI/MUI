@@ -63,7 +63,7 @@ class comm_mpi_smart : public comm_mpi {
 private:
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
 public:
-	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world, bool quiet) {}
+	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
 	virtual ~comm_mpi_smart() {
 		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
 		test_completion_blocking();
