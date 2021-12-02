@@ -568,23 +568,23 @@ public:
 	  * Returns the actual number of peers contacted
 	  */
 	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
-	    std::vector<bool> is_sending(comm->remote_size(), true);
-	    std::pair<time_type,time_type> time(t1,t2);
+    std::vector<bool> is_sending(comm->remote_size(), true);
+    std::pair<time_type,time_type> time(t1,t2);
 
-	    // Check if peer set to disabled (not linked to time span)
-	    for( size_t i=0; i<peers.size(); ++i ) {
-	    	if( peers[i].is_recv_disabled() )
-	    		is_sending[i] = false;
-	    }
+    // Check if peer set to disabled (not linked to time span)
+    for( size_t i=0; i<peers.size(); ++i ) {
+      if( peers[i].is_recv_disabled() )
+        is_sending[i] = false;
+    }
 
-	    // Check for smart send based on t1
-	    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
-	    	((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
-			for( size_t i=0; i<peers.size(); ++i ) {
-				if( is_sending[i] ) // Peer is not already disabled so check using smart send
-					is_sending[i] = peers[i].is_recving( t1, current_span );
-			}
-		}
+    // Check for smart send based on t1
+    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
+        ((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
+      for( size_t i=0; i<peers.size(); ++i ) {
+        if( is_sending[i] ) // Peer is not already disabled so check using smart send
+          is_sending[i] = peers[i].is_recving( t1, current_span );
+      }
+    }
 
 		if( FIXEDPOINTS ) {
 			// This only happens during the first commit
@@ -655,9 +655,10 @@ public:
 					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
-			if( !QUIET )
-				std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
+		if( !QUIET ) {
+      if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+          std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
+      }
 		}
 	}
 
@@ -673,9 +674,10 @@ public:
 					    (((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.next_sub() > t2))); }) ) break;
 			acquire(); // To avoid infinite-loop when synchronous communication
 		}
-		if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
-			if( !QUIET )
-				std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
+		if( !QUIET ) {
+      if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+        std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
+      }
 		}
 	}
 
@@ -689,12 +691,13 @@ public:
         return (p.ss_send_status()); }) ) break;
       acquire(); // To avoid infinite-loop when synchronous communication
     }
-    if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
-      if( !QUIET )
-        std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
-    }
     for(size_t i=0; i<peers.size(); i++) {
       peers[i].set_ss_send_status(false);
+    }
+    if( !QUIET ) {
+      if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
+        std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
+      }
     }
   }
 
