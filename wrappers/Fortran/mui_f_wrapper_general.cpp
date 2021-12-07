@@ -53,12 +53,12 @@
 extern "C" {
 
 // Function to split MPI communicator and return new, local communicator
-void mui_mpi_split_by_app_f(MPI_Comm *communicator) {
+void mui_mpi_split_by_app_f(MPI_Comm **communicator) {
 	*communicator = mui::mpi_split_by_app();
 }
 
 // Function to split MPI communicator and return new, local communicator using threaded MPI init
-void mui_mpi_split_by_app_threaded_f(MPI_Comm *communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
+void mui_mpi_split_by_app_threaded_f(MPI_Comm **communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
 	*communicator = mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support);
 }
 

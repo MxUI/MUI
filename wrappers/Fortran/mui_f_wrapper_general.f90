@@ -40,54 +40,25 @@
 !
 !** File Details **
 !
-!Filename: unit_test_multi.f90
-!Created: 25 November 2021
-!Author: S. M. Longshaw (derived from original 3D unit test by S. Kudo)
-!Description: Unit test for Fortran wrapper to create and manage 1D MUI interfaces
-!             and associated sampler objects using helper function to create multiple
-!             for a single domain
+!Filename: mui_f_wrapper_general.f90
+!Created: 15 September 2021
+!Author: S. M. Longshaw (derived from original 3D wrapper by S. Kudo)
+!Description: Fortran wrapper to create and manage MUI functions without
+!             dimensionality
+!
 
-program main
+module mui_general_f
   use iso_c_binding
-  use, intrinsic:: iso_fortran_env, only: stdout=>output_unit, stdin=>input_unit, stderr=>error_unit
-  use mui_general_f
-  use mui_1d_f
-
   implicit none
+  public
 
-  !Local variables
-  character(len=1024) :: arg_domain
-  character(len=1024) :: arg_interface
-  character(len=1024) :: num_interfaces
-  character(:), allocatable :: domain
-  type(c_ptr), target :: lcl_communicator=c_null_ptr
-  type(c_ptr), target :: uniface_1d=c_null_ptr
-  type(c_ptr), target :: spatial_sampler_exact_1d=c_null_ptr
-  type(c_ptr), target :: chrono_sampler_exact_1d=c_null_ptr
-  real(c_double) :: tolerance=1e-37_c_double
-  real(c_double) :: push_point_1=0.0_c_double
-  real(c_double) :: fetch_point_1=0.0_c_double
-  real(c_double) :: commit_time=0.0_c_double
-  real(c_double) :: fetch_time=0.0_c_double
-  real(c_double) :: send_value=1.0_c_double
-  real(c_double) :: fetch_result=-1_c_double
+  interface
+    !Function to split MPI communicator and return new, local communicator
+    subroutine mui_mpi_split_by_app_f(communicator) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(out), target :: communicator(*)
+    end subroutine mui_mpi_split_by_app_f
 
-  !Read in URI from command line
-  if (command_argument_count()==3) then
-    call get_command_argument(1,arg_domain)
-    call get_command_argument(2,arg_interface)
-    call get_command_argument(3,num_interfaces)
-  else
-    print *,"Wrong number of arguments passed: [domain] [interface] [interface_count]"
-    stop 0
-  endif
+  end interface 
 
-  !Initialise MPI (returns an MPI comm world we might use in a local MPI_Init() call)
-  call mui_mpi_split_by_app_f(lcl_communicator);
-
-  !***********************
-  !* Multi 1D interfaces *
-  !***********************
-
-
-end program main
+end module mui_general_f

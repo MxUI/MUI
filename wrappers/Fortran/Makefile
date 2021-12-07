@@ -37,12 +37,16 @@ mui_f_wrapper_general.o: mui_f_wrapper_general.cpp
 mui_f_wrapper_1d.o: mui_f_wrapper_1d.cpp
 	 @echo "Generating MUI Fortran wrapper 1D object file..."
 	 ${CCX} ${CXXFLAGS} -c mui_f_wrapper_1d.cpp -o mui_f_wrapper_1d.o
-	 
+
 test:
-	 @echo "Compiling and linking MUI Fortran wrapper unit test code..."
+	 @echo "Compiling and linking MUI Fortran wrapper single interface unit test code..."
 	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 unit_test_single.f90 -o unit_test_fortran_wrapper_single -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
-	 @echo "Launching unit test code..."
+	 @echo "Launching single interface unit test code..."
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper_single domain1 interface : -np 1 ./unit_test_fortran_wrapper_single domain2 interface
+	 @echo "Compiling and linking MUI Fortran wrapper multi interface unit test code..."
+	 ${FC} ${FFLAGS} mui_f_wrapper_general.f90 mui_f_wrapper_1d.f90 unit_test_multi.f90 -o unit_test_fortran_wrapper_multi -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
+	 @echo "Launching multi interface unit test code..."
+	 ${MPI} -np 1 ./unit_test_fortran_wrapper_multi domain1 interface 2 : -np 1 ./unit_test_fortran_wrapper_multi domain2 interface 2
 
 clean:
-	 rm -rf *.o *.mod *.so *.a unit_test_fortran_wrapper_single
+	 rm -rf *.o *.mod *.so *.a unit_test_fortran_wrapper_single unit_test_fortran_wrapper_multi
