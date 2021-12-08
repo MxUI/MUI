@@ -3507,6 +3507,7 @@ void mui_fetch_points_mean_2t_f(mui_uniface_2t *uniface, const char *attr, doubl
 	*ret_points_2 = (double*) malloc(ret_pts.size() * sizeof(double));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		*ret_points_1[i] = static_cast<double>(ret_pts[i][0]);
+		*ret_points_2[i] = static_cast<double>(ret_pts[i][1]);
 	}
 	*num_points = static_cast<int>(ret_pts.size());
 }
