@@ -18,10 +18,10 @@ FFLAGS += -DUSE_RBF
 CXXFLAGS += -DUSE_RBF -I${EIGEN_PATH}
 endif
 
-default: mui_f_wrapper_general.o mui_f_wrapper_1d.o
+default: mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o
 	 @echo "Compiling and linking MUI Fortran wrapper..."
-	 ${CCX} ${CXXFLAGS} -o libmui_f_wrapper.so mui_f_wrapper_general.o mui_f_wrapper_1d.o
-	 ${AR} rcs libmui_f_wrapper.a mui_f_wrapper_general.o mui_f_wrapper_1d.o
+	 ${CCX} ${CXXFLAGS} -o libmui_f_wrapper.so mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o
+	 ${AR} rcs libmui_f_wrapper.a mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o
 	 @echo "*****************************************************************"
 	 @echo "*              Fortran wrapper usage                            *"
 	 @echo "*                                                               *"
@@ -37,10 +37,14 @@ mui_f_wrapper_general.o: mui_f_wrapper_general.cpp
 mui_f_wrapper_1d.o: mui_f_wrapper_1d.cpp
 	 @echo "Generating MUI Fortran wrapper 1D object file..."
 	 ${CCX} ${CXXFLAGS} -c mui_f_wrapper_1d.cpp -o mui_f_wrapper_1d.o
+
+mui_f_wrapper_2d.o: mui_f_wrapper_2d.cpp
+	 @echo "Generating MUI Fortran wrapper 2D object file..."
+	 ${CCX} ${CXXFLAGS} -c mui_f_wrapper_2d.cpp -o mui_f_wrapper_2d.o
 	 
 test:
 	 @echo "Compiling and linking MUI Fortran wrapper unit test code..."
-	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 unit_test_single.f90 -o unit_test_fortran_wrapper_single -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
+	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 unit_test_single.f90 -o unit_test_fortran_wrapper_single -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
 	 @echo "Launching unit test code..."
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper_single domain1 interface : -np 1 ./unit_test_fortran_wrapper_single domain2 interface
 

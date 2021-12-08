@@ -50,26 +50,25 @@ program main
   use iso_c_binding
   use, intrinsic:: iso_fortran_env, only: stdout=>output_unit, stdin=>input_unit, stderr=>error_unit
   use mui_1d_f
+  use mui_2d_f
 
   implicit none
-
-  !No need to call mui_mpi_split_by_app() function first as with the _multi example
-  !as direct uniface creation also called MPI_Init()
-
-  !***********************
-  !* Single 1D interface *
-  !***********************
 
   !Local variables
   character(len=1024) :: arg_domain
   character(len=1024) :: arg_interface
   character(:), allocatable :: uri
   type(c_ptr), target :: uniface_1d=c_null_ptr
+  type(c_ptr), target :: uniface_2d=c_null_ptr
   type(c_ptr), target :: spatial_sampler_exact_1d=c_null_ptr
+  type(c_ptr), target :: spatial_sampler_exact_2d=c_null_ptr
   type(c_ptr), target :: chrono_sampler_exact_1d=c_null_ptr
+  type(c_ptr), target :: chrono_sampler_exact_2d=c_null_ptr
   real(c_double) :: tolerance=1e-37_c_double
   real(c_double) :: push_point_1=0.0_c_double
+  real(c_double) :: push_point_2=0.0_c_double
   real(c_double) :: fetch_point_1=0.0_c_double
+  real(c_double) :: fetch_point_2=0.0_c_double
   real(c_double) :: commit_time=0.0_c_double
   real(c_double) :: fetch_time=0.0_c_double
   real(c_double) :: send_value=1.0_c_double
@@ -83,6 +82,13 @@ program main
     print *,"Wrong number of arguments passed: [domain] [interface]"
     stop 0
   endif
+
+  !No need to call mui_mpi_split_by_app() function first as with the _multi example
+  !as direct uniface creation also called MPI_Init()
+
+  !***********************
+  !* Single 1D interface *
+  !***********************
 
   uri = "mpi://" // trim(arg_domain) // "/" // trim(arg_interface) // "_1d"
 
@@ -113,11 +119,37 @@ program main
   !* Single 2D interface *
   !***********************
 
+  uri = "mpi://" // trim(arg_domain) // "/" // trim(arg_interface) // "_2d"
+
+  !Create MUI interface
+  call mui_create_uniface_2d_f(uniface_2d, trim(uri)//c_null_char)
+
+  !Push send_value=1 through the MUI interface with the tag "position" at location={push_point}={0}
+  call mui_push_2d_f(uniface_2d, "position"//c_null_char, push_point_1, push_point_2, send_value)
+
+  !Commit (transmit) the pushed value at commit_time=0
+  call mui_commit_2d_f(uniface_2d, commit_time)
+
+  !Create spatial and temporal samplers for fetch operation
+  call mui_create_sampler_exact_2d_f(spatial_sampler_exact_2d, tolerance)
+  call mui_create_chrono_sampler_exact_2d_f(chrono_sampler_exact_2d, tolerance)
+
+  !Fetch the value for tag "position" at location={fetch_point}={0} at fetch_time=0
+  call mui_fetch_exact_exact_2d_f(uniface_2d, "position"//c_null_char, fetch_point_1, fetch_point_2, fetch_time, &
+       spatial_sampler_exact_2d, chrono_sampler_exact_2d, fetch_result)
+
+  print *, "Fetched 2D interface value = ",fetch_result
+
+  !Destroy created 2D MUI objects
+  call mui_destroy_sampler_exact_2d_f(spatial_sampler_exact_2d)
+  call mui_destroy_chrono_sampler_exact_2d_f(chrono_sampler_exact_2d)
+
   !***********************
   !* Single 3D interface *
   !***********************
 
   !Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
   call mui_destroy_uniface_1d_f(uniface_1d)
+  call mui_destroy_uniface_1d_f(uniface_2d)
 
 end program main
