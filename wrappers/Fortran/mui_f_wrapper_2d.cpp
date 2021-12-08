@@ -376,17 +376,17 @@ void mui_create_sampler_moving_average_2fx_f(mui_sampler_moving_average_2fx **re
 	*ret = new mui_sampler_moving_average_2fx(bbox);
 }
 
-void mui_create_sampler_moving_average_2d_f(mui_sampler_moving_average_2d **ret, double* bbox_1, float* bbox_2) {
+void mui_create_sampler_moving_average_2d_f(mui_sampler_moving_average_2d **ret, double* bbox_1, double* bbox_2) {
 	mui::point2d bbox(*bbox_1, *bbox_2);
 	*ret = new mui_sampler_moving_average_2d(bbox);
 }
 
-void mui_create_sampler_moving_average_2dx_f(mui_sampler_moving_average_2dx** ret, double* bbox_1, float* bbox_2) {
+void mui_create_sampler_moving_average_2dx_f(mui_sampler_moving_average_2dx** ret, double* bbox_1, double* bbox_2) {
 	mui::point2dx bbox(*bbox_1, *bbox_2);
 	*ret = new mui_sampler_moving_average_2dx(bbox);
 }
 
-void mui_create_sampler_moving_average_2t_f(mui_sampler_moving_average_2t** ret, double* bbox_1, float* bbox_2) {
+void mui_create_sampler_moving_average_2t_f(mui_sampler_moving_average_2t** ret, double* bbox_1, double* bbox_2) {
 	mui::mui_f_wrapper_2D::point_type bbox(*bbox_1, *bbox_2);
 	*ret = new mui_sampler_moving_average_2t(bbox);
 }
