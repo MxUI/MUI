@@ -286,7 +286,7 @@ mui_uniface_2fx** mui_create_uniface_multi_2fx( const char *domain, const char *
 	return unifaces;
 }
 
-// Set of 1D interfaces with float=double and int=int32
+// Set of 2D interfaces with float=double and int=int32
 mui_uniface_2d** mui_create_uniface_multi_2d( const char *domain, const char **interfaces, int interface_count ){
 	std::vector<std::string> interface_names;
 
@@ -304,7 +304,7 @@ mui_uniface_2d** mui_create_uniface_multi_2d( const char *domain, const char **i
 	return unifaces;
 }
 
-// Set of 1D interfaces with float=double and int=int64
+// Set of 2D interfaces with float=double and int=int64
 mui_uniface_2dx** mui_create_uniface_multi_2dx( const char *domain, const char **interfaces, int interface_count ){
 	std::vector<std::string> interface_names;
 
@@ -322,7 +322,7 @@ mui_uniface_2dx** mui_create_uniface_multi_2dx( const char *domain, const char *
 	return unifaces;
 }
 
-// Set of 1D interfaces using config from config_c_wrapper.h
+// Set of 2D interfaces using config from config_c_wrapper.h
 mui_uniface_2t** mui_create_uniface_multi_2t( const char *domain, const char **interfaces, int interface_count ){
 	std::vector<std::string> interface_names;
 
