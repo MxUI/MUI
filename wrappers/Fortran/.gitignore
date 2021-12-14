@@ -1,2 +1,6 @@
 unit_test.x
 *.o
+*.a
+*.so
+*.mod
+unit_test_fortran_wrapper_single
