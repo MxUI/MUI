@@ -50,6 +50,7 @@
 program main
   use iso_c_binding
   use, intrinsic:: iso_fortran_env, only: stdout=>output_unit, stdin=>input_unit, stderr=>error_unit
+  use mui_general_f
   use mui_1d_f
   use mui_2d_f
   use mui_3d_f
@@ -59,8 +60,9 @@ program main
   !Local variables
   character(len=1024) :: arg_domain
   character(len=1024) :: arg_interface
+  character(len=1024) :: num_interfaces
   character(:), allocatable :: domain
-  integer(c_int) :: num_interfaces=0
+  type(c_ptr), target :: lcl_communicator=c_null_ptr
   type(c_ptr), target :: uniface_1d=c_null_ptr
   type(c_ptr), target :: uniface_2d=c_null_ptr
   type(c_ptr), target :: uniface_3d=c_null_ptr
@@ -97,12 +99,12 @@ program main
   endif
 
   !Initialise MPI (returns an MPI comm world we might use in a local MPI_Init() call)
-  mui_mpi_split_by_app_f();
+  call mui_mpi_split_by_app_f(lcl_communicator);
 
   !***********************
   !* Multi 1D interfaces *
   !***********************
-
+  
   domain = trim(arg_domain) // "_1d"
 
   !Create MUI interface

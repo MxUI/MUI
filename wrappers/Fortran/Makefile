@@ -50,7 +50,12 @@ test:
 	 @echo "Compiling and linking MUI Fortran wrapper unit test code..."
 	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 mui_f_wrapper_3d.f90 unit_test_single.f90 -o unit_test_fortran_wrapper_single -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
 	 @echo "Launching unit test code..."
+
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper_single domain1 interface : -np 1 ./unit_test_fortran_wrapper_single domain2 interface
+	 @echo "Compiling and linking MUI Fortran wrapper multi interface unit test code..."
+	 ${FC} ${FFLAGS} mui_f_wrapper_general.f90 mui_f_wrapper_1d.f90 unit_test_multi.f90 -o unit_test_fortran_wrapper_multi -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
+	 @echo "Launching multi interface unit test code..."
+	 ${MPI} -np 1 ./unit_test_fortran_wrapper_multi domain1 interface 2 : -np 1 ./unit_test_fortran_wrapper_multi domain2 interface 2
 
 clean:
-	 rm -rf *.o *.mod *.so *.a unit_test_fortran_wrapper_single
+	 rm -rf *.o *.mod *.so *.a unit_test_fortran_wrapper_single unit_test_fortran_wrapper_multi
