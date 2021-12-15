@@ -2,11 +2,11 @@ COMPILER ?= GNU
 CC = mpic++
 CFLAGS = -Wall -std=c++11 -O3 -Wno-unused-local-typedefs -Wno-comment -Wno-reorder
 LDFLAGS = -shared
-USE_RBF = True
+USE_RBF ?= 0
+INC_EIGEN =
 include $(COMPILER).make
 INC_MPI4PY = -I$(shell python3 -c "import mpi4py;print(mpi4py.get_include())")
 INC_PYBIND = $(shell python3 -m pybind11 --includes)
-INC_TPARTY =
 CC_VERSION_STR = '"$(shell $(CC) --version | head -n 1)"'
 MPI_VERSION_STR = '"$(shell bash mpi_version.sh)"'
 CC_CONFIG_STR = '"$(shell $(CC) -show) $(CFLAGS) $(INC_MPI4PY) $(INC_PYBIND)"'
@@ -17,7 +17,7 @@ else ifeq ($(PYTHON_INT_SIZE),32)
 	CFLAGS_D = -DPYTHON_INT_32
 endif
 CFLAGS_D += -DCOMPILER_VERSION_STR=$(CC_VERSION_STR) -DMPI_VERSION_STR=$(MPI_VERSION_STR) -DCOMPILER_CONFIG_STR=$(CC_CONFIG_STR) -DPYTHON_BINDINGS
-ifdef USE_RBF
+ifeq ($(USE_RBF),1)
 	CFLAGS += -fpermissive
 	CFLAGS_D +=  -DUSE_RBF
 endif
@@ -35,7 +35,11 @@ $(TARGET_LIB): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 %.o: %.cpp
+ifeq ($(USE_RBF),1)
 	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) -I$(INC_EIGEN) $< -o $@
+else
+	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) $< -o $@
+endif
 
 .PHONY: package meta-package clean-package clean-mod clean-all install pip-install clean-obj
 
