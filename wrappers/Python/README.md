@@ -1,4 +1,4 @@
-# Information about the bindings
+# Information about the MUI Python wrapper
 ### Notes
 - Support for `int32`, `int64`, `float`, `double` and `std::string`  is included for  `push()` and `fetch()`   *-like* functions. `push_many()` and `fetch_many()` do not work with `std::string` as they use `numpy` arrays, which  do not play well with strings at the `pybind11` level.
 
@@ -48,3 +48,14 @@ make pip-install # To install with pip the created package
 # Contact
 
 Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find any issue or have any enquiry.
+
+# ToDo List
+
+- Include interface send/receive disable in the bindings.
+- Include multi-time functions in the bindings.
+- Include fucntions to retrieve all points or values in the bindings. 
+- Include boolean OR operation of shapes in the bindings.
+- Carefully set the types allowed for each spatial and chrono sampler.
+- Write exception hierarchy to replace generic exceptions.
+- Add 'collide' function to library.
+

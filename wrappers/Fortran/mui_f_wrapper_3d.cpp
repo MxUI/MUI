@@ -2,7 +2,7 @@
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
 * Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
-*                    S. M. Longshaw                                          *
+*                    S. M. Longshaw, W. Liu                                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -222,76 +222,6 @@ void mui_create_uniface_3dx_f(mui_uniface_3dx **ret, const char *URI) {
 // 3d interface using config from config_f_wrapper.h
 void mui_create_uniface_3t_f(mui_uniface_3t **ret, const char *URI) {
 	*ret = new mui_uniface_3t(URI);
-}
-
-// Set of 3d interfaces with float=single and int=int32
-void mui_create_uniface_multi_3f_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_3f ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_3f>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 3d interfaces with float=single and int=int64
-void mui_create_uniface_multi_3fx_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_3fx ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_3fx>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 3d interfaces with float=double and int=int32
-void mui_create_uniface_multi_3d_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_3d ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_3d>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 3d interfaces with float=double and int=int64
-void mui_create_uniface_multi_3dx_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_3dx ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_3dx>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 3d interfaces using config from config_f_wrapper.h
-void mui_create_uniface_multi_3t_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_3t ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::mui_f_wrapper_3D>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
 }
 
 /****************************************
@@ -4413,196 +4343,196 @@ void mui_is_ready_3t_pair_f(mui_uniface_3t *uniface, const char *attr, double *t
 
 // Send span announce using 3d box geometry
 void mui_announce_send_span_3f_box_f(mui_uniface_3f *uniface, float *box_1_1, float *box_1_2, float *box_1_3, float *box_2_1, float *box_2_2, float *box_2_3, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point3f point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3f point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3f bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3fx_box_f(mui_uniface_3fx *uniface, float *box_1_1, float *box_1_2, float *box_1_3, float *box_2_1, float *box_2_2, float *box_2_3, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point3fx point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3fx point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3fx bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3d_box_f(mui_uniface_3d *uniface, double *box_1_1, double *box_1_2, double *box_1_3, double *box_2_1, double *box_2_2, double *box_2_3, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point3d point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3d point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3d bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3dx_box_f(mui_uniface_3dx *uniface, double *box_1_1, double *box_1_2, double *box_1_3, double *box_2_1, double *box_2_2, double *box_2_3, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point3dx point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3dx point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3dx bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3t_box_f(mui_uniface_3t *uniface, double *box_1_1, double *box_1_2, double *box_1_3, double *box_2_1, double *box_2_2, double *box_2_3, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::mui_f_wrapper_3D::point_type point_1(static_cast<mui::mui_f_wrapper_3D::REAL>(*box_1_1,*box_1_2,*box_1_3));
 	mui::mui_f_wrapper_3D::point_type point_2(static_cast<mui::mui_f_wrapper_3D::REAL>(*box_2_1,*box_2_2,*box_2_3));
 	mui::geometry::box<mui::mui_f_wrapper_3D> bound_box(point_1, point_2);
 	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_3D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_box);
+			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_box, static_cast<bool>(*synchronised));
 }
 
 // Send span announce using 3d sphere geometry
 void mui_announce_send_span_3f_sphere_f(mui_uniface_3f *uniface, float *centre_1, float *centre_2, float *centre_3, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere3f bound_sphere(mui::point3f(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3fx_sphere_f(mui_uniface_3fx *uniface, float *centre_1, float *centre_2, float *centre_3, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere3fx bound_sphere(mui::point3fx(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3d_sphere_f(mui_uniface_3d *uniface, double *centre_1, double *centre_2, double *centre_3, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere3d bound_sphere(mui::point3d(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3dx_sphere_f(mui_uniface_3dx *uniface, double *centre_1, double *centre_2, double *centre_3, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere3dx bound_sphere(mui::point3dx(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_3t_sphere_f(mui_uniface_3t *uniface, double *centre_1, double *centre_2, double *centre_3, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere<mui::mui_f_wrapper_3D> bound_sphere(
 			mui::mui_f_wrapper_3D::point_type(static_cast<mui::mui_f_wrapper_3D::REAL>(*centre_1,*centre_2,*centre_3)),
 			static_cast<mui::mui_f_wrapper_3D::REAL>(*radius));
 	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_3D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_sphere);
+			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_sphere, static_cast<bool>(*synchronised));
 }
 
 // Receive span announce using 3d box geometry
 void mui_announce_recv_span_3f_box_f(mui_uniface_3f *uniface, float *box_1_1, float *box_1_2, float *box_1_3, float *box_2_1, float *box_2_2, float *box_2_3, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point3f point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3f point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3f bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3fx_box_f(mui_uniface_3fx *uniface, float *box_1_1, float *box_1_2, float *box_1_3, float *box_2_1, float *box_2_2, float *box_2_3, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point3fx point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3fx point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3fx bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3d_box_f(mui_uniface_3d *uniface, double *box_1_1, double *box_1_2, double *box_1_3, double *box_2_1, double *box_2_2, double *box_2_3, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point3d point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3d point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3d bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3dx_box_f(mui_uniface_3dx *uniface, double *box_1_1, double *box_1_2, double *box_1_3, double *box_2_1, double *box_2_2, double *box_2_3, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point3dx point_1(*box_1_1,*box_1_2,*box_1_3);
 	mui::point3dx point_2(*box_2_1,*box_2_2,*box_2_3);
 	mui::geometry::box3dx bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3t_box_f(mui_uniface_3t *uniface, double *box_1_1, double *box_1_2, double *box_1_3, double *box_2_1, double *box_2_2, double *box_2_3, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::mui_f_wrapper_3D::point_type point_1(static_cast<mui::mui_f_wrapper_3D::REAL>(*box_1_1,*box_1_2,*box_1_3));
 	mui::mui_f_wrapper_3D::point_type point_2(static_cast<mui::mui_f_wrapper_3D::REAL>(*box_2_1,*box_2_2,*box_2_3));
 	mui::geometry::box<mui::mui_f_wrapper_3D> bound_box(point_1, point_2);
 	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_3D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_box);
+			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_box, static_cast<bool>(*synchronised));
 }
 
 // Receive span announce using 3d sphere geometry
 void mui_announce_recv_span_3f_sphere_f(mui_uniface_3f *uniface, float *centre_1, float *centre_2, float *centre_3, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere3f bound_sphere(mui::point3f(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3fx_sphere_f(mui_uniface_3fx *uniface, float *centre_1, float *centre_2, float *centre_3, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere3fx bound_sphere(mui::point3fx(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3d_sphere_f(mui_uniface_3d *uniface, double *centre_1, double *centre_2, double *centre_3, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere3d bound_sphere(mui::point3d(*centre_1,*centre_2,*centre_3), *radius);
 	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
 }
 
 void mui_announce_recv_span_3dx_sphere_f(mui_uniface_3dx *uniface, double *centre_1, double *centre_2, double *centre_3, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere3dx bound_sphere(mui::point3dx(*centre_1,*centre_2,*centre_3), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_3t_sphere_f(mui_uniface_3t *uniface, double *centre_1, double *centre_2, double *centre_3, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere<mui::mui_f_wrapper_3D> bound_sphere(
 			mui::mui_f_wrapper_3D::point_type(static_cast<mui::mui_f_wrapper_3D::REAL>(*centre_1,*centre_2,*centre_3)),
 			static_cast<mui::mui_f_wrapper_3D::REAL>(*radius));
 	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_3D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_sphere);
+			static_cast<mui::mui_f_wrapper_3D::time_type>(*t_timeout), bound_sphere, static_cast<bool>(*synchronised));
 }
 
 // Send disable announce (local call per MPI rank)
-void mui_announce_send_disable_3f_f(mui_uniface_3f *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_3f_f(mui_uniface_3f *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_3fx_f(mui_uniface_3fx *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_3fx_f(mui_uniface_3fx *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_3d_f(mui_uniface_3d *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_3d_f(mui_uniface_3d *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_3dx_f(mui_uniface_3dx *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_3dx_f(mui_uniface_3dx *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_3t_f(mui_uniface_3t *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_3t_f(mui_uniface_3t *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
 // Receive disable announce (local call per MPI rank)
-void mui_announce_recv_disable_3f_f(mui_uniface_3f *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_3f_f(mui_uniface_3f *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_3fx_f(mui_uniface_3fx *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_3fx_f(mui_uniface_3fx *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_3d_f(mui_uniface_3d *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_3d_f(mui_uniface_3d *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_3dx_f(mui_uniface_3dx *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_3dx_f(mui_uniface_3dx *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_3t_f(mui_uniface_3t *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_3t_f(mui_uniface_3t *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
 /******************************************

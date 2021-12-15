@@ -4288,196 +4288,196 @@ int mui_is_ready_1t_pair(mui_uniface_1t *uniface, const char *attr, double t_1, 
 
 // Send span announce using 1D box geometry
 void mui_announce_send_span_1f_box(mui_uniface_1f *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::point1f point_1(box_1_1);
 	mui::point1f point_2(box_2_1);
 	mui::geometry::box1f bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1fx_box(mui_uniface_1fx *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::point1fx point_1(box_1_1);
 	mui::point1fx point_2(box_2_1);
 	mui::geometry::box1fx bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1d_box(mui_uniface_1d *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::point1d point_1(box_1_1);
 	mui::point1d point_2(box_2_1);
 	mui::geometry::box1d bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1dx_box(mui_uniface_1dx *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::point1dx point_1(box_1_1);
 	mui::point1dx point_2(box_2_1);
 	mui::geometry::box1dx bound_box(point_1, point_2);
-	uniface->announce_send_span(t_start, t_timeout, bound_box);
+	uniface->announce_send_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1t_box(mui_uniface_1t *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::mui_c_wrapper_1D::point_type point_1(static_cast<mui::mui_c_wrapper_1D::REAL>(box_1_1));
 	mui::mui_c_wrapper_1D::point_type point_2(static_cast<mui::mui_c_wrapper_1D::REAL>(box_2_1));
 	mui::geometry::box<mui::mui_c_wrapper_1D> bound_box(point_1, point_2);
 	uniface->announce_send_span(static_cast<mui::mui_c_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_box);
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_box, static_cast<bool>(synchronised));
 }
 
 // Send span announce using 1D sphere geometry
 void mui_announce_send_span_1f_sphere(mui_uniface_1f *uniface, mui_point_1f centre, float radius, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::geometry::sphere1f bound_sphere(mui::point1f(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_send_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1fx_sphere(mui_uniface_1fx *uniface, mui_point_1fx centre, float radius, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::geometry::sphere1fx bound_sphere(mui::point1fx(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_send_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1d_sphere(mui_uniface_1d *uniface, mui_point_1d centre, double radius, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::geometry::sphere1d bound_sphere(mui::point1d(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_send_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1dx_sphere(mui_uniface_1dx *uniface, mui_point_1dx centre, double radius, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::geometry::sphere1dx bound_sphere(mui::point1dx(centre.point_1), radius);
-	uniface->announce_send_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_send_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_send_span_1t_sphere(mui_uniface_1t *uniface, mui_point_1t centre, double radius, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::geometry::sphere<mui::mui_c_wrapper_1D> bound_sphere(
 			mui::mui_c_wrapper_1D::point_type(static_cast<mui::mui_c_wrapper_1D::REAL>(centre.point_1)),
 			static_cast<mui::mui_c_wrapper_1D::REAL>(radius));
 	uniface->announce_send_span(static_cast<mui::mui_c_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_sphere);
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_sphere, static_cast<bool>(synchronised));
 }
 
 // Receive span announce using 1D box geometry
 void mui_announce_recv_span_1f_box(mui_uniface_1f *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::point1f point_1(box_1_1);
 	mui::point1f point_2(box_2_1);
 	mui::geometry::box1f bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1fx_box(mui_uniface_1fx *uniface, float box_1_1, float box_2_1, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::point1fx point_1(box_1_1);
 	mui::point1fx point_2(box_2_1);
 	mui::geometry::box1fx bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1d_box(mui_uniface_1d *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::point1d point_1(box_1_1);
 	mui::point1d point_2(box_2_1);
 	mui::geometry::box1d bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1dx_box(mui_uniface_1dx *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::point1dx point_1(box_1_1);
 	mui::point1dx point_2(box_2_1);
 	mui::geometry::box1dx bound_box(point_1, point_2);
-	uniface->announce_recv_span(t_start, t_timeout, bound_box);
+	uniface->announce_recv_span(t_start, t_timeout, bound_box, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1t_box(mui_uniface_1t *uniface, double box_1_1, double box_2_1, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::mui_c_wrapper_1D::point_type point_1(static_cast<mui::mui_c_wrapper_1D::REAL>(box_1_1));
 	mui::mui_c_wrapper_1D::point_type point_2(static_cast<mui::mui_c_wrapper_1D::REAL>(box_2_1));
 	mui::geometry::box<mui::mui_c_wrapper_1D> bound_box(point_1, point_2);
 	uniface->announce_recv_span(static_cast<mui::mui_c_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_box);
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_box, static_cast<bool>(synchronised));
 }
 
 // Receive span announce using 1D sphere geometry
 void mui_announce_recv_span_1f_sphere(mui_uniface_1f *uniface, mui_point_1f centre, float radius, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::geometry::sphere1f bound_sphere(mui::point1f(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_recv_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1fx_sphere(mui_uniface_1fx *uniface, mui_point_1fx centre, float radius, float t_start,
-		float t_timeout) {
+		float t_timeout, int synchronised) {
 	mui::geometry::sphere1fx bound_sphere(mui::point1fx(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_recv_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1d_sphere(mui_uniface_1d *uniface, mui_point_1d centre, double radius, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::geometry::sphere1d bound_sphere(mui::point1d(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_recv_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1dx_sphere(mui_uniface_1dx *uniface, mui_point_1dx centre, double radius, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::geometry::sphere1dx bound_sphere(mui::point1dx(centre.point_1), radius);
-	uniface->announce_recv_span(t_start, t_timeout, bound_sphere);
+	uniface->announce_recv_span(t_start, t_timeout, bound_sphere, static_cast<bool>(synchronised));
 }
 
 void mui_announce_recv_span_1t_sphere(mui_uniface_1t *uniface, mui_point_1t centre, double radius, double t_start,
-		double t_timeout) {
+		double t_timeout, int synchronised) {
 	mui::geometry::sphere<mui::mui_c_wrapper_1D> bound_sphere(
 			mui::mui_c_wrapper_1D::point_type(static_cast<mui::mui_c_wrapper_1D::REAL>(centre.point_1)),
 			static_cast<mui::mui_c_wrapper_1D::REAL>(radius));
 	uniface->announce_recv_span(static_cast<mui::mui_c_wrapper_1D::time_type>(t_start),
-			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_sphere);
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t_timeout), bound_sphere, static_cast<bool>(synchronised));
 }
 
 // Send disable announce (local call per MPI rank)
-void mui_announce_send_disable_1f(mui_uniface_1f *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_1f(mui_uniface_1f *uniface, int synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_send_disable_1fx(mui_uniface_1fx *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_1fx(mui_uniface_1fx *uniface, int synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_send_disable_1d(mui_uniface_1d *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_1d(mui_uniface_1d *uniface, int synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_send_disable_1dx(mui_uniface_1dx *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_1dx(mui_uniface_1dx *uniface, int synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_send_disable_1t(mui_uniface_1t *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_1t(mui_uniface_1t *uniface, int synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(synchronised));
 }
 
 // Receive disable announce (local call per MPI rank)
-void mui_announce_recv_disable_1f(mui_uniface_1f *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_1f(mui_uniface_1f *uniface, int synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_recv_disable_1fx(mui_uniface_1fx *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_1fx(mui_uniface_1fx *uniface, int synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_recv_disable_1d(mui_uniface_1d *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_1d(mui_uniface_1d *uniface, int synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_recv_disable_1dx(mui_uniface_1dx *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_1dx(mui_uniface_1dx *uniface, int synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(synchronised));
 }
 
-void mui_announce_recv_disable_1t(mui_uniface_1t *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_1t(mui_uniface_1t *uniface, int synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(synchronised));
 }
 
 /******************************************

@@ -22,12 +22,6 @@ default: mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wra
 	 @echo "Compiling and linking MUI C wrapper..."
 	 ${CCX} ${CFLAGS} -shared -o libmui_c_wrapper.so mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 ${AR} rcs libmui_c_wrapper.a mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
-	 @echo "************************************************************"
-	 @echo "*                    C wrapper usage                       *"
-	 @echo "*                                                          *"
-	 @echo "* Step 1) include mui_c_wapper_[1d/2d/3d].h in C source    *"
-	 @echo "* Step 2) Compile with a C compiler & link against library *"
-	 @echo "************************************************************"
 
 mui_c_wrapper_general.o: mui_c_wrapper_general.cpp
 	 @echo "Generating C-wrapper general functions object file..."

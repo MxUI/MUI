@@ -1,6 +1,0 @@
-TODO LIST:
-
-- Include boolean OR operation of shapes in the bindings.
-- Carefully set the types allowed for each spatial and chrono sampler.
-- Write exception hierarchy to replace generic exceptions.
-- Add 'collide' function to library.

@@ -2,7 +2,7 @@
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
 * Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
-*                    S. M. Longshaw                                          *
+*                    S. M. Longshaw, W. Liu                                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -222,76 +222,6 @@ void mui_create_uniface_2dx_f(mui_uniface_2dx **ret, const char *URI) {
 // 2d interface using config from config_f_wrapper.h
 void mui_create_uniface_2t_f(mui_uniface_2t **ret, const char *URI) {
 	*ret = new mui_uniface_2t(URI);
-}
-
-// Set of 2d interfaces with float=single and int=int32
-void mui_create_uniface_multi_2f_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_2f ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_2f>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 2d interfaces with float=single and int=int64
-void mui_create_uniface_multi_2fx_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_2fx ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_2fx>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 2d interfaces with float=double and int=int32
-void mui_create_uniface_multi_2d_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_2d ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_2d>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 2d interfaces with float=double and int=int64
-void mui_create_uniface_multi_2dx_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_2dx ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::config_2dx>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
-}
-
-// Set of 2d interfaces using config from config_f_wrapper.h
-void mui_create_uniface_multi_2t_f( const char *domain, const char **interfaces, int *interface_count, mui_uniface_2t ***unifaces ){
-	std::vector<std::string> interface_names;
-
-	for(size_t i=0; i<(*interface_count); i++)
-		interface_names.push_back(std::string(interfaces[i]));
-
-	auto created_unifaces = mui::create_uniface<mui::mui_f_wrapper_2D>(domain, interface_names);
-
-	for(size_t i=0; i<created_unifaces.size(); i++) {
-		*unifaces[i] = created_unifaces[i].release();
-	}
 }
 
 /****************************************
@@ -4328,23 +4258,23 @@ void mui_is_ready_2t_pair_f(mui_uniface_2t *uniface, const char *attr, double *t
 
 // Send span announce using 2d box geometry
 void mui_announce_send_span_2f_box_f(mui_uniface_2f *uniface, float *box_1_1, float *box_1_2, float *box_2_1, float *box_2_2, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point2f point_1(*box_1_1,*box_1_2);
 	mui::point2f point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2f bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2fx_box_f(mui_uniface_2fx *uniface, float *box_1_1, float *box_1_2, float *box_2_1, float *box_2_2, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point2fx point_1(*box_1_1,*box_1_2);
 	mui::point2fx point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2fx bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2d_box_f(mui_uniface_2d *uniface, double *box_1_1, double *box_1_2, double *box_2_1, double *box_2_2, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point2d point_1(*box_1_1,*box_1_2);
 	mui::point2d point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2d bound_box(point_1, point_2);
@@ -4352,172 +4282,172 @@ void mui_announce_send_span_2d_box_f(mui_uniface_2d *uniface, double *box_1_1, d
 }
 
 void mui_announce_send_span_2dx_box_f(mui_uniface_2dx *uniface, double *box_1_1, double *box_1_2, double *box_2_1, double *box_2_2, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point2dx point_1(*box_1_1,*box_1_2);
 	mui::point2dx point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2dx bound_box(point_1, point_2);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2t_box_f(mui_uniface_2t *uniface, double *box_1_1, double *box_1_2, double *box_2_1, double *box_2_2, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::mui_f_wrapper_2D::point_type point_1(static_cast<mui::mui_f_wrapper_2D::REAL>(*box_1_1,*box_1_2));
 	mui::mui_f_wrapper_2D::point_type point_2(static_cast<mui::mui_f_wrapper_2D::REAL>(*box_2_1,*box_2_2));
 	mui::geometry::box<mui::mui_f_wrapper_2D> bound_box(point_1, point_2);
 	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_2D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_box);
+			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_box, static_cast<bool>(*synchronised));
 }
 
 // Send span announce using 2d sphere geometry
 void mui_announce_send_span_2f_sphere_f(mui_uniface_2f *uniface, float *centre_1, float *centre_2, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere2f bound_sphere(mui::point2f(*centre_1,*centre_2), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2fx_sphere_f(mui_uniface_2fx *uniface, float *centre_1, float *centre_2, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere2fx bound_sphere(mui::point2fx(*centre_1,*centre_2), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2d_sphere_f(mui_uniface_2d *uniface, double *centre_1, double *centre_2, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere2d bound_sphere(mui::point2d(*centre_1,*centre_2), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2dx_sphere_f(mui_uniface_2dx *uniface, double *centre_1, double *centre_2, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere2dx bound_sphere(mui::point2dx(*centre_1,*centre_2), *radius);
-	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_send_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_send_span_2t_sphere_f(mui_uniface_2t *uniface, double *centre_1, double *centre_2, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere<mui::mui_f_wrapper_2D> bound_sphere(
 			mui::mui_f_wrapper_2D::point_type(static_cast<mui::mui_f_wrapper_2D::REAL>(*centre_1,*centre_2)),
 			static_cast<mui::mui_f_wrapper_2D::REAL>(*radius));
 	uniface->announce_send_span(static_cast<mui::mui_f_wrapper_2D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_sphere);
+			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_sphere, static_cast<bool>(*synchronised));
 }
 
 // Receive span announce using 2d box geometry
 void mui_announce_recv_span_2f_box_f(mui_uniface_2f *uniface, float *box_1_1, float *box_1_2, float *box_2_1, float *box_2_2, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point2f point_1(*box_1_1,*box_1_2);
 	mui::point2f point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2f bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2fx_box_f(mui_uniface_2fx *uniface, float *box_1_1, float *box_1_2, float *box_2_1, float *box_2_2, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::point2fx point_1(*box_1_1,*box_1_2);
 	mui::point2fx point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2fx bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2d_box_f(mui_uniface_2d *uniface, double *box_1_1, double *box_1_2, double *box_2_1, double *box_2_2, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point2d point_1(*box_1_1,*box_1_2);
 	mui::point2d point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2d bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2dx_box_f(mui_uniface_2dx *uniface, double *box_1_1, double *box_1_2, double *box_2_1, double *box_2_2, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::point2dx point_1(*box_1_1,*box_1_2);
 	mui::point2dx point_2(*box_2_1,*box_2_2);
 	mui::geometry::box2dx bound_box(point_1, point_2);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_box);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_box, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2t_box_f(mui_uniface_2t *uniface, double *box_1_1, double *box_1_2, double *box_2_1, double *box_2_2, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::mui_f_wrapper_2D::point_type point_1(static_cast<mui::mui_f_wrapper_2D::REAL>(*box_1_1,*box_1_2));
 	mui::mui_f_wrapper_2D::point_type point_2(static_cast<mui::mui_f_wrapper_2D::REAL>(*box_2_1,*box_2_2));
 	mui::geometry::box<mui::mui_f_wrapper_2D> bound_box(point_1, point_2);
 	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_2D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_box);
+			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_box, static_cast<bool>(*synchronised));
 }
 
 // Receive span announce using 2d sphere geometry
 void mui_announce_recv_span_2f_sphere_f(mui_uniface_2f *uniface, float *centre_1, float *centre_2, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere2f bound_sphere(mui::point2f(*centre_1,*centre_2), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2fx_sphere_f(mui_uniface_2fx *uniface, float *centre_1, float *centre_2, float *radius, float *t_start,
-		float *t_timeout) {
+		float *t_timeout, int *synchronised) {
 	mui::geometry::sphere2fx bound_sphere(mui::point2fx(*centre_1,*centre_2), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2d_sphere_f(mui_uniface_2d *uniface, double *centre_1, double *centre_2, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere2d bound_sphere(mui::point2d(*centre_1,*centre_2), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2dx_sphere_f(mui_uniface_2dx *uniface, double *centre_1, double *centre_2, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere2dx bound_sphere(mui::point2dx(*centre_1,*centre_2), *radius);
-	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere);
+	uniface->announce_recv_span(*t_start, *t_timeout, bound_sphere, static_cast<bool>(*synchronised));
 }
 
 void mui_announce_recv_span_2t_sphere_f(mui_uniface_2t *uniface, double *centre_1, double *centre_2, double *radius, double *t_start,
-		double *t_timeout) {
+		double *t_timeout, int *synchronised) {
 	mui::geometry::sphere<mui::mui_f_wrapper_2D> bound_sphere(
 			mui::mui_f_wrapper_2D::point_type(static_cast<mui::mui_f_wrapper_2D::REAL>(*centre_1,*centre_2)),
 			static_cast<mui::mui_f_wrapper_2D::REAL>(*radius));
 	uniface->announce_recv_span(static_cast<mui::mui_f_wrapper_2D::time_type>(*t_start),
-			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_sphere);
+			static_cast<mui::mui_f_wrapper_2D::time_type>(*t_timeout), bound_sphere, static_cast<bool>(*synchronised));
 }
 
 // Send disable announce (local call per MPI rank)
-void mui_announce_send_disable_2f_f(mui_uniface_2f *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_2f_f(mui_uniface_2f *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_2fx_f(mui_uniface_2fx *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_2fx_f(mui_uniface_2fx *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_2d_f(mui_uniface_2d *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_2d_f(mui_uniface_2d *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_2dx_f(mui_uniface_2dx *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_2dx_f(mui_uniface_2dx *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_send_disable_2t_f(mui_uniface_2t *uniface) {
-	uniface->announce_send_disable();
+void mui_announce_send_disable_2t_f(mui_uniface_2t *uniface, int *synchronised) {
+	uniface->announce_send_disable(static_cast<bool>(*synchronised));
 }
 
 // Receive disable announce (local call per MPI rank)
-void mui_announce_recv_disable_2f_f(mui_uniface_2f *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_2f_f(mui_uniface_2f *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_2fx_f(mui_uniface_2fx *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_2fx_f(mui_uniface_2fx *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_2d_f(mui_uniface_2d *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_2d_f(mui_uniface_2d *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_2dx_f(mui_uniface_2dx *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_2dx_f(mui_uniface_2dx *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
-void mui_announce_recv_disable_2t_f(mui_uniface_2t *uniface) {
-	uniface->announce_recv_disable();
+void mui_announce_recv_disable_2t_f(mui_uniface_2t *uniface, int *synchronised) {
+	uniface->announce_recv_disable(static_cast<bool>(*synchronised));
 }
 
 /******************************************

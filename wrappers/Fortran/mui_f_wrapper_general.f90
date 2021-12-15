@@ -2,7 +2,7 @@
 !* Multiscale Universal Interface Code Coupling Library                       *
 !*                                                                            *
 !* Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
-!*                    S. M. Longshaw                                          *
+!*                    S. M. Longshaw, W. Liu                                  *
 !*                                                                            *
 !* This software is jointly licensed under the Apache License, Version 2.0    *
 !* and the GNU General Public License version 3, you may use it according     *
@@ -58,6 +58,15 @@ module mui_general_f
       import :: c_ptr
       type(c_ptr), intent(out), target :: communicator(*)
     end subroutine mui_mpi_split_by_app_f
+
+    !Function to split MPI communicator and return new, local communicator
+    subroutine mui_mpi_split_by_app_threaded_f(communicator,argc,argv,threadType,thread_support) bind(C)
+      import :: c_ptr,c_char,c_int
+      type(c_ptr), intent(out), target :: thread_support(*)
+      type(c_ptr), intent(out), target :: communicator(*)
+      integer(kind=c_int), intent(in) :: argc, threadType
+      character(kind=c_char), intent(in), dimension(argc) :: argv(*)
+    end subroutine mui_mpi_split_by_app_threaded_f
 
   end interface 
 

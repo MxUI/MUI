@@ -405,9 +405,9 @@ DECLARE_FUNC_HEADER(uniface) {
     .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
     .def("forget", (void (Tclass::*)(Ttime, Ttime, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
-    .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>))\
+    .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_send_span,"") 
-    .def("announce_recv_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>))\
+    .def("announce_recv_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_recv_span,"")
     DEFINE_MUI_UNIFACE_PUSH()
     DEFINE_MUI_UNIFACE_FETCH_1ARG()

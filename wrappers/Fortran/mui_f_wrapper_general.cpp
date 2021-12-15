@@ -2,7 +2,7 @@
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
 * Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
-*                    S. M. Longshaw                                          *
+*                    S. M. Longshaw, W. Liu                                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -54,12 +54,12 @@ extern "C" {
 
 // Function to split MPI communicator and return new, local communicator
 void mui_mpi_split_by_app_f(MPI_Comm **communicator) {
-	*communicator = mui::mpi_split_by_app();
+	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app());
 }
 
 // Function to split MPI communicator and return new, local communicator using threaded MPI init
 void mui_mpi_split_by_app_threaded_f(MPI_Comm **communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
-	*communicator = mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support);
+	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
 }
 
 }

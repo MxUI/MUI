@@ -1266,55 +1266,55 @@ int mui_is_ready_2t_pair(mui_uniface_2t *uniface, const char *attr, double t_1, 
 
 // MUI Smart Send functions
 void mui_announce_send_span_2f_box(mui_uniface_2f *uniface, float box_1_1, float box_1_2, float box_2_1, float box_2_2,
-		float t_start, float t_timeout);
+		float t_start, float t_timeout, int synchronised);
 void mui_announce_send_span_2fx_box(mui_uniface_2fx *uniface, float box_1_1, float box_1_2, float box_2_1,
-		float box_2_2, float t_start, float t_timeout);
+		float box_2_2, float t_start, float t_timeout, int synchronised);
 void mui_announce_send_span_2d_box(mui_uniface_2d *uniface, double box_1_1, double box_1_2, double box_2_1,
-		double box_2_2, double t_start, double t_timeout);
+		double box_2_2, double t_start, double t_timeout, int synchronised);
 void mui_announce_send_span_2dx_box(mui_uniface_2dx *uniface, double box_1_1, double box_1_2, double box_2_1,
-		double box_2_2, double t_start, double t_timeout);
+		double box_2_2, double t_start, double t_timeout, int synchronised);
 void mui_announce_send_span_2t_box(mui_uniface_2t *uniface, double box_1_1, double box_1_2, double box_2_1,
-		double box_2_2, double t_start, double t_timeout);
+		double box_2_2, double t_start, double t_timeout, int synchronised);
 void mui_announce_send_span_2f_sphere(mui_uniface_2f *uniface, mui_point_2f centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_send_span_2fx_sphere(mui_uniface_2fx *uniface, mui_point_2fx centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_send_span_2d_sphere(mui_uniface_2d *uniface, mui_point_2d centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_send_span_2dx_sphere(mui_uniface_2dx *uniface, mui_point_2dx centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_send_span_2t_sphere(mui_uniface_2t *uniface, mui_point_2t centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_recv_span_2f_box(mui_uniface_2f *uniface, float box_1_1, float box_1_2, float box_2_1, float box_2_2,
-		float t_start, float t_timeout);
+		float t_start, float t_timeout, int synchronised);
 void mui_announce_recv_span_2fx_box(mui_uniface_2fx *uniface, float box_1_1, float box_1_2, float box_2_1,
-		float box_2_2, float t_start, float t_timeout);
+		float box_2_2, float t_start, float t_timeout, int synchronised);
 void mui_announce_recv_span_2d_box(mui_uniface_2d *uniface, double box_1_1, double box_1_2, double box_2_1,
-		double box_2_2, double t_start, double t_timeout);
+		double box_2_2, double t_start, double t_timeout, int synchronised);
 void mui_announce_recv_span_2dx_box(mui_uniface_2dx *uniface, double box_1_1, double box_1_2, double box_2_1,
-		double box_2_2, double t_start, double t_timeout);
+		double box_2_2, double t_start, double t_timeout, int synchronised);
 void mui_announce_recv_span_2t_box(mui_uniface_2t *uniface, double box_1_1, double box_1_2, double box_2_1,
-		double box_2_2, double t_start, double t_timeout);
+		double box_2_2, double t_start, double t_timeout, int synchronised);
 void mui_announce_recv_span_2f_sphere(mui_uniface_2f *uniface, mui_point_2f centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_recv_span_2fx_sphere(mui_uniface_2fx *uniface, mui_point_2fx centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_recv_span_2d_sphere(mui_uniface_2d *uniface, mui_point_2d centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_recv_span_2dx_sphere(mui_uniface_2dx *uniface, mui_point_2dx centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_recv_span_2t_sphere(mui_uniface_2t *uniface, mui_point_2t centre, double radius, double t_start,
-		double t_timeout);
-void mui_announce_send_disable_2f(mui_uniface_2f *uniface);
-void mui_announce_send_disable_2fx(mui_uniface_2fx *uniface);
-void mui_announce_send_disable_2d(mui_uniface_2d *uniface);
-void mui_announce_send_disable_2dx(mui_uniface_2dx *uniface);
-void mui_announce_send_disable_2t(mui_uniface_2t *uniface);
-void mui_announce_recv_disable_2f(mui_uniface_2f *uniface);
-void mui_announce_recv_disable_2fx(mui_uniface_2fx *uniface);
-void mui_announce_recv_disable_2d(mui_uniface_2d *uniface);
-void mui_announce_recv_disable_2dx(mui_uniface_2dx *uniface);
-void mui_announce_recv_disable_2t(mui_uniface_2t *uniface);
+		double t_timeout, int synchronised);
+void mui_announce_send_disable_2f(mui_uniface_2f *uniface, int synchronised);
+void mui_announce_send_disable_2fx(mui_uniface_2fx *uniface, int synchronised);
+void mui_announce_send_disable_2d(mui_uniface_2d *uniface, int synchronised);
+void mui_announce_send_disable_2dx(mui_uniface_2dx *uniface, int synchronised);
+void mui_announce_send_disable_2t(mui_uniface_2t *uniface, int synchronised);
+void mui_announce_recv_disable_2f(mui_uniface_2f *uniface, int synchronised);
+void mui_announce_recv_disable_2fx(mui_uniface_2fx *uniface, int synchronised);
+void mui_announce_recv_disable_2d(mui_uniface_2d *uniface, int synchronised);
+void mui_announce_recv_disable_2dx(mui_uniface_2dx *uniface, int synchronised);
+void mui_announce_recv_disable_2t(mui_uniface_2t *uniface, int synchronised);
 
 // MUI barrier functions
 void mui_barrier_2f(mui_uniface_2f *uniface, float t);

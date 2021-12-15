@@ -1271,55 +1271,55 @@ int mui_is_ready_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, 
 
 // MUI Smart Send functions
 void mui_announce_send_span_3f_box(mui_uniface_3f *uniface, float box_1_1, float box_1_2, float box_1_3, float box_2_1,
-		float box_2_2, float box_2_3, float t_start, float t_timeout);
+		float box_2_2, float box_2_3, float t_start, float t_timeout, int synchronised);
 void mui_announce_send_span_3fx_box(mui_uniface_3fx *uniface, float box_1_1, float box_1_2, float box_1_3,
-		float box_2_1, float box_2_2, float box_2_3, float t_start, float t_timeout);
+		float box_2_1, float box_2_2, float box_2_3, float t_start, float t_timeout, int synchronised);
 void mui_announce_send_span_3d_box(mui_uniface_3d *uniface, double box_1_1, double box_1_2, double box_1_3,
-		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout);
+		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout, int synchronised);
 void mui_announce_send_span_3dx_box(mui_uniface_3dx *uniface, double box_1_1, double box_1_2, double box_1_3,
-		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout);
+		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout, int synchronised);
 void mui_announce_send_span_3t_box(mui_uniface_3t *uniface, double box_1_1, double box_1_2, double box_1_3,
-		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout);
+		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout, int synchronised);
 void mui_announce_send_span_3f_sphere(mui_uniface_3f *uniface, mui_point_3f centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_send_span_3fx_sphere(mui_uniface_3fx *uniface, mui_point_3fx centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_send_span_3d_sphere(mui_uniface_3d *uniface, mui_point_3d centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_send_span_3dx_sphere(mui_uniface_3dx *uniface, mui_point_3dx centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_send_span_3t_sphere(mui_uniface_3t *uniface, mui_point_3t centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_recv_span_3f_box(mui_uniface_3f *uniface, float box_1_1, float box_1_2, float box_1_3, float box_2_1,
-		float box_2_2, float box_2_3, float t_start, float t_timeout);
+		float box_2_2, float box_2_3, float t_start, float t_timeout, int synchronised);
 void mui_announce_recv_span_3fx_box(mui_uniface_3fx *uniface, float box_1_1, float box_1_2, float box_1_3,
-		float box_2_1, float box_2_2, float box_2_3, float t_start, float t_timeout);
+		float box_2_1, float box_2_2, float box_2_3, float t_start, float t_timeout, int synchronised);
 void mui_announce_recv_span_3d_box(mui_uniface_3d *uniface, double box_1_1, double box_1_2, double box_1_3,
-		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout);
+		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout, int synchronised);
 void mui_announce_recv_span_3dx_box(mui_uniface_3dx *uniface, double box_1_1, double box_1_2, double box_1_3,
-		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout);
+		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout, int synchronised);
 void mui_announce_recv_span_3t_box(mui_uniface_3t *uniface, double box_1_1, double box_1_2, double box_1_3,
-		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout);
+		double box_2_1, double box_2_2, double box_2_3, double t_start, double t_timeout, int synchronised);
 void mui_announce_recv_span_3f_sphere(mui_uniface_3f *uniface, mui_point_3f centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_recv_span_3fx_sphere(mui_uniface_3fx *uniface, mui_point_3fx centre, float radius, float t_start,
-		float t_timeout);
+		float t_timeout, int synchronised);
 void mui_announce_recv_span_3d_sphere(mui_uniface_3d *uniface, mui_point_3d centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_recv_span_3dx_sphere(mui_uniface_3dx *uniface, mui_point_3dx centre, double radius, double t_start,
-		double t_timeout);
+		double t_timeout, int synchronised);
 void mui_announce_recv_span_3t_sphere(mui_uniface_3t *uniface, mui_point_3t centre, double radius, double t_start,
-		double t_timeout);
-void mui_announce_send_disable_3f(mui_uniface_3f *uniface);
-void mui_announce_send_disable_3fx(mui_uniface_3fx *uniface);
-void mui_announce_send_disable_3d(mui_uniface_3d *uniface);
-void mui_announce_send_disable_3dx(mui_uniface_3dx *uniface);
-void mui_announce_send_disable_3t(mui_uniface_3t *uniface);
-void mui_announce_recv_disable_3f(mui_uniface_3f *uniface);
-void mui_announce_recv_disable_3fx(mui_uniface_3fx *uniface);
-void mui_announce_recv_disable_3d(mui_uniface_3d *uniface);
-void mui_announce_recv_disable_3dx(mui_uniface_3dx *uniface);
-void mui_announce_recv_disable_3t(mui_uniface_3t *uniface);
+		double t_timeout, int synchronised);
+void mui_announce_send_disable_3f(mui_uniface_3f *uniface, int synchronised);
+void mui_announce_send_disable_3fx(mui_uniface_3fx *uniface, int synchronised);
+void mui_announce_send_disable_3d(mui_uniface_3d *uniface, int synchronised);
+void mui_announce_send_disable_3dx(mui_uniface_3dx *uniface, int synchronised);
+void mui_announce_send_disable_3t(mui_uniface_3t *uniface, int synchronised);
+void mui_announce_recv_disable_3f(mui_uniface_3f *uniface, int synchronised);
+void mui_announce_recv_disable_3fx(mui_uniface_3fx *uniface, int synchronised);
+void mui_announce_recv_disable_3d(mui_uniface_3d *uniface, int synchronised);
+void mui_announce_recv_disable_3dx(mui_uniface_3dx *uniface, int synchronised);
+void mui_announce_recv_disable_3t(mui_uniface_3t *uniface, int synchronised);
 
 // MUI barrier functions
 void mui_barrier_3f(mui_uniface_3f *uniface, float t);

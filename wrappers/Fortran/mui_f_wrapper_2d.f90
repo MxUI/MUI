@@ -2,7 +2,7 @@
 !* Multiscale Universal Interface Code Coupling Library                       *
 !*                                                                            *
 !* Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
-!*                    S. M. Longshaw                                          *
+!*                    S. M. Longshaw, W. Liu                                  *
 !*                                                                            *
 !* This software is jointly licensed under the Apache License, Version 2.0    *
 !* and the GNU General Public License version 3, you may use it according     *
@@ -93,14 +93,6 @@ module mui_2d_f
       type(c_ptr), intent(out), target :: uniface(*)
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2t_f
-
-    !Set of 2D interfaces with float=single and int=int32
-    !subroutine mui_create_uniface_multi_2f_f(domain,interfaces,interface_count,unifaces) bind(C)
-    !  import :: c_ptr,c_char,c_int
-    !  integer(kind=c_int), intent(in) :: interface_count
-    !  type(c_ptr), intent(out), dimension(interface_count), target :: unifaces(*)
-    !  character(kind=c_char), intent(in), dimension(interface_count) :: domain(*)
-    !end subroutine mui_create_uniface_multi_2f_f
 
     !****************************************
     !* Destroy MUI interface                *
@@ -5424,198 +5416,228 @@ module mui_2d_f
 
     !Send span announce using 2D box geometry
     subroutine mui_announce_send_span_2f_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2f_box_f
 
     subroutine mui_announce_send_span_2fx_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2fx_box_f
 
     subroutine mui_announce_send_span_2d_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2d_box_f
 
     subroutine mui_announce_send_span_2dx_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2dx_box_f
 
     subroutine mui_announce_send_span_2t_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2t_box_f
 
     !Send span announce using 2D sphere geometry
     subroutine mui_announce_send_span_2f_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2f_sphere_f
 
     subroutine mui_announce_send_span_2fx_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2fx_sphere_f
 
     subroutine mui_announce_send_span_2d_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2d_sphere_f
 
     subroutine mui_announce_send_span_2dx_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2dx_sphere_f
 
     subroutine mui_announce_send_span_2t_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_span_2t_sphere_f
 
     !Receive span announce using 2D box geometry
     subroutine mui_announce_recv_span_2f_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2f_box_f
 
     subroutine mui_announce_recv_span_2fx_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2fx_box_f
 
     subroutine mui_announce_recv_span_2d_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2d_box_f
 
     subroutine mui_announce_recv_span_2dx_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2dx_box_f
 
     subroutine mui_announce_recv_span_2t_box_f(uniface,box_1_1,box_1_2,box_2_1,box_2_2,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: box_1_1,box_1_2,box_2_1,box_2_2,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2t_box_f
 
     !Receive span announce using 2D sphere geometry
     subroutine mui_announce_recv_span_2f_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2f_sphere_f
 
     subroutine mui_announce_recv_span_2fx_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_float
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_float,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_float), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2fx_sphere_f
 
     subroutine mui_announce_recv_span_2d_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2d_sphere_f
 
     subroutine mui_announce_recv_span_2dx_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2dx_sphere_f
 
     subroutine mui_announce_recv_span_2t_sphere_f(uniface,centre_1,centre_2,radius,t_start, &
-      t_timeout) bind(C)
-      import :: c_ptr,c_double
+      t_timeout,synchronised) bind(C)
+      import :: c_ptr,c_double,c_int
       type(c_ptr), intent(in), value :: uniface
       real(kind=c_double), intent(in) :: centre_1,centre_2,radius,t_start,t_timeout
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_span_2t_sphere_f
 
     !Send disable announce (local call per MPI rank)
-    subroutine mui_announce_send_disable_2f_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_send_disable_2f_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_disable_2f_f
 
-    subroutine mui_announce_send_disable_2fx_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_send_disable_2fx_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_disable_2fx_f
 
-    subroutine mui_announce_send_disable_2d_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_send_disable_2d_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_disable_2d_f
 
-    subroutine mui_announce_send_disable_2dx_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_send_disable_2dx_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_disable_2dx_f
 
-    subroutine mui_announce_send_disable_2t_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_send_disable_2t_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_send_disable_2t_f
 
     !Receive disable announce (local call per MPI rank)
-    subroutine mui_announce_recv_disable_2f_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_recv_disable_2f_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_disable_2f_f
 
-    subroutine mui_announce_recv_disable_2fx_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_recv_disable_2fx_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_disable_2fx_f
 
-    subroutine mui_announce_recv_disable_2d_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_recv_disable_2d_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_disable_2d_f
 
-    subroutine mui_announce_recv_disable_2dx_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_recv_disable_2dx_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_disable_2dx_f
 
-    subroutine mui_announce_recv_disable_2t_f(uniface) bind(C)
-      import :: c_ptr
+    subroutine mui_announce_recv_disable_2t_f(uniface,synchronised) bind(C)
+      import :: c_ptr,c_int
       type(c_ptr), intent(in), value :: uniface
+      integer(kind=c_int), intent(in) :: synchronised
     end subroutine mui_announce_recv_disable_2t_f
 
     !******************************************
