@@ -17,11 +17,11 @@ include(CMakePackageConfigHelpers)
 include(CMake/sourcelist.cmake)
 
 find_package(MPI REQUIRED)
-if (MPI_FOUND)
+if(MPI_FOUND)
 	include_directories(SYSTEM ${MPI_INCLUDE_PATH})
-else (MPI_FOUND)
+elseif(NOT MPI_FOUND)
 	message(SEND_ERROR "MPI not found")
-endif (MPI_FOUND)
+endif(MPI_FOUND)
 
 if(USE_RBF)
 	find_package(Eigen3 REQUIRED)
@@ -122,10 +122,10 @@ if(PYTHON_WRAPPER)
 	endif()
 
 	if(USE_RBF)
-		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} package USE_RBF=1 INC_EIGEN="${EIGEN3_INCLUDE_DIR}"
+		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} CXX=${MPI_CXX_COMPILER} USE_RBF=1 INC_EIGEN="${EIGEN3_INCLUDE_DIR}" package
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 	else()
-		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} package
+		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} CXX=${MPI_CXX_COMPILER} package
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 	endif(USE_RBF)
 
@@ -138,6 +138,8 @@ if(PYTHON_WRAPPER)
 				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/mui4py_mod.so)
 
 	if(PIP_INSTALL)
+		message("-- MUI Python wrapper installation: Selected")
+
 		add_custom_target(mui4py_pip ALL COMMAND pip3 install dist/mui4py*.tar.gz
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 		add_dependencies(mui4py_pip mui4py)

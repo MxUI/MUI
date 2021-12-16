@@ -1,12 +1,5 @@
 COMPILER ?= GNU
-MPI ?= OPENMPI
-ifeq ('$(MPI)','OPENMPI')
-	CXX = mpic++
-else ifeq ('$(MPI)','INTEL')
-	CXX = mpicxx
-else ifeq ('$(MPI)','MPICH')
-	CXX = mpicxx
-endif
+CXX = mpic++
 CXXFLAGS = -Wall -std=c++11 -O3 -Wno-unused-local-typedefs -Wno-comment -Wno-reorder
 LDFLAGS = -shared
 USE_RBF ?= 0
