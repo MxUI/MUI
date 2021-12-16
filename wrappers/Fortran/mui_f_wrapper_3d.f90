@@ -409,7 +409,7 @@ module mui_3d_f
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points_1(*),points_2(*),points_3(*)
+      type(c_float), intent(in), dimension(points_count), target :: points_1,points_2,points_3
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_3f_f
@@ -420,7 +420,7 @@ module mui_3d_f
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points_1(*),points_2(*),points_3(*)
+      type(c_float), intent(in), dimension(points_count), target :: points_1,points_2,points_3
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_3fx_f
@@ -431,7 +431,7 @@ module mui_3d_f
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points_1(*),points_2(*),points_3(*)
+      type(c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_3d_f
@@ -442,7 +442,7 @@ module mui_3d_f
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points_1(*),points_2(*),points_3(*)
+      type(c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_3dx_f
@@ -453,7 +453,7 @@ module mui_3d_f
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points_1(*),points_2(*),points_3(*)
+      type(c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_3t_f

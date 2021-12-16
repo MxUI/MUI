@@ -403,57 +403,57 @@ module mui_1d_f
 
 #ifdef USE_RBF
     !Radial Basis Function sampler
-    subroutine mui_create_sampler_rbf_1f_f(sampler,r,points,points_count, &
+    subroutine mui_create_sampler_rbf_1f_f(sampler,r,points_1,points_count, &
                basis_func,conservative,polynomial,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points(*)
+      type(c_float), intent(in), dimension(points_count), target :: points_1
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1f_f
 
-    subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points,points_count, &
+    subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points_1,points_count, &
                basis_func,conservative,polynomial,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points(*)
+      type(c_float), intent(in), dimension(points_count), target :: points_1
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_float), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1fx_f
 
-    subroutine mui_create_sampler_rbf_1d_f(sampler,r,points,points_count, &
+    subroutine mui_create_sampler_rbf_1d_f(sampler,r,points_1,points_count, &
                basis_func,conservative,polynomial,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points(*)
+      type(c_double), intent(in), dimension(points_count), target :: points_1
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1d_f
 
-    subroutine mui_create_sampler_rbf_1dx_f(sampler,r,points,points_count, &
+    subroutine mui_create_sampler_rbf_1dx_f(sampler,r,points_1,points_count, &
                basis_func,conservative,polynomial,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points(*)
+      type(c_double), intent(in), dimension(points_count), target :: points_1
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1dx_f
 
-    subroutine mui_create_sampler_rbf_1t_f(sampler,r,points,points_count, &
+    subroutine mui_create_sampler_rbf_1t_f(sampler,r,points_1,points_count, &
                basis_func,conservative,polynomial,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_ptr), intent(in), target :: points(*)
+      type(c_double), intent(in), dimension(points_count), target :: points_1
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix
       real(kind=c_double), intent(in), target :: r,cutoff
     end subroutine mui_create_sampler_rbf_1t_f
