@@ -189,21 +189,6 @@ SPECIALIZE(2fx,float,int64_t,2);
 SPECIALIZE(3fx,float,int64_t,3);
 #undef SPECIALIZE
 #endif
-// sample configuration class
-// modify to adapt to specific simulation scenario
-/******************************************************************************
-struct config_custom {
-	static const int D = 3;
-	using REAL = double;
-	using INT  = int;
-	using point_type = point<REAL,D>;
-	using time_type  = REAL;
-	static const bool DEBUG = false;
-	using data_types = type_list<int,double,float>;
-	using EXCEPTION = exception_segv;
-    static const bool FIXEDPOINTS = false;
-};
-******************************************************************************/
 
 // usage: SPECIALIZE( _your_custom_suffix, your_custom_config_structure )
 //        uniface_your_custom_suffix interface; ...

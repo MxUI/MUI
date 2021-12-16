@@ -1,2 +1,5 @@
-unit_test.x
+unit_test_fortran_wrapper
 *.o
+*.a
+*.so
+*.mod

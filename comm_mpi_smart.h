@@ -65,30 +65,36 @@ private:
 public:
 	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
 	virtual ~comm_mpi_smart() {
-		// Call MPI_Test in blocking loop on any remaining MPI_Isend messages in buffer and if complete, pop before destruction
+		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
 		test_completion_blocking();
 	}
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-		// Call non-blocking MPI_Test on MPI_Isend messages in buffer and if complete, pop
+		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
 		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
-		for( int i = 0 ; i < remote_size_ ; i++ ){
-			if( is_sending[i] ){
-				if(bytes->size() > INT_MAX){
-					std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
-							  << "This is likely because there is too much data per MPI rank." << std::endl
-							  << "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
-					std::abort();
-				}
+
+		if(bytes->size() > INT_MAX){
+      std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
+            << "This is likely because there is too much data per MPI rank." << std::endl
+            << "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
+      std::abort();
+    }
+
+		int test;
+
+		for( int i = 0; i < remote_size_; i++ ) {
+			if( is_sending[i] ) {
 				send_buf.emplace_back(MPI_Request(), bytes);
-				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0, 
+				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
+
+				// Add immediate MPI_Test to ensure buffer cleared as quickly as possible
+        MPI_Test(&(send_buf.back().first),&test,MPI_STATUS_IGNORE);
+        if( test ) send_buf.pop_back();
 		 	}
 		}
-		// Call non-blocking MPI_Test on MPI_Isend messages in buffer and if complete, pop
-		test_completion();
 	}
 
 	message recv_impl_() {
@@ -118,21 +124,11 @@ private:
 	/** \brief Time-limited blocking check for complete MPI_Isend calls
 	 */
 	void test_completion_blocking() {
-		int timeout = 0;
-		auto start = std::chrono::system_clock::now();
-		while (send_buf.size() > 0) {
+	  while (send_buf.size() > 0) {
 			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
-				int test = false;
-				MPI_Test(&(itr->first),&test,MPI_STATUS_IGNORE);
-				if( test ) itr = send_buf.erase(itr);
-				else ++itr;
-			}
-			if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
-				timeout++;
-				int time_left = 60 - (timeout*5);
-				if( time_left == 0) break;
-				std::cout << "MUI Warning [comm_mpi_smart.h]: MPI_Isend calls spent over 5 seconds completing, all operations will timeout in "
-						  << time_left << "s" << std::endl;
+				//int test = false;
+				MPI_Wait(&(itr->first), MPI_STATUS_IGNORE);
+				itr = send_buf.erase(itr);
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 *.o
 *.a
 *.so
-unit_test_c_wrapper
+unit_test_c_wrapper_single
+unit_test_c_wrapper_multi

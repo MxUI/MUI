@@ -77,9 +77,9 @@ Description: MUI Python bindings
 using std::string;
 
 #define PUSH_INSTANCE_SINGLE(IO_TYPE)\
-    .def("push_" STRINGIFY(IO_TYPE), (void (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>,\
-         const IO_TYPE)) &Tclass::push, "") \
-    .def("push_" STRINGIFY(IO_TYPE), (void (Tclass::*)(const string&, const IO_TYPE)) &Tclass::push, "")
+    .def("push_" STRINGIFY(IO_TYPE), (void (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>&,\
+         const IO_TYPE&)) &Tclass::push, "") \
+    .def("push_" STRINGIFY(IO_TYPE), (void (Tclass::*)(const string&, const IO_TYPE&)) &Tclass::push, "")
 
 #define PUSH_INSTANCE_MANY(IO_TYPE)\
      .def("push_many_" STRINGIFY(IO_TYPE), (void (Tclass::*)(const string& attr, const py::array_t<Treal>& points, const py::array_t<IO_TYPE>& values)) &Tclass::push_many, "") 
@@ -103,7 +103,7 @@ using std::string;
 
 #define FETCH_INSTANCE_SINGLE(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
-        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>, const Ttime,\
+        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>&, const Ttime,\
         const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::CHRONO_SAMPLER<Tconfig>&, bool)) &Tclass::fetch, "") \
 
 #define FETCH_INSTANCE_MANY(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
@@ -113,7 +113,7 @@ using std::string;
 
 #define FETCH_INSTANCE_SINGLE6(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch6_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(CHRONO_SAMPLER),"_sampler", "").c_str(),\
-        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>, const Ttime, const Ttime,\
+        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>&, const Ttime, const Ttime,\
         const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::CHRONO_SAMPLER<Tconfig>&, bool)) &Tclass::fetch, "")
 
 /* #define FETCH_INSTANCE_MANY6(SPATIAL_SAMPLER,CHRONO_SAMPLER,IO_TYPE) \
@@ -405,9 +405,9 @@ DECLARE_FUNC_HEADER(uniface) {
     .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
     .def("forget", (void (Tclass::*)(Ttime, Ttime, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
-    .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>))\
+    .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_send_span,"") 
-    .def("announce_recv_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>))\
+    .def("announce_recv_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_recv_span,"")
     DEFINE_MUI_UNIFACE_PUSH()
     DEFINE_MUI_UNIFACE_FETCH_1ARG()

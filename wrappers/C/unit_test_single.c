@@ -39,9 +39,9 @@
 *****************************************************************************/
 
 /**
- * @file unit_test.c
- * @author Y. H. Tang
- * @date Jan 20, 2015
+ * @file unit_test_single.c
+ * @author S. M. Longshaw (derived from original example by Y. H. Tang)
+ * @date 20 October 2021
  * @brief Unit test for MUI C wrapper - creates 1D/2D/3D interface examples
  */
 
@@ -60,11 +60,15 @@
 #include "mui_c_wrapper_3d.h"
 
 int main(int argc, char **argv) {
-	/*********************
-	 * 1D interface       *
-	 *********************/
 
-	// Create URI in the format mpi://[domain]_1d/interface_name
+	// No need to call mui_mpi_split_by_app() function first as with the _multi example
+	// as direct uniface creation also called MPI_Init()
+
+	/***********************
+	 * Single 1D interface *
+	 ***********************/
+
+	// Create URI in the format mpi://[domain]_1d/[interface_name]
 	char *uri1d = (char*) malloc(strlen(argv[1]) + strlen(argv[2]) + 11);
 	strcpy(uri1d, "mpi://");
 	strcat(uri1d, argv[1]);
@@ -102,7 +106,7 @@ int main(int argc, char **argv) {
 	mui_destroy_chrono_sampler_exact_1d(temporal_sampler1d);
 	free(uri1d);
 
-	/*********************
+	/**********************
 	 * 2D interface       *
 	 *********************/
 
@@ -185,7 +189,7 @@ int main(int argc, char **argv) {
 	mui_destroy_sampler_exact_3d(spatial_sampler3d);
 	mui_destroy_chrono_sampler_exact_3d(temporal_sampler3d);
 
-	// Destroy created MUI interfaces note: calls MPI_Finalize()
+	// Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
 	mui_destroy_uniface_1d(uniface1d);
 	mui_destroy_uniface_2d(uniface2d);
 	mui_destroy_uniface_3d(uniface3d);

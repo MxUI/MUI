@@ -11,7 +11,7 @@ CXXFLAGS = -O3 -std=c++11 -fpic
 
 ifdef USE_RBF
 # Path to Eigen library
-EIGEN_PATH = /home/stephen/eclipse-workspace/eigen-3.3.9
+EIGEN_PATH = /usr/include/eigen3
 # C compilation flags
 CFLAGS += -DUSE_RBF
 # C++ compilation flags
@@ -19,18 +19,9 @@ CXXFLAGS += -DUSE_RBF -I${EIGEN_PATH}
 endif
 
 default: mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
-	 ${CCX} -shared -o libmui_c_wrapper.so mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
-	 ${AR} rcs libmui_c_wrapper.a mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
-	 @echo "Compiling and linking unit test code..."
-	 ${CC} ${CFLAGS} unit_test.c -o unit_test_c_wrapper -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
-	 @echo "Launching unit test code..."
-	 ${MPI} -np 1 ./unit_test_c_wrapper domain1 interface : -np 1 ./unit_test_c_wrapper domain2 interface
-	 @echo "************************************************************"
-	 @echo "*                    C wrapper usage                       *"
-	 @echo "*                                                          *"
-	 @echo "* Step 1) include mui_c_wapper_[1d/2d/3d].h in C source    *"
-	 @echo "* Step 2) Compile with a C compiler & link against library *"
-	 @echo "************************************************************"
+	 @echo "Compiling and linking MUI C wrapper..."
+	 ${CCX} ${CFLAGS} -shared -o libmui_c_wrapper.so mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
+	 ${AR} rcs libmui_c_wrapper.a mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 
 mui_c_wrapper_general.o: mui_c_wrapper_general.cpp
 	 @echo "Generating C-wrapper general functions object file..."
@@ -47,6 +38,15 @@ mui_c_wrapper_2d.o: mui_c_wrapper_2d.cpp
 mui_c_wrapper_3d.o: mui_c_wrapper_3d.cpp
 	 @echo "Generating C-wrapper 3D object file..."
 	 ${CCX} ${CXXFLAGS} -c mui_c_wrapper_3d.cpp -o mui_c_wrapper_3d.o
+	 
+test: 
+	 @echo "Compiling and linking MUI C wrapper unit test code..."
+	 ${CC} ${CFLAGS} unit_test_single.c -o unit_test_c_wrapper_single -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
+	 ${CC} ${CFLAGS} unit_test_multi.c -o unit_test_c_wrapper_multi -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
+	 @echo "Launching C wrapper unit test code for single interface creation..."
+	 ${MPI} -np 1 ./unit_test_c_wrapper_single domain1 interface : -np 1 ./unit_test_c_wrapper_single domain2 interface
+	 @echo "Launching C wrapper unit test code for multi interface creation..."
+	 ${MPI} -np 1 ./unit_test_c_wrapper_multi domain1 interface 2 : -np 1 ./unit_test_c_wrapper_multi domain2 interface 2
 
 clean:
-	 rm -rf *.o *.a *.so unit_test_c_wrapper
+	 rm -rf *.o *.a *.so unit_test_c_wrapper_single unit_test_c_wrapper_multi

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MUI VERSION 1.1.3 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
+project(MUI VERSION 1.2 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(USE_RBF "Include RBF support" OFF)
 # Wrapper options
 option(C_WRAPPER "Compile C wrapper" OFF)
-option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF) #ToDo: Add Fortran wrapper compilation
+option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF)
 option(PYTHON_WRAPPER "Compile Python wrapper" OFF)
 option(PIP_INSTALL "Install compiled Python wrapper using pip" OFF)
 
@@ -17,11 +17,11 @@ include(CMakePackageConfigHelpers)
 include(CMake/sourcelist.cmake)
 
 find_package(MPI REQUIRED)
-if (MPI_FOUND)
+if(MPI_FOUND)
 	include_directories(SYSTEM ${MPI_INCLUDE_PATH})
-else (MPI_FOUND)
+elseif(NOT MPI_FOUND)
 	message(SEND_ERROR "MPI not found")
-endif (MPI_FOUND)
+endif(MPI_FOUND)
 
 if(USE_RBF)
 	find_package(Eigen3 REQUIRED)
@@ -47,7 +47,9 @@ target_compile_definitions(MUI INTERFACE LIBRARY_HEADER_ONLY)
 install(TARGETS MUI EXPORT muiTargets INCLUDES DESTINATION include LIBRARY DESTINATION lib)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/
 	DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include
-	FILES_MATCHING PATTERN "*.h"
+	FILES_MATCHING
+	PATTERN "*.h"
+	PATTERN "*.f90"
 	PATTERN ".git" EXCLUDE
 	PATTERN "build" EXCLUDE
 	PATTERN "wrappers/Python" EXCLUDE
@@ -83,6 +85,29 @@ if(C_WRAPPER)
 endif(C_WRAPPER)
 
 if(FORTRAN_WRAPPER)
+	message("-- MUI Fortran wrapper: Selected")
+
+	add_library(MUI_Fortran_wrapper SHARED
+		./wrappers/Fortran/mui_f_wrapper_general.cpp
+		./wrappers/Fortran/mui_f_wrapper_1d.cpp
+		./wrappers/Fortran/mui_f_wrapper_2d.cpp
+		./wrappers/Fortran/mui_f_wrapper_3d.cpp)
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_general.f90)
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_1d.f90)
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_2d.f90)
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_3d.f90)
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/config_f_wrapper.h)
+	target_include_directories(MUI_Fortran_wrapper PRIVATE .)
+
+	if(USE_RBF)
+    		target_link_libraries(MUI_Fortran_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
+	else()
+    		target_link_libraries(MUI_Fortran_wrapper ${MPI_CXX_LIBRARIES})
+	endif(USE_RBF)
+
+	install(TARGETS MUI_Fortran_wrapper
+    		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/
+    		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/Fortran/)
 endif(FORTRAN_WRAPPER)
 
 if(PYTHON_WRAPPER)
@@ -97,10 +122,10 @@ if(PYTHON_WRAPPER)
 	endif()
 
 	if(USE_RBF)
-		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} package USE_RBF=1 INC_EIGEN="${EIGEN3_INCLUDE_DIR}"
+		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} CXX=${MPI_CXX_COMPILER} USE_RBF=1 INC_EIGEN="${EIGEN3_INCLUDE_DIR}" package
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 	else()
-		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} package
+		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} CXX=${MPI_CXX_COMPILER} package
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 	endif(USE_RBF)
 
@@ -113,6 +138,8 @@ if(PYTHON_WRAPPER)
 				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/mui4py_mod.so)
 
 	if(PIP_INSTALL)
+		message("-- MUI Python wrapper installation: Selected")
+
 		add_custom_target(mui4py_pip ALL COMMAND pip3 install dist/mui4py*.tar.gz
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 		add_dependencies(mui4py_pip mui4py)

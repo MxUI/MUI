@@ -1,9 +1,11 @@
 # MUI - Multiscale Universal Interface
-Concurrently coupled numerical simulations using heterogeneous solvers are powerful tools for modeling multiscale phenomena. However, major modifications to existing codes are often required to enable such simulations, posing significant difficulties in practice. Here we present Multiscale Universal Interface (MUI), which is capable of facilitating the coupling effort for a wide range of multiscale simulations. The library adopts a header-only form with minimal external dependency and hence can be easily dropped into existing codes. A data samplerconcept is introduced, combined with a hybrid dynamic/static typing mechanism, to create an easily customizable framework for solver-independent data interpretation. 
+Concurrently coupled numerical simulations using heterogeneous solvers are powerful tools for modeling both multiscale and multiphysics phenomena. However, major modifications to existing codes are often required to enable such simulations, posing significant difficulties in practice. Here we present the Multiscale Universal Interface (MUI), which is capable of facilitating the coupling effort for a wide range of simulation types. 
+
+The library adopts a header-only form with minimal external dependency and hence can be easily dropped into existing codes. A data sampler concept is introduced, combined with a hybrid dynamic/static typing mechanism, to create an easily customizable framework for solver-independent data interpretation. 
 
 The library integrates MPI MPMD support and an asynchronous communication protocol to handle inter-solver information exchange irrespective of the solvers’ own MPI awareness. Template metaprogramming is heavily employed to simultaneously improve runtime performance and code flexibility. 
 
-In the publication referenced below, the library is validated by solving three different multiscale problems, which also serve to demonstrate the flexibility of the framework in handling heterogeneous models and solvers associated with multiphysics problems. In the first example, a Couette flow was simulated using two concurrently coupled Smoothed Particle Hydrodynamics (SPH) simulations of different spatial resolutions. In the second example, we coupled the deterministic SPH method with the stochastic Dissipative Particle Dynamics (DPD) method to study the effect of surface grafting on the hydrodynamics properties on the surface. In the third example, we consider conjugate heat transfer between a solid domain and a fluid domain by coupling the particle-based energy-conserving DPD (eDPD) method with the Finite Element Method (FEM).
+In the publication referenced below, the library is validated by solving three different multiscale type problems, which also serve to demonstrate the flexibility of the framework in handling heterogeneous models and solvers associated with multiphysics problems. In the first example, a Couette flow was simulated using two concurrently coupled Smoothed Particle Hydrodynamics (SPH) simulations of different spatial resolutions. In the second example, we coupled the deterministic SPH method with the stochastic Dissipative Particle Dynamics (DPD) method to study the effect of surface grafting on the hydrodynamics properties on the surface. In the third example, we consider conjugate heat transfer between a solid domain and a fluid domain by coupling the particle-based energy-conserving DPD (eDPD) method with the Finite Element Method (FEM).
 
 ## Licensing
 
@@ -28,6 +30,8 @@ As a header-only library using MUI in your own source code is straight forward, 
 	7. PIP_INSTALL=ON/OFF - Only applies if PYTHON_WRAPPER=ON, uses system default pip3 command
 
 <sup>1</sup> Only true if the Radial Basis Function (RBF) spatial interpolation scheme is included at compile-time.
+
+<b>Note:</b> if you are using MUI with a toolchain other than GNU, you may need to manually specify the endianness you wish the library to assume, this is done using a number of compile-time parameters: -DMUI_IGNORE_ENDIAN (never reorders); -DMUI_INT_LITTLE_ENDIAN combined with -DMUI_FLOAT_LITTLE_ENDIAN (assumed little endian reordering); -DMUI_INT_BIG_ENDIAN combined with -DMUI_FLOAT_BIG_ENDIAN (assumes big endian reordering). It is recommended you start by allowing the library to try and determine your endianness options, however if you receive many compilation erorrs relating to the stream parts of the library then you will need to manually define your choices.
 
 ## Publication
 

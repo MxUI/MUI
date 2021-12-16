@@ -119,8 +119,8 @@ public:
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
 		if( data_.empty() )
 			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), additional... );
-		if( !is_built() )
-			EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error, bin not built before inspection, internal data corrupt."));
+		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
+				                                     "Bin not built yet. Internal data corrupted."));
 
 		const vec& st = storage_cast<const vec&>(data_);
 
@@ -128,7 +128,7 @@ public:
 	}
 
 	void build() {
-		if( is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Build error, cannot build bin twice."));
+		if( is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Build error. Cannot build twice."));
 		if( !data_.empty() ){
 			data_.apply_visitor(construct_{(void*)&bin_});
 			is_bin_ = true;
@@ -152,7 +152,7 @@ public:
 		if( !storage ) return;
 		if( !data_ ) data_ = std::move(storage);
 		else if( data_.which() == storage.which() ) data_.apply_visitor(insert_{storage});
-		else EXCEPTION(bad_storage_id("MUI Error [spatial_storage.h]: Insert error, type doesn't match."));
+		else EXCEPTION(bad_storage_id("MUI Error [spatial_storage.h]: Insert error. Type doesn't match."));
 	}
 
 	template<typename TYPE>

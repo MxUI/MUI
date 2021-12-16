@@ -1,1 +1,1 @@
-CFLAGS += -fPIC
+CXXFLAGS += -fPIC

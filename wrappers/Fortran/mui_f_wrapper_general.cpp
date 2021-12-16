@@ -1,7 +1,8 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis  *
+* Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
+*                    S. M. Longshaw, W. Liu                                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,61 +39,27 @@
 *****************************************************************************/
 
 /**
- * @file sampler_gauss.h
- * @author Y. H. Tang
- * @date 10 February 2014
- * @brief Spatial sampler that provides a value at a point using Gaussian
- * interpolation.
+ * @file mui_f_wrapper_general.cpp
+ * @author S. M. Longshaw (derived from original 3D wrapper by S. Kudo)
+ * @date 25 November 2021
+ * @brief C interface for Fortran wrapper for general MUI functions with
+ *        no associated dimensionality
  */
 
-#ifndef MUI_SAMPLER_GAUSS_H_
-#define MUI_SAMPLER_GAUSS_H_
+// Main MUI header include (contains any other needed includes)
+#include "../../mui.h"
+#include "mpi.h"
 
-#include "../util.h"
-#include "../config.h"
-#include "../sampler.h"
+extern "C" {
 
-namespace mui {
-
-template<typename CONFIG=default_config, typename O_TP=typename CONFIG::REAL, typename I_TP=O_TP>
-class sampler_gauss {
-public:
-	using OTYPE      = O_TP;
-	using ITYPE      = I_TP;
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using point_type = typename CONFIG::point_type;
-
-	sampler_gauss( REAL r_, REAL h_ ) : r(r_), h(h_), nh(std::pow(2*PI*h,-0.5*CONFIG::D)) {}
-
-	template<template<typename,typename> class CONTAINER>
-	inline OTYPE filter( point_type focus, const CONTAINER<ITYPE,CONFIG> &data_points ) const {
-		REAL exp_val = -0.5/h;
-		REAL r2 = r*r;
-	  REAL  wsum = 0;
-		OTYPE vsum = 0;
-		for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-			REAL d = normsq( focus - data_points[i].first );
-			if ( d < r2 ) {
-			  REAL w = nh * std::exp( exp_val * d );
-				vsum += data_points[i].second * w;
-				wsum += w;
-			}
-		}
-		if ( wsum ) return vsum / wsum;
-		else return REAL(0.);
-	}
-
-	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
-		return geometry::sphere<CONFIG>( focus, r );
-	}
-
-protected:
-	REAL r;
-	REAL h;
-	REAL nh;
-};
-
+// Function to split MPI communicator and return new, local communicator
+void mui_mpi_split_by_app_f(MPI_Comm **communicator) {
+	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app());
 }
 
-#endif /* MUI_SAMPLER_GAUSS_H_ */
+// Function to split MPI communicator and return new, local communicator using threaded MPI init
+void mui_mpi_split_by_app_threaded_f(MPI_Comm **communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
+	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
+}
+
+}

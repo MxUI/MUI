@@ -1,25 +1,25 @@
 COMPILER ?= GNU
-CC = mpic++
-CFLAGS = -Wall -std=c++11 -O3 -Wno-unused-local-typedefs -Wno-comment -Wno-reorder
+CXX = mpic++
+CXXFLAGS = -Wall -std=c++11 -O3 -Wno-unused-local-typedefs -Wno-comment -Wno-reorder
 LDFLAGS = -shared
-USE_RBF = True
+USE_RBF ?= 0
 include $(COMPILER).make
+INC_EIGEN =
 INC_MPI4PY = -I$(shell python3 -c "import mpi4py;print(mpi4py.get_include())")
 INC_PYBIND = $(shell python3 -m pybind11 --includes)
-INC_TPARTY =
-CC_VERSION_STR = '"$(shell $(CC) --version | head -n 1)"'
+CXX_VERSION_STR = '"$(shell $(CXX) --version | head -n 1)"'
 MPI_VERSION_STR = '"$(shell bash mpi_version.sh)"'
-CC_CONFIG_STR = '"$(shell $(CC) -show) $(CFLAGS) $(INC_MPI4PY) $(INC_PYBIND)"'
+CXX_CONFIG_STR = '"$(shell $(CXX) -show) $(CXXFLAGS) $(INC_MPI4PY) $(INC_PYBIND)"'
 PYTHON_INT_SIZE = $(shell python3 -c "import numpy; print(str(numpy.iinfo(int).dtype)[-2:])")
 ifeq ($(PYTHON_INT_SIZE),64)
-	CFLAGS_D=-DPYTHON_INT_64
+	CXXFLAGS_D=-DPYTHON_INT_64
 else ifeq ($(PYTHON_INT_SIZE),32)
-	CFLAGS_D = -DPYTHON_INT_32
+	CXXFLAGS_D = -DPYTHON_INT_32
 endif
-CFLAGS_D += -DCOMPILER_VERSION_STR=$(CC_VERSION_STR) -DMPI_VERSION_STR=$(MPI_VERSION_STR) -DCOMPILER_CONFIG_STR=$(CC_CONFIG_STR) -DPYTHON_BINDINGS
-ifdef USE_RBF
-	CFLAGS += -fpermissive
-	CFLAGS_D +=  -DUSE_RBF
+CXXFLAGS_D += -DCOMPILER_VERSION_STR=$(CXX_VERSION_STR) -DMPI_VERSION_STR=$(MPI_VERSION_STR) -DCOMPILER_CONFIG_STR=$(CXX_CONFIG_STR) -DPYTHON_BINDINGS
+ifeq ($(USE_RBF),1)
+	CXXFLAGS += -fpermissive
+	CXXFLAGS_D += -DUSE_RBF
 endif
 TARGET_LIB = mui4py/mui4py_mod.so
 SRCS = mui4py/mui4py.cpp
@@ -32,10 +32,14 @@ none:
 mui4py_mod: $(TARGET_LIB)
 
 $(TARGET_LIB): $(OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CXX) $(LDFLAGS) $^ -o $@
 
 %.o: %.cpp
-	$(CC) -c $(CFLAGS) $(CFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) -I$(INC_EIGEN) $< -o $@
+ifeq ($(USE_RBF),1)
+	$(CXX) -c $(CXXFLAGS) $(CXXFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) -I$(INC_EIGEN) $< -o $@
+else
+	$(CXX) -c $(CXXFLAGS) $(CXXFLAGS_D) $(INC_MPI4PY) $(INC_PYBIND) $< -o $@
+endif
 
 .PHONY: package meta-package clean-package clean-mod clean-all install pip-install clean-obj
 
@@ -65,4 +69,3 @@ install:
 
 pip-install:
 	@pip3 install dist/mui4py*.tar.gz
-

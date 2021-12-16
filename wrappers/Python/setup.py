@@ -47,7 +47,7 @@ setup(
       url='http://mxui.github.io',
       author='Eduardo Ramos Fernandez',
       author_email='eduardo.rf159@gmail.com',
-      license='Apache v2.0',
+      license='GPLv3 or Apache v2.0',
       packages=['mui4py'],
       install_requires=[
             'mpi4py',

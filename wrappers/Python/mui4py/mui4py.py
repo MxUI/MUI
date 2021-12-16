@@ -162,15 +162,15 @@ class Uniface(CppClass):
         assign  = getattr(self.raw, "assign_" + ALLOWED_IO_TYPES[data_type])
         assign(tag, safe_cast(data_type, val))
 
-    def announce_recv_span(self, tinit, timeout, geometry):
+    def announce_recv_span(self, tinit, timeout, geometry, synchronised):
         assert issubclass(geometry.__class__, Geometry)
         geometry.configure(self.config)
-        self.raw.announce_recv_span(tinit, timeout, geometry.raw)
+        self.raw.announce_recv_span(tinit, timeout, geometry.raw, synchronised)
 
-    def announce_send_span(self, tinit, timeout, geometry):
+    def announce_send_span(self, tinit, timeout, geometry, synchronised):
         assert issubclass(geometry.__class__, Geometry)
         geometry.configure(self.config)
-        self.raw.announce_send_span(tinit, timeout, geometry.raw)
+        self.raw.announce_send_span(tinit, timeout, geometry.raw, synchronised)
 
     def _get_fetch_5args(self, fname_root, tag, data_type, spatial_sampler, chrono_sampler):
         assert issubclass(spatial_sampler.__class__, Sampler)
