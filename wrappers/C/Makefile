@@ -11,7 +11,7 @@ CXXFLAGS = -O3 -std=c++11 -fpic
 
 ifdef USE_RBF
 # Path to Eigen library
-EIGEN_PATH = /home/stephen/eclipse-workspace/eigen-3.3.9
+EIGEN_PATH = /usr/include/eigen3
 # C compilation flags
 CFLAGS += -DUSE_RBF
 # C++ compilation flags
