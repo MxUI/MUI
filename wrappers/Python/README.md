@@ -51,6 +51,7 @@ Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find 
 
 # ToDo List
 
+- Remove warnings for const qualifier loss for RBF spatial filter.
 - Include interface send/receive disable in the bindings.
 - Include multi-time functions in the bindings.
 - Include fucntions to retrieve all points or values in the bindings. 
@@ -58,4 +59,3 @@ Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find 
 - Carefully set the types allowed for each spatial and chrono sampler.
 - Write exception hierarchy to replace generic exceptions.
 - Add 'collide' function to library.
-
