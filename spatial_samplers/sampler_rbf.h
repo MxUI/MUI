@@ -127,6 +127,7 @@ public:
 		pts_(pts) {
 			//set s to give rbf(r)=cutoff (default 1e-9)
 			s_ = std::pow(-std::log(cutoff), 0.5) / r_;
+			twor_ = r_ * r_;
 	}
 
 	template<template<typename, typename > class CONTAINER>
@@ -169,7 +170,7 @@ public:
 private:
 	template<template<typename, typename > class CONTAINER>
 	void computeRBFtransformation(const CONTAINER<ITYPE, CONFIG> &data_points) {
-		if (conservative_) {
+	  if (conservative_) {
 			if (pts_.size() <= 50) {
 				N_sp_ = pts_.size();
 			}
@@ -179,6 +180,7 @@ private:
 				N_sp_ = data_points.size();
 			}
 		}
+
 		if (smoothFunc_) {
 			if (pts_.size() <= 50) {
 				M_ap_ = (pts_.size() - 1);
@@ -238,6 +240,7 @@ private:
 					}
 				}
 			}
+
 			if (smoothFunc_) {
 				std::ifstream inputFileCAA(fileAddress_ + "/connectivityAA.dat");
 
@@ -385,7 +388,7 @@ private:
 						Css.resize((1 + N_sp_ + CONFIG::D), (1 + N_sp_ + CONFIG::D));
 						Aas.resize(1, (1 + N_sp_ + CONFIG::D));
 
-						std::vector<Eigen::Triplet<REAL> > coefsC;
+						std::vector<Eigen::Triplet<REAL>> coefsC;
 
 						//set Css
 						for (INT i = 0; i < N_sp_; i++) {
@@ -397,6 +400,7 @@ private:
 
 								if (d < r_) {
 									REAL w = rbf(d);
+
 									coefsC.push_back(Eigen::Triplet<REAL>(i, j, w));
 
 									if (i != j) {
@@ -407,8 +411,8 @@ private:
 						}
 
 						for (INT i = 0; i < N_sp_; i++) {
-							coefsC.push_back(Eigen::Triplet < REAL > (i, N_sp_, 1));
-							coefsC.push_back(Eigen::Triplet < REAL > (N_sp_, i, 1));
+							coefsC.push_back(Eigen::Triplet<REAL> (i, N_sp_, 1));
+							coefsC.push_back(Eigen::Triplet<REAL> (N_sp_, i, 1));
 
 							int glob_i = connectivityAB_[row][i];
 
@@ -446,15 +450,15 @@ private:
 						//invert Css
 						Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(Css.rows(), Css.cols());
 						I.setIdentity();
-						Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>> solver(Css);
-						solver.setTolerance(1e-6);
+						Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>, Eigen::Lower|Eigen::Upper> solver(Css);
+						//solver.setTolerance(1e-6);
 						Eigen::SparseMatrix<REAL> invCss = (solver.solve(I)).sparseView(1e8);
 
 						if (CONFIG::DEBUG) {
-							std::cout << "#iterations of invCss:     "
-									  << solver.iterations()
-									  << ". Error of invCss: " << solver.error()
-									  << std::endl;
+						  std::cout << "#iterations of invCss:     "
+									      << solver.iterations()
+									      << ". Error of invCss: " << solver.error()
+									      << std::endl;
 						}
 
 						Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (Aas * invCss).pruned(1e8);
@@ -974,7 +978,7 @@ private:
 				pointsCount = 0;
 
 				for (INT n = 0; n < NP; n++) {
-					REAL cur = 1e10;
+					REAL cur = std::numeric_limits<REAL>::max();
 					INT bestj = -1;
 					for (size_t j = 0; j < data_points.size(); j++) {
 						bool added = false;
@@ -995,22 +999,26 @@ private:
 							bestj = j;
 						}
 
-						if ((n == 0) && (d < r_ * r_))
+						if ((n == 0) && (d < twor_))
 							++pointsCount;
 					}
 
 					connectivityAB_[i].push_back(bestj);
 
-					outputFileCAB << bestj << ",";
+					if( n < NP-1 )
+					  outputFileCAB << bestj << ",";
+					else
+					  outputFileCAB << bestj;
 
 					if ((!warningSent) && (pointsCount > 120) && (n == 0)) {
 						if (!QUIET)
-							std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large (No. points found "
+							std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius large (No. points found "
 									  << pointsCount << ")" << std::endl;
 						warningSent = true;
 					}
 				}
-				outputFileCAB << '\n';
+				if( i < pts_.size()-1 )
+				  outputFileCAB << '\n';
 			}
 		}
 		else { //conservative
@@ -1020,7 +1028,7 @@ private:
 				pointsCount = 0;
 
 				for (size_t n = 0; n < pts_.size(); n++) {
-					REAL cur = 1e10;
+					REAL cur = std::numeric_limits<REAL>::max();
 					INT bestj = -1;
 					for (size_t j = 0; j < pts_.size(); j++) {
 						bool added = false;
@@ -1041,22 +1049,26 @@ private:
 							bestj = j;
 						}
 
-						if ((n == 0) && (d < r_ * r_))
+						if ((n == 0) && (d < twor_))
 							++pointsCount;
 					}
 
 					connectivityAB_[i].push_back(bestj);
 
-					outputFileCAB << bestj << ",";
+					if( n < pts_.size()-1 )
+					  outputFileCAB << bestj << ",";
+					else
+					  outputFileCAB << bestj;
 
 					if ((!warningSent) && (pointsCount > 120) && (n == 0)) {
 						if (!QUIET)
-							std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius too large (No. points found "
+							std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius large (No. points found "
 									  << pointsCount << ")" << std::endl;
 						warningSent = true;
 					}
 				}
-				outputFileCAB << '\n';
+				if( i < pts_.size()-1 )
+				  outputFileCAB << '\n';
 			}
 		}
 		outputFileCAB.close();
@@ -1089,7 +1101,7 @@ private:
 
 		for (size_t i = 0; i < pts_.size(); i++) {
 			for (INT n = 0; n < MP; n++) {
-				REAL cur = 1e10;
+				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < pts_.size(); j++) {
 					bool added = false;
@@ -1113,9 +1125,13 @@ private:
 
 				connectivityAA_[i].push_back(bestj);
 
-				outputFileCAA << bestj << ",";
+				if( n < MP-1 )
+				  outputFileCAA << bestj << ",";
+				else
+				  outputFileCAA << bestj;
 			}
-			outputFileCAA << '\n';
+			if( i < pts_.size()-1 )
+			  outputFileCAA << '\n';
 		}
 		outputFileCAA.close();
 		return;
@@ -1123,6 +1139,7 @@ private:
 
 protected:
 	REAL r_;
+	REAL twor_;
 	REAL s_;
 
 	bool initialised_;
