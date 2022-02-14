@@ -566,7 +566,8 @@ mui_sampler_sum_quintic_2t* mui_create_sampler_sum_quintic_2t(double r) {
 #ifdef USE_RBF
 // Radial Basis Function sampler
 mui_sampler_rbf_2f* mui_create_sampler_rbf_2f(float r, mui_point_2f *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, const char *file_address, float cutoff) {
+		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size) {
 	std::vector<mui::point2f> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
@@ -574,22 +575,26 @@ mui_sampler_rbf_2f* mui_create_sampler_rbf_2f(float r, mui_point_2f *points, int
 	}
 
 	return new mui_sampler_rbf_2f(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
-			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), std::string(file_address), cutoff);
+			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
+			cutoff, cg_solve_tol, cg_solve_it, pou_size);
 }
 
 mui_sampler_rbf_2fx* mui_create_sampler_rbf_2fx(float r, mui_point_2fx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, const char *file_address, float cutoff) {
+		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size) {
 	std::vector<mui::point2fx> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
 		pts[i][1] = points[i].point_2;
 	}
 	return new mui_sampler_rbf_2fx(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
-			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), std::string(file_address), cutoff);
+			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
+			cutoff, cg_solve_tol, cg_solve_it, pou_size);
 }
 
 mui_sampler_rbf_2d* mui_create_sampler_rbf_2d(double r, mui_point_2d *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, const char *file_address, double cutoff) {
+		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size) {
 	std::vector<mui::point2d> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
@@ -597,11 +602,13 @@ mui_sampler_rbf_2d* mui_create_sampler_rbf_2d(double r, mui_point_2d *points, in
 	}
 
 	return new mui_sampler_rbf_2d(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
-			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), std::string(file_address), cutoff);
+			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
+			cutoff, cg_solve_tol, cg_solve_it, pou_size);
 }
 
 mui_sampler_rbf_2dx* mui_create_sampler_rbf_2dx(double r, mui_point_2dx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, const char *file_address, double cutoff) {
+		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size) {
 	std::vector<mui::point2dx> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
@@ -609,11 +616,13 @@ mui_sampler_rbf_2dx* mui_create_sampler_rbf_2dx(double r, mui_point_2dx *points,
 	}
 
 	return new mui_sampler_rbf_2dx(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
-			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), std::string(file_address), cutoff);
+			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
+			cutoff, cg_solve_tol, cg_solve_it, pou_size);
 }
 
 mui_sampler_rbf_2t* mui_create_sampler_rbf_2t(double r, mui_point_2t *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, const char *file_address, double cutoff) {
+		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size) {
 	std::vector<mui::mui_c_wrapper_2D::point_type> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = static_cast<mui::mui_c_wrapper_2D::REAL>(points[i].point_1);
@@ -622,7 +631,9 @@ mui_sampler_rbf_2t* mui_create_sampler_rbf_2t(double r, mui_point_2t *points, in
 
 	return new mui_sampler_rbf_2t(static_cast<mui::mui_c_wrapper_2D::REAL>(r), pts, basis_func,
 			static_cast<bool>(conservative), static_cast<bool>(polynomial), static_cast<bool>(smoothFunc),
-			static_cast<bool>(readMatrix), std::string(file_address), static_cast<mui::mui_c_wrapper_2D::REAL>(cutoff));
+			static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
+			static_cast<mui::mui_c_wrapper_2D::REAL>(cutoff), static_cast<mui::mui_c_wrapper_1D::REAL>(cg_solve_tol),
+      static_cast<mui::mui_c_wrapper_1D::INT>(cg_solve_it), static_cast<mui::mui_c_wrapper_1D::INT>(pou_size));
 }
 #endif
 
