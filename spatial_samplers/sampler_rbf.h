@@ -71,116 +71,118 @@ public:
 	static const bool QUIET = CONFIG::QUIET;
 	static const bool DEBUG = CONFIG::DEBUG;
 
-	/**
-	 * Input parameters:
-	 * 1.  REAL r:
-	 *       The search radius used to construct each RBF
-	 * 2.  std::vector<point_type>& pts:
-	 *       Vector of points that pre-set for RBF interpolation
-	 * 3.  INT basisFunc:
-	 *       Parameter for basis function selection. Implemented functions are as follows:
-	 *       Gaussian(default): basisFunc_=0
-	 *       Wendland's C0:     basisFunc_=1
-	 *       Wendland's C2:     basisFunc_=2
-	 *       Wendland's C4:     basisFunc_=3
-	 *       Wendland's C6:     basisFunc_=4
-	 * 4.  bool conservative:
-	 *       Switch for the mode of RBF interpolation:
-	 *       consistent mode(default): conservative=false
-	 *       conservative mode:        conservative=true
-	 * 5.  bool polynomial:
-	 *       Switch for the polynomial term of the transformation matrix:
-	 *       without polynomial terms(default): polynomial=false
-	 *       with polynomial terms:             polynomial=true
-	 * 6.  bool smoothFunc:
-	 *       Switch for the smoothing function of the transformation matrix:
-	 *       without smoothing function(default): smoothFunc=false
-	 *       with smoothing function:             smoothFunc=true
-	 * 7.  bool readMatrix:
-	 *       Switch for whether to construct transformation matrix or read matrix from file:
-	 *       construct transformation matrix and write it to file(default): readMatrix=false
-	 *       read transformation matrix from file:                          readMatrix=true
-	 * 8.  bool writeMatrix:
-	 *       Switch for whether to write the constructed transformation matrix to file:
-	 *       Write the constructed matrix to file:       writeMatrix=false
+  /**
+   * Input parameters:
+   * 1.  REAL r:
+   *       The search radius used to construct each RBF
+   * 2.  std::vector<point_type>& pts:
+   *       Vector of points that pre-set for RBF interpolation
+   * 3.  INT basisFunc:
+   *       Parameter for basis function selection. Implemented functions are as follows:
+   *       Gaussian(default): basisFunc_=0
+   *       Wendland's C0:     basisFunc_=1
+   *       Wendland's C2:     basisFunc_=2
+   *       Wendland's C4:     basisFunc_=3
+   *       Wendland's C6:     basisFunc_=4
+   * 4.  bool conservative:
+   *       Switch for the mode of RBF interpolation:
+   *       consistent mode(default): conservative=false
+   *       conservative mode:        conservative=true
+   * 5.  bool polynomial:
+   *       Switch for the polynomial term of the transformation matrix:
+   *       without polynomial terms(default): polynomial=false
+   *       with polynomial terms:             polynomial=true
+   * 6.  bool smoothFunc:
+   *       Switch for the smoothing function of the transformation matrix:
+   *       without smoothing function(default): smoothFunc=false
+   *       with smoothing function:             smoothFunc=true
+   * 7.  bool readMatrix:
+   *       Switch for whether to construct transformation matrix or read matrix from file:
+   *       construct transformation matrix and write it to file(default): readMatrix=false
+   *       read transformation matrix from file:                          readMatrix=true
+   * 8.  bool writeMatrix:
+   *       Switch for whether to write the constructed transformation matrix to file:
+   *       Write the constructed matrix to file:       writeMatrix=false
    *       Don't write the constructed matrix to file: writeMatrix=true
-	 * 9.  const std::string& fileAddress:
-	 *       The address that the transformation matrix I/O uses.
-	 *       The default value of fileAddress is an empty string.
-	 * 10. REAL cutOff:
-	 *       Parameter to set the cut-off of the Gaussian basis function (only valid for basisFunc_=0).
-	 *       The default value of cutoff is 1e-9
+   * 9.  const std::string& fileAddress:
+   *       The address that the transformation matrix I/O uses.
+   *       The default value of fileAddress is an empty string.
+   * 10. REAL cutOff:
+   *       Parameter to set the cut-off of the Gaussian basis function (only valid for basisFunc_=0).
+   *       The default value of cutoff is 1e-9
    * 11. REAL cgSolveTol:
    *       The tolerance used to determine convergence for the Eigen ConjugateGradient solver
    *       The default value of cgSolveTol is 1e-6
-	 * 12. INT cgMaxIter:
+   * 12. INT cgMaxIter:
    *       The maximum number of iterations each Eigen ConjugateGradient solve can take
    *       The default value of cgMaxIter is -1, which means the solver decides
-	 * 13. INT pouSize:
-	 *       The size of each partition used within the RBF-POU approach
-	 *       The default value of pouSize is 50
-	 */
+   * 13. INT pouSize:
+   *       The size of each partition used within the RBF-POU approach
+   *       The default value of pouSize is 50
+   */
 
-	sampler_rbf(REAL r, const std::vector<point_type> &pts, INT basisFunc = 0,
-		bool conservative = false, bool polynomial = false,
-		bool smoothFunc = false, bool readMatrix = false, bool writeMatrix = true,
-		const std::string &fileAddress = std::string(), REAL cutOff = 1e-9,
-		REAL cgSolveTol = 1e-6, INT cgMaxIter = -1, INT pouSize = 50 ) :
-		r_(r),
-		initialised_(false),
-		CABrow_(0),
-		CABcol_(0),
-		Hrow_(0),
-		Hcol_(0),
-		conservative_(conservative),
-		consistent_(!conservative),
-		polynomial_(polynomial),
-		smoothFunc_(smoothFunc),
-		readMatrix_(readMatrix),
-		writeMatrix_(writeMatrix),
-		fileAddress_(fileAddress),
-		cgSolveTol_(cgSolveTol),
-    cgMaxIter_(cgMaxIter),
-		N_sp_(pouSize),
-		M_ap_(pouSize),
-		basisFunc_(basisFunc),
-		pts_(pts) {
-			//set s to give rbf(r)=cutOff (default 1e-9)
-			s_ = std::pow(-std::log(cutOff), 0.5) / r_;
-			twor_ = r_ * r_;
-			if( cgMaxIter_ == 0 || cgMaxIter_ < -1 )
-			  cgMaxIter_ = 1;
-	}
+  sampler_rbf(REAL r, const std::vector<point_type> &pts, INT basisFunc = 0,
+      bool conservative = false, bool polynomial = false, bool smoothFunc = false,
+      bool readMatrix = false, bool writeMatrix = true,
+      const std::string &fileAddress = std::string(), REAL cutOff = 1e-9,
+      REAL cgSolveTol = 1e-6, INT cgMaxIter = -1, INT pouSize = 50) :
+      r_(r),
+      initialised_(false),
+      CABrow_(0),
+      CABcol_(0),
+      Hrow_(0),
+      Hcol_(0),
+      conservative_(conservative),
+      consistent_(!conservative),
+      polynomial_(polynomial),
+      smoothFunc_(smoothFunc),
+      readMatrix_(readMatrix),
+      writeMatrix_(writeMatrix),
+      fileAddress_(fileAddress),
+      cgSolveTol_(cgSolveTol),
+      cgMaxIter_(cgMaxIter),
+      N_sp_(pouSize),
+      M_ap_(pouSize),
+      basisFunc_(basisFunc),
+      pts_(pts) {
+    //set s to give rbf(r)=cutOff (default 1e-9)
+    s_ = std::pow(-std::log(cutOff), 0.5) / r_;
+    twor_ = r_ * r_;
+    if (cgMaxIter_ == 0 || cgMaxIter_ < -1)
+      cgMaxIter_ = 1;
+  }
 
-	template<template<typename, typename > class CONTAINER>
-	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) {
-		if (!initialised_) {
+  template<template<typename, typename > class CONTAINER>
+  inline OTYPE filter(point_type focus,
+      const CONTAINER<ITYPE, CONFIG> &data_points) {
+    if (!initialised_) {
       const clock_t begin_time = clock();
-		  computeRBFtransformation(data_points);
+      computeRBFtransformation(data_points);
 
-		  if (!QUIET) {
-		    std::cout << "MUI [sampler_rbf.h]: Matrices generated in "
-		              << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s" << std::endl;
-		  }
-		}
+      if (!QUIET) {
+        std::cout << "MUI [sampler_rbf.h]: Matrices generated in "
+                  << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s"
+                  << std::endl;
+      }
+    }
 
-		auto p = std::find_if(pts_.begin(), pts_.end(), [focus](point_type b) {
-			return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
-		});
+    auto p = std::find_if(pts_.begin(), pts_.end(), [focus](point_type b) {
+      return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
+    });
 
-		if (p == std::end(pts_)) {
-			EXCEPTION(std::runtime_error("Point not found. Must pre-set points for RBF interpolation"));
-		}
+    if (p == std::end(pts_)) {
+      EXCEPTION(std::runtime_error("Point not found. Must pre-set points for RBF interpolation"));
+    }
 
-		auto i = std::distance(pts_.begin(), p);
+    auto i = std::distance(pts_.begin(), p);
 
-		OTYPE sum = 0.;
-		for (size_t j = 0; j < data_points.size(); j++) {
-		  sum += H_(i, j) * data_points[j].second;
-		}
+    OTYPE sum = 0.;
+    for (size_t j = 0; j < data_points.size(); j++) {
+      sum += H_(i, j) * data_points[j].second;
+    }
 
-		return sum;
-	}
+    return sum;
+  }
 
 	inline geometry::any_shape<CONFIG> support(point_type focus, REAL domain_mag) const {
 		return geometry::any_shape<CONFIG>();
@@ -200,144 +202,147 @@ private:
 	template<template<typename, typename > class CONTAINER>
 	void computeRBFtransformation(const CONTAINER<ITYPE, CONFIG> &data_points) {
 	  // If problem size is smaller than initial POU values then refine to actual problem set
-	  if (conservative_) {
-			if (pts_.size() <= static_cast<size_t>(N_sp_)) {
-				N_sp_ = pts_.size();
-			}
-		}
-		else {
-			if (data_points.size() <= static_cast<size_t>(N_sp_)) {
-				N_sp_ = data_points.size();
-			}
-		}
+    if (conservative_) {
+      if (pts_.size() <= static_cast<size_t>(N_sp_)) {
+        N_sp_ = pts_.size();
+      }
+    } else {
+      if (data_points.size() <= static_cast<size_t>(N_sp_)) {
+        N_sp_ = data_points.size();
+      }
+    }
 
-		if (smoothFunc_) {
-			if (pts_.size() <= static_cast<size_t>(M_ap_)) {
-				M_ap_ = (pts_.size() - 1);
-			}
-		}
+    if (smoothFunc_) {
+      if (pts_.size() <= static_cast<size_t>(M_ap_)) {
+        M_ap_ = (pts_.size() - 1);
+      }
+    }
 
-		if (readMatrix_) {
-			std::ifstream inputFileMatrixSize(fileAddress_ + "/matrixSize.dat");
+    if (readMatrix_) {
+      std::ifstream inputFileMatrixSize(fileAddress_ + "/matrixSize.dat");
 
-			if (!inputFileMatrixSize) {
-				std::cerr << "Could not locate the file address of matrixSize.dat" << std::endl;
-			}
-			else {
-				std::string tempS;
-				std::vector<INT> tempV;
-				while (std::getline(inputFileMatrixSize, tempS)) {
-					// Skips the line if the first two characters are '//'
-					if (tempS[0] == '/' && tempS[1] == '/') continue;
-					std::stringstream lineStream(tempS);
-					std::string tempSS;
-					while (std::getline(lineStream, tempSS, ',')) {
-						tempV.emplace_back(std::stoi(tempSS));
-					}
-				}
-				CABrow_ = tempV[0];
-				CABcol_ = tempV[1];
-				CAArow_ = tempV[2];
-				CAAcol_ = tempV[3];
-				Hrow_ = tempV[4];
-				Hcol_ = tempV[5];
-			}
+      if (!inputFileMatrixSize) {
+        std::cerr << "Could not locate the file address of matrixSize.dat"
+            << std::endl;
+      } else {
+        std::string tempS;
+        std::vector<INT> tempV;
+        while (std::getline(inputFileMatrixSize, tempS)) {
+          // Skips the line if the first two characters are '//'
+          if (tempS[0] == '/' && tempS[1] == '/')
+            continue;
+          std::stringstream lineStream(tempS);
+          std::string tempSS;
+          while (std::getline(lineStream, tempSS, ',')) {
+            tempV.emplace_back(std::stoi(tempSS));
+          }
+        }
+        CABrow_ = tempV[0];
+        CABcol_ = tempV[1];
+        CAArow_ = tempV[2];
+        CAAcol_ = tempV[3];
+        Hrow_ = tempV[4];
+        Hcol_ = tempV[5];
+      }
 
-			std::ifstream inputFileCAB(fileAddress_ + "/connectivityAB.dat");
+      std::ifstream inputFileCAB(fileAddress_ + "/connectivityAB.dat");
 
-			if (!inputFileCAB) {
-				std::cerr << "Could not locate the file address on the connectivityAB.dat" << std::endl;
-			}
-			else {
-				connectivityAB_.resize(CABrow_);
-				for (INT i = 0; i < CABrow_; i++) {
-					connectivityAB_[i].resize(CABcol_);
-					std::string tempS;
-					while (std::getline(inputFileCAB, tempS)) {
-						// Skips the line if the first two characters are '//'
-						if (tempS[0] == '/' && tempS[1] == '/') continue;
-						std::stringstream lineStream(tempS);
-						std::string tempSS;
-						std::vector<INT> tempV;
-						while (std::getline(lineStream, tempSS, ',')) {
-							tempV.emplace_back(std::stoi(tempSS));
-						}
-						connectivityAB_.emplace_back(tempV);
-					}
-				}
-			}
+      if (!inputFileCAB) {
+        std::cerr
+            << "Could not locate the file address on the connectivityAB.dat"
+            << std::endl;
+      } else {
+        connectivityAB_.resize(CABrow_);
+        for (INT i = 0; i < CABrow_; i++) {
+          connectivityAB_[i].resize(CABcol_);
+          std::string tempS;
+          while (std::getline(inputFileCAB, tempS)) {
+            // Skips the line if the first two characters are '//'
+            if (tempS[0] == '/' && tempS[1] == '/')
+              continue;
+            std::stringstream lineStream(tempS);
+            std::string tempSS;
+            std::vector<INT> tempV;
+            while (std::getline(lineStream, tempSS, ',')) {
+              tempV.emplace_back(std::stoi(tempSS));
+            }
+            connectivityAB_.emplace_back(tempV);
+          }
+        }
+      }
 
-			if (smoothFunc_) {
-				std::ifstream inputFileCAA(fileAddress_ + "/connectivityAA.dat");
+      if (smoothFunc_) {
+        std::ifstream inputFileCAA(fileAddress_ + "/connectivityAA.dat");
 
-				if (!inputFileCAA) {
-					std::cerr << "Could not locate the file address on the connectivityAA.dat" << std::endl;
-				}
-				else {
-					if ((CAArow_ == 0) || (CAAcol_ == 0)) {
-						std::cerr << "Error on the size of connectivityAA matrix in matrixSize.dat. Number of rows: "
-								      << CAArow_ << " number of columns: " << CAAcol_
-								      << ". Make sure matrices were generated with the smoothing function switched on."
-								      << std::endl;
-					}
-					else {
-						connectivityAA_.resize(CAArow_);
+        if (!inputFileCAA) {
+          std::cerr
+              << "Could not locate the file address on the connectivityAA.dat"
+              << std::endl;
+        } else {
+          if ((CAArow_ == 0) || (CAAcol_ == 0)) {
+            std::cerr
+                << "Error on the size of connectivityAA matrix in matrixSize.dat. Number of rows: "
+                << CAArow_ << " number of columns: " << CAAcol_
+                << ". Make sure matrices were generated with the smoothing function switched on."
+                << std::endl;
+          } else {
+            connectivityAA_.resize(CAArow_);
 
-						for (INT i = 0; i < CAArow_; i++) {
-							connectivityAA_[i].resize(CAAcol_);
-							std::string tempS;
-							while (std::getline(inputFileCAA, tempS)) {
-								// Skips the line if the first two characters are '//'
-								if (tempS[0] == '/' && tempS[1] == '/') continue;
-								std::stringstream lineStream(tempS);
-								std::string tempSS;
-								std::vector<INT> tempV;
-								while (std::getline(lineStream, tempSS, ',')) {
-									tempV.emplace_back(std::stoi(tempSS));
-								}
-								connectivityAA_.emplace_back(tempV);
-							}
-						}
-					}
-				}
-			}
+            for (INT i = 0; i < CAArow_; i++) {
+              connectivityAA_[i].resize(CAAcol_);
+              std::string tempS;
+              while (std::getline(inputFileCAA, tempS)) {
+                // Skips the line if the first two characters are '//'
+                if (tempS[0] == '/' && tempS[1] == '/')
+                  continue;
+                std::stringstream lineStream(tempS);
+                std::string tempSS;
+                std::vector<INT> tempV;
+                while (std::getline(lineStream, tempSS, ',')) {
+                  tempV.emplace_back(std::stoi(tempSS));
+                }
+                connectivityAA_.emplace_back(tempV);
+              }
+            }
+          }
+        }
+      }
 
-			H_.resize(Hrow_, Hcol_);
+      H_.resize(Hrow_, Hcol_);
 
-			std::ifstream inputFileHMatrix(fileAddress_ + "/Hmatrix.dat");
+      std::ifstream inputFileHMatrix(fileAddress_ + "/Hmatrix.dat");
 
-			if (!inputFileHMatrix) {
-				std::cerr << "Could not locate the file address on the Hmatrix.dat" << std::endl;
-			}
-			else {
-				std::string tempS;
-				int tempRow = 0;
-				int tempPoints = 0;
-				while (std::getline(inputFileHMatrix, tempS)) {
-					// Skips the line if the first two characters are '//'
-					if (tempS[0] == '/' && tempS[1] == '/') continue;
-					std::stringstream lineStream(tempS);
-					std::string tempSS;
-					int tempCol = 0;
-					while (std::getline(lineStream, tempSS, ',')) {
-						H_(tempRow, tempCol) = std::stod(tempSS);
-						tempCol++;
-						tempPoints++;
-					}
-					tempRow++;
-				}
+      if (!inputFileHMatrix) {
+        std::cerr << "Could not locate the file address on the Hmatrix.dat"
+            << std::endl;
+      } else {
+        std::string tempS;
+        int tempRow = 0;
+        int tempPoints = 0;
+        while (std::getline(inputFileHMatrix, tempS)) {
+          // Skips the line if the first two characters are '//'
+          if (tempS[0] == '/' && tempS[1] == '/')
+            continue;
+          std::stringstream lineStream(tempS);
+          std::string tempSS;
+          int tempCol = 0;
+          while (std::getline(lineStream, tempSS, ',')) {
+            H_(tempRow, tempCol) = std::stod(tempSS);
+            tempCol++;
+            tempPoints++;
+          }
+          tempRow++;
+        }
 
-				if ((tempRow != Hrow_) || ((tempPoints / tempRow) != Hcol_)) {
-					std::cerr << "tempRow (" << tempRow
-							      << ") is not NOT equal to Hrow_ (" << Hrow_
-							      << "), or" << std::endl << "(tempPoints/tempRow) ("
-							      << (tempPoints / tempRow)
-							      << ") is not NOT equal to Hcol_ (" << Hcol_ << ")"
-							      << std::endl;
-				}
-			}
+        if ((tempRow != Hrow_) || ((tempPoints / tempRow) != Hcol_)) {
+          std::cerr << "tempRow (" << tempRow << ") is not NOT equal to Hrow_ ("
+              << Hrow_ << "), or" << std::endl << "(tempPoints/tempRow) ("
+              << (tempPoints / tempRow) << ") is not NOT equal to Hcol_ ("
+              << Hcol_ << ")" << std::endl;
+        }
+      }
 
-		}
+    }
 		else { // Generating matrix
 			buildConnectivity(data_points, N_sp_);
 
