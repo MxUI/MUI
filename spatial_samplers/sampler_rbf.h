@@ -184,19 +184,20 @@ public:
     return sum;
   }
 
-	inline geometry::any_shape<CONFIG> support(point_type focus, REAL domain_mag) const {
-		return geometry::any_shape<CONFIG>();
-	}
+  inline geometry::any_shape<CONFIG> support(point_type focus,
+      REAL domain_mag) const {
+    return geometry::any_shape<CONFIG>();
+  }
 
-	void preSetFetchPoints(std::vector<point_type> &pts) {
-		pts_ = pts;
-		initialised_ = false;
-	}
+  void preSetFetchPoints(std::vector<point_type> &pts) {
+    pts_ = pts;
+    initialised_ = false;
+  }
 
-	void addFetchPoint(point_type pt) {
-		pts_.emplace_back(pt);
-		initialised_ = false;
-	}
+  void addFetchPoint(point_type pt) {
+    pts_.emplace_back(pt);
+    initialised_ = false;
+  }
 
 private:
 	template<template<typename, typename > class CONTAINER>
