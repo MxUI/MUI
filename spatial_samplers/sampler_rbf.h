@@ -200,9 +200,9 @@ public:
   }
 
 private:
-	template<template<typename, typename > class CONTAINER>
-	void computeRBFtransformation(const CONTAINER<ITYPE, CONFIG> &data_points) {
-	  // If problem size is smaller than initial POU values then refine to actual problem set
+  template<template<typename, typename > class CONTAINER>
+  void computeRBFtransformation(const CONTAINER<ITYPE, CONFIG> &data_points) {
+    // If problem size is smaller than initial POU values then refine to actual problem set
     if (conservative_) {
       if (pts_.size() <= static_cast<size_t>(N_sp_)) {
         N_sp_ = pts_.size();
