@@ -63,7 +63,7 @@ class SamplerSumQuintic(Sampler):
 
 class SamplerRbf(Sampler, CppClass):
     def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
-        smoothFunc, readMatrix, fileAddress, cutoff):
+        smoothFunc, readMatrix, writeMatrix, fileAddress, cutoff, cgSolveTol, cgMaxIter, pouSize):
             super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
             conservative, polynomial, smoothFunc, readMatrix, writeMatrix, fileAddress, 
             cutoff, cgSolveTol, cgMaxIter, pouSize,))
