@@ -65,7 +65,8 @@ class SamplerRbf(Sampler, CppClass):
     def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
         smoothFunc, readMatrix, fileAddress, cutoff):
             super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
-            conservative, polynomial, smoothFunc, readMatrix, fileAddress, cutoff,))
+            conservative, polynomial, smoothFunc, readMatrix, writeMatrix, fileAddress, 
+            cutoff, cgSolveTol, cgMaxIter, pouSize,))
             self._ALLOWED_IO_TYPES = [INT32, INT64, FLOAT32, FLOAT64]
 
 # Chrono samplers
