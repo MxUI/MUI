@@ -712,16 +712,21 @@ public:
 	/** \brief Blocking barrier for Smart Send send values. Initiates receive from remote nodes.
     */
   void barrier_ss_send( ) {
+    // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto start = std::chrono::system_clock::now();
+
     for(;;) {    // barrier must be thread-safe because it is called in fetch()
-      std::lock_guard<std::mutex> lock(mutex);
       if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
         return (p.ss_send_status()); }) ) break;
       acquire(); // To avoid infinite-loop when synchronous communication
     }
+
     for(size_t i=0; i<peers.size(); i++) {
       peers[i].set_ss_send_status(false);
     }
+
     if( !QUIET ) {
       if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
         std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
@@ -732,19 +737,24 @@ public:
   /** \brief Blocking barrier for Smart Send receive values. Initiates receive from remote nodes.
     */
   void barrier_ss_recv( ) {
+    // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto start = std::chrono::system_clock::now();
+
     for(;;) {    // barrier must be thread-safe because it is called in fetch()
-      std::lock_guard<std::mutex> lock(mutex);
       if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
         return (p.ss_recv_status()); }) ) break;
       acquire(); // To avoid infinite-loop when synchronous communication
     }
+
+    for(size_t i=0; i<peers.size(); i++) {
+      peers[i].set_ss_recv_status(false);
+    }
+
     if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
       if( !QUIET )
         std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
-    }
-    for(size_t i=0; i<peers.size(); i++) {
-      peers[i].set_ss_recv_status(false);
     }
   }
 
