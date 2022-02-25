@@ -647,39 +647,67 @@ public:
 	/** \brief Blocking barrier at t1. Initiates receive from remote nodes.
 	  */
 	void barrier( time_type t1 ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
-					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( !QUIET ) {
+	  // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
+    auto start = std::chrono::system_clock::now();
+
+    for(;;) {
+      size_t peers_unblocked = 0;
+      for( size_t p = 0; p < peers.size(); p++ ) {
+        if( peers[p].is_send_disabled() ) { peers_unblocked++; continue; } // Rank disabled, immediate break
+        if( !peers[p].is_sending(t1, recv_span) ) { peers_unblocked++; continue; } // Rank disabled due to Smart Send geometry check
+        if( (peers[p].current_t() > t1 || almost_equal(peers[p].current_t(), t1)) || peers[p].next_t() > t1 ) { // Final time check
+          peers_unblocked++;
+          continue;
+        }
+      }
+      // All peers unblocked, break loop
+      if( peers_unblocked == peers.size() )
+        break;
+      else // Acquire messages
+        acquire();
+    }
+
+    if( !QUIET ) {
       if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
           std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
       }
-		}
-	}
+    }
+  }
 
 	/** \brief Blocking barrier at t1 (or t1,t2). Initiates receive from remote nodes.
 	  */
 	void barrier( time_type t1, time_type t2 ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
-					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1)) &&
-					    (((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.next_sub() > t2))); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( !QUIET ) {
+	  // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
+    auto start = std::chrono::system_clock::now();
+
+    for(;;) {
+      size_t peers_unblocked = 0;
+      for( size_t p = 0; p < peers.size(); p++ ) {
+        if( peers[p].is_send_disabled() ) { peers_unblocked++; continue; } // Rank disabled, immediate break
+        if( !peers[p].is_sending(t1, recv_span) ) { peers_unblocked++; continue; } // Rank disabled due to Smart Send geometry check
+        if( ((peers[p].current_t() > t1 || almost_equal(peers[p].current_t(), t1)) || peers[p].next_t() > t1) && // Final time check
+            ((peers[p].current_sub() > t2 || almost_equal(peers[p].current_sub(), t2)) || peers[p].next_sub() > t2) ) {
+          peers_unblocked++;
+          continue;
+        }
+      }
+      // All peers unblocked, break loop
+      if( peers_unblocked == peers.size() )
+        break;
+      else // Acquire messages
+        acquire();
+    }
+
+    if( !QUIET ) {
       if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
         std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
       }
-		}
-	}
+    }
+  }
 
 	/** \brief Blocking barrier for Smart Send send values. Initiates receive from remote nodes.
     */
