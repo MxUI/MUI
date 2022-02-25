@@ -232,6 +232,8 @@ private: // data members
 	std::unordered_map<std::string, storage_single_t > assigned_values;
 
 	std::vector<peer_state> peers;
+	std::vector<bool> peer_is_sending;
+	bool smart_send_set_ = true;
 	time_type span_start = std::numeric_limits<time_type>::lowest();
 	time_type span_timeout = std::numeric_limits<time_type>::lowest();
 	span_t current_span;
@@ -250,6 +252,7 @@ public:
 		using namespace std::placeholders;
 
 		peers.resize(comm->remote_size());
+		peer_is_sending.resize(comm->remote_size(), true);
 
 		readers.link("timestamp", reader_variables<int32_t, std::pair<time_type,time_type> >(
 					 std::bind(&uniface::on_recv_confirm, this, _1, _2)));
@@ -568,28 +571,20 @@ public:
 	  * Returns the actual number of peers contacted
 	  */
 	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
-    std::vector<bool> is_sending(comm->remote_size(), true);
     std::pair<time_type,time_type> time(t1,t2);
 
-    // Check if peer set to disabled (not linked to time span)
-    for( size_t i=0; i<peers.size(); ++i ) {
-      if( peers[i].is_recv_disabled() )
-        is_sending[i] = false;
-    }
-
-    // Check for smart send based on t1
-    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
-        ((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
-      for( size_t i=0; i<peers.size(); ++i ) {
-        if( is_sending[i] ) // Peer is not already disabled so check using smart send
-          is_sending[i] = peers[i].is_recving( t1, current_span );
-      }
+    // If Smart Send not initialised then perform setting check
+    if( !smart_send_set_ ) {
+      // Reset all peers to default of enabled
+      std::fill(peer_is_sending.begin(), peer_is_sending.end(), true);
+      update_smart_send(t1);
+      smart_send_set_ = true;
     }
 
 		if( FIXEDPOINTS ) {
 			// This only happens during the first commit
 			if( push_buffer_pts.size() > 0 ) {
-				comm->send( message::make("points",comm->local_rank(),std::move(push_buffer_pts)),is_sending );
+				comm->send( message::make("points",comm->local_rank(),std::move(push_buffer_pts)),peer_is_sending );
 				initialized_pts_ = true;
 				push_buffer_pts.clear();
 			}
@@ -598,20 +593,42 @@ public:
 			fixedPointCount_ = 0;
 
 			if( push_buffer_raw.size() > 0 ) {
-				comm->send( message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)),is_sending );
+				comm->send( message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)),peer_is_sending );
 				push_buffer_raw.clear();
 			}
 		}
 		else {
 			if( push_buffer.size() > 0 ) {
-				comm->send( message::make("data",time,std::move(push_buffer)),is_sending );
+				comm->send( message::make("data",time,std::move(push_buffer)),peer_is_sending );
 				push_buffer.clear();
 			}
 		}
 
-		comm->send( message::make("timestamp",comm->local_rank(),time),is_sending );
+		comm->send( message::make("timestamp",comm->local_rank(),time),peer_is_sending );
 
-		return std::count( is_sending.begin(),is_sending.end(),true );
+		return std::count( peer_is_sending.begin(),peer_is_sending.end(),true );
+	}
+
+	void update_smart_send( time_type t1 ) {
+	  std::cout << "checking SS" << std::endl;
+	  if( (((span_start < t1) || almost_equal(span_start, t1)) &&
+	       ((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
+      for( size_t i=0; i<peers.size(); i++ ) {
+        // Check if peer is explicitly disabled
+        if( peers[i].is_recv_disabled() ) {
+          peer_is_sending[i] = false;
+          continue;
+        }
+
+        // Perform geometric check against defined regions
+        peer_is_sending[i] = peers[i].is_recving( t1, current_span );
+      }
+	  }
+	  else { // Ensure explicitly disabled peers are taken into account if outside Smart Send time bounds
+	    for( size_t i=0; i<peers.size(); i++ ) {
+        if( peers[i].is_recv_disabled() ) peer_is_sending[i] = false;
+      }
+	  }
 	}
 
 	/** \brief Sends a forecast of an upcoming time to remote nodes
@@ -766,6 +783,7 @@ public:
 		current_span.swap(s);
 		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(current_span)));
 		if( synchronised ) barrier_ss_send();
+		smart_send_set_ = false;
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
@@ -783,6 +801,7 @@ public:
 		recv_span.swap(s);
 		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(recv_span)));
 		if( synchronised ) barrier_ss_recv();
+		smart_send_set_ = false;
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for receive"
@@ -934,35 +953,36 @@ private:
 	/** \brief Handles "receivingSpan" messages
 	  */
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		peers.at(sender).set_recving(start,timeout,std::move(s));
-		peers.at(sender).set_ss_recv_status(true);
+		peers[sender].set_recving(start,timeout,std::move(s));
+		peers[sender].set_ss_recv_status(true);
 	}
 
 	/** \brief Handles "sendingSpan" messages
 	  */
 	void on_send_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		peers.at(sender).set_sending(start,timeout,std::move(s));
-		peers.at(sender).set_ss_send_status(true);
+		peers[sender].set_sending(start,timeout,std::move(s));
+		peers[sender].set_ss_send_status(true);
 	}
 
 	/** \brief Handles "sendingDisable" messages
 	  */
 	void on_recv_disable( int32_t sender ) {
-		peers.at(sender).set_recv_disable();
-		peers.at(sender).set_ss_recv_status(true);
+		peers[sender].set_recv_disable();
+		peers[sender].set_ss_recv_status(true);
+		peer_is_sending[sender] = false;
 	}
 
 	/** \brief Handles "receivingDisable" messages
 	  */
 	void on_send_disable( int32_t sender ) {
-		peers.at(sender).set_send_disable();
-		peers.at(sender).set_ss_send_status(true);
+		peers[sender].set_send_disable();
+		peers[sender].set_ss_send_status(true);
 	}
 
 	/** \brief Handles "points" messages
 	  */
 	void on_recv_points( int32_t sender, std::vector<point_type> points ) {
-		peers.at(sender).set_pts(points);
+		peers[sender].set_pts(points);
 	}
 
 	/** \brief Handles "assignedVals" messages
