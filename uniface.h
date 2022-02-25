@@ -244,6 +244,8 @@ private: // data members
 	std::mutex mutex;
 	bool initialized_pts_;
 	size_t fixedPointCount_;
+	time_type fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
+	time_type fetch_t2_hist_ = std::numeric_limits<time_type>::lowest();
 
 public:
 	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
@@ -379,8 +381,11 @@ public:
 	fetch( const std::string& attr,const point_type& focus, const time_type t,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+	  // Only enter barrier on first fetch for time=t
+	  if( fetch_t1_hist_ != t && barrier_enabled )
 			barrier(t_sampler.get_upper_bound(t));
+
+    fetch_t1_hist_ = t;
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
@@ -408,8 +413,11 @@ public:
 	fetch( const std::string& attr,const point_type& focus, const time_type t1, const time_type t2,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if(fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
@@ -436,8 +444,10 @@ public:
 	std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-	  if(barrier_enabled)
+	  if( fetch_t1_hist_ != t && barrier_enabled )
 	    barrier(t_sampler.get_upper_bound(t));
+
+	  fetch_t1_hist_ = t;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
@@ -470,8 +480,11 @@ public:
 	std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t1, const time_type t2,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if( fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
@@ -504,8 +517,10 @@ public:
 	std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if( fetch_t1_hist_ != t && barrier_enabled )
 			barrier(t_sampler.get_upper_bound(t));
+
+		fetch_t1_hist_ = t;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
@@ -538,8 +553,11 @@ public:
 	std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t1, const time_type t2,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if( fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
@@ -573,7 +591,7 @@ public:
 	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
     std::pair<time_type,time_type> time(t1,t2);
 
-    // If Smart Send not initialised then perform setting check
+    // Check Smart Send if announcement made
     if( !smart_send_set_ ) {
       // Reset all peers to default of enabled
       std::fill(peer_is_sending.begin(), peer_is_sending.end(), true);
@@ -610,7 +628,6 @@ public:
 	}
 
 	void update_smart_send( time_type t1 ) {
-	  std::cout << "checking SS" << std::endl;
 	  if( (((span_start < t1) || almost_equal(span_start, t1)) &&
 	       ((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
       for( size_t i=0; i<peers.size(); i++ ) {
