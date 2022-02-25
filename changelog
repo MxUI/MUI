@@ -1,0 +1,35 @@
+############################################
+# Multiscale Universal Interface Changelog #
+############################################
+
+[25 February 2022, 1.2.1]
+  - Performance improvements (in particular with large peer numbers)
+  - Add new parameters to RBF filter API
+  - Update C/Fortran/Python wrapper to reflect new RBF API
+  - Update mui4py version system to reflect the main library
+
+[16 December 2021, 1.2]
+  - C/Fortran/Python wrappers all complete
+  - Redesign CMake build system
+  - Performance and bug fixes
+
+[07 October 2021, 1.1.3]
+  - Update CMake build system
+  - Add completed C wrapper
+
+[27 August 2021, 1.1.2]
+  - Performance and bug fixes
+  - Ensure order output by create_uniface() of created objects matches input 
+  - Add new function to uniface() to allow access to URI components 
+
+[02 August 2021, 1.1.1]
+  - Revert fix for missing MPI messages issues in v1.1
+  - Add new fix to catch unexpected application exit
+
+[19 March 2021, 1.1]
+  - Bug fixes in RBF spatial sampler
+  - Add new basis fucntions to RBF spatial sampler
+  - Bug fixes around missing MPI messages on unexpected application exit
+
+[31 January 2020, 1.0]
+  - Initial release

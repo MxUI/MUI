@@ -20,7 +20,7 @@
 ### General
 
 - Bindings tested with:
-	-  `gcc 7.2.0` and `clang LLVM version 9.1.0`, but it should work with any version of them supporting `c++11`.
+	- `gcc 7.2.0` and `clang LLVM version 9.1.0`, but it should work with any version of them supporting `c++11`.
 	- `Mpich 3.2.1`, `OpenMPI 3.1.0` and `Spectrum MPI 10.02`.
 
 - It is advised to use **conda** or **virtualenv** environments. This will provide isolation and control over the dependencies.
@@ -51,7 +51,7 @@ Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find 
 
 # ToDo List
 
-- Remove warnings for const qualifier loss for RBF spatial filter.
+- Fix warnings for const qualifier loss for RBF spatial filter.
 - Include interface send/receive disable in the bindings.
 - Include multi-time functions in the bindings.
 - Include fucntions to retrieve all points or values in the bindings. 
