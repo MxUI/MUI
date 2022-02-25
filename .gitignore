@@ -1,6 +1,7 @@
 .cproject
 .project
 .settings
+.pydevproject
 Debug
 Release
 build

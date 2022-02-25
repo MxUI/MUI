@@ -232,6 +232,8 @@ private: // data members
 	std::unordered_map<std::string, storage_single_t > assigned_values;
 
 	std::vector<peer_state> peers;
+	std::vector<bool> peer_is_sending;
+	bool smart_send_set_ = true;
 	time_type span_start = std::numeric_limits<time_type>::lowest();
 	time_type span_timeout = std::numeric_limits<time_type>::lowest();
 	span_t current_span;
@@ -242,6 +244,8 @@ private: // data members
 	std::mutex mutex;
 	bool initialized_pts_;
 	size_t fixedPointCount_;
+	time_type fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
+	time_type fetch_t2_hist_ = std::numeric_limits<time_type>::lowest();
 
 public:
 	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
@@ -250,6 +254,7 @@ public:
 		using namespace std::placeholders;
 
 		peers.resize(comm->remote_size());
+		peer_is_sending.resize(comm->remote_size(), true);
 
 		readers.link("timestamp", reader_variables<int32_t, std::pair<time_type,time_type> >(
 					 std::bind(&uniface::on_recv_confirm, this, _1, _2)));
@@ -376,8 +381,11 @@ public:
 	fetch( const std::string& attr,const point_type& focus, const time_type t,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+	  // Only enter barrier on first fetch for time=t
+	  if( fetch_t1_hist_ != t && barrier_enabled )
 			barrier(t_sampler.get_upper_bound(t));
+
+    fetch_t1_hist_ = t;
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
@@ -405,8 +413,11 @@ public:
 	fetch( const std::string& attr,const point_type& focus, const time_type t1, const time_type t2,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if(fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
 
 		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
@@ -433,8 +444,10 @@ public:
 	std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-	  if(barrier_enabled)
+	  if( fetch_t1_hist_ != t && barrier_enabled )
 	    barrier(t_sampler.get_upper_bound(t));
+
+	  fetch_t1_hist_ = t;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
@@ -467,8 +480,11 @@ public:
 	std::vector<point_type>
 	fetch_points( const std::string& attr, const time_type t1, const time_type t2,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if( fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector <point_type> return_points;
@@ -501,8 +517,10 @@ public:
 	std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if( fetch_t1_hist_ != t && barrier_enabled )
 			barrier(t_sampler.get_upper_bound(t));
+
+		fetch_t1_hist_ = t;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
@@ -535,8 +553,11 @@ public:
 	std::vector<TYPE>
 	fetch_values( const std::string& attr, const time_type t1, const time_type t2,
 				  const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, ADDITIONAL && ... additional ) {
-		if(barrier_enabled)
+		if( fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
 
 		using vec = std::vector<std::pair<point_type,TYPE> >;
 		std::vector<TYPE> return_values;
@@ -568,28 +589,20 @@ public:
 	  * Returns the actual number of peers contacted
 	  */
 	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
-    std::vector<bool> is_sending(comm->remote_size(), true);
     std::pair<time_type,time_type> time(t1,t2);
 
-    // Check if peer set to disabled (not linked to time span)
-    for( size_t i=0; i<peers.size(); ++i ) {
-      if( peers[i].is_recv_disabled() )
-        is_sending[i] = false;
-    }
-
-    // Check for smart send based on t1
-    if( (((span_start < t1) || almost_equal(span_start, t1)) &&
-        ((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
-      for( size_t i=0; i<peers.size(); ++i ) {
-        if( is_sending[i] ) // Peer is not already disabled so check using smart send
-          is_sending[i] = peers[i].is_recving( t1, current_span );
-      }
+    // Check Smart Send if announcement made
+    if( !smart_send_set_ ) {
+      // Reset all peers to default of enabled
+      std::fill(peer_is_sending.begin(), peer_is_sending.end(), true);
+      update_smart_send(t1);
+      smart_send_set_ = true;
     }
 
 		if( FIXEDPOINTS ) {
 			// This only happens during the first commit
 			if( push_buffer_pts.size() > 0 ) {
-				comm->send( message::make("points",comm->local_rank(),std::move(push_buffer_pts)),is_sending );
+				comm->send( message::make("points",comm->local_rank(),std::move(push_buffer_pts)),peer_is_sending );
 				initialized_pts_ = true;
 				push_buffer_pts.clear();
 			}
@@ -598,20 +611,41 @@ public:
 			fixedPointCount_ = 0;
 
 			if( push_buffer_raw.size() > 0 ) {
-				comm->send( message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)),is_sending );
+				comm->send( message::make("rawdata",comm->local_rank(),time,std::move(push_buffer_raw)),peer_is_sending );
 				push_buffer_raw.clear();
 			}
 		}
 		else {
 			if( push_buffer.size() > 0 ) {
-				comm->send( message::make("data",time,std::move(push_buffer)),is_sending );
+				comm->send( message::make("data",time,std::move(push_buffer)),peer_is_sending );
 				push_buffer.clear();
 			}
 		}
 
-		comm->send( message::make("timestamp",comm->local_rank(),time),is_sending );
+		comm->send( message::make("timestamp",comm->local_rank(),time),peer_is_sending );
 
-		return std::count( is_sending.begin(),is_sending.end(),true );
+		return std::count( peer_is_sending.begin(),peer_is_sending.end(),true );
+	}
+
+	void update_smart_send( time_type t1 ) {
+	  if( (((span_start < t1) || almost_equal(span_start, t1)) &&
+	       ((t1 < span_timeout) || almost_equal(t1, span_timeout))) ) {
+      for( size_t i=0; i<peers.size(); i++ ) {
+        // Check if peer is explicitly disabled
+        if( peers[i].is_recv_disabled() ) {
+          peer_is_sending[i] = false;
+          continue;
+        }
+
+        // Perform geometric check against defined regions
+        peer_is_sending[i] = peers[i].is_recving( t1, current_span );
+      }
+	  }
+	  else { // Ensure explicitly disabled peers are taken into account if outside Smart Send time bounds
+	    for( size_t i=0; i<peers.size(); i++ ) {
+        if( peers[i].is_recv_disabled() ) peer_is_sending[i] = false;
+      }
+	  }
 	}
 
 	/** \brief Sends a forecast of an upcoming time to remote nodes
@@ -647,53 +681,86 @@ public:
 	/** \brief Blocking barrier at t1. Initiates receive from remote nodes.
 	  */
 	void barrier( time_type t1 ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
-					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1))); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( !QUIET ) {
+	  // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
+    auto start = std::chrono::system_clock::now();
+
+    for(;;) {
+      size_t peers_unblocked = 0;
+      for( size_t p = 0; p < peers.size(); p++ ) {
+        if( peers[p].is_send_disabled() ) { peers_unblocked++; continue; } // Rank disabled, immediate break
+        if( !peers[p].is_sending(t1, recv_span) ) { peers_unblocked++; continue; } // Rank disabled due to Smart Send geometry check
+        if( (peers[p].current_t() > t1 || almost_equal(peers[p].current_t(), t1)) || peers[p].next_t() > t1 ) { // Final time check
+          peers_unblocked++;
+          continue;
+        }
+      }
+      // All peers unblocked, break loop
+      if( peers_unblocked == peers.size() )
+        break;
+      else // Acquire messages
+        acquire();
+    }
+
+    if( !QUIET ) {
       if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
           std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
       }
-		}
-	}
+    }
+  }
 
 	/** \brief Blocking barrier at t1 (or t1,t2). Initiates receive from remote nodes.
 	  */
 	void barrier( time_type t1, time_type t2 ) {
-		auto start = std::chrono::system_clock::now();
-		for(;;) {    // barrier must be thread-safe because it is called in fetch()
-			std::lock_guard<std::mutex> lock(mutex);
-			if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
-				return (p.is_send_disabled()) || (!p.is_sending(t1, recv_span)) ||
-					   ((((p.current_t() > t1) || almost_equal(p.current_t(), t1)) || (p.next_t() > t1)) &&
-					    (((p.current_sub() > t2) || almost_equal(p.current_sub(), t2)) || (p.next_sub() > t2))); }) ) break;
-			acquire(); // To avoid infinite-loop when synchronous communication
-		}
-		if( !QUIET ) {
+	  // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
+    auto start = std::chrono::system_clock::now();
+
+    for(;;) {
+      size_t peers_unblocked = 0;
+      for( size_t p = 0; p < peers.size(); p++ ) {
+        if( peers[p].is_send_disabled() ) { peers_unblocked++; continue; } // Rank disabled, immediate break
+        if( !peers[p].is_sending(t1, recv_span) ) { peers_unblocked++; continue; } // Rank disabled due to Smart Send geometry check
+        if( ((peers[p].current_t() > t1 || almost_equal(peers[p].current_t(), t1)) || peers[p].next_t() > t1) && // Final time check
+            ((peers[p].current_sub() > t2 || almost_equal(peers[p].current_sub(), t2)) || peers[p].next_sub() > t2) ) {
+          peers_unblocked++;
+          continue;
+        }
+      }
+      // All peers unblocked, break loop
+      if( peers_unblocked == peers.size() )
+        break;
+      else // Acquire messages
+        acquire();
+    }
+
+    if( !QUIET ) {
       if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
         std::cout << "MUI Warning [uniface.h]: Communication barrier spent over 5 seconds" << std::endl;
       }
-		}
-	}
+    }
+  }
 
 	/** \brief Blocking barrier for Smart Send send values. Initiates receive from remote nodes.
     */
   void barrier_ss_send( ) {
+    // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto start = std::chrono::system_clock::now();
+
     for(;;) {    // barrier must be thread-safe because it is called in fetch()
-      std::lock_guard<std::mutex> lock(mutex);
       if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
         return (p.ss_send_status()); }) ) break;
       acquire(); // To avoid infinite-loop when synchronous communication
     }
+
     for(size_t i=0; i<peers.size(); i++) {
       peers[i].set_ss_send_status(false);
     }
+
     if( !QUIET ) {
       if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
         std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
@@ -704,19 +771,24 @@ public:
   /** \brief Blocking barrier for Smart Send receive values. Initiates receive from remote nodes.
     */
   void barrier_ss_recv( ) {
+    // barrier must be thread-safe because it is called in fetch()
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto start = std::chrono::system_clock::now();
+
     for(;;) {    // barrier must be thread-safe because it is called in fetch()
-      std::lock_guard<std::mutex> lock(mutex);
       if( std::all_of(peers.begin(), peers.end(), [=](const peer_state& p) {
         return (p.ss_recv_status()); }) ) break;
       acquire(); // To avoid infinite-loop when synchronous communication
     }
+
+    for(size_t i=0; i<peers.size(); i++) {
+      peers[i].set_ss_recv_status(false);
+    }
+
     if( (std::chrono::system_clock::now() - start) > std::chrono::seconds(5) ) {
       if( !QUIET )
         std::cout << "MUI Warning [uniface.h]: Smart Send communication barrier spent over 5 seconds" << std::endl;
-    }
-    for(size_t i=0; i<peers.size(); i++) {
-      peers[i].set_ss_recv_status(false);
     }
   }
 
@@ -728,6 +800,7 @@ public:
 		current_span.swap(s);
 		comm->send(message::make("sendingSpan", comm->local_rank(), start, timeout, std::move(current_span)));
 		if( synchronised ) barrier_ss_send();
+		smart_send_set_ = false;
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for send"
@@ -745,6 +818,7 @@ public:
 		recv_span.swap(s);
 		comm->send(message::make("receivingSpan", comm->local_rank(), start, timeout, std::move(recv_span)));
 		if( synchronised ) barrier_ss_recv();
+		smart_send_set_ = false;
 	}
 
 	/** \brief Announces to all remote nodes "I'm disabled for receive"
@@ -896,35 +970,36 @@ private:
 	/** \brief Handles "receivingSpan" messages
 	  */
 	void on_recv_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		peers.at(sender).set_recving(start,timeout,std::move(s));
-		peers.at(sender).set_ss_recv_status(true);
+		peers[sender].set_recving(start,timeout,std::move(s));
+		peers[sender].set_ss_recv_status(true);
 	}
 
 	/** \brief Handles "sendingSpan" messages
 	  */
 	void on_send_span( int32_t sender, time_type start, time_type timeout, span_t s ) {
-		peers.at(sender).set_sending(start,timeout,std::move(s));
-		peers.at(sender).set_ss_send_status(true);
+		peers[sender].set_sending(start,timeout,std::move(s));
+		peers[sender].set_ss_send_status(true);
 	}
 
 	/** \brief Handles "sendingDisable" messages
 	  */
 	void on_recv_disable( int32_t sender ) {
-		peers.at(sender).set_recv_disable();
-		peers.at(sender).set_ss_recv_status(true);
+		peers[sender].set_recv_disable();
+		peers[sender].set_ss_recv_status(true);
+		peer_is_sending[sender] = false;
 	}
 
 	/** \brief Handles "receivingDisable" messages
 	  */
 	void on_send_disable( int32_t sender ) {
-		peers.at(sender).set_send_disable();
-		peers.at(sender).set_ss_send_status(true);
+		peers[sender].set_send_disable();
+		peers[sender].set_ss_send_status(true);
 	}
 
 	/** \brief Handles "points" messages
 	  */
 	void on_recv_points( int32_t sender, std::vector<point_type> points ) {
-		peers.at(sender).set_pts(points);
+		peers[sender].set_pts(points);
 	}
 
 	/** \brief Handles "assignedVals" messages

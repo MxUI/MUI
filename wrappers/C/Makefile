@@ -38,8 +38,8 @@ mui_c_wrapper_2d.o: mui_c_wrapper_2d.cpp
 mui_c_wrapper_3d.o: mui_c_wrapper_3d.cpp
 	 @echo "Generating C-wrapper 3D object file..."
 	 ${CCX} ${CXXFLAGS} -c mui_c_wrapper_3d.cpp -o mui_c_wrapper_3d.o
-	 
-test: 
+
+test:
 	 @echo "Compiling and linking MUI C wrapper unit test code..."
 	 ${CC} ${CFLAGS} unit_test_single.c -o unit_test_c_wrapper_single -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
 	 ${CC} ${CFLAGS} unit_test_multi.c -o unit_test_c_wrapper_multi -L${PWD} -lstdc++ -lmpi_cxx -lm -lmui_c_wrapper
