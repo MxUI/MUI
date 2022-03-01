@@ -592,7 +592,7 @@ public:
     std::pair<time_type, time_type> time(t1, t2);
 
     // Check Smart Send if announcement made
-    if (!smart_send_set_) {
+    if ( !smart_send_set_ ) {
       // Reset all peers to default of enabled
       std::fill(peer_is_sending.begin(), peer_is_sending.end(), true);
       update_smart_send(t1);
@@ -838,8 +838,8 @@ public:
 			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
-				peers.at(i).set_current_t(curr_time.first);
-				peers.at(i).set_current_sub(curr_time.second);
+				peers[i].set_current_t(curr_time.first);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -856,8 +856,8 @@ public:
 			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
-				peers.at(i).set_current_t(curr_time.first);
-				peers.at(i).set_current_sub(curr_time.second);
+				peers[i].set_current_t(curr_time.first);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -876,8 +876,8 @@ public:
 			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
-				peers.at(i).set_current_t(curr_time.first);
-				peers.at(i).set_current_sub(curr_time.second);
+				peers[i].set_current_t(curr_time.first);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -895,8 +895,8 @@ public:
 			std::pair<time_type,time_type> curr_time(std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest());
 			if(!log.empty()) curr_time = log.rbegin()->first;
 			for(size_t i=0; i<peers.size(); i++) {
-				peers.at(i).set_current_t(curr_time.first);
-				peers.at(i).set_current_sub(curr_time.second);
+				peers[i].set_current_t(curr_time.first);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -936,23 +936,21 @@ private:
 	  */
 	void acquire() {
 		message m = comm->recv();
-		if( m.has_id() ){
-			readers[m.id()](m);
-		}
+		if( m.has_id() ) readers[m.id()](m);
 	}
 
 	/** \brief Handles "timestamp" messages
 	  */
 	void on_recv_confirm( int32_t sender, std::pair<time_type,time_type> timestamp ) {
-		peers.at(sender).set_current_t(timestamp.first);
-		peers.at(sender).set_current_sub(timestamp.second);
+		peers[sender].set_current_t(timestamp.first);
+		peers[sender].set_current_sub(timestamp.second);
 	}
 
 	/** \brief Handles "forecast" messages
 	  */
 	void on_recv_forecast( int32_t sender, std::pair<time_type,time_type> timestamp ) {
-		peers.at(sender).set_next_t(timestamp.first);
-		peers.at(sender).set_next_sub(timestamp.second);
+		peers[sender].set_next_t(timestamp.first);
+		peers[sender].set_next_sub(timestamp.second);
 	}
 
 	/** \brief Handles "data" messages
@@ -1029,7 +1027,7 @@ private:
 	  */
 	inline frame_type associate( int32_t sender, frame_raw_type& frame ) {
 		frame_type buf;
-		const auto& pts = peers.at(sender).pts();
+		const auto& pts = peers[sender].pts();
 
 		for( auto& p: frame ) {
 			const auto& data = storage_cast<const std::vector<std::pair<size_t,REAL> >&>(p.second);
