@@ -65,7 +65,7 @@ private:
 	MPI_Status status;
 	int count;
 public:
-	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
+	comm_mpi_smart( const char URI[], const bool quiet, MPI_Comm world = MPI_COMM_WORLD ) : count(0), comm_mpi(URI, quiet, world) {}
 	virtual ~comm_mpi_smart() {
 		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
 		test_completion_blocking();
@@ -127,8 +127,8 @@ private:
 	}
 };
 
-inline communicator *create_comm_mpi_smart( const char URI[] ) {
-	return new comm_mpi_smart(URI);
+inline communicator *create_comm_mpi_smart( const char URI[], const bool quiet ) {
+	return new comm_mpi_smart(URI, quiet);
 }
 
 const static bool registered = comm_factory::instance().link( "mpi", create_comm_mpi_smart );

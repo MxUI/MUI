@@ -248,8 +248,8 @@ private: // data members
 	time_type fetch_t2_hist_ = std::numeric_limits<time_type>::lowest();
 
 public:
-	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI) ) {}
-	uniface( std::string const &URI ) : uniface( comm_factory::create_comm(URI.c_str()) ) {}
+	uniface( const char URI[] ) : uniface( comm_factory::create_comm(URI, QUIET) ) {}
+	uniface( std::string const &URI ) : uniface( comm_factory::create_comm(URI.c_str(), QUIET) ) {}
 	uniface( communicator* comm_ ) : comm(comm_), initialized_pts_(false), fixedPointCount_(0) {
 		using namespace std::placeholders;
 
