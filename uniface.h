@@ -589,10 +589,10 @@ public:
 	  * Returns the actual number of peers contacted
 	  */
 	int commit( time_type t1, time_type t2 = std::numeric_limits<time_type>::lowest() ) {
-    std::pair<time_type,time_type> time(t1,t2);
+    std::pair<time_type, time_type> time(t1, t2);
 
     // Check Smart Send if announcement made
-    if( !smart_send_set_ ) {
+    if (!smart_send_set_) {
       // Reset all peers to default of enabled
       std::fill(peer_is_sending.begin(), peer_is_sending.end(), true);
       update_smart_send(t1);
@@ -842,6 +842,8 @@ public:
 				peers.at(i).set_current_sub(curr_time.second);
 			}
 		}
+
+		fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
 	}
 
 	/** \brief Removes log between ([-inf,-inf], [@last.first,@last.second]]
@@ -858,6 +860,9 @@ public:
 				peers.at(i).set_current_sub(curr_time.second);
 			}
 		}
+
+		fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
+		fetch_t2_hist_ = std::numeric_limits<time_type>::lowest();
 	}
 
 	/** \brief Removes log between [@first, @last]
@@ -875,6 +880,8 @@ public:
 				peers.at(i).set_current_sub(curr_time.second);
 			}
 		}
+
+		fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
 	}
 
 	/** \brief Removes log between [[@first.first,@first.second], [@last.first,@last.second]]
@@ -892,12 +899,18 @@ public:
 				peers.at(i).set_current_sub(curr_time.second);
 			}
 		}
+
+		fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
+		fetch_t2_hist_ = std::numeric_limits<time_type>::lowest();
 	}
 
 	/** \brief Removes log between (-inf, current-@length] automatically.
 	  */
 	void set_memory( time_type length ) {
 		memory_length = length;
+
+		fetch_t1_hist_ = std::numeric_limits<time_type>::lowest();
+		fetch_t2_hist_ = std::numeric_limits<time_type>::lowest();
 	}
 	
 	/** \brief Returns the URI host (domain) for the created uniface
