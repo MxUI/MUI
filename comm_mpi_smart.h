@@ -62,6 +62,8 @@ namespace mui {
 class comm_mpi_smart : public comm_mpi {
 private:
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
+	MPI_Status status;
+	int count;
 public:
 	comm_mpi_smart( const char URI[], MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, world) {}
 	virtual ~comm_mpi_smart() {
@@ -71,8 +73,6 @@ public:
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
-		test_completion();
 		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 
 		if(bytes->size() > INT_MAX){
@@ -82,32 +82,26 @@ private:
       std::abort();
     }
 
-		int test;
-
 		for( int i = 0; i < remote_size_; i++ ) {
 			if( is_sending[i] ) {
 				send_buf.emplace_back(MPI_Request(), bytes);
 				MPI_Isend(bytes->data(), bytes->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
-
-				// Add immediate MPI_Test to ensure buffer cleared as quickly as possible
-        MPI_Test(&(send_buf.back().first),&test,MPI_STATUS_IGNORE);
-        if( test ) send_buf.pop_back();
 		 	}
 		}
+
+		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
+		test_completion();
 	}
 
 	message recv_impl_() {
 		// Catch any unsent MPI_Isend calls before fetch starts, non-blocking
-		test_completion();
-		std::vector<char> temp;
-		MPI_Status status;
+		//test_completion();
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
-		int count;
 		MPI_Get_count(&status,MPI_BYTE,&count);
-		temp.resize(count);
-		MPI_Recv( temp.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
-		return message::make(std::move(temp));
+		std::vector<char> rcv_buf(count);
+		MPI_Recv( rcv_buf.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
+		return message::make(std::move(rcv_buf));
 	}
 
 	/** \brief Non-blocking check for complete MPI_Isend calls
@@ -126,7 +120,6 @@ private:
 	void test_completion_blocking() {
 	  while (send_buf.size() > 0) {
 			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ){
-				//int test = false;
 				MPI_Wait(&(itr->first), MPI_STATUS_IGNORE);
 				itr = send_buf.erase(itr);
 			}
