@@ -96,7 +96,7 @@ private:
 
 	message recv_impl_() {
 		// Catch any unsent MPI_Isend calls before fetch starts, non-blocking
-		//test_completion();
+		test_completion();
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
 		MPI_Get_count(&status,MPI_BYTE,&count);
 		std::vector<char> rcv_buf(count);
