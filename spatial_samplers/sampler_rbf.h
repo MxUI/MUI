@@ -8,7 +8,6 @@
  * and the GNU General Public License version 3, you may use it according     *
  * to either.                                                                 *
  *                                                                            *
- * ** Apache License, version 2.0 **                                          *
  *                                                                            *
  * Licensed under the Apache License, Version 2.0 (the "License");            *
  * you may not use this file except in compliance with the License.           *
@@ -447,9 +446,9 @@ private:
 
 							int glob_i = connectivityAB_[row][i];
 
-							for ( INT tempDim = 0; tempDim < CONFIG::D; tempDim++ ) {
-								coefsC.emplace_back(Eigen::Triplet<REAL> (i, (N_sp_ + tempDim + 1), data_points[glob_i].first[tempDim]));
-								coefsC.emplace_back(Eigen::Triplet<REAL> ((N_sp_ + tempDim + 1), i, data_points[glob_i].first[tempDim]));
+							for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
+								coefsC.emplace_back(Eigen::Triplet<REAL> (i, (N_sp_ + dim + 1), data_points[glob_i].first[dim]));
+								coefsC.emplace_back(Eigen::Triplet<REAL> ((N_sp_ + dim + 1), i, data_points[glob_i].first[dim]));
 							}
 						}
 
@@ -465,14 +464,14 @@ private:
 							auto d = norm(pts_[row] - data_points[glob_j].first);
 
 							if ( d < r_ ) {
-								coefs.emplace_back(Eigen::Triplet < REAL > (0, j, rbf(d)));
+								coefs.emplace_back(Eigen::Triplet<REAL> (0, j, rbf(d)));
 							}
 						}
 
-						coefs.emplace_back(Eigen::Triplet < REAL > (0, N_sp_, 1));
+						coefs.emplace_back(Eigen::Triplet<REAL> (0, N_sp_, 1));
 
-						for (int tempDim = 0; tempDim < CONFIG::D; tempDim++) {
-							coefs.emplace_back(Eigen::Triplet<REAL> (0, (N_sp_ + tempDim + 1), pts_[row][tempDim]));
+						for (int dim = 0; dim < CONFIG::D; dim++) {
+							coefs.emplace_back(Eigen::Triplet<REAL> (0, (N_sp_ + dim + 1), pts_[row][dim]));
 						}
 
 						Aas.reserve(coefs.size());
@@ -483,8 +482,7 @@ private:
 						I.setIdentity();
 						Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>,
 								Eigen::Lower | Eigen::Upper,
-								Eigen::DiagonalPreconditioner<REAL>> solver(
-								Css);
+								Eigen::DiagonalPreconditioner<REAL>> solver(Css);
 						if ( cgMaxIter_ != -1 )
 							solver.setMaxIterations(cgMaxIter_);
 						solver.setTolerance(cgSolveTol_);
@@ -569,6 +567,7 @@ private:
 								int glob_j = connectivityAB_[row][j];
 
 								auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
+
 								if ( d < r_ ) {
 									REAL w = rbf(d);
 									coefs.emplace_back(Eigen::Triplet<REAL> (i, j, w));
@@ -587,8 +586,9 @@ private:
 							int glob_j = connectivityAB_[row][j];
 
 							auto d = norm(pts_[row] - data_points[glob_j].first);
+
 							if ( d < r_ ) {
-								coefs.emplace_back(Eigen::Triplet < REAL > (0, j, rbf(d)));
+								coefs.emplace_back(Eigen::Triplet<REAL> (0, j, rbf(d)));
 							}
 						}
 
@@ -675,6 +675,7 @@ private:
 					for ( size_t i = 0; i < pts_.size(); i++ ) {
 						for ( size_t j = i; j < pts_.size(); j++ ) {
 							auto d = norm(pts_[i] - pts_[j]);
+
 							if ( d < r_ ) {
 								REAL w = rbf(d);
 								coefsC.emplace_back(Eigen::Triplet<REAL> ((i + CONFIG::D + 1), (j + CONFIG::D + 1), w));
@@ -694,6 +695,7 @@ private:
 					for ( size_t i = 0; i < data_points.size(); i++ ) {
 						for ( size_t j = 0; j < pts_.size(); j++ ) {
 							auto d = norm(data_points[i].first - pts_[j]);
+
 							if ( d < r_ ) {
 								coefs.emplace_back(Eigen::Triplet<REAL> (i, (j + CONFIG::D + 1), rbf(d)));
 							}
@@ -783,6 +785,7 @@ private:
 								int glob_j = connectivityAB_[row][j];
 
 								auto d = norm(pts_[glob_i] - pts_[glob_j]);
+
 								if ( d < r_ ) {
 									REAL w = rbf(d);
 									coefs.emplace_back(Eigen::Triplet<REAL> (i, j, w));
@@ -801,6 +804,7 @@ private:
 							int glob_j = connectivityAB_[row][j];
 
 							auto d = norm(data_points[row].first - pts_[glob_j]);
+
 							if ( d < r_ ) {
 								coefs.emplace_back(Eigen::Triplet < REAL > (0, j, rbf(d)));
 							}
@@ -880,10 +884,8 @@ private:
 
 				std::ofstream outputFileHMatrix(fileAddress_ + "/Hmatrix.dat");
 
-				if ( !outputFileHMatrix ) {
-					std::cerr << "Could not locate the file address of Hmatrix.dat!"
-							<< std::endl;
-				}
+				if ( !outputFileHMatrix )
+					std::cerr << "Could not locate the file address of Hmatrix.dat!" << std::endl;
 				else {
 					outputFileHMatrix
 							<< "// ************************************************************************************************";
@@ -909,41 +911,30 @@ private:
 		initialised_ = true;
 	}
 
-	///Radial basis function
-	REAL rbf(point_type x1, point_type x2) {
+	//Radial basis function for two points
+	inline REAL rbf(point_type x1, point_type x2) {
 		auto d = norm(x1 - x2);
 		return rbf(d);
 	}
 
-	REAL rbf(REAL d) {
-		REAL w = 0.;
-
+	//Radial basis function for calculated distance
+	inline REAL rbf(REAL d) {
 		switch ( basisFunc_ ) {
 			case 0:
 				//Gaussian
-				w = std::exp(-(s_ * s_ * d * d));
-				return w;
-				break;
+				return (d < r_) ? std::exp(-(s_ * s_ * d * d)) : 0.;
 			case 1:
 				//Wendland's C0
-				w = std::pow((1. - d), 2.);
-				return w;
-				break;
+				return std::pow((1. - d), 2.);
 			case 2:
 				//Wendland's C2
-				w = (std::pow((1. - d), 4.)) * ((4. * d) + 1.);
-				return w;
-				break;
+				return (std::pow((1. - d), 4.)) * ((4. * d) + 1.);
 			case 3:
 				//Wendland's C4
-				w = (std::pow((1. - d), 6)) * ((35. * d * d) + (18. * d) + 3.);
-				return w;
-				break;
+				return (std::pow((1. - d), 6)) * ((35. * d * d) + (18. * d) + 3.);
 			case 4:
 				//Wendland's C6
-				w = (std::pow((1. - d), 8.)) * ((32. * d * d * d) + (25. * d * d) + (8. * d) + 1.);
-				return w;
-				break;
+				return (std::pow((1. - d), 8.)) * ((32. * d * d * d) + (25. * d * d) + (8. * d) + 1.);
 			default:
 				std::cerr << "MUI Error [sampler_rbf.h]: invalid RBF basis function number ("
 						<< basisFunc_ << ")" << std::endl
@@ -954,33 +945,25 @@ private:
 						<< "basisFunc_=3 (Wendland's C4); " << std::endl
 						<< "basisFunc_=4 (Wendland's C6); " << std::endl;
 				return 0;
-				break;
 		}
 	}
 
 	///Distances function
-	REAL dist_h_i(INT pts_i, INT pts_j) {
-		REAL h_i = 0.0;
-
+	inline REAL dist_h_i(INT pts_i, INT pts_j) {
 		switch ( CONFIG::D ) {
 			case 1:
-				h_i = std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.)));
-				break;
+				return std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.)));
 			case 2:
-				h_i = std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.))
+				return std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.))
 						+ (std::pow((pts_[pts_i][1] - pts_[pts_j][1]), 2.)));
-				break;
 			case 3:
-				h_i = std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.))
+				return std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.))
 						+ (std::pow((pts_[pts_i][1] - pts_[pts_j][1]), 2.))
 						+ (std::pow((pts_[pts_i][2] - pts_[pts_j][2]), 2.)));
-				break;
 			default:
 				std::cerr << "CONFIG::D must equal 1-3" << std::endl;
-				break;
+				return 0.;
 		}
-
-		return h_i;
 	}
 
 	template<template<typename, typename > class CONTAINER>
