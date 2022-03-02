@@ -57,13 +57,13 @@
 
 namespace mui {
 
-struct comm_factory: public singleton<dispatcher<std::string, std::function<communicator *(const char [])> > >
+struct comm_factory: public singleton<dispatcher<std::string, std::function<communicator *(const char [], const bool)> > >
 {
-	static communicator *create_comm( const char URI[] ) {
+	static communicator *create_comm( const char URI[], const bool quiet ) {
 		if ( !instance().exist(uri(URI).protocol()) ) {
 			exception_segv( "MUI Error [comm_factory.h]: Unknown communicator type ", uri(URI).protocol() );
 		}
-		return instance()[uri(URI).protocol()]( URI );
+		return instance()[uri(URI).protocol()]( URI, quiet );
 	}
 };
 
