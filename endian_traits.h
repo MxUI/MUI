@@ -78,30 +78,30 @@
 #include <cstdint>
 
 #ifdef __APPLE__
-// MacOS does not provide <endian.h>
-// Provide mappings to MacOS specific function/macros 
-#include <libkern/OSByteOrder.h>
+// Provide mappings to Apple specific function/macros
+#  include <machine/endian.h>
+#  include <libkern/OSByteOrder.h>
 
-#define htobe16(x) OSSwapHostToBigInt16(x)
-#define htole16(x) OSSwapHostToLittleInt16(x)
-#define be16toh(x) OSSwapBigToHostInt16(x)
-#define le16toh(x) OSSwapLittleToHostInt16(x)
+#  define htobe16(x) OSSwapHostToBigInt16(x)
+#  define htole16(x) OSSwapHostToLittleInt16(x)
+#  define be16toh(x) OSSwapBigToHostInt16(x)
+#  define le16toh(x) OSSwapLittleToHostInt16(x)
 
-#define htobe32(x) OSSwapHostToBigInt32(x)
-#define htole32(x) OSSwapHostToLittleInt32(x)
-#define be32toh(x) OSSwapBigToHostInt32(x)
-#define le32toh(x) OSSwapLittleToHostInt32(x)
+#  define htobe32(x) OSSwapHostToBigInt32(x)
+#  define htole32(x) OSSwapHostToLittleInt32(x)
+#  define be32toh(x) OSSwapBigToHostInt32(x)
+#  define le32toh(x) OSSwapLittleToHostInt32(x)
 
-#define htobe64(x) OSSwapHostToBigInt64(x)
-#define htole64(x) OSSwapHostToLittleInt64(x)
-#define be64toh(x) OSSwapBigToHostInt64(x)
-#define le64toh(x) OSSwapLittleToHostInt64(x)
-
+#  define htobe64(x) OSSwapHostToBigInt64(x)
+#  define htole64(x) OSSwapHostToLittleInt64(x)
+#  define be64toh(x) OSSwapBigToHostInt64(x)
+#  define le64toh(x) OSSwapLittleToHostInt64(x)
 #else
-
-#include <endian.h>
-
+#  include <endian.h>
 #endif
+
+#  define MUI_POSITIVE true
+#  define MUI_NEGATIVE false
 
 // Convert input definitions (see above) to two macros returning bool
 // (MUI_CONVERT_FLOAT & MUI_CONVERT_INT) that tell the implementation
@@ -118,27 +118,31 @@
 
 #else // Not ignoring
 
-// Integers
+// Integer
 #  ifdef MUI_INT_BIG_ENDIAN
 #    ifdef MUI_INT_LITTLE_ENDIAN
 #      error "MUI Error [endian_traits.h]: Both MUI_INT_BIG_ENDIAN and MUI_INT_LITTLE_ENDIAN defined"
 #    else
+#      define MUI_INT_DEFINED MUI_POSITIVE
 #      define MUI_CONVERT_INT false
 #    endif
 #  else
 #    ifdef MUI_INT_LITTLE_ENDIAN
+#      define MUI_INT_DEFINED MUI_POSITIVE
 #      define MUI_CONVERT_INT true
 #    else
 // We have no endian options - try to figure it out.
 #      if defined(__BYTE_ORDER__)
+#        define MUI_INT_DEFINED MUI_POSITIVE
 #        define MUI_CONVERT_INT (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
-#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set in compilation options (see endian_traits.h for details)"
+#        define MUI_INT_DEFINED MUI_NEGATIVE
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set at compilation (-DMUI_INT_LITTLE_ENDIAN or -DMUI_INT_BIG_ENDIAN)"
 #      endif
 #    endif
 #  endif
 
-// Floating points
+// Floating point
 #  ifdef MUI_FLOAT_BIG_ENDIAN
 #    ifdef MUI_FLOAT_LITTLE_ENDIAN
 #      error "MUI Error [endian_traits.h]: Both MUI_FLOAT_BIG_ENDIAN and MUI_FLOAT_LITTLE_ENDIAN defined"
@@ -152,8 +156,13 @@
 // We have no endian options - try to figure it out.
 #      if defined(__FLOAT_WORD_ORDER__)
 #        define MUI_CONVERT_FLOAT (__FLOAT_WORD_ORDER__ != __ORDER_BIG_ENDIAN__)
-#      else
-#        error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set in compilation options (see endian_traits.h for details)"
+#      else // Likely using something other than GNU
+#        if MUI_INT_DEFINED == MUI_POSITIVE
+#          define MUI_CONVERT_FLOAT MUI_CONVERT_INT
+#          warning "MUI Warning [endian_traits.h]: Cannot auto-detect float endianness of platform - please set at compilation (-DMUI_FLOAT_LITTLE_ENDIAN or -DMUI_FLOAT_BIG_ENDIAN), integer endianness will be followed by default"
+#        else
+#          error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set at compilation (-DMUI_FLOAT_LITTLE_ENDIAN or -DMUI_FLOAT_BIG_ENDIAN)"
+#        endif
 #      endif
 #    endif
 #  endif
