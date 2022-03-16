@@ -31,8 +31,6 @@ As a header-only library using MUI in your own source code is straight forward, 
 
 <sup>1</sup> Only true if the Radial Basis Function (RBF) spatial interpolation scheme is included at compile-time.
 
-<b>Note:</b> if you are using MUI with a toolchain other than GNU, you may need to manually specify the endianness you wish the library to assume, this is done using a number of compile-time parameters: -DMUI_IGNORE_ENDIAN (never reorders); -DMUI_INT_LITTLE_ENDIAN combined with -DMUI_FLOAT_LITTLE_ENDIAN (assumed little endian reordering); -DMUI_INT_BIG_ENDIAN combined with -DMUI_FLOAT_BIG_ENDIAN (assumes big endian reordering). It is recommended you start by allowing the library to try and determine your endianness options, however if you receive many compilation erorrs relating to the stream parts of the library then you will need to manually define your choices.
-
 ## Publication
 
 **Tang** Y.-H., **Kudo**, S., **Bian**, X., **Li**, Z., & **Karniadakis**, G. E. Multiscale Universal Interface: A Concurrent Framework for Coupling Heterogeneous Solvers, *Journal of Computational Physics*, **2015**, 297.15, 13-31.
