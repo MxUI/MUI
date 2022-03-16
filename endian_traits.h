@@ -137,7 +137,7 @@
 #        define MUI_CONVERT_INT (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #      else
 #        define MUI_INT_DEFINED MUI_NEGATIVE
-#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set at compilation (-DMUI_INT_LITTLE_ENDIAN or -DMUI_INT_BIG_ENDIAN)"
+#        error "MUI Error [endian_traits.h]: Cannot auto-detect integer endianness of platform - please set at compilation (-DMUI_INT_LITTLE_ENDIAN or -DMUI_INT_BIG_ENDIAN) or set to ignore (-DMUI_IGNORE_ENDIAN)"
 #      endif
 #    endif
 #  endif
@@ -159,9 +159,9 @@
 #      else // Likely using something other than GNU
 #        if MUI_INT_DEFINED == MUI_POSITIVE
 #          define MUI_CONVERT_FLOAT MUI_CONVERT_INT
-#          warning "MUI Warning [endian_traits.h]: Cannot auto-detect float endianness of platform - please set at compilation (-DMUI_FLOAT_LITTLE_ENDIAN or -DMUI_FLOAT_BIG_ENDIAN), integer endianness will be followed by default"
+#          warning "MUI Warning [endian_traits.h]: Cannot auto-detect float endianness of platform - please set at compilation (-DMUI_FLOAT_LITTLE_ENDIAN or -DMUI_FLOAT_BIG_ENDIAN) or set to ignore (-DMUI_IGNORE_ENDIAN), integer endianness will be followed by default"
 #        else
-#          error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set at compilation (-DMUI_FLOAT_LITTLE_ENDIAN or -DMUI_FLOAT_BIG_ENDIAN)"
+#          error "MUI Error [endian_traits.h]: Cannot auto-detect float endianness of platform - please set at compilation (-DMUI_FLOAT_LITTLE_ENDIAN or -DMUI_FLOAT_BIG_ENDIAN) or set to ignore (-DMUI_IGNORE_ENDIAN)"
 #        endif
 #      endif
 #    endif

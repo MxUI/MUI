@@ -73,7 +73,7 @@ public:
 
 private:
 	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-		auto bytes = std::make_shared<std::vector<char> >(msg.detach());
+	  auto bytes = std::make_shared<std::vector<char> >(msg.detach());
 
 		if(bytes->size() > INT_MAX){
       std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
