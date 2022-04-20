@@ -2,6 +2,9 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
+[20 April 2022, 1.2.2]
+  - Improved endianness detection and implementation (in particular for Apple platforms)
+
 [25 February 2022, 1.2.1]
   - Performance improvements (in particular with large peer numbers).
   - Add new parameters to RBF filter API.

@@ -42,7 +42,7 @@ setup(
       # },
       # ext_modules = [mui4py_mod],
       name='mui4py',
-      version='1.2.1',
+      version='1.2.2',
       description='Python bindings for MUI coupling library.',
       url='http://mxui.github.io',
       author='Eduardo Ramos Fernandez',
