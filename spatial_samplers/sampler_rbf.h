@@ -86,7 +86,7 @@ public:
 	 *       Wendland's C6:     basisFunc_=4
 	 * 4.  bool conservative:
 	 *       Switch for the mode of RBF interpolation:
-	 *       consistent mode(default): conservative=false
+	 *       consistebuildMatrixConservativeNoPolynt mode(default): conservative=false
 	 *       conservative mode:        conservative=true
 	 * 5.  bool polynomial:
 	 *       Switch for the polynomial term of the transformation matrix:
@@ -115,10 +115,10 @@ public:
 	 *       The default value of cgSolveTol is 1e-6
 	 * 12. INT cgMaxIter:
 	 *       The maximum number of iterations each Eigen ConjugateGradient solve can take
-	 *       The default value of cgMaxIter is -1, which means the solver decides
+	 *       The default value of cgMaxIter is 0, which means the solver decides
 	 * 13. INT pouSize:
 	 *       The size of each partition used within the RBF-POU approach
-	 *       The default value of pouSize is 50
+	 *       The default value of pouSize is 50, setting to 0 disables the partitioned approach
 	 */
 
 	sampler_rbf(REAL r, const std::vector<point_type> &pts, INT basisFunc = 0,
@@ -134,6 +134,7 @@ public:
 		Hcol_(0),
 		conservative_(conservative),
 		consistent_(!conservative),
+		pouEnabled_(true),
 		polynomial_(polynomial),
 		smoothFunc_(smoothFunc),
 		readMatrix_(readMatrix),
@@ -153,6 +154,9 @@ public:
 				cgMaxIter_ = 0;
 			if( cgSolveTol_ <= 0 )
 				cgSolveTol_ = std::numeric_limits<REAL>::epsilon();
+			// Disable Partition of Unity (PoU) approach if parameter set to zero
+			if( pouSize == 0 )
+				pouEnabled_ = false;
 	}
 
 	template<template<typename, typename > class CONTAINER>
@@ -201,26 +205,36 @@ public:
 private:
 	template<template<typename, typename > class CONTAINER>
 	void computeRBFtransformation(const CONTAINER<ITYPE, CONFIG> &data_points) {
-		// If problem size is smaller than initial POU values then refine to actual problem set
-		if ( conservative_ ) {
-			if ( pts_.size() <= static_cast<size_t>(N_sp_) )
-				N_sp_ = pts_.size();
-		}
-		else {
-			if (data_points.size() <= static_cast<size_t>(N_sp_))
-				N_sp_ = data_points.size();
-		}
+		// If PoU enabled and problem size is smaller than initial PoU values
+		// then refine to actual problem set
+		if ( pouEnabled_ ) {
+			if ( conservative_ ) {
+				if ( pts_.size() <= static_cast<size_t>(N_sp_) )
+					N_sp_ = pts_.size();
+			}
+			else {
+				if (data_points.size() <= static_cast<size_t>(N_sp_))
+					N_sp_ = data_points.size();
+			}
 
-		if ( smoothFunc_ ) {
-			if ( pts_.size() <= static_cast<size_t>(M_ap_) )
-				M_ap_ = (pts_.size() - 1);
+			if ( smoothFunc_ ) {
+				if ( pts_.size() <= static_cast<size_t>(M_ap_) )
+					M_ap_ = (pts_.size() - 1);
+			}
+		}
+		else { //PoU disabled so set to global sizes
+			if ( conservative_ )
+
 		}
 
 		// Reading matrix
 		if ( readMatrix_ )
 			readMatrix();
 		else { // Generating matrix
-			buildConnectivity(data_points, N_sp_);
+			if( consistent_ )
+				buildConnectivityConsistent(data_points, N_sp_);
+			else
+				buildConnectivityConservative(data_points, N_sp_);
 
 			H_.resize(pts_.size(), data_points.size());
 			H_.setZero();
@@ -299,15 +313,15 @@ private:
 
 			if ( consistent_ && polynomial_ ) {
 				if ( polynomial_ )
-					buildConsistentPoly(data_points, smoothFunc_);
+					buildMatrixConsistentPoly(data_points, smoothFunc_, pouEnabled_);
 				else
-					buildConsistentNoPoly(data_points, smoothFunc_);
+					buildMatrixConsistentNoPoly(data_points, smoothFunc_, pouEnabled_);
 			}
 			else {
 				if ( polynomial_ )
-					buildConservativePoly(data_points, smoothFunc_);
+					buildMatrixConservativePoly(data_points, smoothFunc_, pouEnabled_);
 				else
-					buildConservativeNoPoly(data_points, smoothFunc_);
+					buildMatrixConservativeNoPoly(data_points, smoothFunc_, pouEnabled_);
 			}
 
 			if ( writeMatrix_ ) {
@@ -343,20 +357,23 @@ private:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline void buildConsistentPoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing) {
+	inline void buildMatrixConsistentPoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing, bool pouEnabled) {
+		// Set problem set size depending on whether Partition of Unity approach enabled
+		size_t pts_N_Remote = (pouEnabled? N_sp_: data_points.size());
+
 		for ( size_t row = 0; row < pts_.size(); row++ ) {
 			Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
 			Eigen::Matrix<REAL, Eigen::Dynamic, 1> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-			Css.resize((1 + N_sp_ + CONFIG::D), (1 + N_sp_ + CONFIG::D));
+			Css.resize((1 + pts_N_Remote + CONFIG::D), (1 + pts_N_Remote + CONFIG::D));
 			Css.setZero();
-			Aas.resize((1 + N_sp_ + CONFIG::D), 1);
+			Aas.resize((1 + pts_N_Remote + CONFIG::D), 1);
 			Aas.setZero();
 
 			//set Css
 			std::vector<Eigen::Triplet<REAL>> coefsC;
-			for ( INT i = 0; i < N_sp_; i++ ) {
-				for ( INT j = i; j < N_sp_; j++ ) {
+			for ( INT i = 0; i < pts_N_Remote; i++ ) {
+				for ( INT j = i; j < pts_N_Remote; j++ ) {
 					int glob_i = connectivityAB_[row][i];
 					int glob_j = connectivityAB_[row][j];
 
@@ -371,23 +388,22 @@ private:
 				}
 			}
 
-			for ( INT i = 0; i < N_sp_; i++ ) {
-				coefsC.emplace_back(Eigen::Triplet < REAL > (i, N_sp_, 1));
-				coefsC.emplace_back(Eigen::Triplet < REAL > (N_sp_, i, 1));
+			for ( INT i = 0; i < pts_N_Remote; i++ ) {
+				coefsC.emplace_back(Eigen::Triplet < REAL > (i, pts_N_Remote, 1));
+				coefsC.emplace_back(Eigen::Triplet < REAL > (pts_N_Remote, i, 1));
 
 				int glob_i = connectivityAB_[row][i];
 
 				for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-					coefsC.emplace_back(Eigen::Triplet<REAL> (i, (N_sp_ + dim + 1), data_points[glob_i].first[dim]));
-					coefsC.emplace_back(Eigen::Triplet<REAL> ((N_sp_ + dim + 1), i, data_points[glob_i].first[dim]));
+					coefsC.emplace_back(Eigen::Triplet<REAL> (i, (pts_N_Remote + dim + 1), data_points[glob_i].first[dim]));
+					coefsC.emplace_back(Eigen::Triplet<REAL> ((pts_N_Remote + dim + 1), i, data_points[glob_i].first[dim]));
 				}
 			}
 
 			Css.reserve(coefsC.size());
 			Css.setFromTriplets(coefsC.begin(), coefsC.end());
 
-
-			for ( INT j = 0; j < N_sp_; j++ ) {
+			for ( INT j = 0; j < pts_N_Remote; j++ ) {
 				int glob_j = connectivityAB_[row][j];
 
 				auto d = norm(pts_[row] - data_points[glob_j].first);
@@ -396,9 +412,9 @@ private:
 					Aas(j, 0) = rbf(d);
 			}
 
-			Aas(N_sp_, 0) = 1;
+			Aas(pts_N_Remote, 0) = 1;
 			for (int dim = 0; dim < CONFIG::D; dim++) {
-				Aas(N_sp_ + dim + 1, 0) = pts_[row][dim];
+				Aas(pts_N_Remote + dim + 1, 0) = pts_[row][dim];
 			}
 
 			Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>,
@@ -417,18 +433,18 @@ private:
 					<< std::endl;
 			}
 
-			for ( INT j = 0; j < N_sp_; j++ ) {
+			for ( INT j = 0; j < pts_N_Remote; j++ ) {
 				int glob_j = connectivityAB_[row][j];
 				H_(row, glob_j) = H_i(j);
 			}
 			if ( smoothing ) {
-				for ( INT j = 0; j < N_sp_; j++ ) {
+				for ( INT j = 0; j < pts_N_Remote; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 					H_toSmooth_(row, glob_j) = H_i(j);
 				}
 			}
 			else {
-				for ( INT j = 0; j < N_sp_; j++ ) {
+				for ( INT j = 0; j < pts_N_Remote; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 					H_(row, glob_j) = H_i( j);
 				}
@@ -437,7 +453,7 @@ private:
 
 		if ( smoothing ) {
 			for ( size_t row = 0; row < pts_.size(); row++ ) {
-				for ( INT j = 0; j < N_sp_; j++ ) {
+				for ( INT j = 0; j < pts_N_Remote; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 					REAL h_j_sum = 0.;
 					REAL f_sum = 0.;
@@ -471,21 +487,24 @@ private:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline void buildConsistentNoPoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing) {
+	inline void buildMatrixConsistentNoPoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing, bool pouEnabled) {
+		// Set problem set size depending on whether Partition of Unity approach enabled
+		size_t pts_N_Remote = (pouEnabled? N_sp_: data_points.size());
+
 		for ( size_t row = 0; row < pts_.size(); row++ ) {
 			Eigen::SparseMatrix<REAL> AA; //< Matrix of radial basis function evaluations between prescribed points
 			Eigen::Matrix<REAL, Eigen::Dynamic, 1> AB;
 
-			AA.resize(N_sp_, N_sp_);
+			AA.resize(pts_N_Remote, pts_N_Remote);
 			AA.setZero();
-			AB.resize(N_sp_, 1);
+			AB.resize(pts_N_Remote, 1);
 			AB.setZero();
 
 			std::vector<Eigen::Triplet<REAL> > coefs;
 
 			//set AA
-			for ( INT i = 0; i < N_sp_; i++ ) {
-				for (INT j = i; j < N_sp_; j++ ) {
+			for ( INT i = 0; i < pts_N_Remote; i++ ) {
+				for (INT j = i; j < pts_N_Remote; j++ ) {
 					int glob_i = connectivityAB_[row][i];
 					int glob_j = connectivityAB_[row][j];
 
@@ -504,7 +523,7 @@ private:
 			AA.setFromTriplets(coefs.begin(), coefs.end());
 
 			//set AB
-			for ( INT j = 0; j < N_sp_; j++ ) {
+			for ( INT j = 0; j < pts_N_Remote; j++ ) {
 				int glob_j = connectivityAB_[row][j];
 
 				auto d = norm(pts_[row] - data_points[glob_j].first);
@@ -532,13 +551,13 @@ private:
 			}
 
 			if ( smoothing ) {
-				for ( INT j = 0; j < N_sp_; j++ ) {
+				for ( INT j = 0; j < pts_N_Remote; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 					H_toSmooth_(row, glob_j) = H_i(0, j);
 				}
 			}
 			else {
-				for ( INT j = 0; j < N_sp_; j++ ) {
+				for ( INT j = 0; j < pts_N_Remote; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 					H_(row, glob_j) = H_i(j);
 				}
@@ -547,7 +566,7 @@ private:
 
 		if ( smoothing ) {
 			for ( size_t row = 0; row < pts_.size(); row++ ) {
-				for ( INT j = 0; j < N_sp_; j++ ) {
+				for ( INT j = 0; j < pts_N_Remote; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 					REAL h_j_sum = 0.;
 					REAL f_sum = 0.;
@@ -577,19 +596,24 @@ private:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline void buildConservativePoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing) {
-		Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-		Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+	inline void buildMatrixConservativePoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing, bool pouEnabled) {
+		// Set problem set size depending on whether Partition of Unity approach enabled
+		size_t pts_N_Local = (pouEnabled? N_sp_: pts_.size());
+		size_t pts_N_Remote = (pouEnabled? N_sp_: data_points.size());
 
-		Css.resize((1 + pts_.size() + CONFIG::D), (1 + pts_.size() + CONFIG::D));
+		Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+		Css.resize((1 + pts_N_Local + CONFIG::D), (1 + pts_N_Local + CONFIG::D));
 		Css.setZero();
-		Aas.resize((data_points.size()), (1 + pts_.size() + CONFIG::D));
+
+		Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+		Aas.resize(pts_N_Remote, (1 + pts_N_Local + CONFIG::D));
 		Aas.setZero();
+
 		std::vector<Eigen::Triplet<REAL> > coefsC;
 
 		//set Css
-		for ( size_t i = 0; i < pts_.size(); i++ ) {
-			for ( size_t j = i; j < pts_.size(); j++ ) {
+		for ( size_t i = 0; i < pts_N_Local; i++ ) {
+			for ( size_t j = i; j < pts_N_Local; j++ ) {
 				auto d = norm(pts_[i] - pts_[j]);
 
 				if ( d < r_ ) {
@@ -608,8 +632,8 @@ private:
 		//set Aas
 		std::vector<Eigen::Triplet<REAL> > coefs;
 
-		for ( size_t i = 0; i < data_points.size(); i++ ) {
-			for ( size_t j = 0; j < pts_.size(); j++ ) {
+		for ( size_t i = 0; i < pts_N_Remote; i++ ) {
+			for ( size_t j = 0; j < pts_N_Local; j++ ) {
 				auto d = norm(data_points[i].first - pts_[j]);
 
 				if ( d < r_ ) {
@@ -641,14 +665,14 @@ private:
 
 		if ( smoothing ) {
 			for ( size_t i = 0; i < pts_.size(); i++ ) {
-				for (size_t j = 0; j < data_points.size(); j++ ) {
+				for (size_t j = 0; j < pts_N_Remote; j++ ) {
 					H_toSmooth_(i, j) = H_more((i + CONFIG::D + 1), j);
 				}
 			}
 		}
 		else {
 			for ( size_t i = 0; i < pts_.size(); i++ ) {
-				for ( size_t j = 0; j < data_points.size(); j++ ) {
+				for ( size_t j = 0; j < pts_N_Remote; j++ ) {
 					H_(i, j) = H_more((i + CONFIG::D + 1), j);
 				}
 			}
@@ -656,7 +680,7 @@ private:
 
 		if ( smoothing ) {
 			for ( size_t row = 0; row < pts_.size(); row++ ) {
-				for ( size_t j = 0; j < data_points.size(); j++ ) {
+				for ( size_t j = 0; j < pts_N_Remote; j++ ) {
 					REAL h_j_sum = 0.;
 					REAL f_sum = 0.;
 					for ( INT k = 0; k < M_ap_; k++ ) {
@@ -684,27 +708,24 @@ private:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline void buildConservativeNoPoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing) {
+	inline void buildMatrixConservativeNoPoly(const CONTAINER<ITYPE, CONFIG> &data_points, bool smoothing, bool pouEnabled) {
+		// Set problem set size depending on whether Partition of Unity approach enabled
+		size_t pts_N_Local = (pouEnabled? N_sp_: pts_.size());
+
 		for ( size_t row = 0; row < data_points.size(); row++ ) {
 			Eigen::SparseMatrix<REAL> AA; //< Matrix of radial basis function evaluations between prescribed points
-			// Eigen::SparseMatrix<REAL> AB; //< Matrix of RBF evaluations between prescribed and interpolation points
-			///Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> AB; //< Matrix of RBF evaluations between prescribed and interpolation points
-			Eigen::Matrix<REAL, Eigen::Dynamic, 1> AB; //< Matrix of RBF evaluations between prescribed and interpolation points //SML
-			///AA.resize(pts_.size(), pts_.size());
-			AA.resize(N_sp_, N_sp_); //SML
+			AA.resize(pts_N_Local, pts_N_Local);
 			AA.setZero();
-			// AB.resize(1, pts_.size());
-			///AB.resize(pts_.size(), 1);
-			AB.resize(N_sp_, 1); //SML
+
+			Eigen::Matrix<REAL, Eigen::Dynamic, 1> AB; //< Matrix of RBF evaluations between prescribed and interpolation points
+			AB.resize(pts_N_Local, 1);
 			AB.setZero();
 
 			std::vector<Eigen::Triplet<REAL> > coefs;
 
 			//set AA
-			///for ( size_t i = 0; i < pts_.size(); i++ ) {
-			for ( size_t i = 0; i < N_sp_; i++ ) { //SML
-				///for ( size_t j = i; j < pts_.size(); j++ ) {
-				for ( size_t j = i; j < N_sp_; j++ ) { //SML
+			for ( size_t i = 0; i < pts_N_Local; i++ ) {
+				for ( size_t j = i; j < pts_N_Local; j++ ) {
 					int glob_i = connectivityAB_[row][i];
 					int glob_j = connectivityAB_[row][j];
 
@@ -723,8 +744,7 @@ private:
 			AA.setFromTriplets(coefs.begin(), coefs.end());
 
 			//set AB
-			///for ( size_t j = 0; j < pts_.size(); j++ ) {
-			for ( size_t j = 0; j < N_sp_; j++ ) { //SML
+			for ( size_t j = 0; j < pts_N_Local; j++ ) {
 				int glob_j = connectivityAB_[row][j];
 
 				auto d = norm(data_points[row].first - pts_[glob_j]);
@@ -750,15 +770,13 @@ private:
 			}
 
 			if ( smoothing ) {
-				///for ( size_t i = 0; i < pts_.size(); i++ ) {
-				for ( size_t i = 0; i < N_sp_; i++ ) { //SML
+				for ( size_t i = 0; i < pts_N_Local; i++ ) {
 					int glob_i = connectivityAB_[row][i];
 					H_toSmooth_(glob_i, row) = H_j(i, 0);
 				}
 			}
 			else {
-				///for ( size_t i = 0; i < pts_.size(); i++ ) {
-				for ( size_t i = 0; i < N_sp_; i++ ) { //SML
+				for ( size_t i = 0; i < pts_N_Local; i++ ) {
 					int glob_i = connectivityAB_[row][i];
 					H_(glob_i, row) = H_j(i, 0);
 				}
@@ -767,8 +785,7 @@ private:
 
 		if ( smoothing ) {
 			for ( size_t row = 0; row < data_points.size(); row++ ) {
-				///for ( size_t i = 0; i < pts_.size(); i++ ) {
-				for ( size_t i = 0; i < N_sp_; i++ ) { // SML
+				for ( size_t i = 0; i < pts_N_Local; i++ ) {
 					int glob_i = connectivityAB_[row][i];
 					REAL h_j_sum = 0.;
 					REAL f_sum = 0.;
@@ -798,7 +815,7 @@ private:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline void buildConnectivity(const CONTAINER<ITYPE, CONFIG> &data_points, const INT NP) {
+	inline void buildConnectivityConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const INT NP) {
 		std::ofstream outputFileCAB;
 		if ( writeMatrix_ ) {
 			outputFileCAB.open(fileAddress_ + "/connectivityAB.dat");
@@ -831,102 +848,140 @@ private:
 		INT pointsCountGlobalMax = std::numeric_limits<INT>::min();
 		INT pointsCountGlobalMin = std::numeric_limits<INT>::max();
 
-		if ( consistent_ ) {
-			connectivityAB_.resize(pts_.size());
-			for ( size_t i = 0; i < pts_.size(); i++ ) {
-				INT pointsCount = 0;
-				for ( INT n = 0; n < NP; n++ ) {
-					REAL cur = std::numeric_limits<REAL>::max();
-					INT bestj = -1;
-					for ( size_t j = 0; j < data_points.size(); j++ ) {
-						auto added = std::find_if(connectivityAB_[i].begin(), connectivityAB_[i].end(), [j](INT k) {
-							return static_cast<size_t>(k) == j;
-						});
+		connectivityAB_.resize(pts_.size());
 
-						if ( added != connectivityAB_[i].end() )
-							continue;
+		for ( size_t i = 0; i < pts_.size(); i++ ) {
+			INT pointsCount = 0;
+			for ( INT n = 0; n < NP; n++ ) {
+				REAL cur = std::numeric_limits<REAL>::max();
+				INT bestj = -1;
+				for ( size_t j = 0; j < data_points.size(); j++ ) {
+					auto added = std::find_if(connectivityAB_[i].begin(), connectivityAB_[i].end(), [j](INT k) {
+						return static_cast<size_t>(k) == j;
+					});
 
-						auto d = normsq(pts_[i] - data_points[j].first);
-						if ( d < cur ) {
-							cur = d;
-							bestj = j;
-						}
+					if ( added != connectivityAB_[i].end() )
+						continue;
 
-						if ( n == 0 && d < twor_ )
-							pointsCount++;
+					auto d = normsq(pts_[i] - data_points[j].first);
+					if ( d < cur ) {
+						cur = d;
+						bestj = j;
 					}
 
-					connectivityAB_[i].emplace_back(bestj);
-
-					if ( writeMatrix_ && (n < NP - 1) )
-						outputFileCAB << bestj << ",";
-					else if ( writeMatrix_ )
-						outputFileCAB << bestj;
+					if ( n == 0 && d < twor_ )
+						pointsCount++;
 				}
 
-				if ( writeMatrix_ && i < pts_.size() - 1 )
-					outputFileCAB << '\n';
-				if ( pointsCount < pointsCountGlobalMin )
-					pointsCountGlobalMin = pointsCount;
-				if ( pointsCount > pointsCountGlobalMax )
-					pointsCountGlobalMax = pointsCount;
+				connectivityAB_[i].emplace_back(bestj);
+
+				if ( writeMatrix_ && (n < NP - 1) )
+					outputFileCAB << bestj << ",";
+				else if ( writeMatrix_ )
+					outputFileCAB << bestj;
 			}
-			if ( !QUIET &&
-				 (pointsCountGlobalMin < MINPOINTSWARN || pointsCountGlobalMax > MAXPOINTSWARN)) {
-				std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius not producing optimal point patches ("
-						<< MINPOINTSWARN << "-" << MAXPOINTSWARN << "), found ("
-						<< pointsCountGlobalMin << "-" << pointsCountGlobalMax
-						<< ")" << std::endl;
+
+			if ( writeMatrix_ && i < pts_.size() - 1 )
+				outputFileCAB << '\n';
+			if ( pointsCount < pointsCountGlobalMin )
+				pointsCountGlobalMin = pointsCount;
+			if ( pointsCount > pointsCountGlobalMax )
+				pointsCountGlobalMax = pointsCount;
+		}
+		if ( !QUIET &&
+			 (pointsCountGlobalMin < MINPOINTSWARN || pointsCountGlobalMax > MAXPOINTSWARN)) {
+			std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius not producing optimal point patches ("
+					<< MINPOINTSWARN << "-" << MAXPOINTSWARN << "), found ("
+					<< pointsCountGlobalMin << "-" << pointsCountGlobalMax
+					<< ")" << std::endl;
+		}
+
+		if ( writeMatrix_ )
+			outputFileCAB.close();
+	}
+
+	template<template<typename, typename > class CONTAINER>
+	inline void buildConnectivityConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const INT NP) {
+		std::ofstream outputFileCAB;
+		if ( writeMatrix_ ) {
+			outputFileCAB.open(fileAddress_ + "/connectivityAB.dat");
+
+			if ( !outputFileCAB ) {
+				std::cerr << "Could not locate the file address on the connectivityAB.dat"
+						<< std::endl;
+			}
+			else {
+				outputFileCAB
+						<< "// ************************************************************************************************";
+				outputFileCAB << "\n";
+				outputFileCAB
+						<< "// **** This is the 'connectivityAB.dat' file of the RBF spatial sampler of the MUI library";
+				outputFileCAB << "\n";
+				outputFileCAB
+						<< "// **** This file contains the entire matrix of the Point Connectivity Matrix (N).";
+				outputFileCAB << "\n";
+				outputFileCAB
+						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
+				outputFileCAB << "\n";
+				outputFileCAB
+						<< "// ************************************************************************************************";
+				outputFileCAB << "\n";
+				outputFileCAB << "// ";
+				outputFileCAB << "\n";
 			}
 		}
-		else { //conservative
-			connectivityAB_.resize(data_points.size());
-			for ( size_t i = 0; i < data_points.size(); i++ ) {
-				INT pointsCount = 0;
-				for ( size_t n = 0; n < pts_.size(); n++ ) {
-					REAL cur = std::numeric_limits<REAL>::max();
-					INT bestj = -1;
-					for ( size_t j = 0; j < pts_.size(); j++ ) {
-						auto added = std::find_if(connectivityAB_[i].begin(), connectivityAB_[i].end(), [j](INT k) {
-							return static_cast<size_t>(k) == j;
-						});
 
-						if ( added != connectivityAB_[i].end() )
-							continue;
+		INT pointsCountGlobalMax = std::numeric_limits<INT>::min();
+		INT pointsCountGlobalMin = std::numeric_limits<INT>::max();
 
-						auto d = normsq(data_points[i].first - pts_[j]);
-						if ( d < cur ) {
-							cur = d;
-							bestj = j;
-						}
+		connectivityAB_.resize(data_points.size());
 
-						if ( (n == 0) && (d < twor_) )
-							pointsCount++;
+		for ( size_t i = 0; i < data_points.size(); i++ ) {
+			INT pointsCount = 0;
+			for ( size_t n = 0; n < pts_.size(); n++ ) {
+				REAL cur = std::numeric_limits<REAL>::max();
+				INT bestj = -1;
+				for ( size_t j = 0; j < pts_.size(); j++ ) {
+					auto added = std::find_if(connectivityAB_[i].begin(), connectivityAB_[i].end(), [j](INT k) {
+						return static_cast<size_t>(k) == j;
+					});
+
+					if ( added != connectivityAB_[i].end() )
+						continue;
+
+					auto d = normsq(data_points[i].first - pts_[j]);
+					if ( d < cur ) {
+						cur = d;
+						bestj = j;
 					}
 
-					connectivityAB_[i].emplace_back(bestj);
-
-					if ( writeMatrix_ && n < pts_.size() - 1 )
-						outputFileCAB << bestj << ",";
-					else if ( writeMatrix_ )
-						outputFileCAB << bestj;
+					if ( (n == 0) && (d < twor_) )
+						pointsCount++;
 				}
 
-				if ( writeMatrix_ && i < pts_.size() - 1 )
-					outputFileCAB << '\n';
-				if ( pointsCount < pointsCountGlobalMin )
-					pointsCountGlobalMin = pointsCount;
-				if ( pointsCount > pointsCountGlobalMax )
-					pointsCountGlobalMax = pointsCount;
+				connectivityAB_[i].emplace_back(bestj);
+
+				if ( writeMatrix_ && n < pts_.size() - 1 )
+					outputFileCAB << bestj << ",";
+				else if ( writeMatrix_ )
+					outputFileCAB << bestj;
 			}
-			if ( !QUIET &&
-				 (pointsCountGlobalMin < MINPOINTSWARN || pointsCountGlobalMax > MAXPOINTSWARN)) {
-				std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius not producing optimal point patches ("
-						<< MINPOINTSWARN << "-" << MAXPOINTSWARN << "), found ("
-						<< pointsCountGlobalMin << "-" << pointsCountGlobalMax
-						<< ")" << std::endl;
-			}
+
+			if ( writeMatrix_ && i < pts_.size() - 1 )
+				outputFileCAB << '\n';
+			if ( pointsCount < pointsCountGlobalMin )
+				pointsCountGlobalMin = pointsCount;
+			if ( pointsCount > pointsCountGlobalMax )
+				pointsCountGlobalMax = pointsCount;
 		}
+		if ( !QUIET &&
+			 (pointsCountGlobalMin < MINPOINTSWARN || pointsCountGlobalMax > MAXPOINTSWARN)) {
+			std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius not producing optimal point patches ("
+					<< MINPOINTSWARN << "-" << MAXPOINTSWARN << "), found ("
+					<< pointsCountGlobalMin << "-" << pointsCountGlobalMax
+					<< ")" << std::endl;
+		}
+
 		if ( writeMatrix_ )
 			outputFileCAB.close();
 	}
@@ -1186,6 +1241,7 @@ REAL twor_;
 REAL s_;
 
 bool initialised_;
+bool pouEnabled_;
 INT CABrow_;
 INT CABcol_;
 INT CAArow_;
