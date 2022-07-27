@@ -992,7 +992,7 @@ private:
 						bestj = j;
 					}
 
-					if ( (n == 0) && (d < twor_) )
+					if ( n == 0 && d < twor_ )
 						pointsCount++;
 				}
 
