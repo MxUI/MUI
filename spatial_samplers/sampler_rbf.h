@@ -240,6 +240,7 @@ private:
 			if ( smoothFunc_ ) {
 				buildConnectivitySmooth(M_ap_);
 				H_toSmooth_.resize(pts_.size(), data_points.size());
+				H_toSmooth_.setZero();
 			}
 
 			if ( writeMatrix_ ) {
@@ -351,44 +352,162 @@ private:
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing, bool pou) {
 		REAL errorReturn = 0;
-		for ( size_t row = 0; row < pts_.size(); row++ ) {
-			Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-			//Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
-			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+		if( pou ) { // Using PoU approach
+			for ( size_t row = 0; row < pts_.size(); row++ ) {
+				Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+				Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-			Css.resize((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-			//Aas.resize(1, (1 + NP + CONFIG::D));
-			Aas.resize((1 + NP + CONFIG::D), 1);
-			Css.setZero();
-			Aas.setZero();
+				Css.resize((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+				Aas.resize((1 + NP + CONFIG::D), 1);
 
-			//set Css
-			std::vector<Eigen::Triplet<REAL>> coefsC;
-			for ( size_t i = 0; i < NP; i++ ) {
-				for ( size_t j = i; j < NP; j++ ) {
-					INT glob_i = connectivityAB_[row][i];
+				//set Css
+				std::vector<Eigen::Triplet<REAL>> coefsC;
+				for ( INT i = 0; i < NP; i++ ) {
+					for ( INT j = i; j < NP; j++ ) {
+						int glob_i = connectivityAB_[row][i];
+						int glob_j = connectivityAB_[row][j];
+
+						auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
+
+						if ( d < r_ ) {
+							REAL w = rbf(d);
+							coefsC.emplace_back(Eigen::Triplet<REAL> (i, j, w));
+							if ( i != j )
+								coefsC.emplace_back(Eigen::Triplet<REAL> (j, i, w));
+						}
+					}
+				}
+
+				for ( INT i = 0; i < NP; i++ ) {
+					coefsC.emplace_back(Eigen::Triplet < REAL > (i, NP, 1));
+					coefsC.emplace_back(Eigen::Triplet < REAL > (NP, i, 1));
+
+					int glob_i = connectivityAB_[row][i];
+
+					for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
+						coefsC.emplace_back(Eigen::Triplet<REAL> (i, (NP + dim + 1), data_points[glob_i].first[dim]));
+						coefsC.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), i, data_points[glob_i].first[dim]));
+					}
+				}
+
+				Css.reserve(coefsC.size());
+				Css.setFromTriplets(coefsC.begin(), coefsC.end());
+
+				//set Aas
+				std::vector<Eigen::Triplet<REAL>> coefs;
+				for ( INT j = 0; j < NP; j++ ) {
+					int glob_j = connectivityAB_[row][j];
+
+					auto d = norm(pts_[row] - data_points[glob_j].first);
+
+					if ( d < r_ ) {
+						coefs.emplace_back(Eigen::Triplet<REAL> (j, 0, rbf(d)));
+					}
+				}
+
+				coefs.emplace_back(Eigen::Triplet<REAL> (NP, 0, 1));
+
+				for (int dim = 0; dim < CONFIG::D; dim++) {
+					coefs.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), 0, pts_[row][dim]));
+				}
+
+				Aas.reserve(coefs.size());
+				Aas.setFromTriplets(coefs.begin(), coefs.end());
+
+				Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>,
+						Eigen::Lower | Eigen::Upper,
+						Eigen::DiagonalPreconditioner<REAL>> solver(Css);
+				if ( cgMaxIter_ > 0 )
+					solver.setMaxIterations(cgMaxIter_);
+				solver.setTolerance(cgSolveTol_);
+
+				Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = solver.solve(Aas);
+
+				if ( DEBUG ) {
+					std::cout << "#iterations of H_i:     "
+							<< solver.iterations()
+							<< ". Error of H_i: " << solver.error()
+							<< std::endl;
+				}
+
+				errorReturn += solver.error();
+
+				for ( size_t j = 0; j < NP; j++ ) {
 					INT glob_j = connectivityAB_[row][j];
+					H_(row, glob_j) = H_i(j, 0);
+				}
 
-					auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
-
-					if ( d < r_ && d > std::numeric_limits<REAL>::epsilon() ) {
-						REAL w = rbf(d);
-						coefsC.emplace_back(Eigen::Triplet<REAL> (i, j, w));
-						if ( i != j )
-							coefsC.emplace_back(Eigen::Triplet<REAL> (j, i, w));
+				if ( smoothing ) {
+					for ( size_t j = 0; j < NP; j++ ) {
+						INT glob_j = connectivityAB_[row][j];
+						H_toSmooth_(row, glob_j) = H_i(j, 0);
+					}
+				}
+				else {
+					for ( size_t j = 0; j < NP; j++ ) {
+						INT glob_j = connectivityAB_[row][j];
+						H_(row, glob_j) = H_i(j, 0);
 					}
 				}
 			}
 
-			for ( size_t i = 0; i < NP; i++ ) {
-				coefsC.emplace_back(Eigen::Triplet < REAL > (i, NP, 1));
-				coefsC.emplace_back(Eigen::Triplet < REAL > (NP, i, 1));
+			errorReturn /= static_cast<REAL>(pts_.size());
 
-				INT glob_i = connectivityAB_[row][i];
+			if ( smoothing ) {
+				for ( size_t row = 0; row < pts_.size(); row++ ) {
+					for ( size_t j = 0; j < NP; j++ ) {
+						INT glob_j = connectivityAB_[row][j];
+						REAL h_j_sum = 0.;
+						REAL f_sum = 0.;
 
-				for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-					coefsC.emplace_back(Eigen::Triplet<REAL> (i, (NP + dim + 1), data_points[glob_i].first[dim]));
-					coefsC.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), i, data_points[glob_i].first[dim]));
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) ) {
+								std::cerr << "Invalid row_k value: "
+										<< row_k << std::endl;
+							}
+							else
+								h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+						}
+
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) ) {
+								std::cerr << "Invalid row_k value: "
+										<< row_k << std::endl;
+							}
+							else {
+								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+								f_sum += w_i * H_toSmooth_(row_k, glob_j);
+							}
+						}
+
+						H_(row, glob_j) = 0.5 * (f_sum + H_toSmooth_(row, glob_j));
+					}
+				}
+			}
+		}
+		else { // Not using PoU
+			Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+			Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+
+			Css.resize((1 + data_points.size() + CONFIG::D), (1 + data_points.size() + CONFIG::D));
+			Aas.resize(pts_.size(), (1 + data_points.size() + CONFIG::D));
+
+			std::vector<Eigen::Triplet<REAL> > coefsC;
+
+			//set Css
+			for ( size_t i = 0; i < data_points.size(); i++ ) {
+				for ( size_t j = i; j < data_points.size(); j++ ) {
+					auto d = norm(data_points[i].first - data_points[j].first);
+
+					if ( d < r_ ) {
+						REAL w = rbf(d);
+						coefsC.emplace_back(Eigen::Triplet<REAL> ((i + CONFIG::D + 1), (j + CONFIG::D + 1), w));
+
+						if ( i != j )
+							coefsC.emplace_back(Eigen::Triplet<REAL> ((j + CONFIG::D + 1), (i + CONFIG::D + 1), w));
+					}
 				}
 			}
 
@@ -396,115 +515,79 @@ private:
 			Css.setFromTriplets(coefsC.begin(), coefsC.end());
 
 			//set Aas
-			//std::vector<Eigen::Triplet<REAL>> coefs;
+			std::vector<Eigen::Triplet<REAL> > coefs;
 
-			for ( size_t j = 0; j < NP; j++ ) {
-				INT glob_j = connectivityAB_[row][j];
+			for ( size_t i = 0; i < pts_.size(); i++ ) {
+				for ( size_t j = 0; j < data_points.size(); j++ ) {
+					auto d = norm(pts_[i] - data_points[j].first);
 
-				auto d = norm(pts_[row] - data_points[glob_j].first);
-
-				if ( d < r_ && d > std::numeric_limits<REAL>::epsilon() ) {
-					//coefs.emplace_back(Eigen::Triplet<REAL> (0, j, rbf(d)));
-					Aas(j, 0) = rbf(d);
+					if ( d < r_ ) {
+						coefs.emplace_back(Eigen::Triplet<REAL> (i, (j + CONFIG::D + 1), rbf(d)));
+					}
 				}
 			}
 
-			//coefs.emplace_back(Eigen::Triplet<REAL> (0, NP, 1));
-			Aas(NP, 0) = 1;
+			Aas.reserve(coefs.size());
+			Aas.setFromTriplets(coefs.begin(), coefs.end());
 
-			for ( int dim = 0; dim < CONFIG::D; dim++ ) {
-				//coefs.emplace_back(Eigen::Triplet<REAL> (0, (NP + dim + 1), pts_[row][dim]));
-				Aas((NP + dim + 1), 0) = pts_[row][dim];
-			}
-
-			//Aas.reserve(coefs.size());
-			//Aas.setFromTriplets(coefs.begin(), coefs.end());
-
-			//invert Css
-			//Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(Css.rows(), Css.cols());
-			//I.setIdentity();
 			Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>,
 					Eigen::Lower | Eigen::Upper,
 					Eigen::DiagonalPreconditioner<REAL>> solver(Css);
-			if ( cgMaxIter_ != 0 )
+			if ( cgMaxIter_ > 0 )
 				solver.setMaxIterations(cgMaxIter_);
 			solver.setTolerance(cgSolveTol_);
-			//Eigen::SparseMatrix<REAL> invCss = (solver.solve(I)).sparseView();
 
-			/*
-			if ( DEBUG ) {
-				std::cout << "#iterations of invCss:     "
-						<< solver.iterations()
-						<< ". Error of invCss: " << solver.error()
-						<< std::endl;
-			}
-
-			errorReturn += solver.error();
-			*/
-
-			//Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (Aas * invCss).pruned();
-			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = solver.solve(Aas);
+			Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
+			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_more = solver.solve(AasTrans);
 
 			if ( DEBUG ) {
-				std::cout << "#iterations of solve(Aas):     "
-						<< solver.iterations()
-						<< ". Error of solve(Aas): " << solver.error()
-						<< std::endl;
+				std::cout << "#iterations of H_more:     "
+			 			<< solver.iterations() << ". Error of H_more: "
+			 			<< solver.error() << std::endl;
 			}
 
-			errorReturn += solver.error();
-
-			for ( size_t j = 0; j < NP; j++ ) {
-				INT glob_j = connectivityAB_[row][j];
-				H_(row, glob_j) = H_i(0, j);
-			}
+			errorReturn = solver.error();
 
 			if ( smoothing ) {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_toSmooth_(row, glob_j) = H_i(0, j);
+				for ( size_t i = 0; i < pts_.size(); i++ ) {
+					for (size_t j = 0; j < data_points.size(); j++ ) {
+						H_toSmooth_(i, j) = H_more((i + CONFIG::D + 1), j);
+					}
 				}
 			}
 			else {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_(row, glob_j) = H_i(0, j);
+				for ( size_t i = 0; i < pts_.size(); i++ ) {
+					for ( size_t j = 0; j < data_points.size(); j++ ) {
+						H_(i, j) = H_more((i + CONFIG::D + 1), j);
+					}
 				}
 			}
-		}
 
-		errorReturn /= static_cast<REAL>(pts_.size());
-
-		if ( smoothing ) {
-			for ( size_t row = 0; row < pts_.size(); row++ ) {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					REAL h_j_sum = 0.;
-					REAL f_sum = 0.;
-
-					for ( size_t k = 0; k < MP; k++ ) {
-						INT row_k = connectivityAA_[row][k];
-						if ( row_k == static_cast<INT>(row) ) {
-							std::cerr << "Invalid row_k value: "
-									<< row_k << std::endl;
+			if ( smoothing ) {
+				for ( size_t row = 0; row < pts_.size(); row++ ) {
+					for ( size_t j = 0; j < data_points.size(); j++ ) {
+						REAL h_j_sum = 0.;
+						REAL f_sum = 0.;
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) )
+								std::cerr << "Invalid row_k value: " << row_k << std::endl;
+							else
+								h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
 						}
-						else
-							h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) )
+								std::cerr << "Invalid row_k value: " << row_k << std::endl;
+							else {
+								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+								f_sum += w_i * H_toSmooth_(row_k, j);
+							}
+						}
+
+						H_(row, j) = 0.5 * (f_sum + H_toSmooth_(row, j));
 					}
-
-					for ( size_t k = 0; k < MP; k++ ) {
-						INT row_k = connectivityAA_[row][k];
-						if ( row_k == static_cast<INT>(row) ) {
-							std::cerr << "Invalid row_k value: "
-									<< row_k << std::endl;
-						}
-						else {
-							REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-							f_sum += w_i * H_toSmooth_(row_k, glob_j);
-						}
-					}
-
-					H_(row, glob_j) = 0.5 * (f_sum + H_toSmooth_(row, glob_j));
 				}
 			}
 		}
@@ -515,7 +598,7 @@ private:
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing, bool pou) {
 		REAL errorReturn = 0;
-		if( pou) { // Using partitioned approach
+		if( pou ) { // Using partitioned approach
 			for ( size_t row = 0; row < data_points.size(); row++ ) {
 				Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
 				Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
@@ -699,27 +782,23 @@ private:
 			Aas.reserve(coefs.size());
 			Aas.setFromTriplets(coefs.begin(), coefs.end());
 
-			//invert Css
-			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(Css.rows(), Css.cols());
-			I.setIdentity();
 			Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>,
 					Eigen::Lower | Eigen::Upper,
 					Eigen::DiagonalPreconditioner<REAL>> solver(Css);
-			if ( cgMaxIter_ != 0 )
+			if ( cgMaxIter_ > 0 )
 				solver.setMaxIterations(cgMaxIter_);
 			solver.setTolerance(cgSolveTol_);
-			Eigen::SparseMatrix<REAL> invCss = solver.solve(I).sparseView();
+
+			Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
+			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_more = solver.solve(AasTrans);
 
 			if ( DEBUG ) {
 				std::cout << "#iterations of invCss:     "
-						<< solver.iterations() << ". Error of invCss: "
-						<< solver.error() << std::endl;
+			 			<< solver.iterations() << ". Error of invCss: "
+			 			<< solver.error() << std::endl;
 			}
 
 			errorReturn = solver.error();
-
-			Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
-			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_more = (invCss * AasTrans).pruned();
 
 			if ( smoothing ) {
 				for ( size_t i = 0; i < pts_.size(); i++ ) {
@@ -806,7 +885,7 @@ private:
 
 		for ( size_t i = 0; i < pts_.size(); i++ ) {
 			INT pointsCount = 0;
-			for ( size_t n = 0; n < NP; n++ ) {
+			for ( INT n = 0; n < NP; n++ ) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for ( size_t j = 0; j < data_points.size(); j++ ) {
