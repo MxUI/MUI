@@ -75,16 +75,25 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
         map[h] = i;
     }
 
-    for( int i = 0; i < global_size; i++ ) {
-        if( global_rank == i ) {
-            for( auto &e : map ) {
-            	std::cout << "MUI [lib_mpi_multidomain]: Rank " << global_rank << " \"" << domain
-							<< "\" registered interface " << e.second
-							<< " as " << std::hex << e.first << std::dec << std::endl;
-            }
-        }
-        MPI_Barrier( world );
+    // output for debugging
+    if( !CONFIG::QUIET ) {
+      for( auto &e : map ) {
+        std::cout << "MUI [lib_mpi_multidomain]: Rank: " << global_rank << ", \"" << domain
+        << "\" registered interface \"" << e.second
+        << "\" as " << std::hex << e.first << std::dec << std::endl;
+      }
     }
+    else {
+      if( global_rank == 0 ) {
+        for( auto &e : map ) {
+          std::cout << "MUI [lib_mpi_multidomain]: \"" << domain
+          << "\" registered interface \"" << e.second
+          << "\" as " << std::hex << e.first << std::dec << std::endl;
+        }
+      }
+    }
+    MPI_Barrier( world );
+
 
     int n_unique;
     std::set<int> unique_ifs;
@@ -123,7 +132,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
             }
             std::string full_uri( "mpi://" );
             full_uri = full_uri + domain + "/" + map[i];
-            unifaces.push_back( new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), comm_ifs ) ) );
+            unifaces.push_back( new uniface<CONFIG>( new comm_mpi_smart( full_uri.c_str(), CONFIG::QUIET, comm_ifs ) ) );
         } else {
             MPI_Comm_split( world, 0, global_rank, &comm_ifs );
         }

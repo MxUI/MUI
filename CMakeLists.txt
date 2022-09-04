@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MUI VERSION 1.2.1 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
+project(MUI VERSION 1.2.2 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

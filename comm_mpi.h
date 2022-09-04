@@ -60,18 +60,18 @@ namespace mui {
 
 class comm_mpi : public communicator {
 public:
-	comm_mpi(const char URI[], MPI_Comm world ) :
+	comm_mpi(const char URI[], const bool quiet, MPI_Comm world ) :
 		domain_local_(0), domain_remote_(0),
 		local_size_(0), local_rank_(0), remote_size_(0), global_size_(0), global_rank_(0),
 		initialized(false), init_by_me(false), uri_host_(std::string()), uri_path_(std::string()),
 		uri_protocol_(std::string()) {
-		init(URI, world);
+		init(URI, quiet, world);
 	}
 	virtual ~comm_mpi() {
 		finalize();
 	}
 
-	void init( const char URI[], MPI_Comm world ) {
+	void init( const char URI[], const bool quiet, MPI_Comm world ) {
 		if ( initialized )
 			throw( std::runtime_error("MUI Error [comm_mpi.h]: Duplicate MUI communicator initialization") );
 
@@ -127,16 +127,22 @@ public:
 		MPI_Comm_remote_size( domain_remote_, &remote_size_ );
 
 		// output for debugging
-		for( int i = 0; i < global_size_; i++ ) {
-			if ( i == global_rank_ ) {
-				std::cout	<< "MUI [comm_mpi.h]: rank " << global_rank_ << '\t'
-							<< "identifier " << URI << '\t'
-							<< "domain size " << local_size_ << '\t'
-							<< "peer number " << remote_size_ << '\t'
-							<< std::endl;
-			}
-			MPI_Barrier( world );
+		if( !quiet ) {
+      std::cout << "MUI [comm_mpi.h]: Rank: " << global_rank_ << ", "
+                << "Identifier: " << URI << ", "
+                << "Domain size: " << local_size_ << ", "
+                << "Peers: " << remote_size_
+                << std::endl;
 		}
+		else {
+		  if( local_rank_ == 0 ) {
+		    std::cout << "MUI [comm_mpi.h]: " << "Identifier: " << URI << ", "
+                  << "Domain size: " << local_size_ << ", "
+                  << "Peers: " << remote_size_
+                  << std::endl;
+		  }
+		}
+		MPI_Barrier( world );
 
 		initialized = true;
 	}
