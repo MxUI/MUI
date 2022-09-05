@@ -409,6 +409,10 @@ DECLARE_FUNC_HEADER(uniface) {
            &Tclass::announce_send_span,"") 
     .def("announce_recv_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_recv_span,"")
+    .def("announce_send_disable", (void (Tclass::*)())\
+           &Tclass::announce_send_disable,"") 
+    .def("announce_recv_disable", (void (Tclass::*)())\
+           &Tclass::announce_recv_disable,"")
     DEFINE_MUI_UNIFACE_PUSH()
     DEFINE_MUI_UNIFACE_FETCH_1ARG()
     DEFINE_MUI_UNIFACE_FETCH_5ARGS()
