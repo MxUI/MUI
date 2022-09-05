@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.0)
-project(MUI VERSION 1.2.2 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
+cmake_minimum_required(VERSION 3.18)
+project(MUI VERSION 1.2.3 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -56,7 +56,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/
 	PATTERN "CMake" EXCLUDE
 	PATTERN "doc" EXCLUDE)
 
-install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/)
+install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib)
 
 if(C_WRAPPER)
 	message("-- MUI C wrapper: Selected")
@@ -73,41 +73,77 @@ if(C_WRAPPER)
 	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/config_c_wrapper.h)
 	target_include_directories(MUI_C_wrapper PRIVATE .)
 
+	add_library(MUI_C_wrapper_static STATIC
+                ./wrappers/C/mui_c_wrapper_general.cpp
+                ./wrappers/C/mui_c_wrapper_1d.cpp
+                ./wrappers/C/mui_c_wrapper_2d.cpp
+                ./wrappers/C/mui_c_wrapper_3d.cpp)
+        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_general.h)
+        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_1d.h)
+        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_2d.h)
+        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_3d.h)
+        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/config_c_wrapper.h)
+        target_include_directories(MUI_C_wrapper PRIVATE .)
+	set_target_properties(MUI_C_wrapper_static PROPERTIES OUTPUT_NAME MUI_C_wrapper)
+
 	if(USE_RBF)
     		target_link_libraries(MUI_C_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
+		target_link_libraries(MUI_C_wrapper_static Eigen3::Eigen ${MPI_CXX_LIBRARIES})
 	else()
     		target_link_libraries(MUI_C_wrapper ${MPI_CXX_LIBRARIES})
+		target_link_libraries(MUI_C_wrapper_static ${MPI_CXX_LIBRARIES})
 	endif(USE_RBF)
 
-	install(TARGETS MUI_C_wrapper
-    		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/
-    		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/C/)
+	install(TARGETS MUI_C_wrapper MUI_C_wrapper_static DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib
+    		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/C)
 endif(C_WRAPPER)
 
 if(FORTRAN_WRAPPER)
 	message("-- MUI Fortran wrapper: Selected")
 
+	set_source_files_properties(
+  		./wrappers/Fortran/mui_f_wrapper_general.f90
+		./wrappers/Fortran/mui_f_wrapper_1d.f90
+		./wrappers/Fortran/mui_f_wrapper_2d.f90
+		./wrappers/Fortran/mui_f_wrapper_3d.f90
+  		PROPERTIES Fortran_PREPROCESS ON
+	)
+
 	add_library(MUI_Fortran_wrapper SHARED
 		./wrappers/Fortran/mui_f_wrapper_general.cpp
 		./wrappers/Fortran/mui_f_wrapper_1d.cpp
 		./wrappers/Fortran/mui_f_wrapper_2d.cpp
-		./wrappers/Fortran/mui_f_wrapper_3d.cpp)
+		./wrappers/Fortran/mui_f_wrapper_3d.cpp
+		./wrappers/Fortran/mui_f_wrapper_general.f90
+                ./wrappers/Fortran/mui_f_wrapper_1d.f90
+                ./wrappers/Fortran/mui_f_wrapper_2d.f90
+                ./wrappers/Fortran/mui_f_wrapper_3d.f90)
 	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_general.f90)
 	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_1d.f90)
 	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_2d.f90)
 	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_3d.f90)
 	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/config_f_wrapper.h)
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/mod)
 	target_include_directories(MUI_Fortran_wrapper PRIVATE .)
+
+	add_library(MUI_Fortran_wrapper_static STATIC
+                ./wrappers/Fortran/mui_f_wrapper_general.cpp
+                ./wrappers/Fortran/mui_f_wrapper_1d.cpp
+                ./wrappers/Fortran/mui_f_wrapper_2d.cpp
+                ./wrappers/Fortran/mui_f_wrapper_3d.cpp)
+	set_target_properties(MUI_Fortran_wrapper_static PROPERTIES OUTPUT_NAME MUI_Fortran_wrapper)
+	target_include_directories(MUI_Fortran_wrapper_static PRIVATE .)
 
 	if(USE_RBF)
     		target_link_libraries(MUI_Fortran_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
+		target_link_libraries(MUI_Fortran_wrapper_static Eigen3::Eigen ${MPI_CXX_LIBRARIES})
 	else()
     		target_link_libraries(MUI_Fortran_wrapper ${MPI_CXX_LIBRARIES})
+		target_link_libraries(MUI_Fortran_wrapper_static ${MPI_CXX_LIBRARIES})
 	endif(USE_RBF)
 
-	install(TARGETS MUI_Fortran_wrapper
-    		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/
-    		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/Fortran/)
+	install(TARGETS MUI_Fortran_wrapper MUI_Fortran_wrapper_static DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib
+		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/Fortran)
 endif(FORTRAN_WRAPPER)
 
 if(PYTHON_WRAPPER)
@@ -156,4 +192,4 @@ configure_package_config_file(CMake/MUIConfig.cmake.in
   PATH_VARS MUI_INCLUDE_INSTALL_DIR MUI_LIB_INSTALL_DIR MUI_INSTALL_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MUIConfig.cmake
-        DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake )
+        DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake)
