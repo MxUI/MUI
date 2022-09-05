@@ -2,6 +2,10 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
+[05 September 2022, 1.2.3]
+  - Add mod file generation to Fortran wrapper build systems (CMake and Makefile)
+  - Add creation of static libraries for Fortran and C wrappers to CMake build system
+
 [20 April 2022, 1.2.2]
   - Improved endianness detection and implementation (in particular for Apple platforms)
 
