@@ -109,7 +109,7 @@ inline std::vector<std::unique_ptr<uniface<CONFIG>>> create_uniface( std::string
         n_unique = unique_ifs.size();
         std::cout << "MUI Info [lib_mpi_multidomain]: " << n_unique << " distinct interface(s) found" << std::endl;
     } else {
-        gather( ( int )interfaces.size(), world );
+        gather( static_cast<int>(interfaces.size()), world );
         MPI_Gatherv( my_hashes.data(), my_hashes.size(), MPI_INT, NULL, NULL, NULL, MPI_INT, 0, world );
     }
 

@@ -79,7 +79,7 @@ namespace mui {
     if (!flag) {
       throw std::runtime_error("MUI Error: [lib_mpi_split.h]: Calling mpi_split_by_app() when run as a single application.\n");
     }
-    int appnum = *(int*)v;
+    int appnum = *static_cast<int*>(v);
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD,&rank);
     MPI_Comm domain;

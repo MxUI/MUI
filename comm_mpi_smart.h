@@ -61,9 +61,9 @@ namespace mui {
 
 class comm_mpi_smart : public comm_mpi {
 private:
+  int count;
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
 	MPI_Status status;
-	int count;
 public:
 	comm_mpi_smart( const char URI[], const bool quiet, MPI_Comm world = MPI_COMM_WORLD ) : count(0), comm_mpi(URI, quiet, world) {}
 	virtual ~comm_mpi_smart() {
