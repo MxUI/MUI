@@ -54,6 +54,12 @@ module mui_3d_f
   implicit none
   public
 
+  type uniface_p
+    type(c_ptr) :: uniface_ptr
+  end type uniface_p
+
+  type(uniface_p), target, save, allocatable :: uniface_p_array(:)
+
   interface
     !****************************************
     !* Create MUI interfaces                *
@@ -79,6 +85,10 @@ module mui_3d_f
       type(c_ptr), intent(out), target :: uniface(*)
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_3d_f
+    ! type(c_ptr) function mui_create_uniface_3d_f(domain) bind(C)
+      ! import :: c_ptr,c_char
+      ! character(kind=c_char), intent(in) :: domain(*)
+    ! end function mui_create_uniface_3d_f
 
     !3D interface with float=double and int=int64
     subroutine mui_create_uniface_3dx_f(uniface,domain) bind(C)
@@ -93,6 +103,23 @@ module mui_3d_f
       type(c_ptr), intent(out), target :: uniface(*)
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_3t_f
+
+    !Set of 3D interfaces with float=single and int=int32
+    subroutine mui_create_uniface_multi_3d(domain, interfaces, &
+                         interface_count) bind(C)
+      import :: c_ptr,c_char,c_int
+      character(kind=c_char), intent(in) :: domain(*)
+      integer(kind=c_int), VALUE :: interface_count
+      character(kind=c_char,len=*), dimension(:), intent(in) :: interfaces(*)
+!      type(c_ptr), intent(out), dimension(:), target :: uniface(*)
+    end subroutine mui_create_uniface_multi_3d
+
+
+    type(c_ptr) function get_multi_uniface_3d_f(interface_count) bind(C)
+      import :: c_ptr,c_int
+      integer(kind=c_int), VALUE :: interface_count
+    end function get_multi_uniface_3d_f
+
 
     !****************************************
     !* Destroy MUI interface                *
@@ -6189,4 +6216,43 @@ module mui_3d_f
 
   end interface 
 
+
+    contains
+    !===============================================================================
+    
+    
+    
+
+    subroutine create_uniface_multi_3d(uniface_p_array, domain, interfaces, &
+                         interface_count)
+        use, intrinsic :: iso_c_binding
+        implicit none
+
+        ! Arguments
+
+        ! Local variables
+      type(uniface_p), target, allocatable :: uniface_p_array(:)
+      !type(c_ptr), target :: uniface_p_array
+      character(kind=c_char), intent(in) :: domain(*)
+      integer(kind=c_int), VALUE :: interface_count
+      character(kind=c_char,len=*), dimension(:), intent(in) :: interfaces(*)
+      integer :: i
+      
+      !allocate(uniface_array(interface_count))
+      
+     call mui_create_uniface_multi_3d(domain, interfaces, &
+                         interface_count)
+      
+      do i=1, interface_count
+            
+        uniface_p_array(i)%uniface_ptr = get_multi_uniface_3d_f(i)
+        
+      end do
+      
+      
+    end subroutine create_uniface_multi_3d   
+    
+    
+    
+    
 end module mui_3d_f
