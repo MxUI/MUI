@@ -172,6 +172,12 @@ class Uniface(CppClass):
         geometry.configure(self.config)
         self.raw.announce_send_span(tinit, timeout, geometry.raw, synchronised)
 
+    def announce_recv_disable(self):
+        self.raw.announce_recv_disable()
+
+    def announce_send_disable(self):
+        self.raw.announce_send_disable()
+
     def _get_fetch_5args(self, fname_root, tag, data_type, spatial_sampler, chrono_sampler):
         assert issubclass(spatial_sampler.__class__, Sampler)
         assert issubclass(chrono_sampler.__class__, ChronoSampler)
