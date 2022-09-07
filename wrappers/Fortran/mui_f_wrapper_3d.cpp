@@ -233,6 +233,86 @@ void mui_create_uniface_3t_f(mui_uniface_3t **ret, const char *URI) {
 	*ret = new mui_uniface_3t(URI);
 }
 
+// Set of 3D interfaces with float=single and int=int32
+void mui_create_uniface_multi_3f_f(const char *domain, const char **interfaces, int interface_count ) {
+
+	std::vector<std::string> interface_names;
+    size_t interface_element_size = sizeof(interfaces)/sizeof(interfaces[0]);
+
+    if (interface_element_size == 1) {
+        char interfaces_jointed[strlen(interfaces[0])];
+        strcpy(interfaces_jointed, interfaces[0]);
+        char delim[] = " ";
+
+        char * pchar = strtok (interfaces_jointed,delim);
+        int interface_names_count = 0;
+        while (pchar != NULL) {
+            if (interface_names_count >= interface_count) {
+                std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: number of interfaces more than interface_count." << std::endl;
+                std::abort();
+            }
+            interface_names.push_back(std::string(pchar));
+            pchar = strtok (NULL, delim);
+            interface_names_count = interface_names_count + 1;
+        }
+
+    } else if(interface_element_size > 1) {
+        for(size_t i=0; i<interface_count; i++)
+            interface_names.push_back(std::string(interfaces[i]));
+    } else {
+        std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: The size of interfaces array must larger or equals to one." << std::endl;
+        std::abort();
+    }
+
+    auto created_unifaces = mui::create_uniface<mui::config_3f>(domain, interface_names);
+
+    mui_uniface_multi_3f = new mui_uniface_3f*[created_unifaces.size()];
+
+  	for(size_t i=0; i<created_unifaces.size(); i++) {
+		mui_uniface_multi_3f[i] = created_unifaces[i].release();
+	}
+}
+
+// Set of 3D interfaces with float=single and int=int64
+void mui_create_uniface_multi_3fx_f(const char *domain, const char **interfaces, int interface_count ) {
+
+	std::vector<std::string> interface_names;
+    size_t interface_element_size = sizeof(interfaces)/sizeof(interfaces[0]);
+
+    if (interface_element_size == 1) {
+        char interfaces_jointed[strlen(interfaces[0])];
+        strcpy(interfaces_jointed, interfaces[0]);
+        char delim[] = " ";
+
+        char * pchar = strtok (interfaces_jointed,delim);
+        int interface_names_count = 0;
+        while (pchar != NULL) {
+            if (interface_names_count >= interface_count) {
+                std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: number of interfaces more than interface_count." << std::endl;
+                std::abort();
+            }
+            interface_names.push_back(std::string(pchar));
+            pchar = strtok (NULL, delim);
+            interface_names_count = interface_names_count + 1;
+        }
+
+    } else if(interface_element_size > 1) {
+        for(size_t i=0; i<interface_count; i++)
+            interface_names.push_back(std::string(interfaces[i]));
+    } else {
+        std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: The size of interfaces array must larger or equals to one." << std::endl;
+        std::abort();
+    }
+
+    auto created_unifaces = mui::create_uniface<mui::config_3fx>(domain, interface_names);
+
+    mui_uniface_multi_3fx = new mui_uniface_3fx*[created_unifaces.size()];
+
+  	for(size_t i=0; i<created_unifaces.size(); i++) {
+		mui_uniface_multi_3fx[i] = created_unifaces[i].release();
+	}
+}
+
 // Set of 3D interfaces with float=double and int=int32
 void mui_create_uniface_multi_3d_f(const char *domain, const char **interfaces, int interface_count ) {
 
@@ -273,9 +353,109 @@ void mui_create_uniface_multi_3d_f(const char *domain, const char **interfaces, 
 	}
 }
 
+// Set of 3D interfaces with float=double and int=int64
+void mui_create_uniface_multi_3dx_f(const char *domain, const char **interfaces, int interface_count ) {
+
+	std::vector<std::string> interface_names;
+    size_t interface_element_size = sizeof(interfaces)/sizeof(interfaces[0]);
+
+    if (interface_element_size == 1) {
+        char interfaces_jointed[strlen(interfaces[0])];
+        strcpy(interfaces_jointed, interfaces[0]);
+        char delim[] = " ";
+
+        char * pchar = strtok (interfaces_jointed,delim);
+        int interface_names_count = 0;
+        while (pchar != NULL) {
+            if (interface_names_count >= interface_count) {
+                std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: number of interfaces more than interface_count." << std::endl;
+                std::abort();
+            }
+            interface_names.push_back(std::string(pchar));
+            pchar = strtok (NULL, delim);
+            interface_names_count = interface_names_count + 1;
+        }
+
+    } else if(interface_element_size > 1) {
+        for(size_t i=0; i<interface_count; i++)
+            interface_names.push_back(std::string(interfaces[i]));
+    } else {
+        std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: The size of interfaces array must larger or equals to one." << std::endl;
+        std::abort();
+    }
+
+    auto created_unifaces = mui::create_uniface<mui::config_3dx>(domain, interface_names);
+
+    mui_uniface_multi_3dx = new mui_uniface_3dx*[created_unifaces.size()];
+
+  	for(size_t i=0; i<created_unifaces.size(); i++) {
+		mui_uniface_multi_3dx[i] = created_unifaces[i].release();
+	}
+}
+
+// Set of 3D interfaces using config from config_c_wrapper.h
+void mui_create_uniface_multi_3t_f(const char *domain, const char **interfaces, int interface_count ) {
+
+	std::vector<std::string> interface_names;
+    size_t interface_element_size = sizeof(interfaces)/sizeof(interfaces[0]);
+
+    if (interface_element_size == 1) {
+        char interfaces_jointed[strlen(interfaces[0])];
+        strcpy(interfaces_jointed, interfaces[0]);
+        char delim[] = " ";
+
+        char * pchar = strtok (interfaces_jointed,delim);
+        int interface_names_count = 0;
+        while (pchar != NULL) {
+            if (interface_names_count >= interface_count) {
+                std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: number of interfaces more than interface_count." << std::endl;
+                std::abort();
+            }
+            interface_names.push_back(std::string(pchar));
+            pchar = strtok (NULL, delim);
+            interface_names_count = interface_names_count + 1;
+        }
+
+    } else if(interface_element_size > 1) {
+        for(size_t i=0; i<interface_count; i++)
+            interface_names.push_back(std::string(interfaces[i]));
+    } else {
+        std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: The size of interfaces array must larger or equals to one." << std::endl;
+        std::abort();
+    }
+
+    auto created_unifaces = mui::create_uniface<mui::mui_f_wrapper_3D>(domain, interface_names);
+
+    mui_uniface_multi_3t = new mui_uniface_3t*[created_unifaces.size()];
+
+  	for(size_t i=0; i<created_unifaces.size(); i++) {
+		mui_uniface_multi_3t[i] = created_unifaces[i].release();
+	}
+}
+
+// Access to MUI set of 3D interfaces with float=single and int=int32
+mui_uniface_3f* get_mui_uniface_multi_3f_f(int interface_count) {
+    return mui_uniface_multi_3f[interface_count-1];
+}
+
+// Access to MUI set of 3D interfaces with float=single and int=int64
+mui_uniface_3fx* get_mui_uniface_multi_3fx_f(int interface_count) {
+    return mui_uniface_multi_3fx[interface_count-1];
+}
+
 // Access to MUI set of 3D interfaces with float=double and int=int32
 mui_uniface_3d* get_mui_uniface_multi_3d_f(int interface_count) {
     return mui_uniface_multi_3d[interface_count-1];
+}
+
+// Access to MUI set of 3D interfaces with float=double and int=int64
+mui_uniface_3dx* get_mui_uniface_multi_3dx_f(int interface_count) {
+    return mui_uniface_multi_3dx[interface_count-1];
+}
+
+// Access to MUI set of 3D interfaces using config from config_f_wrapper.h
+mui_uniface_3t* get_mui_uniface_multi_3t_f(int interface_count) {
+    return mui_uniface_multi_3t[interface_count-1];
 }
 
 /****************************************
