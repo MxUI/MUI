@@ -56,13 +56,13 @@
 
 extern "C" {
 
-// MUI Interface typedefs for specialism creation
+// MUI interface typedefs for specialism creation
 typedef mui::uniface3f mui_uniface_3f;
 typedef mui::uniface3fx mui_uniface_3fx;
 typedef mui::uniface3d mui_uniface_3d;
 typedef mui::uniface3dx mui_uniface_3dx;
 
-// MUI Interface typedefs for template creation (recommended)
+// MUI interface typedefs for template creation (recommended)
 typedef mui::uniface<mui::mui_f_wrapper_3D> mui_uniface_3t;
 
 // Exact spatial sampler typedefs for specialism creation
@@ -195,7 +195,14 @@ typedef mui::chrono_sampler_sum3dx mui_chrono_sampler_sum_3dx;
 // Summation temporal sampler typedefs for template creation (recommended)
 typedef mui::chrono_sampler_sum<mui::mui_f_wrapper_3D> mui_chrono_sampler_sum_3t;
 
-mui_uniface_3d** unifaces;
+// MUI set of specialism interface on multi-domain coupling
+mui_uniface_3f** mui_uniface_multi_3f;
+mui_uniface_3fx** mui_uniface_multi_3fx;
+mui_uniface_3d** mui_uniface_multi_3d;
+mui_uniface_3dx** mui_uniface_multi_3dx;
+
+// MUI set of template interface on multi-domain coupling
+mui_uniface_3t** mui_uniface_multi_3t;
 
 /****************************************
  * Create MUI interfaces                 *
@@ -216,11 +223,6 @@ void mui_create_uniface_3d_f(mui_uniface_3d **ret, const char *URI) {
 	*ret = new mui_uniface_3d(URI);
 }
 
-/* mui_uniface_3d* mui_create_uniface_3d_f(const char *URI) {
-	return new mui_uniface_3d(URI);
-}
- */
-
 // 3d interface with float=double and int=int64
 void mui_create_uniface_3dx_f(mui_uniface_3dx **ret, const char *URI) {
 	*ret = new mui_uniface_3dx(URI);
@@ -231,65 +233,50 @@ void mui_create_uniface_3t_f(mui_uniface_3t **ret, const char *URI) {
 	*ret = new mui_uniface_3t(URI);
 }
 
-// Set of 3D interfaces with float=single and int=int32
-//mui_uniface_3d** mui_create_uniface_multi_3d( const char *domain, const char **interfaces, int interface_count ){
-void mui_create_uniface_multi_3d(const char *domain, const char **interfaces, int interface_count ){
-    //mui_uniface_3d** unifaces;
-    size_t interface_element_size = sizeof(interfaces)/sizeof(interfaces[0]);
-    char *pchar;
-	std::vector<std::string> interface_names;
+// Set of 3D interfaces with float=double and int=int32
+void mui_create_uniface_multi_3d_f(const char *domain, const char **interfaces, int interface_count ) {
 
-    if (interface_element_size == 1)
-    {
+	std::vector<std::string> interface_names;
+    size_t interface_element_size = sizeof(interfaces)/sizeof(interfaces[0]);
+
+    if (interface_element_size == 1) {
         char interfaces_jointed[strlen(interfaces[0])];
         strcpy(interfaces_jointed, interfaces[0]);
         char delim[] = " ";
 
-        pchar = strtok (interfaces_jointed,delim);
-        int i = 0;
-        while (pchar != NULL)
-        {
-            if (i >= interface_count)
-            {
-                printf("Error MUI Fortran C binding: interfaces more than interface_count \n");
-                exit(EXIT_FAILURE);
+        char * pchar = strtok (interfaces_jointed,delim);
+        int interface_names_count = 0;
+        while (pchar != NULL) {
+            if (interface_names_count >= interface_count) {
+                std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: number of interfaces more than interface_count." << std::endl;
+                std::abort();
             }
             interface_names.push_back(std::string(pchar));
             pchar = strtok (NULL, delim);
-            i = i + 1;
+            interface_names_count = interface_names_count + 1;
         }
 
-    } else if(interface_element_size > 1)
-    {
+    } else if(interface_element_size > 1) {
         for(size_t i=0; i<interface_count; i++)
             interface_names.push_back(std::string(interfaces[i]));
-    } else
-    {
-        printf("Error MUI Fortran C binding: wrong size of interfaces array \n");
-        exit(EXIT_FAILURE);
+    } else {
+        std::cerr << "MUI Error [mui_f_wrapper_3d.cpp]: Error MUI Fortran C binding: The size of interfaces array must larger or equals to one." << std::endl;
+        std::abort();
     }
 
-	auto created_unifaces = mui::create_uniface<mui::config_3d>(domain, interface_names);
+    auto created_unifaces = mui::create_uniface<mui::config_3d>(domain, interface_names);
 
-	unifaces = new mui_uniface_3d*[created_unifaces.size()];
-//*unifaces = created_unifaces[0].release();
-    //int** uniface; 
+    mui_uniface_multi_3d = new mui_uniface_3d*[created_unifaces.size()];
 
   	for(size_t i=0; i<created_unifaces.size(); i++) {
-		unifaces[i] = created_unifaces[i].release();
-/*         int temp = 888888888;
-        int *ptemp = &temp;
-        uniface[i] = temp;*/
-	} 
-
+		mui_uniface_multi_3d[i] = created_unifaces[i].release();
+	}
 }
 
- mui_uniface_3d* get_multi_uniface_3d_f(int interface_count) {
-     interface_count = interface_count -1;
-	return unifaces[interface_count];
+// Access to MUI set of 3D interfaces with float=double and int=int32
+mui_uniface_3d* get_mui_uniface_multi_3d_f(int interface_count) {
+    return mui_uniface_multi_3d[interface_count-1];
 }
-
-
 
 /****************************************
  * Destroy MUI interface                 *

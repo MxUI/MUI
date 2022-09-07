@@ -62,24 +62,10 @@ program main
   character(len=1024) :: arg_interface
   character(len=1024) :: arg_interface_count
   integer(c_int) :: interface_count
-  character(:), allocatable :: uri
-  type(c_ptr), target :: uniface_1d=c_null_ptr
-  type(c_ptr), target :: uniface_2d=c_null_ptr
- ! type(c_ptr), target :: uniface_3d=c_null_ptr
-  ! type uniface_3d_p_array
-   ! type(c_ptr) :: uniface_p=c_null_ptr
-  ! end type uniface_3d_p_array
-!  type(uniface_p), target, allocatable :: uniface_3d(:)
-  type(c_ptr), target, allocatable :: interfaces3d_ptr(:)
   character(:), allocatable, target :: interfaces3d(:)
-  character(1), allocatable, target :: interfaces3dArray(:,:)
   character(:), allocatable :: domain3d
-  character(len=1024) :: numbrtSuffix
-  type(c_ptr), target :: spatial_sampler_exact_1d=c_null_ptr
-  type(c_ptr), target :: spatial_sampler_exact_2d=c_null_ptr
+  character(len=1024) :: numberSuffix
   type(c_ptr), target :: spatial_sampler_exact_3d=c_null_ptr
-  type(c_ptr), target :: chrono_sampler_exact_1d=c_null_ptr
-  type(c_ptr), target :: chrono_sampler_exact_2d=c_null_ptr
   type(c_ptr), target :: chrono_sampler_exact_3d=c_null_ptr
   real(c_double) :: tolerance=1e-37_c_double
   real(c_double) :: push_point_1=0.0_c_double
@@ -90,15 +76,10 @@ program main
   real(c_double) :: fetch_point_3=0.0_c_double
   real(c_double) :: commit_time=0.0_c_double
   real(c_double) :: fetch_time=0.0_c_double
-  real(c_double) :: send_value_1d=1.0_c_double
-  real(c_double) :: send_value_2d=2.0_c_double
   real(c_double) :: send_value_3d=3.0_c_double
-  real(c_double) :: fetch_result_1d=-1_c_double
-  real(c_double) :: fetch_result_2d=-2_c_double
   real(c_double) :: fetch_result_3d=-3_c_double
-  integer(kind=8) :: i,j
-
   type(c_ptr) :: MUI_COMM_WORLD
+  integer(kind=8) :: i
 
   !Read in URI from command line
   if (command_argument_count()==3) then
@@ -110,109 +91,90 @@ program main
     stop 0
   endif
 
+  !Convert the third command argument into interger as the interface count
   read(arg_interface_count,"(I8)") interface_count
 
-  allocate(uniface_p_array(interface_count))
-  allocate(interfaces3d_ptr(interface_count))
+  !Allociate memory based on number of interfaces
   allocate(character(len_trim(arg_interface)+5) :: interfaces3d(interface_count))
-  allocate(interfaces3dArray(interface_count,(len_trim(arg_interface)+5)))
+  !For multi-domain function, "uniface_pointers" should be used to collect the array of
+  ! MUI uniface pointers. It is decleared in the MUI FORTRAN wrapper.
+  allocate(uniface_pointers(interface_count))
 
-  !No need to call mui_mpi_split_by_app() function first as with the _multi example
-  !as direct uniface creation also called MPI_Init()
-
+  !Call mui_mpi_split_by_app_f() function to init MPI
   call mui_mpi_split_by_app_f(MUI_COMM_WORLD)
-  !***********************
-  !* Single 1D interface *
-  !***********************
+
+  !*************************
+  !* multiple 1D interface *
+  !*************************
 
 
-  !***********************
-  !* Single 2D interface *
-  !***********************
+  !*************************
+  !* multiple 2D interface *
+  !*************************
 
 
 
-  !***********************
-  !* Single 3D interface *
-  !***********************
+  !*************************
+  !* multiple 3D interface *
+  !*************************
 
-  uri = "mpi://" // trim(arg_domain) // "/" // trim(arg_interface) // "_3d"
-
+  ! Obtain the domain name
   domain3d = trim(arg_domain)
 
+  ! Create interface names
   do i = 1, interface_count
-
+    !Generate character type of number suffix
     if (i < 10) then
-        write (numbrtSuffix, "(I1)") i
+        write (numberSuffix, "(I1)") i
     else if ((i < 100) .and. (i > 9)) then
-        write (numbrtSuffix, "(I2)") i
+        write (numberSuffix, "(I2)") i
     else if ((i < 1000) .and. (i > 99)) then
-        write (numbrtSuffix, "(I3)") i
+        write (numberSuffix, "(I3)") i
     else
-        write (numbrtSuffix, "(I4)") i
+        write (numberSuffix, "(I4)") i
     endif
 
-    interfaces3d(i) = trim(arg_interface) // "_" // trim(numbrtSuffix)
-    ! interfaces3d_ptr(i)= c_loc(interfaces3d(i))
-
-    ! do j=1,len_trim(interfaces3d(i))
-	    ! interfaces3dArray(i, j)=interfaces3d(i)(j:j)
-		! print *, "interfaces3dArray: ", interfaces3dArray(i, j)
-    ! end do
-    if (i==1) then
-    interfaces3d(i) = "abc"
-    else if (i==2) then
-    interfaces3d(i) = "222223333305"
-    endif
-    
-	print*,  interfaces3d(i)
-
+    !Create and collect interface names
+    interfaces3d(i) = trim(arg_interface) // "_" // trim(numberSuffix)
   end do 
-  
- ! interfaces3d_ptr = c_loc(interfaces3d(1))
-  
-print *, "interface_count: ", interface_count
-print *, "interfaces3d(1): ", interfaces3d(1)
-  !Create MUI interface
-!  call mui_create_uniface_3d_f(uniface_3d(1), trim(uri)//c_null_char)
-   call create_uniface_multi_3d(uniface_p_array, domain3d, interfaces3d, interface_count)
- 
-! do i = 1, interface_count
-    ! print *, "uniface_3d: ", uniface_3d(i), " at ", i
-! end do
+
+  !Create MUI interfaces. MUI interfaces will be collected by the "uniface_pointers" after this subroutine
+  call create_and_get_uniface_multi_3d_f(uniface_pointers, domain3d, interfaces3d, interface_count)
+
+  !Push send_value_3d=3 through all the MUI interfaces with the tag "position" at location={push_point}={0,0,0}
   do i = 1, interface_count
-    !Push send_value_3d=3 through the MUI interface with the tag "position" at location={push_point}={0,0,0}
-    call mui_push_3d_f(uniface_p_array(i)%uniface_ptr, "position"//c_null_char, push_point_1, &
+    call mui_push_3d_f(uniface_pointers(i)%ptr, "position"//c_null_char, push_point_1, &
     push_point_2, push_point_3, send_value_3d)
   end do
 
-
+  !Commit (transmit) the pushed value at commit_time=0 for all MUI interfaces
   do i = 1, interface_count
-    !Commit (transmit) the pushed value at commit_time=0
-    call mui_commit_3d_f(uniface_p_array(i)%uniface_ptr, commit_time)
+    call mui_commit_3d_f(uniface_pointers(i)%ptr, commit_time)
   end do
-
 
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_3d_f(spatial_sampler_exact_3d, tolerance)
   call mui_create_chrono_sampler_exact_3d_f(chrono_sampler_exact_3d, tolerance)
 
-
+  !Fetch the value for tag "position" at location={fetch_point}={0,0,0} at fetch_time=0 for all MUI interfaces
   do i = 1, interface_count
-      !Fetch the value for tag "position" at location={fetch_point}={0,0,0} at fetch_time=0
-     call mui_fetch_exact_exact_3d_f(uniface_p_array(i)%uniface_ptr, "position"//c_null_char, fetch_point_1, fetch_point_2, &
+     call mui_fetch_exact_exact_3d_f(uniface_pointers(i)%ptr, "position"//c_null_char, fetch_point_1, fetch_point_2, &
            fetch_point_3, fetch_time, spatial_sampler_exact_3d, chrono_sampler_exact_3d, fetch_result_3d)
-
-     print *, "Fetched 3D interface value = ",fetch_result_3d
+     print *, "Fetched 3D interface value = ",fetch_result_3d, " at the interface of ", interfaces3d(i),             &
+           " domian of ", domain3d
   end do
 
-  ! !Destroy created 3D MUI objects
-  ! call mui_destroy_sampler_exact_3d_f(spatial_sampler_exact_3d)
-  ! call mui_destroy_chrono_sampler_exact_3d_f(chrono_sampler_exact_3d)
-  
-! !  Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
- ! deallocate(uniface_3d)
- ! deallocate(interfaces3d)
- ! call mui_destroy_uniface_3d_f(uniface_3d)
+  !Destroy created 3D MUI objects
+  call mui_destroy_sampler_exact_3d_f(spatial_sampler_exact_3d)
+  call mui_destroy_chrono_sampler_exact_3d_f(chrono_sampler_exact_3d)
+
+  ! Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
+  do i = 1, interface_count
+     call mui_destroy_uniface_3d_f(uniface_pointers(i)%ptr)
+  end do
+
+  !Release the memory on unifaces and interface names
+  deallocate(uniface_pointers)
+  deallocate(interfaces3d)
 
 end program main
