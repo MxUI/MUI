@@ -55,13 +55,13 @@ module mui_3d_f
   public
 
   !Define pointer type to collcet uniface pointers for multi-domian function
-  type ptr_typ
+  type ptr_typ_3d
     type(c_ptr) :: ptr
-  end type ptr_typ
+  end type ptr_typ_3d
 
   !Create an allocatable array to collect MUI uniface pointers with the type of
-  ! ptr_typ for multi-domian function
-  type(ptr_typ), target, save, allocatable :: uniface_pointers(:)
+  ! ptr_typ_3d for multi-domian function
+  type(ptr_typ_3d), target, save, allocatable :: uniface_pointers_3d(:)
 
   interface
     !****************************************
@@ -6296,12 +6296,12 @@ module mui_3d_f
     !****************************************
 
     !Create and access set of 3D interfaces with float=single and int=int32
-    subroutine create_and_get_uniface_multi_3f_f(uniface_pointers, domain, interfaces, &
+    subroutine create_and_get_uniface_multi_3f_f(uniface_pointers_3d, domain, interfaces, &
       interface_count)
       use, intrinsic :: iso_c_binding
       implicit none
 
-      type(ptr_typ), target :: uniface_pointers(:)
+      type(ptr_typ_3d), target :: uniface_pointers_3d(:)
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
       integer(kind=c_int), VALUE :: interface_count
@@ -6311,17 +6311,17 @@ module mui_3d_f
         interface_count)
 
       do i = 1, interface_count
-        uniface_pointers(i)%ptr = get_mui_uniface_multi_3f_f(i)
+        uniface_pointers_3d(i)%ptr = get_mui_uniface_multi_3f_f(i)
       end do
     end subroutine create_and_get_uniface_multi_3f_f
 
     !Create and access set of 3D interfaces with float=single and int=int64
-    subroutine create_and_get_uniface_multi_3fx_f(uniface_pointers, domain, interfaces, &
+    subroutine create_and_get_uniface_multi_3fx_f(uniface_pointers_3d, domain, interfaces, &
       interface_count)
       use, intrinsic :: iso_c_binding
       implicit none
 
-      type(ptr_typ), target :: uniface_pointers(:)
+      type(ptr_typ_3d), target :: uniface_pointers_3d(:)
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
       integer(kind=c_int), VALUE :: interface_count
@@ -6331,17 +6331,17 @@ module mui_3d_f
         interface_count)
 
       do i = 1, interface_count
-        uniface_pointers(i)%ptr = get_mui_uniface_multi_3fx_f(i)
+        uniface_pointers_3d(i)%ptr = get_mui_uniface_multi_3fx_f(i)
       end do
     end subroutine create_and_get_uniface_multi_3fx_f
 
     !Create and access set of 3D interfaces with float=double and int=int32
-    subroutine create_and_get_uniface_multi_3d_f(uniface_pointers, domain, interfaces, &
+    subroutine create_and_get_uniface_multi_3d_f(uniface_pointers_3d, domain, interfaces, &
       interface_count)
       use, intrinsic :: iso_c_binding
       implicit none
 
-      type(ptr_typ), target :: uniface_pointers(:)
+      type(ptr_typ_3d), target :: uniface_pointers_3d(:)
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
       integer(kind=c_int), VALUE :: interface_count
@@ -6351,17 +6351,17 @@ module mui_3d_f
         interface_count)
 
       do i = 1, interface_count
-        uniface_pointers(i)%ptr = get_mui_uniface_multi_3d_f(i)
+        uniface_pointers_3d(i)%ptr = get_mui_uniface_multi_3d_f(i)
       end do
     end subroutine create_and_get_uniface_multi_3d_f
 
     !Create and access set of 3D interfaces with float=double and int=int64
-    subroutine create_and_get_uniface_multi_3dx_f(uniface_pointers, domain, interfaces, &
+    subroutine create_and_get_uniface_multi_3dx_f(uniface_pointers_3d, domain, interfaces, &
       interface_count)
       use, intrinsic :: iso_c_binding
       implicit none
 
-      type(ptr_typ), target :: uniface_pointers(:)
+      type(ptr_typ_3d), target :: uniface_pointers_3d(:)
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
       integer(kind=c_int), VALUE :: interface_count
@@ -6371,17 +6371,17 @@ module mui_3d_f
         interface_count)
 
       do i = 1, interface_count
-        uniface_pointers(i)%ptr = get_mui_uniface_multi_3dx_f(i)
+        uniface_pointers_3d(i)%ptr = get_mui_uniface_multi_3dx_f(i)
       end do
     end subroutine create_and_get_uniface_multi_3dx_f
 
     !Create and access set of 3D interfaces using config from config_f_wrapper.h
-    subroutine create_and_get_uniface_multi_3t_f(uniface_pointers, domain, interfaces, &
+    subroutine create_and_get_uniface_multi_3t_f(uniface_pointers_3d, domain, interfaces, &
       interface_count)
       use, intrinsic :: iso_c_binding
       implicit none
 
-      type(ptr_typ), target :: uniface_pointers(:)
+      type(ptr_typ_3d), target :: uniface_pointers_3d(:)
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
       integer(kind=c_int), VALUE :: interface_count
@@ -6391,7 +6391,7 @@ module mui_3d_f
         interface_count)
 
       do i = 1, interface_count
-        uniface_pointers(i)%ptr = get_mui_uniface_multi_3t_f(i)
+        uniface_pointers_3d(i)%ptr = get_mui_uniface_multi_3t_f(i)
       end do
     end subroutine create_and_get_uniface_multi_3t_f
 
