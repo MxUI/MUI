@@ -62,7 +62,7 @@ test:
 	 @echo "Launching unit test code..."
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper domain1 interface : -np 1 ./unit_test_fortran_wrapper domain2 interface
 	 @echo "Launching unit test code..."
-	 ${MPI} -np 1 ./unit_test_multi_fortran_wrapper domain1 interface 5 : -np 1 ./unit_test_multi_fortran_wrapper domain2 interface 5
+	 ${MPI} -np 1 ./unit_test_multi_fortran_wrapper domain1 interface 2 : -np 1 ./unit_test_multi_fortran_wrapper domain2 interface 2
 
 clean:
 	 rm -rf *.o *.mod *.so *.a unit_test_fortran_wrapper unit_test_multi_fortran_wrapper
