@@ -208,6 +208,8 @@ private:
 				N_sp_ = data_points.size();
 		}
 
+		std::cout << N_sp_ << std::endl;
+
 		if ( smoothFunc_ ) {
 			if ( pts_.size() <= static_cast<size_t>(M_ap_) )
 				M_ap_ = (pts_.size() - 1);

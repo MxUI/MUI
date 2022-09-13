@@ -2,7 +2,8 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
-[05 September 2022, 1.2.3]
+[13 September 2022, 1.2.3]
+  - Add multiple uniface helper function (create_uniface) to Fortran wrapper 
   - Add mod file generation to Fortran wrapper build systems (CMake and Makefile)
   - Add creation of static libraries for Fortran and C wrappers to CMake build system
 

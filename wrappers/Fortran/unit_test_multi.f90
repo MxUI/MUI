@@ -2,7 +2,7 @@
 !* Multiscale Universal Interface Code Coupling Library                       *
 !*                                                                            *
 !* Copyright (C) 2021 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
-!*                    S. M. Longshaw                                          *
+!*                    W. Liu, S. M. Longshaw                                  *
 !*                                                                            *
 !* This software is jointly licensed under the Apache License, Version 2.0    *
 !* and the GNU General Public License version 3, you may use it according     *

@@ -59,9 +59,9 @@ test:
 	 @echo "Compiling and linking MUI Fortran wrapper unit test code..."
 	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 mui_f_wrapper_3d.f90 unit_test.f90 -o unit_test_fortran_wrapper -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
 	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 mui_f_wrapper_3d.f90 unit_test_multi.f90 -o unit_test_multi_fortran_wrapper -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
-	 @echo "Launching unit test code..."
+	 @echo "Launching unit test code for direct interface creation..."
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper domain1 interface : -np 1 ./unit_test_fortran_wrapper domain2 interface
-	 @echo "Launching unit test code..."
+	 @echo "Launching unit test code for interface creation using helper fucntion..."
 	 ${MPI} -np 1 ./unit_test_multi_fortran_wrapper domain1 interface 2 : -np 1 ./unit_test_multi_fortran_wrapper domain2 interface 2
 
 clean:
