@@ -62,6 +62,7 @@ namespace mui {
 class comm_mpi_smart : public comm_mpi {
 private:
 	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
+
 public:
 	comm_mpi_smart( const char URI[], const bool quiet, MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, quiet, world) {}
 	virtual ~comm_mpi_smart() {
@@ -74,15 +75,15 @@ private:
 	  auto bytes = std::vector<char>(msg.detach());
 
 		if(bytes.size() > INT_MAX) {
-      std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
-            << "This is likely because there is too much data per MPI rank." << std::endl
-            << "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
-      std::abort();
-    }
+			std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
+					<< "This is likely because there is too much data per MPI rank." << std::endl
+					<< "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
+			std::abort();
+		}
 
 		for( int i = 0; i < remote_size_; i++ ) {
 			if( is_sending[i] ) {
-			  send_buf.emplace_back(MPI_Request(), std::make_shared<std::vector<char> >(bytes));
+				send_buf.emplace_back(MPI_Request(), std::make_shared<std::vector<char> >(bytes));
 				MPI_Isend(send_buf.back().second->data(), send_buf.back().second->size(), MPI_BYTE, i, 0,
 				          domain_remote_, &(send_buf.back().first));
 		 	}
@@ -105,7 +106,7 @@ private:
 		MPI_Recv( rcv_buf.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
 
 		// Catch any unsent MPI_Isend calls, non-blocking
-    test_completion();
+		test_completion();
 
 		return message::make(std::move(rcv_buf));
 	}

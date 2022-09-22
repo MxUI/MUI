@@ -2,6 +2,14 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
+[13 September 2022, 1.2.3]
+  - Add multiple uniface helper function (create_uniface) to Fortran wrapper 
+  - Add mod file generation to Fortran wrapper build systems (CMake and Makefile)
+  - Add creation of static libraries for Fortran and C wrappers to CMake build system
+
+[20 April 2022, 1.2.2]
+  - Improved endianness detection and implementation (in particular for Apple platforms)
+
 [25 February 2022, 1.2.1]
   - Performance improvements (in particular with large peer numbers).
   - Add new parameters to RBF filter API.

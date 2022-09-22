@@ -60,11 +60,19 @@ namespace mui {
 
 class comm_mpi : public communicator {
 public:
-	comm_mpi(const char URI[], const bool quiet, MPI_Comm world ) :
-		domain_local_(0), domain_remote_(0),
-		local_size_(0), local_rank_(0), remote_size_(0), global_size_(0), global_rank_(0),
-		initialized(false), init_by_me(false), uri_host_(std::string()), uri_path_(std::string()),
-		uri_protocol_(std::string()) {
+	comm_mpi( const char URI[], const bool quiet, MPI_Comm world ) :
+		domain_local_(0),
+		domain_remote_(0),
+		local_size_(0),
+		local_rank_(0),
+		remote_size_(0),
+		global_size_(0),
+		global_rank_(0),
+		uri_host_(std::string()),
+		uri_path_(std::string()),
+		uri_protocol_(std::string()),
+		initialized(false),
+		init_by_me(false) {
 		init(URI, quiet, world);
 	}
 	virtual ~comm_mpi() {
@@ -106,7 +114,7 @@ public:
 		uri_protocol_ = desc.protocol();
 		int domain_hash = std::hash<std::string>()( desc.host() );
 		domain_hash=std::abs(domain_hash);
-		int ifs_hash    = std::hash<std::string>()( desc.path() );
+		int ifs_hash = std::hash<std::string>()( desc.path() );
 		ifs_hash=std::abs(ifs_hash);
 		MPI_Comm_split( world, domain_hash % prime, global_rank_, &domain_local_ );
 		MPI_Comm_size( domain_local_, &local_size_ );
@@ -172,7 +180,8 @@ protected:
 	std::string uri_path_;
 	std::string uri_protocol_;
 private:
-	bool initialized, init_by_me;
+	bool initialized;
+	bool init_by_me;
 };
 
 }

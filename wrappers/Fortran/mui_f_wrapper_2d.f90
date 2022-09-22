@@ -54,6 +54,15 @@ module mui_2d_f
   implicit none
   public
 
+  !Define pointer type to collcet uniface pointers for multi-domian function
+  type ptr_typ_2d
+    type(c_ptr) :: ptr
+  end type ptr_typ_2d
+
+  !Create an allocatable array to collect MUI uniface pointers with the type of
+  ! ptr_typ_2d for multi-domian function
+  type(ptr_typ_2d), target, save, allocatable :: uniface_pointers_2d(:)
+
   interface
     !****************************************
     !* Create MUI interfaces                *
@@ -93,6 +102,96 @@ module mui_2d_f
       type(c_ptr), intent(out), target :: uniface(*)
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2t_f
+
+    !Set of 2D interfaces with float=single and int=int32
+    !Recomend to use the create_and_get_uniface_multi_2f_f(*) subroutine instead of use
+    ! this subroutine directly
+    subroutine mui_create_uniface_multi_2f_f(domain, interfaces, interface_count) bind(C)
+      import :: c_char,c_int
+      character(kind=c_char), intent(in) :: domain(*)
+      character(kind=c_char,len=*), intent(in) :: interfaces(*)
+      integer(kind=c_int), VALUE :: interface_count
+    end subroutine mui_create_uniface_multi_2f_f
+
+    !Set of 2D interfaces with float=single and int=int64
+    !Recomend to use the create_and_get_uniface_multi_2fx_f(*) subroutine instead of use
+    ! this subroutine directly
+    subroutine mui_create_uniface_multi_2fx_f(domain, interfaces, interface_count) bind(C)
+      import :: c_char,c_int
+      character(kind=c_char), intent(in) :: domain(*)
+      character(kind=c_char,len=*), intent(in) :: interfaces(*)
+      integer(kind=c_int), VALUE :: interface_count
+    end subroutine mui_create_uniface_multi_2fx_f
+
+    !Set of 2D interfaces with float=double and int=int32
+    !Recomend to use the create_and_get_uniface_multi_2d_f(*) subroutine instead of use
+    ! this subroutine directly
+    subroutine mui_create_uniface_multi_2d_f(domain, interfaces, interface_count) bind(C)
+      import :: c_char,c_int
+      character(kind=c_char), intent(in) :: domain(*)
+      character(kind=c_char,len=*), intent(in) :: interfaces(*)
+      integer(kind=c_int), VALUE :: interface_count
+    end subroutine mui_create_uniface_multi_2d_f
+
+    !Set of 2D interfaces with float=double and int=int64
+    !Recomend to use the create_and_get_uniface_multi_2dx_f(*) subroutine instead of use
+    ! this subroutine directly
+    subroutine mui_create_uniface_multi_2dx_f(domain, interfaces, interface_count) bind(C)
+      import :: c_char,c_int
+      character(kind=c_char), intent(in) :: domain(*)
+      character(kind=c_char,len=*), intent(in) :: interfaces(*)
+      integer(kind=c_int), VALUE :: interface_count
+    end subroutine mui_create_uniface_multi_2dx_f
+
+    !Set of 2D interfaces using config from config_c_wrapper.h
+    !Recomend to use the create_and_get_uniface_multi_2t_f(*) subroutine instead of use
+    ! this subroutine directly
+    subroutine mui_create_uniface_multi_2t_f(domain, interfaces, interface_count) bind(C)
+      import :: c_char,c_int
+      character(kind=c_char), intent(in) :: domain(*)
+      character(kind=c_char,len=*), intent(in) :: interfaces(*)
+      integer(kind=c_int), VALUE :: interface_count
+    end subroutine mui_create_uniface_multi_2t_f
+
+    !Access to MUI set of 2D interfaces with float=single and int=int32
+    !Recomend to use the create_and_get_uniface_multi_2f_f(*) subroutine instead of use
+    ! this subroutine directly
+    type(c_ptr) function get_mui_uniface_multi_2f_f(interface_count) bind(C)
+      import :: c_ptr,c_int
+      integer(kind=c_int), VALUE :: interface_count
+    end function get_mui_uniface_multi_2f_f
+
+    !Access to MUI set of 2D interfaces with float=single and int=int64
+    !Recomend to use the create_and_get_uniface_multi_2fx_f(*) subroutine instead of use
+    ! this subroutine directly
+    type(c_ptr) function get_mui_uniface_multi_2fx_f(interface_count) bind(C)
+      import :: c_ptr,c_int
+      integer(kind=c_int), VALUE :: interface_count
+    end function get_mui_uniface_multi_2fx_f
+
+    !Access to MUI set of 2D interfaces with float=double and int=int32
+    !Recomend to use the create_and_get_uniface_multi_2d_f(*) subroutine instead of use
+    ! this subroutine directly
+    type(c_ptr) function get_mui_uniface_multi_2d_f(interface_count) bind(C)
+      import :: c_ptr,c_int
+      integer(kind=c_int), VALUE :: interface_count
+    end function get_mui_uniface_multi_2d_f
+
+    !Access to MUI set of 2D interfaces with float=double and int=int64
+    !Recomend to use the create_and_get_uniface_multi_2dx_f(*) subroutine instead of use
+    ! this subroutine directly
+    type(c_ptr) function get_mui_uniface_multi_2dx_f(interface_count) bind(C)
+      import :: c_ptr,c_int
+      integer(kind=c_int), VALUE :: interface_count
+    end function get_mui_uniface_multi_2dx_f
+
+    !Access to MUI set of 2D interfaces using config from config_f_wrapper.h
+    !Recomend to use the create_and_get_uniface_multi_2t_f(*) subroutine instead of use
+    ! this subroutine directly
+    type(c_ptr) function get_mui_uniface_multi_2t_f(interface_count) bind(C)
+      import :: c_ptr,c_int
+      integer(kind=c_int), VALUE :: interface_count
+    end function get_mui_uniface_multi_2t_f
 
     !****************************************
     !* Destroy MUI interface                *
@@ -5988,5 +6087,112 @@ module mui_2d_f
     end subroutine mui_uri_protocol_2t_f
 
   end interface 
+
+  contains
+
+  !****************************************
+  !* Create and get MUI interfaces for    *
+  !* multi-domain function                *
+  !****************************************
+
+  !Create and access set of 2D interfaces with float=single and int=int32
+  subroutine create_and_get_uniface_multi_2f_f(uniface_pointers_2d, domain, interfaces, &
+    interface_count)
+    use, intrinsic :: iso_c_binding
+    implicit none
+
+    type(ptr_typ_2d), target :: uniface_pointers_2d(:)
+    character(kind=c_char), intent(in) :: domain(*)
+    character(kind=c_char,len=*), intent(in) :: interfaces(*)
+    integer(kind=c_int), VALUE :: interface_count
+    integer :: i
+
+    call mui_create_uniface_multi_2f_f(domain, interfaces, &
+      interface_count)
+
+    do i = 1, interface_count
+      uniface_pointers_2d(i)%ptr = get_mui_uniface_multi_2f_f(i)
+    end do
+  end subroutine create_and_get_uniface_multi_2f_f
+
+  !Create and access set of 2D interfaces with float=single and int=int64
+  subroutine create_and_get_uniface_multi_2fx_f(uniface_pointers_2d, domain, interfaces, &
+    interface_count)
+    use, intrinsic :: iso_c_binding
+    implicit none
+
+    type(ptr_typ_2d), target :: uniface_pointers_2d(:)
+    character(kind=c_char), intent(in) :: domain(*)
+    character(kind=c_char,len=*), intent(in) :: interfaces(*)
+    integer(kind=c_int), VALUE :: interface_count
+    integer :: i
+
+    call mui_create_uniface_multi_2fx_f(domain, interfaces, &
+      interface_count)
+
+    do i = 1, interface_count
+      uniface_pointers_2d(i)%ptr = get_mui_uniface_multi_2fx_f(i)
+    end do
+  end subroutine create_and_get_uniface_multi_2fx_f
+
+  !Create and access set of 2D interfaces with float=double and int=int32
+  subroutine create_and_get_uniface_multi_2d_f(uniface_pointers_2d, domain, interfaces, &
+    interface_count)
+    use, intrinsic :: iso_c_binding
+    implicit none
+
+    type(ptr_typ_2d), target :: uniface_pointers_2d(:)
+    character(kind=c_char), intent(in) :: domain(*)
+    character(kind=c_char,len=*), intent(in) :: interfaces(*)
+    integer(kind=c_int), VALUE :: interface_count
+    integer :: i
+
+    call mui_create_uniface_multi_2d_f(domain, interfaces, &
+      interface_count)
+
+    do i = 1, interface_count
+      uniface_pointers_2d(i)%ptr = get_mui_uniface_multi_2d_f(i)
+    end do
+  end subroutine create_and_get_uniface_multi_2d_f
+
+  !Create and access set of 2D interfaces with float=double and int=int64
+  subroutine create_and_get_uniface_multi_2dx_f(uniface_pointers_2d, domain, interfaces, &
+    interface_count)
+    use, intrinsic :: iso_c_binding
+    implicit none
+
+    type(ptr_typ_2d), target :: uniface_pointers_2d(:)
+    character(kind=c_char), intent(in) :: domain(*)
+    character(kind=c_char,len=*), intent(in) :: interfaces(*)
+    integer(kind=c_int), VALUE :: interface_count
+    integer :: i
+
+    call mui_create_uniface_multi_2dx_f(domain, interfaces, &
+      interface_count)
+
+    do i = 1, interface_count
+      uniface_pointers_2d(i)%ptr = get_mui_uniface_multi_2dx_f(i)
+    end do
+  end subroutine create_and_get_uniface_multi_2dx_f
+
+  !Create and access set of 2D interfaces using config from config_f_wrapper.h
+  subroutine create_and_get_uniface_multi_2t_f(uniface_pointers_2d, domain, interfaces, &
+    interface_count)
+    use, intrinsic :: iso_c_binding
+    implicit none
+
+    type(ptr_typ_2d), target :: uniface_pointers_2d(:)
+    character(kind=c_char), intent(in) :: domain(*)
+    character(kind=c_char,len=*), intent(in) :: interfaces(*)
+    integer(kind=c_int), VALUE :: interface_count
+    integer :: i
+
+    call mui_create_uniface_multi_2t_f(domain, interfaces, &
+      interface_count)
+
+    do i = 1, interface_count
+      uniface_pointers_2d(i)%ptr = get_mui_uniface_multi_2t_f(i)
+    end do
+  end subroutine create_and_get_uniface_multi_2t_f
 
 end module mui_2d_f

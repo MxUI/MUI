@@ -16,6 +16,4 @@ Note: functions that return *arrays* of values perform memory allocation within 
 # Unit tests
 A unit test is provided with the wrapper:
 1. unit_test.f90 - Demonstrates creating and using a single instance of a 1D/2D/3D uniface
-
-# ToDo List
-1. Helper function wrapping (mui::create_uniface<config>()) for creation of multiple interfaces per domain
+2. unit_test_multi.f90 - Demonstrates creating and using multiple 1D/2D/3D uniface instances using the create_and_get_uniface_multi_xx_f() helper function 

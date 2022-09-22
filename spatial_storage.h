@@ -129,8 +129,8 @@ public:
 
 	void build() {
 		if( is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Build error. Cannot build twice."));
-		if( !data_.empty() ){
-			data_.apply_visitor(construct_{(void*)&bin_});
+		if( !data_.empty() ) {
+		  data_.apply_visitor(construct_{static_cast<void*>(&bin_)});
 			is_bin_ = true;
 		}
 	}

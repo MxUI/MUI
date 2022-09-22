@@ -1,4 +1,5 @@
 unit_test_fortran_wrapper
+unit_test_multi_fortran_wrapper
 *.o
 *.a
 *.so
