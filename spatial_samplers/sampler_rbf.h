@@ -209,7 +209,8 @@ private:
 			else
 				N_sp_ = pts_.size();
 		}
-		else { // Consistent RBF, using remote point set for size
+
+		if ( consistent_ ) { // Consistent RBF, using remote point set for size
 			if ( pouEnabled_ ) { // PoU enabled so check patch size not larger than point set
 				if ( data_points.size() < N_sp_ )
 					N_sp_ = data_points.size();
@@ -217,6 +218,8 @@ private:
 			else
 				N_sp_ = data_points.size();
 		}
+
+		std::cout << N_sp_ << std::endl;
 
 		if ( smoothFunc_ ) {
 			if ( pts_.size() < M_ap_ )
