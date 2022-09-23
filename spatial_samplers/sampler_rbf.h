@@ -147,8 +147,8 @@ public:
 			// Ensure Eigen solver parameters are sensible
 			if ( cgMaxIter_ < 0 )
 				cgMaxIter_ = 0;
-			if ( cgSolveTol_ <= 0 )
-				cgSolveTol_ = std::numeric_limits<REAL>::epsilon();
+			if ( cgSolveTol_ < 0 )
+				cgSolveTol_ = 0;
 	}
 
 	template<template<typename, typename > class CONTAINER>
@@ -218,8 +218,6 @@ private:
 			else
 				N_sp_ = data_points.size();
 		}
-
-		std::cout << N_sp_ << std::endl;
 
 		if ( smoothFunc_ ) {
 			if ( pts_.size() < M_ap_ )
@@ -422,7 +420,8 @@ private:
 						Eigen::DiagonalPreconditioner<REAL>> solver(Css);
 				if ( cgMaxIter_ > 0 )
 					solver.setMaxIterations(cgMaxIter_);
-				solver.setTolerance(cgSolveTol_);
+				if ( cgSolveTol_ > 0 )
+					solver.setTolerance(cgSolveTol_);
 
 				Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = solver.solve(Aas);
 
@@ -434,11 +433,6 @@ private:
 				}
 
 				errorReturn += solver.error();
-
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_(row, glob_j) = H_i(j, 0);
-				}
 
 				if ( smoothing ) {
 					for ( size_t j = 0; j < NP; j++ ) {
@@ -538,7 +532,8 @@ private:
 					Eigen::DiagonalPreconditioner<REAL>> solver(Css);
 			if ( cgMaxIter_ > 0 )
 				solver.setMaxIterations(cgMaxIter_);
-			solver.setTolerance(cgSolveTol_);
+			if ( cgSolveTol_ > 0 )
+				solver.setTolerance(cgSolveTol_);
 
 			Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
 			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_more = solver.solve(AasTrans);
@@ -552,16 +547,16 @@ private:
 			errorReturn = solver.error();
 
 			if ( smoothing ) {
-				for ( size_t i = 0; i < pts_.size(); i++ ) {
-					for (size_t j = 0; j < data_points.size(); j++ ) {
-						H_toSmooth_(i, j) = H_more((i + CONFIG::D + 1), j);
+				for ( size_t i = 0; i < data_points.size(); i++ ) {
+					for (size_t j = 0; j < pts_.size(); j++ ) {
+						H_toSmooth_(j, i) = H_more((i + CONFIG::D + 1), j);
 					}
 				}
 			}
 			else {
-				for ( size_t i = 0; i < pts_.size(); i++ ) {
-					for ( size_t j = 0; j < data_points.size(); j++ ) {
-						H_(i, j) = H_more((i + CONFIG::D + 1), j);
+				for ( size_t i = 0; i < data_points.size(); i++ ) {
+					for ( size_t j = 0; j < pts_.size(); j++ ) {
+						H_(j, i) = H_more((i + CONFIG::D + 1), j);
 					}
 				}
 			}
@@ -607,7 +602,7 @@ private:
 				Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
 				Css.resize((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-				Aas.resize(1, (1 + NP + CONFIG::D));
+				Aas.resize((1 + NP + CONFIG::D), 1);
 
 				std::vector<Eigen::Triplet<REAL> > coefsC;
 
@@ -652,56 +647,49 @@ private:
 					auto d = norm(data_points[row].first - pts_[glob_j]);
 
 					if ( d < r_ ) {
-						coefs.emplace_back(Eigen::Triplet<REAL> (0, j, rbf(d)));
+						coefs.emplace_back(Eigen::Triplet<REAL> (j, 0, rbf(d)));
 					}
 				}
 
-				coefs.emplace_back(Eigen::Triplet<REAL> (0, NP, 1));
+				coefs.emplace_back(Eigen::Triplet<REAL> (NP, 0, 1));
 
 				for ( int dim = 0; dim < CONFIG::D; dim++ ) {
-					coefs.emplace_back(Eigen::Triplet<REAL> (0, (NP + dim + 1), data_points[row].first[dim]));
+					coefs.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), 0, data_points[row].first[dim]));
 				}
 
 				Aas.reserve(coefs.size());
 				Aas.setFromTriplets(coefs.begin(), coefs.end());
 
 				//invert Css
-				Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> I(Css.rows(), Css.cols());
-				I.setIdentity();
 				Eigen::ConjugateGradient<Eigen::SparseMatrix<REAL>,
 						Eigen::Lower | Eigen::Upper,
 						Eigen::DiagonalPreconditioner<REAL>> solver(Css);
-				if ( cgMaxIter_ != 0 )
+				if ( cgMaxIter_ > 0 )
 					solver.setMaxIterations(cgMaxIter_);
-				solver.setTolerance(cgSolveTol_);
-				Eigen::SparseMatrix<REAL> invCss = solver.solve(I).sparseView();
+				if ( cgSolveTol_ > 0 )
+					solver.setTolerance(cgSolveTol_);
+
+				Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = solver.solve(Aas);
 
 				if ( DEBUG ) {
-					std::cout << "#iterations of invCss:     "
-							<< solver.iterations() << ". Error of invCss: "
-							<< solver.error() << std::endl;
+					std::cout << "#iterations of H_i:     "
+							<< solver.iterations()
+							<< ". Error of H_i: " << solver.error()
+							<< std::endl;
 				}
 
 				errorReturn += solver.error();
 
-				Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
-				Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_i = (invCss * AasTrans).pruned();
-
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_(glob_j, row) = H_i(0, j);
-				}
-
 				if ( smoothing ) {
 					for ( size_t j = 0; j < NP; j++ ) {
 						INT glob_j = connectivityAB_[row][j];
-						H_toSmooth_(glob_j, row) = H_i(0, j);
+						H_toSmooth_(glob_j, row) = H_i(j, 0);
 					}
 				}
 				else {
 					for ( size_t j = 0; j < NP; j++ ) {
 						INT glob_j = connectivityAB_[row][j];
-						H_(glob_j, row) = H_i(0, j);
+						H_(glob_j, row) = H_i(j, 0);
 					}
 				}
 			}
@@ -790,7 +778,8 @@ private:
 					Eigen::DiagonalPreconditioner<REAL>> solver(Css);
 			if ( cgMaxIter_ > 0 )
 				solver.setMaxIterations(cgMaxIter_);
-			solver.setTolerance(cgSolveTol_);
+			if ( cgSolveTol_ > 0 )
+				solver.setTolerance(cgSolveTol_);
 
 			Eigen::SparseMatrix<REAL> AasTrans = Aas.transpose();
 			Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_more = solver.solve(AasTrans);
