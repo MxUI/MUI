@@ -2,7 +2,7 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
-[05 October 2022, ongoing]
+[05 October 2022, 1.2.4]
   - Refactor RBF filter
   - Generalise capability of RBF filter so partitioned approach available for both conservative and consistent forms
   - Optimise RBF matrix generation
