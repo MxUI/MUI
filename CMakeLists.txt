@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(MUI VERSION 1.2.3 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX C Fortran)
+project(MUI VERSION 1.2.3 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -60,6 +60,8 @@ install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib
 
 if(C_WRAPPER)
 	message("-- MUI C wrapper: Selected")
+	
+	enable_language(C)
 
 	add_library(MUI_C_wrapper SHARED
 		./wrappers/C/mui_c_wrapper_general.cpp
@@ -100,6 +102,8 @@ endif(C_WRAPPER)
 
 if(FORTRAN_WRAPPER)
 	message("-- MUI Fortran wrapper: Selected")
+	
+	enable_language(FORTRAN)
 
 	set_source_files_properties(
   		./wrappers/Fortran/mui_f_wrapper_general.f90
