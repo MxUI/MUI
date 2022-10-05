@@ -2,6 +2,12 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
+[05 October 2022, ongoing]
+  - Refactor RBF filter
+  - Generalise capability of RBF filter so partitioned approach available for both conservative and consistent forms
+  - Optimise RBF matrix generation
+  - Fix CMake bug around use of languages other than C++
+
 [13 September 2022, 1.2.3]
   - Add multiple uniface helper function (create_uniface) to Fortran wrapper 
   - Add mod file generation to Fortran wrapper build systems (CMake and Makefile)
