@@ -697,35 +697,35 @@ private:
 			errorReturn /= static_cast<REAL>(data_points.size());
 
 			if ( smoothing ) {
-				for ( size_t row = 0; row < pts_.size(); row++ ) {
+				for ( size_t row = 0; row < data_points.size(); row++ ) {
 					for ( size_t j = 0; j < NP; j++ ) {
-						INT glob_j = connectivityAB_[row][j];
+						INT row_i = connectivityAB_[row][j];
 						REAL h_j_sum = 0.;
 						REAL f_sum = 0.;
 
 						for ( size_t k = 0; k < MP; k++ ) {
-							INT row_k = connectivityAA_[row][k];
-							if ( row_k == static_cast<INT>(row) ) {
+							INT row_k = connectivityAA_[row_i][k];
+							if ( row_k == static_cast<INT>(row_i) ) {
 								std::cerr << "Invalid row_k value: "
 										<< row_k << std::endl;
 							}
 							else
-								h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+								h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
 						}
 
 						for ( size_t k = 0; k < MP; k++ ) {
-							INT row_k = connectivityAA_[row][k];
-							if ( row_k == static_cast<INT>(row) ) {
+							INT row_k = connectivityAA_[row_i][k];
+							if ( row_k == static_cast<INT>(row_i) ) {
 								std::cerr << "Invalid row_k value: "
 										<< row_k << std::endl;
 							}
 							else {
-								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-								f_sum += w_i * H_toSmooth_(glob_j, row_k);
+								REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.)) / (h_j_sum));
+								f_sum += w_i * H_toSmooth_(row_k, row);
 							}
 						}
 
-						H_(glob_j, row) = 0.5 * (f_sum + H_toSmooth_(glob_j, row));
+						H_(row_i, row) = 0.5 * (f_sum + H_toSmooth_(row_i, row));
 					}
 				}
 			}
