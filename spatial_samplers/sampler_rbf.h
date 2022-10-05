@@ -2,7 +2,7 @@
  * Multiscale Universal Interface Code Coupling Library                       *
  *                                                                            *
  * Copyright (C) 2019 Y. H. Tang, S. Kudo, X. Bian, Z. Li, G. E. Karniadakis, *
- *                    A. Skillen, W. Liu, S. Longshaw                         *
+ *                    A. Skillen, W. Liu, S. Longshaw, O. Mahfoze             *
  *                                                                            *
  * This software is jointly licensed under the Apache License, Version 2.0    *
  * and the GNU General Public License version 3, you may use it according     *
@@ -39,7 +39,7 @@
 
 /**
  * @file sampler_rbf.h
- * @author A. Skillen, W. Liu, S. Longshaw
+ * @author A. Skillen, W. Liu, S. Longshaw, O. Mahfoze
  * @date November 2018
  * @brief Spatial sampler using Radial Basis Function interpolation.
  */
