@@ -68,6 +68,9 @@
 #include "spatial_samplers/sampler_rbf.h"
 #endif
 
+//Include coupling algorithms
+#include "coupling_algorithms/algo_fixedRelaxation.h"
+
 #include "sampler.h"
 #include "comm.h"
 #include "comm_mpi.h"
@@ -116,6 +119,7 @@ namespace mui {
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(algo_fixedRelaxation,SUFFIX,config_##SUFFIX);\
 		namespace geometry {\
 			using point##SUFFIX = point<config_##SUFFIX>;\
 			using sphere##SUFFIX = sphere<config_##SUFFIX>;\
@@ -167,6 +171,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(algo_fixedRelaxation,SUFFIX,config_##SUFFIX);\
 		namespace geometry {\
 			using point##SUFFIX = point<config_##SUFFIX>;\
 			using sphere##SUFFIX = sphere<config_##SUFFIX>;\
@@ -207,6 +212,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(algo_fixedRelaxation,SUFFIX,CONFIG);\
 		}
 
 }
