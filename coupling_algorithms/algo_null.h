@@ -54,14 +54,21 @@
 
 namespace mui {
 
-template<typename CONFIG=default_config> class algor_null {
+template<typename CONFIG=default_config> class algo_null {
 public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
+	using point_type = typename CONFIG::point_type;
 
-	algor_null( ) {
-		// to do: initialization
+	algo_null( ) {
+
+	}
+
+	//- relaxation based on single time value
+	template<typename OTYPE>
+	OTYPE relaxation(time_type t, point_type focus, OTYPE filteredValue) const {
+
 	}
 
 };
