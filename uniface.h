@@ -468,7 +468,7 @@ public:
 			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return cpl_algo.relaxation(focus, t_sampler.filter(t, v));
+		return cpl_algo.relaxation(t, focus, t_sampler.filter(t, v));
 	}
 
 	/** \brief Fetch points currently stored in the interface, blocking with barrier at time=t
