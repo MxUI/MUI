@@ -88,12 +88,12 @@ public:
 			filteredOldValue = 0.0;
 
 			std::vector<std::pair<point_type, REAL>> ptsVluTemp{
-				std::make_pair(focus,get_relaxed_value(filteredValue,filteredOldValue))
+				std::make_pair(focus,calculate_relaxed_value(filteredValue,filteredOldValue))
 				};
 
 			ptsTimeVlu_.push_back(std::make_pair(t,ptsVluTemp));
 
-			return get_relaxed_value(filteredValue,filteredOldValue);
+			return calculate_relaxed_value(filteredValue,filteredOldValue);
 
 		} else { // ptsTimeVlu_ not empty
 
@@ -193,12 +193,12 @@ public:
 					}
 
 					std::vector<std::pair<point_type, REAL>> ptsVluTemp{
-						std::make_pair(focus,get_relaxed_value(filteredValue,filteredOldValue))
+						std::make_pair(focus,calculate_relaxed_value(filteredValue,filteredOldValue))
 					};
 
 					ptsTimeVlu_.push_back(std::make_pair(t, ptsVluTemp));
 
-					return get_relaxed_value(filteredValue,filteredOldValue);
+					return calculate_relaxed_value(filteredValue,filteredOldValue);
 
 			} else {
 
@@ -245,18 +245,18 @@ public:
 					if ( ptsPresentRelxValIter == std::end(presentIter->second) ) {
 
 						presentIter->second.push_back(
-							std::make_pair(focus,get_relaxed_value(
+							std::make_pair(focus,calculate_relaxed_value(
 								filteredValue,filteredOldValue)
 							)
 						);
 
 					} else {
 
-						ptsPresentRelxValIter->second = get_relaxed_value(filteredValue,filteredOldValue);
+						ptsPresentRelxValIter->second = calculate_relaxed_value(filteredValue,filteredOldValue);
 
 					}
 
-					return get_relaxed_value(filteredValue,filteredOldValue);
+					return calculate_relaxed_value(filteredValue,filteredOldValue);
 
 			}
 
@@ -265,7 +265,7 @@ public:
 
 private:
 	template<typename OTYPE>
-	OTYPE get_relaxed_value(OTYPE filteredValue, OTYPE filteredOldValue) {
+	OTYPE calculate_relaxed_value(OTYPE filteredValue, OTYPE filteredOldValue) {
 
 		return (undRelxFac_ * filteredValue) + ((1 - undRelxFac_) * filteredOldValue);
 
