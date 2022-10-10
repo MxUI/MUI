@@ -122,294 +122,334 @@ public:
 
 		} else {
 
-			auto presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(), 
-				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-				});
-
-			auto previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(), 
-				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return b.first < t;
-				});
-
-			auto presentResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(), 
-				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-				});
-
-			auto previousResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(), 
-				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return b.first < t;
-				});
-
-			if ((presentIter == std::end(ptsTimeVlu_)) && 
-				(previousIter == std::end(ptsTimeVlu_)) ) {
-
-				assert(presentResIter == std::end(ptsTimeRes_));
-
-				std::cerr << "Non-monotonic time marching does not (yet) supported for the Aitken coupling method! " << std::endl;
-
-			} else if ((presentIter != std::end(ptsTimeVlu_)) && 
-				(previousIter == std::end(ptsTimeVlu_)) ) {
-
-					assert((presentIter->first - presentResIter->first) < std::numeric_limits<REAL>::epsilon());
-					assert(!residualL2Norm_.empty());
-
-					auto ptsRelxValIter = std::find_if(presentIter->second.begin(),
-						presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
-					return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+				auto presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
+					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+						return (t - b.first) < std::numeric_limits<REAL>::epsilon();
 					});
 
-					auto ptsRelxResIter = std::find_if(presentResIter->second.begin(),
-						presentResIter->second.end(), [focus](std::pair<point_type, REAL> b) {
-					return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+				auto previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
+					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+						return b.first < t;
 					});
 
-					if ( ptsRelxValIter == std::end(presentIter->second) ) {
+				auto presentResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
+					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+						return (t - b.first) < std::numeric_limits<REAL>::epsilon();
+					});
 
-						assert(ptsRelxResIter == std::end(presentResIter->second));
+				auto previousResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
+					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+						return b.first < t;
+					});
 
-						// Interpolate the relaxed value by N2_linear
-						REAL r2min_1st = std::numeric_limits<REAL>::max();
-						REAL r2min_2nd = std::numeric_limits<REAL>::max();
-						OTYPE value_1st = 0, value_2nd = 0;
-						for( size_t i = 0 ; i < presentIter->second.size() ; i++ ) {
-							REAL dr2 = normsq( focus - presentIter->second[i].first );
-							if ( dr2 < r2min_1st ) {
-								r2min_2nd = r2min_1st;
-								value_2nd = value_1st;
-								r2min_1st = dr2;
-								value_1st = presentIter->second[i].second ;
-							} else if ( dr2 < r2min_2nd ) {
-								r2min_2nd = dr2;
-								value_2nd = presentIter->second[i].second ;
-							}
+				if ((presentIter == std::end(ptsTimeVlu_)) &&
+					(previousIter == std::end(ptsTimeVlu_)) ) {
+
+					assert((presentResIter == std::end(ptsTimeRes_)) || ptsTimeRes_.empty());
+
+					std::cerr << "Non-monotonic time marching does not (yet) supported for the Aitken coupling method! " << std::endl;
+
+				} else if ((presentIter != std::end(ptsTimeVlu_)) &&
+					(previousIter == std::end(ptsTimeVlu_)) ) {
+
+						assert(((presentIter->first - presentResIter->first) < std::numeric_limits<REAL>::epsilon()) || ptsTimeRes_.empty());
+
+						if (!ptsTimeRes_.empty()) {
+							assert(!residualL2Norm_.empty());
 						}
 
-						REAL r1 = std::sqrt( r2min_1st );
-						REAL r2 = std::sqrt( r2min_2nd );
+						auto ptsRelxValIter = std::find_if(presentIter->second.begin(),
+							presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+						return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
 
-						auto relaxedValueTemp = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+						auto ptsRelxResIter = std::find_if(presentResIter->second.begin(),
+							presentResIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+						return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
 
-						presentIter->second.insert(presentIter->second.begin(),std::make_pair(focus, relaxedValueTemp));
-						presentResIter->second.insert(presentResIter->second.begin(),std::make_pair(focus, (filteredValue-relaxedValueTemp)));
+						if ( ptsRelxValIter == std::end(presentIter->second) ) {
 
-						return relaxedValueTemp;		
+							assert((ptsRelxResIter == std::end(presentResIter->second)) || ptsTimeRes_.empty());
 
-					} else {
-
-						assert(normsq(ptsRelxValIter->first - ptsRelxResIter->first) < std::numeric_limits<REAL>::epsilon() );
-
-						return ptsRelxValIter->second;
-
-					}
-
-			} else if ((presentIter == std::end(ptsTimeVlu_)) && 
-				(previousIter != std::end(ptsTimeVlu_)) ) {
-
-					assert(presentResIter == std::end(ptsTimeRes_));
-
-					auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
-						previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
-					return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
-
-					if ( ptsRelxValIter == std::end(previousIter->second) ) {
-
-						// Interpolate the relaxed value by N2_linear
-						REAL r2min_1st = std::numeric_limits<REAL>::max();
-						REAL r2min_2nd = std::numeric_limits<REAL>::max();
-						OTYPE value_1st = 0, value_2nd = 0;
-						for( size_t i = 0 ; i < previousIter->second.size() ; i++ ) {
-							REAL dr2 = normsq( focus - previousIter->second[i].first );
-							if ( dr2 < r2min_1st ) {
-								r2min_2nd = r2min_1st;
-								value_2nd = value_1st;
-								r2min_1st = dr2;
-								value_1st = previousIter->second[i].second ;
-							} else if ( dr2 < r2min_2nd ) {
-								r2min_2nd = dr2;
-								value_2nd = previousIter->second[i].second ;
+							// Interpolate the relaxed value by N2_linear
+							REAL r2min_1st = std::numeric_limits<REAL>::max();
+							REAL r2min_2nd = std::numeric_limits<REAL>::max();
+							OTYPE value_1st = 0, value_2nd = 0;
+							for( size_t i = 0 ; i < presentIter->second.size() ; i++ ) {
+								REAL dr2 = normsq( focus - presentIter->second[i].first );
+								if ( dr2 < r2min_1st ) {
+									r2min_2nd = r2min_1st;
+									value_2nd = value_1st;
+									r2min_1st = dr2;
+									value_1st = presentIter->second[i].second ;
+								} else if ( dr2 < r2min_2nd ) {
+									r2min_2nd = dr2;
+									value_2nd = presentIter->second[i].second ;
+								}
 							}
+
+							REAL r1 = std::sqrt( r2min_1st );
+							REAL r2 = std::sqrt( r2min_2nd );
+
+							auto relaxedValueTemp = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+
+							presentIter->second.insert(presentIter->second.begin(),std::make_pair(focus, relaxedValueTemp));
+
+							if (ptsTimeRes_.empty()) {
+
+								std::vector<std::pair<point_type, REAL>> ptsResTemp{
+									std::make_pair(focus, (filteredValue-relaxedValueTemp))
+									};
+
+								ptsTimeRes_.insert(ptsTimeRes_.begin(),std::make_pair(t,ptsResTemp));
+
+							} else {
+								presentResIter->second.insert(presentResIter->second.begin(),std::make_pair(focus, (filteredValue-relaxedValueTemp)));
+							}
+
+							return relaxedValueTemp;
+
+						} else {
+
+							assert((normsq(ptsRelxValIter->first - ptsRelxResIter->first) < std::numeric_limits<REAL>::epsilon()) || ptsTimeRes_.empty());
+
+							return ptsRelxValIter->second;
+
 						}
 
-						REAL r1 = std::sqrt( r2min_1st );
-						REAL r2 = std::sqrt( r2min_2nd );
+				} else if ((presentIter == std::end(ptsTimeVlu_)) &&
+					(previousIter != std::end(ptsTimeVlu_)) ) {
 
-						filteredOldValue = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+						assert((presentResIter == std::end(ptsTimeRes_)) || ptsTimeRes_.empty());
 
-					} else {
+						auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
+							previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+						return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
 
-						filteredOldValue = ptsRelxValIter->second;
+						if ( ptsRelxValIter == std::end(previousIter->second) ) {
 
-					}
+							// Interpolate the relaxed value by N2_linear
+							REAL r2min_1st = std::numeric_limits<REAL>::max();
+							REAL r2min_2nd = std::numeric_limits<REAL>::max();
+							OTYPE value_1st = 0, value_2nd = 0;
+							for( size_t i = 0 ; i < previousIter->second.size() ; i++ ) {
+								REAL dr2 = normsq( focus - previousIter->second[i].first );
+								if ( dr2 < r2min_1st ) {
+									r2min_2nd = r2min_1st;
+									value_2nd = value_1st;
+									r2min_1st = dr2;
+									value_1st = previousIter->second[i].second ;
+								} else if ( dr2 < r2min_2nd ) {
+									r2min_2nd = dr2;
+									value_2nd = previousIter->second[i].second ;
+								}
+							}
 
-					std::vector<std::pair<point_type, REAL>> ptsVluTemp{
-						std::make_pair(focus,calculate_relaxed_value(t,filteredValue,filteredOldValue))
-					};
+							REAL r1 = std::sqrt( r2min_1st );
+							REAL r2 = std::sqrt( r2min_2nd );
 
-					ptsTimeVlu_.insert(ptsTimeVlu_.begin(),std::make_pair(t, ptsVluTemp));
+							filteredOldValue = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
 
-					std::vector<std::pair<point_type, REAL>> ptsResTemp{
-						std::make_pair(focus,calculate_point_residual(t,filteredValue,filteredOldValue))
+						} else {
+
+							filteredOldValue = ptsRelxValIter->second;
+
+						}
+
+						std::vector<std::pair<point_type, REAL>> ptsVluTemp{
+							std::make_pair(focus,calculate_relaxed_value(t,filteredValue,filteredOldValue))
 						};
 
-					ptsTimeRes_.insert(ptsTimeRes_.begin(),std::make_pair(t,ptsResTemp));
+						ptsTimeVlu_.insert(ptsTimeVlu_.begin(),std::make_pair(t, ptsVluTemp));
 
-					presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
-						[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-							return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-						});
+						std::vector<std::pair<point_type, REAL>> ptsResTemp{
+							std::make_pair(focus,calculate_point_residual(t,filteredValue,filteredOldValue))
+							};
 
-					previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
-						[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-							return b.first < t;
-						});
+						ptsTimeRes_.insert(ptsTimeRes_.begin(),std::make_pair(t,ptsResTemp));
 
-					presentResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
-						[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-							return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-						});
-
-					previousResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
-						[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-							return b.first < t;
-						});
-
-					auto ptsResidualL2NormIter = std::find_if(residualL2Norm_.begin(),
-						residualL2Norm_.end(), [previousIter](std::pair<time_type,std::pair<INT, REAL>> b) {
-					return (previousIter->first - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
-
-					if(ptsResidualL2NormIter == std::end(residualL2Norm_)) {
-						assert((previousIter->first - previousResIter->first) < std::numeric_limits<REAL>::epsilon());
-
-						REAL localResidualMagSqSumTemp = 0.0;
-
-						for (auto & elementPair : previousResIter->second) {
-							localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
-						}
-
-						if((localResidualMagSqSumTemp != 0) || (!residualL2Norm_.empty())){
-							residualL2Norm_.insert(residualL2Norm_.begin(),
-								std::make_pair(
-									previousResIter->first, (
-										std::make_pair(
-											static_cast<INT>(
-												previousResIter->second.size()
-											), std::sqrt(localResidualMagSqSumTemp)
-										)
-									)
-								)
-							);
-
-							ptsResidualL2NormIter = std::find_if(residualL2Norm_.begin(),
-								residualL2Norm_.end(), [previousIter](std::pair<time_type,std::pair<INT, REAL>> b) {
-							return (previousIter->first - b.first) < std::numeric_limits<REAL>::epsilon();
+						presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
+							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+								return (t - b.first) < std::numeric_limits<REAL>::epsilon();
 							});
-						}
-					} else {
-						
-						if(ptsResidualL2NormIter->second.first != 0) {
 
-							auto ptsTimeResIter = std::find_if(ptsTimeRes_.begin(),
-							ptsTimeRes_.end(), [previousResIter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-							return (previousResIter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+						previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
+							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+								return b.first < t;
+							});
 
-							assert(ptsTimeResIter != std::end(ptsTimeRes_) );
+						presentResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
+							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+								return (t - b.first) < std::numeric_limits<REAL>::epsilon();
+							});
 
-							if(ptsTimeResIter->second.size() != ptsResidualL2NormIter->second.first) {
+						previousResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
+							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+								return b.first < t;
+							});
+
+						auto ptsResidualL2NormIter = std::find_if(residualL2Norm_.begin(),
+							residualL2Norm_.end(), [previousIter](std::pair<time_type,std::pair<INT, REAL>> b) {
+						return (previousIter->first - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
+
+						if(ptsResidualL2NormIter == std::end(residualL2Norm_)) {
+
+							if (previousResIter!=std::end(ptsTimeRes_)) {
+
+								assert((previousIter->first - previousResIter->first) < std::numeric_limits<REAL>::epsilon());
 
 								REAL localResidualMagSqSumTemp = 0.0;
 
-								for (auto & elementPair : ptsTimeResIter->second) {
+								for (auto & elementPair : previousResIter->second) {
 									localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 								}
-								ptsResidualL2NormIter->second.second = std::sqrt(localResidualMagSqSumTemp);
+
+								if((localResidualMagSqSumTemp != 0) || (!residualL2Norm_.empty())){
+									residualL2Norm_.insert(residualL2Norm_.begin(),
+										std::make_pair(
+											previousResIter->first, (
+												std::make_pair(
+													static_cast<INT>(
+														previousResIter->second.size()
+													), std::sqrt(localResidualMagSqSumTemp)
+												)
+											)
+										)
+									);
+
+									ptsResidualL2NormIter = std::find_if(residualL2Norm_.begin(),
+										residualL2Norm_.end(), [previousIter](std::pair<time_type,std::pair<INT, REAL>> b) {
+									return (previousIter->first - b.first) < std::numeric_limits<REAL>::epsilon();
+									});
+								}
+							}
+
+						} else {
+
+							if(ptsResidualL2NormIter->second.first != 0) {
+
+								auto ptsTimeResIter = std::find_if(ptsTimeRes_.begin(),
+								ptsTimeRes_.end(), [previousResIter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
+								return (previousResIter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+
+								assert(ptsTimeResIter != std::end(ptsTimeRes_) );
+
+								if(ptsTimeResIter->second.size() != ptsResidualL2NormIter->second.first) {
+
+									REAL localResidualMagSqSumTemp = 0.0;
+
+									for (auto & elementPair : ptsTimeResIter->second) {
+										localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
+									}
+									ptsResidualL2NormIter->second.second = std::sqrt(localResidualMagSqSumTemp);
+								}
 							}
 						}
-					}
 
-					return calculate_relaxed_value(t,filteredValue,filteredOldValue);
+						return calculate_relaxed_value(t,filteredValue,filteredOldValue);
 
-			} else {
+				} else {
 
-					assert((presentIter->first - presentResIter->first) < std::numeric_limits<REAL>::epsilon());
+						assert(((presentIter->first - presentResIter->first) < std::numeric_limits<REAL>::epsilon()) || ptsTimeRes_.empty());
 
-					auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
-						previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
-					return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
+						auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
+							previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+						return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
 
-					if ( ptsRelxValIter == std::end(previousIter->second) ) {
+						if ( ptsRelxValIter == std::end(previousIter->second) ) {
 
-						// Interpolate the relaxed value by N2_linear
-						REAL r2min_1st = std::numeric_limits<REAL>::max();
-						REAL r2min_2nd = std::numeric_limits<REAL>::max();
-						OTYPE value_1st = 0, value_2nd = 0;
-						for( size_t i = 0 ; i < previousIter->second.size() ; i++ ) {
-							REAL dr2 = normsq( focus - previousIter->second[i].first );
-							if ( dr2 < r2min_1st ) {
-								r2min_2nd = r2min_1st;
-								value_2nd = value_1st;
-								r2min_1st = dr2;
-								value_1st = previousIter->second[i].second ;
-							} else if ( dr2 < r2min_2nd ) {
-								r2min_2nd = dr2;
-								value_2nd = previousIter->second[i].second ;
+							// Interpolate the relaxed value by N2_linear
+							REAL r2min_1st = std::numeric_limits<REAL>::max();
+							REAL r2min_2nd = std::numeric_limits<REAL>::max();
+							OTYPE value_1st = 0, value_2nd = 0;
+							for( size_t i = 0 ; i < previousIter->second.size() ; i++ ) {
+								REAL dr2 = normsq( focus - previousIter->second[i].first );
+								if ( dr2 < r2min_1st ) {
+									r2min_2nd = r2min_1st;
+									value_2nd = value_1st;
+									r2min_1st = dr2;
+									value_1st = previousIter->second[i].second ;
+								} else if ( dr2 < r2min_2nd ) {
+									r2min_2nd = dr2;
+									value_2nd = previousIter->second[i].second ;
+								}
+							}
+
+							REAL r1 = std::sqrt( r2min_1st );
+							REAL r2 = std::sqrt( r2min_2nd );
+
+							filteredOldValue = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+
+						} else {
+
+							filteredOldValue = ptsRelxValIter->second;
+
+						}
+
+						auto ptsPresentRelxValIter = std::find_if(presentIter->second.begin(),
+							presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+						return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
+
+						auto ptsRelxResIter = std::find_if(presentResIter->second.begin(),
+							presentResIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+						return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
+						});
+
+						if ( ptsPresentRelxValIter == std::end(presentIter->second) ) {
+
+							assert((ptsRelxResIter == std::end(presentResIter->second)) || ptsTimeRes_.empty());
+
+							presentIter->second.insert(presentIter->second.begin(),
+								std::make_pair(focus,calculate_relaxed_value(
+									t,filteredValue,filteredOldValue)
+								)
+							);
+
+							if (ptsTimeRes_.empty()) {
+
+								std::vector<std::pair<point_type, REAL>> ptsResTemp{
+									std::make_pair(focus,calculate_point_residual(
+										t,filteredValue,filteredOldValue))
+									};
+
+								ptsTimeRes_.insert(ptsTimeRes_.begin(),std::make_pair(t,ptsResTemp));
+
+							} else {
+
+								presentResIter->second.insert(presentResIter->second.begin(),
+									std::make_pair(focus,calculate_point_residual(
+										t,filteredValue,filteredOldValue)
+									)
+								);
+							}
+						} else {
+
+							assert((normsq(ptsPresentRelxValIter->first - ptsRelxResIter->first) < std::numeric_limits<REAL>::epsilon()) || ptsTimeRes_.empty());
+
+							ptsPresentRelxValIter->second = calculate_relaxed_value(t,filteredValue,filteredOldValue);
+
+							if (ptsTimeRes_.empty()) {
+
+								std::vector<std::pair<point_type, REAL>> ptsResTemp{
+									std::make_pair(focus,calculate_point_residual(
+										t,filteredValue,filteredOldValue))
+									};
+
+								ptsTimeRes_.insert(ptsTimeRes_.begin(),std::make_pair(t,ptsResTemp));
+
+							} else {
+								ptsRelxResIter->second = calculate_point_residual(t,filteredValue,filteredOldValue);
 							}
 						}
 
-						REAL r1 = std::sqrt( r2min_1st );
-						REAL r2 = std::sqrt( r2min_2nd );
+						return calculate_relaxed_value(t,filteredValue,filteredOldValue);
 
-						filteredOldValue = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
-
-					} else {
-
-						filteredOldValue = ptsRelxValIter->second;
-
-					}
-
-					auto ptsPresentRelxValIter = std::find_if(presentIter->second.begin(),
-						presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
-					return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
-
-					auto ptsRelxResIter = std::find_if(presentResIter->second.begin(),
-						presentResIter->second.end(), [focus](std::pair<point_type, REAL> b) {
-					return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
-
-					if ( ptsPresentRelxValIter == std::end(presentIter->second) ) {
-
-						assert(ptsRelxResIter == std::end(presentResIter->second));
-
-						presentIter->second.insert(presentIter->second.begin(),
-							std::make_pair(focus,calculate_relaxed_value(
-								t,filteredValue,filteredOldValue)
-							)
-						);
-
-						presentResIter->second.insert(presentResIter->second.begin(),
-							std::make_pair(focus,calculate_point_residual(
-								t,filteredValue,filteredOldValue)
-							)
-						);
-
-					} else {
-
-						assert(normsq(ptsPresentRelxValIter->first - ptsRelxResIter->first) < std::numeric_limits<REAL>::epsilon());
-
-						ptsPresentRelxValIter->second = calculate_relaxed_value(t,filteredValue,filteredOldValue);
-
-						ptsRelxResIter->second = calculate_point_residual(t,filteredValue,filteredOldValue);
-
-					}
-
-					return calculate_relaxed_value(t,filteredValue,filteredOldValue);
-
-			}
+				}
 
 		}
 	}
