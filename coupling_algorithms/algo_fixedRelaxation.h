@@ -71,7 +71,10 @@ public:
 		if (!ptsVluInit.empty()) {
 			ptsTimeVlu_.insert(ptsTimeVlu_.begin(),
 				std::make_pair(
-					std::numeric_limits<time_type>::lowest(),ptsVluInit
+					std::make_pair(
+						std::numeric_limits<time_type>::lowest(),
+						std::numeric_limits<time_type>::lowest()
+					),ptsVluInit
 				)
 			);
 		}
@@ -79,7 +82,7 @@ public:
 
 	//- relaxation based on single time value
 	template<typename OTYPE>
-	OTYPE relaxation(time_type t, point_type focus, OTYPE filteredValue) const {
+	OTYPE relaxation(std::pair<time_type, time_type> t, point_type focus, OTYPE filteredValue) const {
 
 		OTYPE filteredOldValue = 0.0;
 
@@ -98,13 +101,15 @@ public:
 		} else { // ptsTimeVlu_ not empty
 
 			auto presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(), 
-				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (t - b.first) < std::numeric_limits<REAL>::epsilon();
+				[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return (((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon()));
 				});
 
 			auto previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(), 
-				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return b.first < t;
+				[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return ((((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							b.first.second < t.second) || (b.first.first < t.first));
 				});
 
 			if ((presentIter == std::end(ptsTimeVlu_)) && 
@@ -275,7 +280,7 @@ protected:
 	REAL initUndRelxFac_;
 	REAL undRelxFac_;
 
-	mutable std::vector<std::pair<time_type,std::vector<std::pair<point_type, REAL>>>> ptsTimeVlu_;
+	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> ptsTimeVlu_;
 
 };
 
