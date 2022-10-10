@@ -69,9 +69,9 @@ public:
 		undRelxFac_ = initUndRelxFac_;
 
 		if (!ptsVluInit.empty()) {
-			ptsTimeVlu_.push_back(
+			ptsTimeVlu_.insert(ptsTimeVlu_.begin(),
 				std::make_pair(
-				std::numeric_limits<time_type>::lowest(),ptsVluInit
+					std::numeric_limits<time_type>::lowest(),ptsVluInit
 				)
 			);
 		}
@@ -91,29 +91,29 @@ public:
 				std::make_pair(focus,calculate_relaxed_value(filteredValue,filteredOldValue))
 				};
 
-			ptsTimeVlu_.push_back(std::make_pair(t,ptsVluTemp));
+			ptsTimeVlu_.insert(ptsTimeVlu_.begin(),std::make_pair(t,ptsVluTemp));
 
 			return calculate_relaxed_value(filteredValue,filteredOldValue);
 
 		} else { // ptsTimeVlu_ not empty
 
-			auto presentIter = std::find_if(ptsTimeVlu_.rbegin(), ptsTimeVlu_.rend(), 
+			auto presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(), 
 				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
 					return (t - b.first) < std::numeric_limits<REAL>::epsilon();
 				});
 
-			auto previousIter = std::find_if(ptsTimeVlu_.rbegin(), ptsTimeVlu_.rend(), 
+			auto previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(), 
 				[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
 					return b.first < t;
 				});
 
-			if ((presentIter == std::rend(ptsTimeVlu_)) && 
-				(previousIter == std::rend(ptsTimeVlu_)) ) {
+			if ((presentIter == std::end(ptsTimeVlu_)) && 
+				(previousIter == std::end(ptsTimeVlu_)) ) {
 
 				std::cerr << "Non-monotonic time marching does not (yet) supported for the Fixed Relaxation coupling method! " << std::endl;
 
-			} else if ((presentIter != std::rend(ptsTimeVlu_)) && 
-				(previousIter == std::rend(ptsTimeVlu_)) ) {
+			} else if ((presentIter != std::end(ptsTimeVlu_)) && 
+				(previousIter == std::end(ptsTimeVlu_)) ) {
 
 					auto ptsRelxValIter = std::find_if(presentIter->second.begin(), 
 						presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
@@ -144,7 +144,7 @@ public:
 
 						auto relaxedValueTemp = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
 
-						presentIter->second.push_back(std::make_pair(focus, relaxedValueTemp));
+						presentIter->second.insert(presentIter->second.begin(),std::make_pair(focus, relaxedValueTemp));
 
 						return relaxedValueTemp;		
 
@@ -154,8 +154,8 @@ public:
 
 					}
 
-			} else if ((presentIter == std::rend(ptsTimeVlu_)) && 
-				(previousIter != std::rend(ptsTimeVlu_)) ) {
+			} else if ((presentIter == std::end(ptsTimeVlu_)) && 
+				(previousIter != std::end(ptsTimeVlu_)) ) {
 
 					auto ptsRelxValIter = std::find_if(previousIter->second.begin(), 
 						previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
@@ -196,7 +196,7 @@ public:
 						std::make_pair(focus,calculate_relaxed_value(filteredValue,filteredOldValue))
 					};
 
-					ptsTimeVlu_.push_back(std::make_pair(t, ptsVluTemp));
+					ptsTimeVlu_.insert(ptsTimeVlu_.begin(),std::make_pair(t, ptsVluTemp));
 
 					return calculate_relaxed_value(filteredValue,filteredOldValue);
 
@@ -244,7 +244,7 @@ public:
 
 					if ( ptsPresentRelxValIter == std::end(presentIter->second) ) {
 
-						presentIter->second.push_back(
+						presentIter->second.insert(presentIter->second.begin(),
 							std::make_pair(focus,calculate_relaxed_value(
 								filteredValue,filteredOldValue)
 							)
