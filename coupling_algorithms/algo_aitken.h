@@ -414,6 +414,36 @@ public:
 		}
 	}
 
+	REAL get_under_relaxation_factor (time_type t) {
+
+		update_undRelxFac(t);
+
+		auto undRelxPresentIter = std::find_if(undRelxFac_.begin(),
+			undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
+			return (t - b.first) < std::numeric_limits<REAL>::epsilon();});
+
+		assert(undRelxPresentIter != std::end(undRelxFac_) );
+
+		return undRelxPresentIter->second;
+
+	}
+
+	REAL get_residual_L2_Norm (time_type t) {
+
+		update_undRelxFac(t);
+
+		auto resL2NormNM1Iter = std::find_if(residualL2Norm_.begin(),
+			residualL2Norm_.end(), [t](std::pair<time_type,std::pair<INT, REAL>> b) {
+		return b.first < t;
+		});
+
+		if(resL2NormNM1Iter != std::end(residualL2Norm_) ) {
+			return resL2NormNM1Iter->second.second;
+		} else {
+			return 0.0;
+		}
+	}
+
 private:
 	template<typename OTYPE>
 	OTYPE calculate_relaxed_value(time_type t, OTYPE filteredValue, OTYPE filteredOldValue) {
