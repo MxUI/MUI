@@ -471,6 +471,38 @@ public:
 		return cpl_algo.relaxation(std::make_pair(t,std::numeric_limits<time_type>::lowest()), focus, t_sampler.filter(t, v));
 	}
 
+	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t1,t2
+	 */
+	template<class SAMPLER, class TIME_SAMPLER, class COUPLING_ALGO, typename ... ADDITIONAL>
+	typename SAMPLER::OTYPE
+	fetch( const std::string& attr,const point_type& focus, const time_type t1, const time_type t2,
+		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
+		   bool barrier_enabled = true, ADDITIONAL && ... additional ) {
+		if(fetch_t1_hist_ != t1 && fetch_t2_hist_ != t2 && barrier_enabled)
+			barrier(t_sampler.get_upper_bound(t1),t_sampler.get_upper_bound(t2));
+
+		fetch_t1_hist_ = t1;
+		fetch_t2_hist_ = t2;
+
+		std::vector<std::pair<std::pair<time_type,time_type>,typename SAMPLER::OTYPE> > v;
+		std::pair<time_type,time_type> curr_time_lower(t_sampler.get_lower_bound(t1)-threshold(t1),
+													   t_sampler.get_lower_bound(t2)-threshold(t2));
+
+		std::pair<time_type,time_type> curr_time_upper(t_sampler.get_upper_bound(t1)+threshold(t1),
+																   t_sampler.get_upper_bound(t2)+threshold(t2));
+		auto end = log.upper_bound(curr_time_upper);
+
+		if( log.size() == 1 ) end = log.end();
+
+		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
+			const auto& iter = start->second.find(attr);
+			if( iter == start->second.end() ) continue;
+			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
+		}
+
+		return cpl_algo.relaxation(std::make_pair(t1,t2), focus, t_sampler.filter(std::make_pair(t1,t2), v));
+	}
+
 	/** \brief Fetch points currently stored in the interface, blocking with barrier at time=t
 	 */
 	template<typename TYPE, class TIME_SAMPLER, typename ... ADDITIONAL>
