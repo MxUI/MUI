@@ -70,24 +70,24 @@ public:
 	  undRelxFacMax_(undRelxFacMax){
 
 		undRelxFac_.insert(undRelxFac_.begin(),
-			std::make_pair(
-				std::numeric_limits<time_type>::lowest(), initUndRelxFac_
+			std::make_pair(std::make_pair(
+				std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest()), initUndRelxFac_
 			)
 		);
 
 		if (!ptsVluInit.empty()) {
 			ptsTimeVlu_.insert(ptsTimeVlu_.begin(),
-				std::make_pair(
-					std::numeric_limits<time_type>::lowest(),ptsVluInit
+				std::make_pair(std::make_pair(
+					std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest()),ptsVluInit
 				)
 			);
 		}
 
 		if(resL2NormNM1 != 0.0){
 			residualL2Norm_.insert(residualL2Norm_.begin(),
-				std::make_pair(
-					std::numeric_limits<time_type>::lowest(), (
-						std::make_pair(static_cast<INT>(0), resL2NormNM1)
+				std::make_pair(std::make_pair(
+					std::numeric_limits<time_type>::lowest(),std::numeric_limits<time_type>::lowest()), 
+					(std::make_pair(static_cast<INT>(0), resL2NormNM1)
 					)
 				)
 			);
@@ -96,7 +96,7 @@ public:
 
 	//- relaxation based on single time value
 	template<typename OTYPE>
-	OTYPE relaxation(time_type t, point_type focus, OTYPE filteredValue) const {
+	OTYPE relaxation(std::pair<time_type,time_type> t, point_type focus, OTYPE filteredValue) const {
 
 		OTYPE filteredOldValue = 0.0;
 
@@ -123,24 +123,24 @@ public:
 		} else {
 
 				auto presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
-					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-						return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
+					[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+						return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 				auto previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
-					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-						return b.first < t;
-					});
+					[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+						return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+							(b.first.first < t.first);});
 
 				auto presentResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
-					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-						return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
+					[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+						return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 				auto previousResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
-					[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-						return b.first < t;
-					});
+					[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+						return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+							(b.first.first < t.first);});
 
 				if ((presentIter == std::end(ptsTimeVlu_)) &&
 					(previousIter == std::end(ptsTimeVlu_)) ) {
@@ -152,7 +152,8 @@ public:
 				} else if ((presentIter != std::end(ptsTimeVlu_)) &&
 					(previousIter == std::end(ptsTimeVlu_)) ) {
 
-						assert(((presentIter->first - presentResIter->first) < std::numeric_limits<REAL>::epsilon()) || ptsTimeRes_.empty());
+						assert((((presentIter->first.first - presentResIter->first.first) < std::numeric_limits<REAL>::epsilon()) && 
+								((presentIter->first.second - presentResIter->first.second) < std::numeric_limits<REAL>::epsilon())) || ptsTimeRes_.empty());
 
 						if (!ptsTimeRes_.empty()) {
 							assert(!residualL2Norm_.empty());
@@ -271,35 +272,36 @@ public:
 						ptsTimeRes_.insert(ptsTimeRes_.begin(),std::make_pair(t,ptsResTemp));
 
 						presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
-							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-								return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-							});
+							[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+								return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+										((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 						previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
-							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-								return b.first < t;
-							});
+							[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+								return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+									(b.first.first < t.first);});
 
 						presentResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
-							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-								return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-							});
+							[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+								return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+										((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 						previousResIter = std::find_if(ptsTimeRes_.begin(), ptsTimeRes_.end(),
-							[t](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-								return b.first < t;
-							});
+							[t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+							return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+									(b.first.first < t.first);});
 
 						auto ptsResidualL2NormIter = std::find_if(residualL2Norm_.begin(),
-							residualL2Norm_.end(), [previousIter](std::pair<time_type,std::pair<INT, REAL>> b) {
-						return (previousIter->first - b.first) < std::numeric_limits<REAL>::epsilon();
-						});
+							residualL2Norm_.end(), [previousIter](std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>> b) {
+						return ((previousIter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+								((previousIter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 						if(ptsResidualL2NormIter == std::end(residualL2Norm_)) {
 
 							if (previousResIter!=std::end(ptsTimeRes_)) {
 
-								assert((previousIter->first - previousResIter->first) < std::numeric_limits<REAL>::epsilon());
+								assert(((previousIter->first.first - previousResIter->first.first) < std::numeric_limits<REAL>::epsilon()) && 
+										((previousIter->first.second - previousResIter->first.second) < std::numeric_limits<REAL>::epsilon()) );
 
 								REAL localResidualMagSqSumTemp = 0.0;
 
@@ -321,9 +323,9 @@ public:
 									);
 
 									ptsResidualL2NormIter = std::find_if(residualL2Norm_.begin(),
-										residualL2Norm_.end(), [previousIter](std::pair<time_type,std::pair<INT, REAL>> b) {
-									return (previousIter->first - b.first) < std::numeric_limits<REAL>::epsilon();
-									});
+										residualL2Norm_.end(), [previousIter](std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>> b) {
+									return ((previousIter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+											((previousIter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 								}
 							}
 
@@ -332,8 +334,9 @@ public:
 							if(ptsResidualL2NormIter->second.first != 0) {
 
 								auto ptsTimeResIter = std::find_if(ptsTimeRes_.begin(),
-								ptsTimeRes_.end(), [previousResIter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-								return (previousResIter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+								ptsTimeRes_.end(), [previousResIter](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+								return ((previousResIter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+										((previousResIter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 								assert(ptsTimeResIter != std::end(ptsTimeRes_) );
 
@@ -353,7 +356,8 @@ public:
 
 				} else {
 
-						assert(((presentIter->first - presentResIter->first) < std::numeric_limits<REAL>::epsilon()) || ptsTimeRes_.empty());
+						assert((((presentIter->first.first - presentResIter->first.first) < std::numeric_limits<REAL>::epsilon()) && 
+								((presentIter->first.second - presentResIter->first.second) < std::numeric_limits<REAL>::epsilon())) || ptsTimeRes_.empty());
 
 						auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
 							previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
@@ -454,13 +458,16 @@ public:
 		}
 	}
 
-	REAL get_under_relaxation_factor (time_type t) {
+	REAL get_under_relaxation_factor (time_type t_single) {
+
+		std::pair<time_type,time_type> t = std::make_pair(t_single,std::numeric_limits<time_type>::lowest());
 
 		update_undRelxFac(t);
 
 		auto undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-			undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-			return (t - b.first) < std::numeric_limits<REAL>::epsilon();});
+			undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+			return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+			((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 		assert(undRelxPresentIter != std::end(undRelxFac_) );
 
@@ -468,14 +475,47 @@ public:
 
 	}
 
-	REAL get_residual_L2_Norm (time_type t) {
+	REAL get_under_relaxation_factor (std::pair<time_type,time_type> t) {
+
+		update_undRelxFac(t);
+
+		auto undRelxPresentIter = std::find_if(undRelxFac_.begin(),
+			undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+			return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+			((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
+
+		assert(undRelxPresentIter != std::end(undRelxFac_) );
+
+		return undRelxPresentIter->second;
+
+	}
+
+	REAL get_residual_L2_Norm (time_type t_single) {
+
+		std::pair<time_type,time_type> t = std::make_pair(t_single,std::numeric_limits<time_type>::lowest());
 
 		update_undRelxFac(t);
 
 		auto resL2NormNM1Iter = std::find_if(residualL2Norm_.begin(),
-			residualL2Norm_.end(), [t](std::pair<time_type,std::pair<INT, REAL>> b) {
-		return b.first < t;
-		});
+			residualL2Norm_.end(), [t](std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>> b) {
+		return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+			(b.first.first < t.first);});
+
+		if(resL2NormNM1Iter != std::end(residualL2Norm_) ) {
+			return resL2NormNM1Iter->second.second;
+		} else {
+			return 0.0;
+		}
+	}
+
+	REAL get_residual_L2_Norm (std::pair<time_type,time_type> t) {
+
+		update_undRelxFac(t);
+
+		auto resL2NormNM1Iter = std::find_if(residualL2Norm_.begin(),
+			residualL2Norm_.end(), [t](std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>> b) {
+		return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+			(b.first.first < t.first);});
 
 		if(resL2NormNM1Iter != std::end(residualL2Norm_) ) {
 			return resL2NormNM1Iter->second.second;
@@ -486,13 +526,14 @@ public:
 
 private:
 	template<typename OTYPE>
-	OTYPE calculate_relaxed_value(time_type t, OTYPE filteredValue, OTYPE filteredOldValue) {
+	OTYPE calculate_relaxed_value(std::pair<time_type,time_type> t, OTYPE filteredValue, OTYPE filteredOldValue) {
  
 		update_undRelxFac(t);
 
 		auto undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-			undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-			return (t - b.first) < std::numeric_limits<REAL>::epsilon();});
+			undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+			return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+			((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 		assert(undRelxPresentIter != std::end(undRelxFac_) );
 
@@ -501,27 +542,27 @@ private:
 
 	}
 
-	void update_undRelxFac(time_type t) {
+	void update_undRelxFac(std::pair<time_type,time_type> t) {
 
 		auto undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-			undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-		return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-		});
+			undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+		return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+			((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 		auto undRelxPrevIter = std::find_if(undRelxFac_.begin(),
-			undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-		return b.first < t;
-		});
+			undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+		return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+			(b.first.first < t.first);});
 
 		auto resL2NormNM1Iter = std::find_if(residualL2Norm_.begin(),
-			residualL2Norm_.end(), [t](std::pair<time_type,std::pair<INT, REAL>> b) {
-		return (b.first < t);
-		});
+			residualL2Norm_.end(), [t](std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>> b) {
+		return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+			(b.first.first < t.first);});
 
 		auto resL2NormNM2Iter = std::find_if(residualL2Norm_.begin(),
-			residualL2Norm_.end(), [resL2NormNM1Iter](std::pair<time_type,std::pair<INT, REAL>> b) {
-		return (b.first < resL2NormNM1Iter->first);
-		});
+			residualL2Norm_.end(), [resL2NormNM1Iter](std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>> b) {
+		return (((b.first.first - resL2NormNM1Iter->first.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < resL2NormNM1Iter->first.second)) || 
+				(b.first.first < resL2NormNM1Iter->first.first);});
 
 		if (undRelxPresentIter==std::end(undRelxFac_)) {
 
@@ -529,14 +570,14 @@ private:
 				undRelxFac_.insert(undRelxFac_.begin(),std::make_pair(t, initUndRelxFac_));
 
 				undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-					undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-				return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-				});
+					undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+				return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+						((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 				undRelxPrevIter = std::find_if(undRelxFac_.begin(),
-					undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-				return b.first < t;
-				});
+					undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+				return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+							(b.first.first < t.first);});
 
 			} else {
 
@@ -544,8 +585,9 @@ private:
 
 				if(resL2NormNM2Iter->second.first != 0 ) {
 					auto ptsTimeResNM2Iter = std::find_if(ptsTimeRes_.begin(),
-					ptsTimeRes_.end(), [resL2NormNM2Iter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (resL2NormNM2Iter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+					ptsTimeRes_.end(), [resL2NormNM2Iter](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return ((resL2NormNM2Iter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((resL2NormNM2Iter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 					assert(ptsTimeResNM2Iter != std::end(ptsTimeRes_) );
 
@@ -563,8 +605,9 @@ private:
 					}
 
 					auto ptsTimeResNM1Iter = std::find_if(ptsTimeRes_.begin(),
-					ptsTimeRes_.end(), [resL2NormNM1Iter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (resL2NormNM1Iter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+					ptsTimeRes_.end(), [resL2NormNM1Iter](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return ((resL2NormNM1Iter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((resL2NormNM1Iter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 					assert(ptsTimeResNM1Iter != std::end(ptsTimeRes_) );
 
@@ -595,14 +638,15 @@ private:
 						);
 
 						undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-							undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-						return (t - b.first) < std::numeric_limits<REAL>::epsilon();
+							undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+						return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());
 						});
 
 						undRelxPrevIter = std::find_if(undRelxFac_.begin(),
-							undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-						return b.first < t;
-						});
+							undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+						return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+							(b.first.first < t.first);});
 					} else {
 						undRelxFac_.insert(undRelxFac_.begin(),
 							std::make_pair(
@@ -613,28 +657,28 @@ private:
 						);
 
 						undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-							undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-						return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-						});
+							undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+						return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 						undRelxPrevIter = std::find_if(undRelxFac_.begin(),
-							undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-						return b.first < t;
-						});
+							undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+						return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+							(b.first.first < t.first);});
 					}
 
 				} else {
 					undRelxFac_.insert(undRelxFac_.begin(),std::make_pair(t, initUndRelxFac_));
 
 					undRelxPresentIter = std::find_if(undRelxFac_.begin(),
-						undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-					return (t - b.first) < std::numeric_limits<REAL>::epsilon();
-					});
+						undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+					return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 					undRelxPrevIter = std::find_if(undRelxFac_.begin(),
-						undRelxFac_.end(), [t](std::pair<time_type, REAL> b) {
-					return b.first < t;
-					});
+						undRelxFac_.end(), [t](std::pair<std::pair<time_type,time_type>, REAL> b) {
+					return (((b.first.first - t.first) < std::numeric_limits<REAL>::epsilon()) && (b.first.second < t.second)) || 
+							(b.first.first < t.first);});
 				}
 			}
 		} else { 
@@ -649,8 +693,9 @@ private:
 
 				if(resL2NormNM2Iter->second.first != 0 ) {
 					auto ptsTimeResNM2Iter = std::find_if(ptsTimeRes_.begin(),
-					ptsTimeRes_.end(), [resL2NormNM2Iter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (resL2NormNM2Iter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+					ptsTimeRes_.end(), [resL2NormNM2Iter](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return ((resL2NormNM2Iter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((resL2NormNM2Iter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon());});
 
 					assert(ptsTimeResNM2Iter != std::end(ptsTimeRes_) );
 
@@ -668,8 +713,9 @@ private:
 					}
 
 					auto ptsTimeResNM1Iter = std::find_if(ptsTimeRes_.begin(),
-					ptsTimeRes_.end(), [resL2NormNM1Iter](std::pair<time_type,std::vector<std::pair<point_type, REAL>>> b) {
-					return (resL2NormNM1Iter->first - b.first) < std::numeric_limits<REAL>::epsilon();});
+					ptsTimeRes_.end(), [resL2NormNM1Iter](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return (((resL2NormNM1Iter->first.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) && 
+							((resL2NormNM1Iter->first.second - b.first.second) < std::numeric_limits<REAL>::epsilon()));});
 
 					assert(ptsTimeResNM1Iter != std::end(ptsTimeRes_) );
 
@@ -735,7 +781,7 @@ private:
 	}
 
 	template<typename OTYPE>
-	OTYPE calculate_point_residual(time_type t, OTYPE filteredValue, OTYPE filteredOldValue) {
+	OTYPE calculate_point_residual(std::pair<time_type,time_type> t, OTYPE filteredValue, OTYPE filteredOldValue) {
 
 		return (filteredValue - calculate_relaxed_value(t, filteredValue, filteredOldValue));
 
@@ -749,12 +795,12 @@ private:
 protected:
 	const REAL initUndRelxFac_;
 	const REAL undRelxFacMax_;
-	mutable std::vector<std::pair<time_type, REAL>> undRelxFac_;
+	mutable std::vector<std::pair<std::pair<time_type,time_type>, REAL>> undRelxFac_;
 	
-	mutable std::vector<std::pair<time_type,std::pair<INT, REAL>>> residualL2Norm_;
+	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>>> residualL2Norm_;
 
-	mutable std::vector<std::pair<time_type,std::vector<std::pair<point_type, REAL>>>> ptsTimeVlu_;
-	mutable std::vector<std::pair<time_type,std::vector<std::pair<point_type, REAL>>>> ptsTimeRes_;
+	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> ptsTimeVlu_;
+	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> ptsTimeRes_;
 
 };
 
