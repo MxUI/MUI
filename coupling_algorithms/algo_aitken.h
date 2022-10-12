@@ -748,7 +748,6 @@ private:
 
                         resL2NormNM2Iter->second.second = std::sqrt(residualMagSqSumTemp);
 
-                        update_undRelxFac(resL2NormNM2Iter->first);
                     }
 
                     auto ptsTimeResNM1Iter = std::find_if(ptsTimeRes_.begin(),
@@ -787,14 +786,14 @@ private:
                     if (undRelxPrevIter==std::end(undRelxFac_)) {
                         if(undRelxPresentIter->second != calculate_aitken_constraint_PNControl_zeroControl(initUndRelxFac_)
                         ) {
-                            std::cout << "Update under Relx Factor." << std::endl;
+                            std::cout << "Update under Relx Factor. Position 01." << std::endl;
                             undRelxPresentIter->second = calculate_aitken_constraint_PNControl_zeroControl(initUndRelxFac_);
                         }
                     } else {
                         if(undRelxPresentIter->second != calculate_aitken_constraint_PNControl_zeroControl(
                             -undRelxPrevIter->second * (nominator/denominator))
                         ) {
-                            std::cout << "Update under Relx Factor." << std::endl;
+                            std::cout << "Update under Relx Factor. Position 02." << std::endl;
                             undRelxPresentIter->second = calculate_aitken_constraint_PNControl_zeroControl(
                                 -undRelxPrevIter->second * (nominator/denominator)
                             );
@@ -802,7 +801,7 @@ private:
                     }
                 } else {
                     if(undRelxPresentIter->second != initUndRelxFac_) {
-                            std::cout << "Update under Relx Factor." << std::endl;
+                            std::cout << "Update under Relx Factor. Position 03." << std::endl;
                             undRelxPresentIter->second = initUndRelxFac_;
                     }
                 }
