@@ -50,6 +50,7 @@
 
 #include "../util.h"
 #include "../config.h"
+#include <mpi.h>
 #include <iterator>
 
 namespace mui {
@@ -63,11 +64,13 @@ public:
 
 	algo_aitken( REAL undRelxFac = 1.0,
  	  REAL undRelxFacMax = 1.0,
+	  MPI_Comm localComm = MPI_COMM_NULL,
  	  std::vector<std::pair<point_type, REAL>> ptsVluInit = 
 		std::vector<std::pair<point_type, REAL>>(),
  	  REAL resL2NormNM1 = 0.0):
 	  initUndRelxFac_(undRelxFac),
-	  undRelxFacMax_(undRelxFacMax){
+	  undRelxFacMax_(undRelxFacMax),
+	  localMPICommWorld_(localComm) {
 
 		undRelxFac_.insert(undRelxFac_.begin(),
 			std::make_pair(std::make_pair(
@@ -304,19 +307,26 @@ public:
 										((previousIter->first.second - previousResIter->first.second) < std::numeric_limits<REAL>::epsilon()) );
 
 								REAL localResidualMagSqSumTemp = 0.0;
+								REAL residualMagSqSumTemp = 0.0;
 
 								for (auto & elementPair : previousResIter->second) {
 									localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 								}
 
-								if((localResidualMagSqSumTemp != 0) || (!residualL2Norm_.empty())){
+								if ( localMPICommWorld_ == MPI_COMM_NULL ) {
+									residualMagSqSumTemp = localResidualMagSqSumTemp;
+								} else {
+									MPI_Allreduce(&localResidualMagSqSumTemp, &residualMagSqSumTemp, 1, MPI_DOUBLE, MPI_SUM, localMPICommWorld_);
+								}
+
+								if((residualMagSqSumTemp != 0) || (!residualL2Norm_.empty())){
 									residualL2Norm_.insert(residualL2Norm_.begin(),
 										std::make_pair(
 											previousResIter->first, (
 												std::make_pair(
 													static_cast<INT>(
 														previousResIter->second.size()
-													), std::sqrt(localResidualMagSqSumTemp)
+													), std::sqrt(residualMagSqSumTemp)
 												)
 											)
 										)
@@ -343,11 +353,19 @@ public:
 								if(ptsTimeResIter->second.size() != ptsResidualL2NormIter->second.first) {
 
 									REAL localResidualMagSqSumTemp = 0.0;
+									REAL residualMagSqSumTemp = 0.0;
 
 									for (auto & elementPair : ptsTimeResIter->second) {
 										localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 									}
-									ptsResidualL2NormIter->second.second = std::sqrt(localResidualMagSqSumTemp);
+
+									if ( localMPICommWorld_ == MPI_COMM_NULL ) {
+										residualMagSqSumTemp = localResidualMagSqSumTemp;
+									} else {
+										MPI_Allreduce(&localResidualMagSqSumTemp, &residualMagSqSumTemp, 1, MPI_DOUBLE, MPI_SUM, localMPICommWorld_);
+									}
+
+									ptsResidualL2NormIter->second.second = std::sqrt(residualMagSqSumTemp);
 								}
 							}
 						}
@@ -594,12 +612,19 @@ private:
 					if(ptsTimeResNM2Iter->second.size() != resL2NormNM2Iter->second.first) {
 
 						REAL localResidualMagSqSumTemp = 0.0;
+						REAL residualMagSqSumTemp = 0.0;
 
 						for (auto & elementPair : ptsTimeResNM2Iter->second) {
 							localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 						}
 
-						resL2NormNM2Iter->second.second = std::sqrt(localResidualMagSqSumTemp);
+						if ( localMPICommWorld_ == MPI_COMM_NULL ) {
+							residualMagSqSumTemp = localResidualMagSqSumTemp;
+						} else {
+							MPI_Allreduce(&localResidualMagSqSumTemp, &residualMagSqSumTemp, 1, MPI_DOUBLE, MPI_SUM, localMPICommWorld_);
+						}
+
+						resL2NormNM2Iter->second.second = std::sqrt(residualMagSqSumTemp);
 
 						update_undRelxFac(resL2NormNM2Iter->first);
 					}
@@ -614,12 +639,19 @@ private:
 					if(ptsTimeResNM1Iter->second.size() != resL2NormNM1Iter->second.first) {
 
 						REAL localResidualMagSqSumTemp = 0.0;
+						REAL residualMagSqSumTemp = 0.0;
 
 						for (auto & elementPair : ptsTimeResNM1Iter->second) {
 							localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 						}
 
-						resL2NormNM1Iter->second.second = std::sqrt(localResidualMagSqSumTemp);
+						if ( localMPICommWorld_ == MPI_COMM_NULL ) {
+							residualMagSqSumTemp = localResidualMagSqSumTemp;
+						} else {
+							MPI_Allreduce(&localResidualMagSqSumTemp, &residualMagSqSumTemp, 1, MPI_DOUBLE, MPI_SUM, localMPICommWorld_);
+						}
+
+						resL2NormNM1Iter->second.second = std::sqrt(residualMagSqSumTemp);
 
 						update_undRelxFac(resL2NormNM1Iter->first);
 					}
@@ -702,12 +734,19 @@ private:
 					if(ptsTimeResNM2Iter->second.size() != resL2NormNM2Iter->second.first) {
 
 						REAL localResidualMagSqSumTemp = 0.0;
+						REAL residualMagSqSumTemp = 0.0;
 
 						for (auto & elementPair : ptsTimeResNM2Iter->second) {
 							localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 						}
 
-						resL2NormNM2Iter->second.second = std::sqrt(localResidualMagSqSumTemp);
+						if ( localMPICommWorld_ == MPI_COMM_NULL ) {
+							residualMagSqSumTemp = localResidualMagSqSumTemp;
+						} else {
+							MPI_Allreduce(&localResidualMagSqSumTemp, &residualMagSqSumTemp, 1, MPI_DOUBLE, MPI_SUM, localMPICommWorld_);
+						}
+
+						resL2NormNM2Iter->second.second = std::sqrt(residualMagSqSumTemp);
 
 						update_undRelxFac(resL2NormNM2Iter->first);
 					}
@@ -722,12 +761,19 @@ private:
 					if(ptsTimeResNM1Iter->second.size() != resL2NormNM1Iter->second.first) {
 
 						REAL localResidualMagSqSumTemp = 0.0;
+						REAL residualMagSqSumTemp = 0.0;
 
 						for (auto & elementPair : ptsTimeResNM1Iter->second) {
 							localResidualMagSqSumTemp += std::pow(elementPair.second, 2);
 						}
 
-						resL2NormNM1Iter->second.second = std::sqrt(localResidualMagSqSumTemp);
+						if ( localMPICommWorld_ == MPI_COMM_NULL ) {
+							residualMagSqSumTemp = localResidualMagSqSumTemp;
+						} else {
+							MPI_Allreduce(&localResidualMagSqSumTemp, &residualMagSqSumTemp, 1, MPI_DOUBLE, MPI_SUM, localMPICommWorld_);
+						}
+
+						resL2NormNM1Iter->second.second = std::sqrt(residualMagSqSumTemp);
 
 						update_undRelxFac(resL2NormNM1Iter->first);
 					}
@@ -793,13 +839,18 @@ private:
 	}
 
 protected:
+	MPI_Comm localMPICommWorld_;
+
 	const REAL initUndRelxFac_;
+
 	const REAL undRelxFacMax_;
+
 	mutable std::vector<std::pair<std::pair<time_type,time_type>, REAL>> undRelxFac_;
-	
+
 	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::pair<INT, REAL>>> residualL2Norm_;
 
 	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> ptsTimeVlu_;
+
 	mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> ptsTimeRes_;
 
 };
