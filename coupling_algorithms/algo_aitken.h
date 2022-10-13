@@ -493,7 +493,9 @@ public:
 
     }
 
-    REAL get_under_relaxation_factor (std::pair<time_type,time_type> t) {
+    REAL get_under_relaxation_factor (time_type t1, time_type t2) {
+
+        std::pair<time_type,time_type> t = std::make_pair(t1,t2);
 
         update_undRelxFac(t);
 
@@ -526,7 +528,9 @@ public:
         }
     }
 
-    REAL get_residual_L2_Norm (std::pair<time_type,time_type> t) {
+    REAL get_residual_L2_Norm (time_type t1, time_type t2) {
+
+        std::pair<time_type,time_type> t = std::make_pair(t1,t2);
 
         update_undRelxFac(t);
 
