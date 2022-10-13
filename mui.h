@@ -69,7 +69,7 @@
 #endif
 
 //Include coupling algorithms
-#include "coupling_algorithms/algo_fixedRelaxation.h"
+#include "coupling_algorithms/algo_fixed_relaxation.h"
 #include "coupling_algorithms/algo_aitken.h"
 
 #include "sampler.h"
@@ -120,7 +120,7 @@ namespace mui {
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(algo_fixedRelaxation,SdUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SdUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(algo_aitken,SdUFFIX,config_##SUFFIX);\
 		namespace geometry {\
 			using point##SUFFIX = point<config_##SUFFIX>;\
@@ -173,7 +173,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(algo_fixedRelaxation,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(algo_aitken,SUFFIX,config_##SUFFIX);\
 		namespace geometry {\
 			using point##SUFFIX = point<config_##SUFFIX>;\
@@ -215,7 +215,7 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,CONFIG);\
-		DECLARE_SAMPLER_0ARG(algo_fixedRelaxation,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(algo_aitken,SUFFIX,CONFIG);\
 		}
 
