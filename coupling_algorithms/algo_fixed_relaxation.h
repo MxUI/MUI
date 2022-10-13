@@ -39,7 +39,7 @@
 *****************************************************************************/
 
 /**
- * @file algo_fixedRelaxation.h
+ * @file algo_fixed_relaxation.h
  * @author W. Liu
  * @date 05 October 2022
  * @brief Fixed Relaxation coupling algorithm
@@ -54,27 +54,27 @@
 
 namespace mui {
 
-template<typename CONFIG=default_config> class algo_fixedRelaxation {
+template<typename CONFIG=default_config> class algo_fixed_relaxation {
 public:
     using REAL       = typename CONFIG::REAL;
     using INT        = typename CONFIG::INT;
     using time_type  = typename CONFIG::time_type;
     using point_type = typename CONFIG::point_type;
 
-    algo_fixedRelaxation( REAL undRelxFac = 1.0,
-       std::vector<std::pair<point_type, REAL>> ptsVluInit =
+    algo_fixed_relaxation( REAL under_relaxation_factor = 1.0,
+       std::vector<std::pair<point_type, REAL>> pts_value_init =
         std::vector<std::pair<point_type, REAL>>() ):
-       initUndRelxFac_(undRelxFac) {
+       init_under_relaxation_factor_(under_relaxation_factor) {
 
-        undRelxFac_ = initUndRelxFac_;
+        under_relaxation_factor_ = init_under_relaxation_factor_;
 
-        if (!ptsVluInit.empty()) {
-            ptsTimeVlu_.insert(ptsTimeVlu_.begin(),
+        if (!pts_value_init.empty()) {
+            pts_time_value_.insert(pts_time_value_.begin(),
                 std::make_pair(
                     std::make_pair(
                         std::numeric_limits<time_type>::lowest(),
                         std::numeric_limits<time_type>::lowest()
-                    ),ptsVluInit
+                    ),pts_value_init
                 )
             );
         }
@@ -82,186 +82,186 @@ public:
 
     //- relaxation based on single time value
     template<typename OTYPE>
-    OTYPE relaxation(std::pair<time_type, time_type> t, point_type focus, OTYPE filteredValue) const {
+    OTYPE relaxation(std::pair<time_type, time_type> t, point_type focus, OTYPE filtered_value) const {
 
-        OTYPE filteredOldValue = 0.0;
+        OTYPE filtered_old_value = 0.0;
 
-        if (ptsTimeVlu_.empty()) {
+        if (pts_time_value_.empty()) {
 
-            filteredOldValue = 0.0;
+            filtered_old_value = 0.0;
 
-            std::vector<std::pair<point_type, REAL>> ptsVluTemp{
-                std::make_pair(focus,calculate_relaxed_value(filteredValue,filteredOldValue))
+            std::vector<std::pair<point_type, REAL>> pts_value_temp{
+                std::make_pair(focus,calculate_relaxed_value(filtered_value,filtered_old_value))
                 };
 
-            ptsTimeVlu_.insert(ptsTimeVlu_.begin(),std::make_pair(t,ptsVluTemp));
+            pts_time_value_.insert(pts_time_value_.begin(),std::make_pair(t,pts_value_temp));
 
-            return calculate_relaxed_value(filteredValue,filteredOldValue);
+            return calculate_relaxed_value(filtered_value,filtered_old_value);
 
-        } else { // ptsTimeVlu_ not empty
+        } else { // pts_time_value_ not empty
 
-            auto presentIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
+            auto present_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
                 [t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
                     return (((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
                             ((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon()));
                 });
 
-            auto previousIter = std::find_if(ptsTimeVlu_.begin(), ptsTimeVlu_.end(),
+            auto previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
                 [t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
                     return ((((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
                             b.first.second < t.second) || (b.first.first < t.first));
                 });
 
-            if ((presentIter == std::end(ptsTimeVlu_)) &&
-                (previousIter == std::end(ptsTimeVlu_)) ) {
+            if ((present_iter == std::end(pts_time_value_)) &&
+                (previous_iter == std::end(pts_time_value_)) ) {
 
                 std::cerr << "Non-monotonic time marching does not (yet) supported for the Fixed Relaxation coupling method! " << std::endl;
 
-            } else if ((presentIter != std::end(ptsTimeVlu_)) &&
-                (previousIter == std::end(ptsTimeVlu_)) ) {
+            } else if ((present_iter != std::end(pts_time_value_)) &&
+                (previous_iter == std::end(pts_time_value_)) ) {
 
-                    auto ptsRelxValIter = std::find_if(presentIter->second.begin(),
-                        presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+                    auto pts_relx_val_iter = std::find_if(present_iter->second.begin(),
+                        present_iter->second.end(), [focus](std::pair<point_type, REAL> b) {
                     return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
                     });
 
-                    if ( ptsRelxValIter == std::end(presentIter->second) ) {
+                    if ( pts_relx_val_iter == std::end(present_iter->second) ) {
 
                         // Interpolate the relaxed value by N2_linear
                         REAL r2min_1st = std::numeric_limits<REAL>::max();
                         REAL r2min_2nd = std::numeric_limits<REAL>::max();
                         OTYPE value_1st = 0, value_2nd = 0;
-                        for( size_t i = 0 ; i < presentIter->second.size() ; i++ ) {
-                            REAL dr2 = normsq( focus - presentIter->second[i].first );
+                        for( size_t i = 0 ; i < present_iter->second.size() ; i++ ) {
+                            REAL dr2 = normsq( focus - present_iter->second[i].first );
                             if ( dr2 < r2min_1st ) {
                                 r2min_2nd = r2min_1st;
                                 value_2nd = value_1st;
                                 r2min_1st = dr2;
-                                value_1st = presentIter->second[i].second ;
+                                value_1st = present_iter->second[i].second ;
                             } else if ( dr2 < r2min_2nd ) {
                                 r2min_2nd = dr2;
-                                value_2nd = presentIter->second[i].second ;
+                                value_2nd = present_iter->second[i].second ;
                             }
                         }
 
                         REAL r1 = std::sqrt( r2min_1st );
                         REAL r2 = std::sqrt( r2min_2nd );
 
-                        auto relaxedValueTemp = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+                        auto relaxed_value_temp = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
 
-                        presentIter->second.insert(presentIter->second.begin(),std::make_pair(focus, relaxedValueTemp));
+                        present_iter->second.insert(present_iter->second.begin(),std::make_pair(focus, relaxed_value_temp));
 
-                        return relaxedValueTemp;
+                        return relaxed_value_temp;
 
                     } else {
 
-                        return ptsRelxValIter->second;
+                        return pts_relx_val_iter->second;
 
                     }
 
-            } else if ((presentIter == std::end(ptsTimeVlu_)) &&
-                (previousIter != std::end(ptsTimeVlu_)) ) {
+            } else if ((present_iter == std::end(pts_time_value_)) &&
+                (previous_iter != std::end(pts_time_value_)) ) {
 
-                    auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
-                        previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+                    auto pts_relx_val_iter = std::find_if(previous_iter->second.begin(),
+                        previous_iter->second.end(), [focus](std::pair<point_type, REAL> b) {
                     return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
                     });
 
-                    if ( ptsRelxValIter == std::end(previousIter->second) ) {
+                    if ( pts_relx_val_iter == std::end(previous_iter->second) ) {
 
                         // Interpolate the relaxed value by N2_linear
                         REAL r2min_1st = std::numeric_limits<REAL>::max();
                         REAL r2min_2nd = std::numeric_limits<REAL>::max();
                         OTYPE value_1st = 0, value_2nd = 0;
-                        for( size_t i = 0 ; i < previousIter->second.size() ; i++ ) {
-                            REAL dr2 = normsq( focus - previousIter->second[i].first );
+                        for( size_t i = 0 ; i < previous_iter->second.size() ; i++ ) {
+                            REAL dr2 = normsq( focus - previous_iter->second[i].first );
                             if ( dr2 < r2min_1st ) {
                                 r2min_2nd = r2min_1st;
                                 value_2nd = value_1st;
                                 r2min_1st = dr2;
-                                value_1st = previousIter->second[i].second ;
+                                value_1st = previous_iter->second[i].second ;
                             } else if ( dr2 < r2min_2nd ) {
                                 r2min_2nd = dr2;
-                                value_2nd = previousIter->second[i].second ;
+                                value_2nd = previous_iter->second[i].second ;
                             }
                         }
 
                         REAL r1 = std::sqrt( r2min_1st );
                         REAL r2 = std::sqrt( r2min_2nd );
 
-                        filteredOldValue = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+                        filtered_old_value = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
 
                     } else {
 
-                        filteredOldValue = ptsRelxValIter->second;
+                        filtered_old_value = pts_relx_val_iter->second;
 
                     }
 
-                    std::vector<std::pair<point_type, REAL>> ptsVluTemp{
-                        std::make_pair(focus,calculate_relaxed_value(filteredValue,filteredOldValue))
+                    std::vector<std::pair<point_type, REAL>> pts_value_temp{
+                        std::make_pair(focus,calculate_relaxed_value(filtered_value,filtered_old_value))
                     };
 
-                    ptsTimeVlu_.insert(ptsTimeVlu_.begin(),std::make_pair(t, ptsVluTemp));
+                    pts_time_value_.insert(pts_time_value_.begin(),std::make_pair(t, pts_value_temp));
 
-                    return calculate_relaxed_value(filteredValue,filteredOldValue);
+                    return calculate_relaxed_value(filtered_value,filtered_old_value);
 
             } else {
 
-                    auto ptsRelxValIter = std::find_if(previousIter->second.begin(),
-                        previousIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+                    auto pts_relx_val_iter = std::find_if(previous_iter->second.begin(),
+                        previous_iter->second.end(), [focus](std::pair<point_type, REAL> b) {
                     return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
                     });
 
-                    if ( ptsRelxValIter == std::end(previousIter->second) ) {
+                    if ( pts_relx_val_iter == std::end(previous_iter->second) ) {
 
                         // Interpolate the relaxed value by N2_linear
                         REAL r2min_1st = std::numeric_limits<REAL>::max();
                         REAL r2min_2nd = std::numeric_limits<REAL>::max();
                         OTYPE value_1st = 0, value_2nd = 0;
-                        for( size_t i = 0 ; i < previousIter->second.size() ; i++ ) {
-                            REAL dr2 = normsq( focus - previousIter->second[i].first );
+                        for( size_t i = 0 ; i < previous_iter->second.size() ; i++ ) {
+                            REAL dr2 = normsq( focus - previous_iter->second[i].first );
                             if ( dr2 < r2min_1st ) {
                                 r2min_2nd = r2min_1st;
                                 value_2nd = value_1st;
                                 r2min_1st = dr2;
-                                value_1st = previousIter->second[i].second ;
+                                value_1st = previous_iter->second[i].second ;
                             } else if ( dr2 < r2min_2nd ) {
                                 r2min_2nd = dr2;
-                                value_2nd = previousIter->second[i].second ;
+                                value_2nd = previous_iter->second[i].second ;
                             }
                         }
 
                         REAL r1 = std::sqrt( r2min_1st );
                         REAL r2 = std::sqrt( r2min_2nd );
 
-                        filteredOldValue = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
+                        filtered_old_value = ( value_1st * r2 + value_2nd * r1 ) / ( r1 + r2 );
 
                     } else {
 
-                        filteredOldValue = ptsRelxValIter->second;
+                        filtered_old_value = pts_relx_val_iter->second;
 
                     }
 
-                    auto ptsPresentRelxValIter = std::find_if(presentIter->second.begin(),
-                        presentIter->second.end(), [focus](std::pair<point_type, REAL> b) {
+                    auto pts_present_relx_val_iter = std::find_if(present_iter->second.begin(),
+                        present_iter->second.end(), [focus](std::pair<point_type, REAL> b) {
                     return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
                     });
 
-                    if ( ptsPresentRelxValIter == std::end(presentIter->second) ) {
+                    if ( pts_present_relx_val_iter == std::end(present_iter->second) ) {
 
-                        presentIter->second.insert(presentIter->second.begin(),
+                        present_iter->second.insert(present_iter->second.begin(),
                             std::make_pair(focus,calculate_relaxed_value(
-                                filteredValue,filteredOldValue)
+                                filtered_value,filtered_old_value)
                             )
                         );
 
                     } else {
 
-                        ptsPresentRelxValIter->second = calculate_relaxed_value(filteredValue,filteredOldValue);
+                        pts_present_relx_val_iter->second = calculate_relaxed_value(filtered_value,filtered_old_value);
 
                     }
 
-                    return calculate_relaxed_value(filteredValue,filteredOldValue);
+                    return calculate_relaxed_value(filtered_value,filtered_old_value);
 
             }
 
@@ -270,17 +270,17 @@ public:
 
 private:
     template<typename OTYPE>
-    OTYPE calculate_relaxed_value(OTYPE filteredValue, OTYPE filteredOldValue) {
+    OTYPE calculate_relaxed_value(OTYPE filtered_value, OTYPE filtered_old_value) {
 
-        return (undRelxFac_ * filteredValue) + ((1 - undRelxFac_) * filteredOldValue);
+        return (under_relaxation_factor_ * filtered_value) + ((1 - under_relaxation_factor_) * filtered_old_value);
 
     }
 
 protected:
-    REAL initUndRelxFac_;
-    REAL undRelxFac_;
+    REAL init_under_relaxation_factor_;
+    REAL under_relaxation_factor_;
 
-    mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> ptsTimeVlu_;
+    mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> pts_time_value_;
 
 };
 
