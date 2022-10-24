@@ -99,10 +99,11 @@ namespace mui {
 			static const bool FIXEDPOINTS = false;\
 			static const bool QUIET = false;\
 			using REAL = REALTYPE;\
-			using INT  = INTTYPE;\
+			using INT = INTTYPE;\
 			using point_type = point<REAL,D>;\
-			using time_type  = REAL;\
-			using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
+			using time_type = REAL;\
+			using iterator_type = INT;\
+			using data_types = type_list<uint32_t,uint64_t,int32_t,int64_t,double,float,std::string>;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
@@ -156,7 +157,8 @@ SPECIALIZE(3fx,float,int64_t,3);
 	  		using INT  = INTTYPE;\
 	  		using point_type = point<REAL,D>;\
 	  		using time_type  = REAL;\
-	  		using data_types = type_list<int32_t,int64_t,double,float,std::string>;\
+	  		using iterator_type = INT;\
+	  		using data_types = type_list<uint32_t,uint64_t,int32_t,int64_t,double,float,std::string>;\
 		} mui_config_##SUFFIX;\
 		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
 		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
