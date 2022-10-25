@@ -55,22 +55,23 @@ namespace mui {
 
 template<typename CONFIG=default_config> class temporal_sampler_sum {
 public:
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
+	using REAL       	= typename CONFIG::REAL;
+	using INT        	= typename CONFIG::INT;
+	using time_type  	= typename CONFIG::time_type;
+	using iterator_type = typename CONFIG::iterator_type;
 	
-	temporal_sampler_sum( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
-		left   = newleft;
-		right  = newright;
+	temporal_sampler_sum( time_type left = time_type(0), time_type right = time_type(0) ) {
+		left_ = left;
+		right_ = right;
 	}
 
-	//- Filter based on single time value
+	//- Filter based on time input
 	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		TYPE sum = TYPE(0);
 
 		for( auto i: points ) {
-			if ( i.first.first <= focus + right && i.first.first >= focus - left ) {
+			if ( i.first.first <= focus + right_ && i.first.first >= focus - left_ ) {
 				sum += i.second;
 			}
 		}
@@ -78,14 +79,13 @@ public:
 		return sum;
 	}
 
-	//- Filter based on two time values
+	//- Filter based on time and iterator input - only time used
 	template<typename TYPE>
-	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( std::pair<time_type,iterator_type> focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		TYPE sum = TYPE(0);
 
 		for( auto i: points ) {
-			if ( i.first.first <= focus.first + right && i.first.first >= focus.first - left &&
-				 i.first.second <= focus.second + right && i.first.second >= focus.second - left) {
+			if ( i.first.first <= focus.first + right_ && i.first.first >= focus.first - left_ ) {
 				sum += i.second;
 			}
 		}
@@ -94,11 +94,11 @@ public:
 	}
 
 	time_type get_upper_bound( time_type focus ) const {
-		return focus + right;
+		return focus + right_;
 	}
 
 	time_type get_lower_bound( time_type focus ) const {
-		return focus - left;
+		return focus - left_;
 	}
 
 	time_type tolerance() const {
@@ -106,7 +106,8 @@ public:
 	}	
 
 protected:
-	time_type left, right;
+	time_type left_;
+	time_type right_;
 };
 
 }

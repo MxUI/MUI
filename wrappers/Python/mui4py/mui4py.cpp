@@ -113,12 +113,12 @@ using std::string;
 
 #define FETCH_INSTANCE_SINGLE6(SPATIAL_SAMPLER,TEMPORAL_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch6_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(TEMPORAL_SAMPLER),"_sampler", "").c_str(),\
-        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>&, const Ttime, const Ttime,\
+        (IO_TYPE (Tclass::*)(const string&, const mui::point<Treal,Tconfig::D>&, const Ttime, const Titer,\
         const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>&, const mui::TEMPORAL_SAMPLER<Tconfig>&, bool)) &Tclass::fetch, "")
 
 /* #define FETCH_INSTANCE_MANY6(SPATIAL_SAMPLER,TEMPORAL_SAMPLER,IO_TYPE) \
    .def(replace_str("fetch_many6_" STRINGIFY(IO_TYPE) "_" STRINGIFY(SPATIAL_SAMPLER) "_" STRINGIFY(TEMPORAL_SAMPLER),"_sampler", "").c_str(),\
-        (py::array_t<IO_TYPE,py::array::c_style> (Tclass::*) (const string& attr,const py::array_t<Treal,py::array::c_style> points, const Ttime t1, const Ttime t2\
+        (py::array_t<IO_TYPE,py::array::c_style> (Tclass::*) (const string& attr,const py::array_t<Treal,py::array::c_style> points, const Ttime t, const Titer it\
         const mui::SPATIAL_SAMPLER<Tconfig,IO_TYPE,IO_TYPE>& sampler, const mui::TEMPORAL_SAMPLER<Tconfig>& t_sampler)) &Tclass::fetch_many6, "") */
 
 #define FETCH_INSTANCE(SPATIAL_SAMPLER,TEMPORAL_SAMPLER,IO_TYPE) \
@@ -396,14 +396,15 @@ DECLARE_FUNC_HEADER(uniface) {
     using Tclass = TclassTemplate<Tconfig>;
     using Treal = typename Tconfig::REAL;
     using Ttime = typename Tconfig::time_type;
+    using Titer = typename Tconfig::iterator_type;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def("commit", (int (Tclass::*)(Ttime)) &Tclass::commit, "")
-    .def("forecast", (void (Tclass::*)(Ttime)) &Tclass::forecast, "")
+    .def("commit", (int (Tclass::*)(Ttime, Titer)) &Tclass::commit, "")
+    .def("forecast", (void (Tclass::*)(Ttime, Titer)) &Tclass::forecast, "")
     //.def("is_ready", &Tclass::is_ready, "")
     .def("barrier", (void (Tclass::*)(Ttime)) &Tclass::barrier, "")
-    .def("barrier", (void (Tclass::*)(Ttime, Ttime)) &Tclass::barrier, "")
+    .def("barrier", (void (Tclass::*)(Ttime, Titer)) &Tclass::barrier, "")
     .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
-    .def("forget", (void (Tclass::*)(Ttime, Ttime, bool)) &Tclass::forget, "")
+    .def("forget", (void (Tclass::*)(Ttime, Titer, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
     .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_send_span,"") 
@@ -434,7 +435,7 @@ DECLARE_FUNC_HEADER(temporal_sampler_exact) {
     using Tclass = TclassTemplate<Tconfig>;
     using Ttime = typename Tconfig::time_type;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Ttime>(), py::arg("tol") = Ttime(0.0));
+    .def(py::init<Ttime>(), py::arg("tol") = Ttime(0));
 }
 
 //TEMPORAL_SAMPLER_GAUSS CLASS//
@@ -455,8 +456,8 @@ DECLARE_FUNC_HEADER(temporal_sampler_mean) {
     using Tclass = TclassTemplate<Tconfig>;
     using Ttime = typename Tconfig::time_type;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Ttime, Ttime>(), py::arg("newleft")=Ttime(0), 
-                                   py::arg("newright")=Ttime(0));
+    .def(py::init<Ttime, Ttime>(), py::arg("left")=Ttime(0),
+                                   py::arg("right")=Ttime(0));
 }
 
 //TEMPORAL_SAMPLER_SUM CLASS//
@@ -466,12 +467,11 @@ DECLARE_FUNC_HEADER(temporal_sampler_sum) {
     using Tclass = TclassTemplate<Tconfig>;
     using Ttime = typename Tconfig::time_type;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Ttime, Ttime>(), py::arg("newleft")=Ttime(0), 
-                                   py::arg("newright")=Ttime(0));
+    .def(py::init<Ttime, Ttime>(), py::arg("left")=Ttime(0),
+                                   py::arg("right")=Ttime(0));
 }
 
 // [*** TEMPORAL_SAMPLER CLASSES END ***] //
-
 
 
 // [*** SPATIAL_SAMPLER CLASSES ***] //

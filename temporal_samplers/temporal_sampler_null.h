@@ -55,23 +55,24 @@ namespace mui {
 
 template<typename CONFIG=default_config> class temporal_sampler_null {
 public:
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
+	using REAL       	= typename CONFIG::REAL;
+	using INT        	= typename CONFIG::INT;
+	using time_type  	= typename CONFIG::time_type;
+	using iterator_type = typename CONFIG::iterator_type;
 	
 	temporal_sampler_null() {
 		// to do: initialization
 	}
 
-	//- Filter based on single time value
+	//- Filter based on time input
 	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		// to do: interpolation algorithm
 	}
 
-	//- Filter based on two time values
+	//- Filter based on time and iterator input
 	template<typename TYPE>
-	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( std::pair<time_type,iterator_type> focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		// to do: interpolation algorithm
 	}
 

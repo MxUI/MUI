@@ -56,22 +56,26 @@ namespace mui {
 
 template<typename CONFIG=default_config> class temporal_sampler_exact {
 public:
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
+	using REAL       	= typename CONFIG::REAL;
+	using INT        	= typename CONFIG::INT;
+	using time_type  	= typename CONFIG::time_type;
+	using iterator_type = typename CONFIG::iterator_type;
 
 	temporal_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon()) ) {
 	  int exponent;
       frexp10<time_type>( std::numeric_limits<time_type>::max(), exponent );
-      time_type real_precision = static_cast<time_type>( exponent );
-      tolerance = tol*real_precision;
+      time_type real_precision_time = static_cast<time_type>( exponent );
+      iterator_type real_precision_it = static_cast<iterator_type>( exponent );
+      tolerance_time = tol*real_precision_time;
+      tolerance_it = tol*real_precision_it;
 	}
 
-	//- Filter based on single time value
+	//- Filter based on time input
 	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 	    for( auto i: points ) {
-			if ( std::abs(i.first.first - focus) <= tolerance ) {
+			time_type dt = std::abs(i.first.first - focus);
+	    	if ( dt <= tolerance_time ) {
 				return i.second;
 			}
 		}
@@ -79,11 +83,13 @@ public:
 		return TYPE();
 	}
 
-	//- Filter based on two time values
+	//- Filter based on time and iterator input - both used
 	template<typename TYPE>
-	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( std::pair<time_type,iterator_type> focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		for( auto i: points ) {
-			if ( std::abs(i.first.first - focus.first) <= tolerance && std::abs(i.first.second - focus.second) <= tolerance ) {
+			time_type dt = std::abs(i.first.first - focus.first);
+			iterator_type di = std::abs(i.first.second - focus.second);
+			if ( dt <= tolerance_time && di <= tolerance_it ) {
 				return i.second;
 			}
 		}
@@ -100,7 +106,8 @@ public:
 	}
 
 private:
-	time_type tolerance;
+	time_type tolerance_time;
+	time_type tolerance_it;
 };
 
 }

@@ -55,24 +55,25 @@ namespace mui {
 
 template<typename CONFIG=default_config> class temporal_sampler_gauss {
 public:
-	using REAL       = typename CONFIG::REAL;
-	using INT        = typename CONFIG::INT;
-	using time_type  = typename CONFIG::time_type;
+	using REAL       	= typename CONFIG::REAL;
+	using INT        	= typename CONFIG::INT;
+	using time_type  	= typename CONFIG::time_type;
+	using iterator_type	= typename CONFIG::iterator_type;
 	
-	temporal_sampler_gauss( time_type newcutoff, REAL newsigma ) {
-		sigma  = newsigma;
-		cutoff = newcutoff;
+	temporal_sampler_gauss( time_type cutoff, REAL sigma ) {
+		sigma_  = sigma;
+		cutoff_ = cutoff;
 	}
 
 	//- Filter based on single time value
 	template<typename TYPE>
-	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		REAL wsum = REAL(0);
 		TYPE vsum = TYPE(0);
 		for( auto i: points ) {
 			time_type dt = std::abs(i.first.first - focus);
-			if ( dt < cutoff ) {
-				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt * dt / sigma );
+			if ( dt < cutoff_ ) {
+				REAL w = pow( 2*PI*sigma_, -0.5 ) * exp( -0.5 * dt * dt / sigma_ );
 				vsum += i.second * w;
 				wsum += w;
 			}
@@ -82,14 +83,13 @@ public:
 
 	//- Filter based on two time values
 	template<typename TYPE>
-	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+	TYPE filter( std::pair<time_type,iterator_type> focus, const std::vector<std::pair<std::pair<time_type,iterator_type>, TYPE> > &points ) const {
 		REAL wsum = REAL(0);
 		TYPE vsum = TYPE(0);
 		for( auto i: points ) {
 			time_type dt1 = std::abs(i.first.first - focus.first);
-			time_type dt2 = std::abs(i.first.second - focus.second);
-			if ( dt1 < cutoff && dt2 < cutoff ) {
-				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt1 * dt1 / sigma );
+			if ( dt1 < cutoff_ ) {
+				REAL w = pow( 2*PI*sigma_, -0.5 ) * exp( -0.5 * dt1 * dt1 / sigma_ );
 				vsum += i.second * w;
 				wsum += w;
 			}
@@ -98,11 +98,11 @@ public:
 	}
 
 	time_type get_upper_bound( time_type focus ) const {
-		return focus + cutoff;
+		return focus + cutoff_;
 	}
 
 	time_type get_lower_bound( time_type focus ) const {
-		return focus - cutoff;
+		return focus - cutoff_;
 	}
 
 	time_type tolerance() const {
@@ -110,8 +110,8 @@ public:
 	}
 
 protected:
-	time_type cutoff;
-	REAL sigma;
+	time_type cutoff_;
+	REAL sigma_;
 };
 
 }
