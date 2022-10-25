@@ -2,6 +2,11 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
+[25 October 2022, ongoing]
+  - Add new coupling algorithms
+  - Rename "chrono" filters to "temporal" to avoid conflation with STL and other projects
+  - Change API so fucntions that take two time_type values take a new iterator_type value instead
+
 [05 October 2022, 1.2.4]
   - Refactor RBF filter
   - Generalise capability of RBF filter so partitioned approach available for both conservative and consistent forms

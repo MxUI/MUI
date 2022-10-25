@@ -2,7 +2,7 @@
 ### Notes
 - Support for `int32`, `int64`, `float`, `double` and `std::string`  is included for  `push()` and `fetch()`   *-like* functions. `push_many()` and `fetch_many()` do not work with `std::string` as they use `numpy` arrays, which  do not play well with strings at the `pybind11` level.
 
-- Only `sampler_exact` and `chrono_sampler_exact` classes work with `std::string` type.
+- Only `sampler_exact` and `temporal_sampler_exact` classes work with `std::string` type.
 - Interfaces can be configured to be `1d`, `2d` or  `3d` and to use  `float` or `double` for point arithmetics and time stamps.
 - A `mui4py-demos` folder has been included in the `mui-demos` repository under the `mui4py` branch.
 - There has been a few additions/modifications to the previous code base of the library. Some of them were to include useful functionality to the bindings and others to correct *buggy* code (mostly due to inconsistency with typing).
@@ -56,6 +56,6 @@ Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find 
 - Include multi-time functions in the bindings.
 - Include fucntions to retrieve all points or values in the bindings. 
 - Include boolean OR operation of shapes in the bindings.
-- Carefully set the types allowed for each spatial and chrono sampler.
+- Carefully set the types allowed for each spatial and temporal sampler.
 - Write exception hierarchy to replace generic exceptions.
 - Add 'collide' function to library.

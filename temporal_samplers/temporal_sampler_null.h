@@ -38,77 +38,56 @@
 *****************************************************************************/
 
 /**
- * @file chrono_sampler_sum.h
+ * @file temporal_sampler_null.h
  * @author Y. H. Tang
- * @date 15 April 2014
- * @brief Temporal sampler that sums in time ranging from
- * [ now - left, now + right ].
+ * @date 5 November 2014
+ * @brief Dummy temporal sampler intended as a file template for creating
+ * new samplers.
  */
 
-#ifndef MUI_SAMPLER_TIME_SUM_H_
-#define MUI_SAMPLER_TIME_SUM_H_
+#ifndef MUI_TEMPORAL_SAMPLER_NULL_H_
+#define MUI_TEMPORAL_SAMPLER_NULL_H_
 
 #include "../util.h"
 #include "../config.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_sum {
+template<typename CONFIG=default_config> class temporal_sampler_null {
 public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
 	
-	chrono_sampler_sum( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
-		left   = newleft;
-		right  = newright;
+	temporal_sampler_null() {
+		// to do: initialization
 	}
 
 	//- Filter based on single time value
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
-		TYPE sum = TYPE(0);
-
-		for( auto i: points ) {
-			if ( i.first.first <= focus + right && i.first.first >= focus - left ) {
-				sum += i.second;
-			}
-		}
-
-		return sum;
+		// to do: interpolation algorithm
 	}
 
 	//- Filter based on two time values
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
-		TYPE sum = TYPE(0);
-
-		for( auto i: points ) {
-			if ( i.first.first <= focus.first + right && i.first.first >= focus.first - left &&
-				 i.first.second <= focus.second + right && i.first.second >= focus.second - left) {
-				sum += i.second;
-			}
-		}
-
-		return sum;
+		// to do: interpolation algorithm
 	}
 
 	time_type get_upper_bound( time_type focus ) const {
-		return focus + right;
+		// to do: return newest time needed with regard to focus
 	}
 
 	time_type get_lower_bound( time_type focus ) const {
-		return focus - left;
+		// to do: return oldest time needed with regard to focus
 	}
 
 	time_type tolerance() const {
 		return time_type(0);
-	}	
-
-protected:
-	time_type left, right;
+	}
 };
 
 }
 
-#endif /* MUI_SAMPLER_TIME_SUM_H_ */
+#endif /* MUI_TEMPORAL_SAMPLER_NULL_H_ */

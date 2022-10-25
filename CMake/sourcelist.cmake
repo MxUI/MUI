@@ -47,9 +47,9 @@ set (mui_h
 	spatial_samplers/sampler_shepard_quintic.h
 	spatial_samplers/sampler_sph_quintic.h
 	spatial_samplers/sampler_sum_quintic.h
-	chrono_samplers/chrono_sampler_exact.h
-	chrono_samplers/chrono_sampler_gauss.h
-	chrono_samplers/chrono_sampler_mean.h
-	chrono_samplers/chrono_sampler_null.h
-	chrono_samplers/chrono_sampler_sum.h
+	temporal_samplers/temporal_sampler_exact.h
+	temporal_samplers/temporal_sampler_gauss.h
+	temporal_samplers/temporal_sampler_mean.h
+	temporal_samplers/temporal_sampler_null.h
+	temporal_samplers/temporal_sampler_sum.h
 )

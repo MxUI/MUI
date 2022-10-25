@@ -38,28 +38,28 @@
 *****************************************************************************/
 
 /**
- * @file chrono_sampler_mean.h
+ * @file temporal_sampler_sum.h
  * @author Y. H. Tang
- * @date 12 October 2014
- * @brief Temporal sampler that averages in time with a range from
+ * @date 15 April 2014
+ * @brief Temporal sampler that sums in time ranging from
  * [ now - left, now + right ].
  */
 
-#ifndef MUI_SAMPLER_TIME_MEAN_H_
-#define MUI_SAMPLER_TIME_MEAN_H_
+#ifndef MUI_TEMPORAL_SAMPLER_SUM_H_
+#define MUI_TEMPORAL_SAMPLER_SUM_H_
 
 #include "../util.h"
 #include "../config.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_mean {
+template<typename CONFIG=default_config> class temporal_sampler_sum {
 public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
 	
-	chrono_sampler_mean( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
+	temporal_sampler_sum( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
 		left   = newleft;
 		right  = newright;
 	}
@@ -75,10 +75,7 @@ public:
 			}
 		}
 
-		if ( points.size() )
-			return sum / TYPE(points.size());
-		else
-			return TYPE(0);
+		return sum;
 	}
 
 	//- Filter based on two time values
@@ -88,15 +85,12 @@ public:
 
 		for( auto i: points ) {
 			if ( i.first.first <= focus.first + right && i.first.first >= focus.first - left &&
-				 i.first.second <= focus.second + right && i.first.second >= focus.second - left	) {
+				 i.first.second <= focus.second + right && i.first.second >= focus.second - left) {
 				sum += i.second;
 			}
 		}
 
-		if ( points.size() )
-			return sum / TYPE(points.size());
-		else
-			return TYPE(0);
+		return sum;
 	}
 
 	time_type get_upper_bound( time_type focus ) const {
@@ -117,4 +111,4 @@ protected:
 
 }
 
-#endif /* MUI_SAMPLER_TIME_SUM_H_ */
+#endif /* MUI_TEMPORAL_SAMPLER_SUM_H_ */

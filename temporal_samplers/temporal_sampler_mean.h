@@ -38,56 +38,83 @@
 *****************************************************************************/
 
 /**
- * @file chrono_sampler_null.h
+ * @file temporal_sampler_mean.h
  * @author Y. H. Tang
- * @date 5 November 2014
- * @brief Dummy temporal sampler intended as a file template for creating
- * new samplers.
+ * @date 12 October 2014
+ * @brief Temporal sampler that averages in time with a range from
+ * [ now - left, now + right ].
  */
 
-#ifndef MUI_SAMPLER_TIME_NULL_H_
-#define MUI_SAMPLER_TIME_NULL_H_
+#ifndef MUI_TEMPORAL_SAMPLER_MEAN_H_
+#define MUI_TEMPORAL_SAMPLER_MEAN_H_
 
 #include "../util.h"
 #include "../config.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_null {
+template<typename CONFIG=default_config> class temporal_sampler_mean {
 public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
 	
-	chrono_sampler_null() {
-		// to do: initialization
+	temporal_sampler_mean( time_type newleft = time_type(0), time_type newright = time_type(0) ) {
+		left   = newleft;
+		right  = newright;
 	}
 
 	//- Filter based on single time value
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
-		// to do: interpolation algorithm
+		TYPE sum = TYPE(0);
+
+		for( auto i: points ) {
+			if ( i.first.first <= focus + right && i.first.first >= focus - left ) {
+				sum += i.second;
+			}
+		}
+
+		if ( points.size() )
+			return sum / TYPE(points.size());
+		else
+			return TYPE(0);
 	}
 
 	//- Filter based on two time values
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
-		// to do: interpolation algorithm
+		TYPE sum = TYPE(0);
+
+		for( auto i: points ) {
+			if ( i.first.first <= focus.first + right && i.first.first >= focus.first - left &&
+				 i.first.second <= focus.second + right && i.first.second >= focus.second - left	) {
+				sum += i.second;
+			}
+		}
+
+		if ( points.size() )
+			return sum / TYPE(points.size());
+		else
+			return TYPE(0);
 	}
 
 	time_type get_upper_bound( time_type focus ) const {
-		// to do: return newest time needed with regard to focus
+		return focus + right;
 	}
 
 	time_type get_lower_bound( time_type focus ) const {
-		// to do: return oldest time needed with regard to focus
+		return focus - left;
 	}
 
 	time_type tolerance() const {
 		return time_type(0);
-	}
+	}	
+
+protected:
+	time_type left, right;
 };
 
 }
 
-#endif /* MUI_SAMPLER_TIME_NULL_H_ */
+#endif /* MUI_TEMPORAL_SAMPLER_SUM_H_ */

@@ -1,4 +1,4 @@
-set(MUI_VERSION 1.2.1)
+set(MUI_VERSION 1.2.4)
 
 @PACKAGE_INIT@
 

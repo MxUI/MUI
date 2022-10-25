@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
 
 	// Create spatial and temporal samplers for fetch operation
 	mui_sampler_exact_1d *spatial_sampler1d = mui_create_sampler_exact_1d(1e-37);
-	mui_chrono_sampler_exact_1d *temporal_sampler1d = mui_create_chrono_sampler_exact_1d(1e-37);
+	mui_temporal_sampler_exact_1d *temporal_sampler1d = mui_create_temporal_sampler_exact_1d(1e-37);
 
 	// Define point for fetch
 	mui_point_1d fetch_point1d = { 0 };
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 
 	// Destroy created 1D MUI objects
 	mui_destroy_sampler_exact_1d(spatial_sampler1d);
-	mui_destroy_chrono_sampler_exact_1d(temporal_sampler1d);
+	mui_destroy_temporal_sampler_exact_1d(temporal_sampler1d);
 	free(uri1d);
 
 	/**********************
@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
 
 	// Create spatial and temporal samplers for fetch operation
 	mui_sampler_exact_2d *spatial_sampler2d = mui_create_sampler_exact_2d(1e-37);
-	mui_chrono_sampler_exact_2d *temporal_sampler2d = mui_create_chrono_sampler_exact_2d(1e-37);
+	mui_temporal_sampler_exact_2d *temporal_sampler2d = mui_create_temporal_sampler_exact_2d(1e-37);
 
 	// Define point for fetch
 	mui_point_2d fetch_point2d = { 0, 0 };
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 
 	// Destroy created 2D MUI objects
 	mui_destroy_sampler_exact_2d(spatial_sampler2d);
-	mui_destroy_chrono_sampler_exact_2d(temporal_sampler2d);
+	mui_destroy_temporal_sampler_exact_2d(temporal_sampler2d);
 	free(uri2d);
 
 	/*********************
@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
 
 	// Create spatial and temporal samplers for fetch operation
 	mui_sampler_exact_3d *spatial_sampler3d = mui_create_sampler_exact_3d(1e-37);
-	mui_chrono_sampler_exact_3d *temporal_sampler3d = mui_create_chrono_sampler_exact_3d(1e-37);
+	mui_temporal_sampler_exact_3d *temporal_sampler3d = mui_create_temporal_sampler_exact_3d(1e-37);
 
 	// Define point for fetch
 	mui_point_3d fetch_point3d = { 0, 0, 0 };
@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
 
 	// Destroy created 3D MUI objects
 	mui_destroy_sampler_exact_3d(spatial_sampler3d);
-	mui_destroy_chrono_sampler_exact_3d(temporal_sampler3d);
+	mui_destroy_temporal_sampler_exact_3d(temporal_sampler3d);
 
 	// Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
 	mui_destroy_uniface_1d(uniface1d);

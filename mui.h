@@ -48,12 +48,6 @@
 #ifndef MUI_H_
 #define MUI_H_
 
-//Include chrono samplers
-#include "chrono_samplers/chrono_sampler_exact.h"
-#include "chrono_samplers/chrono_sampler_gauss.h"
-#include "chrono_samplers/chrono_sampler_sum.h"
-#include "chrono_samplers/chrono_sampler_mean.h"
-
 //Include spatial samplers
 #include "spatial_samplers/sampler_exact.h"
 #include "spatial_samplers/sampler_gauss.h"
@@ -67,6 +61,12 @@
 #ifdef USE_RBF
 #include "spatial_samplers/sampler_rbf.h"
 #endif
+
+//Include temporal samplers
+#include "temporal_samplers/temporal_sampler_exact.h"
+#include "temporal_samplers/temporal_sampler_gauss.h"
+#include "temporal_samplers/temporal_sampler_mean.h"
+#include "temporal_samplers/temporal_sampler_sum.h"
 
 //Include coupling algorithms
 #include "coupling_algorithms/algo_fixed_relaxation.h"
@@ -117,10 +117,10 @@ namespace mui {
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_rbf,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_exact,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_gauss,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_sum,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_mean,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SdUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(algo_aitken,SdUFFIX,config_##SUFFIX);\
 		namespace geometry {\
@@ -129,7 +129,6 @@ namespace mui {
 			using box##SUFFIX = box<config_##SUFFIX>;\
 			using or_set##SUFFIX = or_set<config_##SUFFIX>;\
 		}
-
 
 SPECIALIZE(1d,double,int32_t,1);
 SPECIALIZE(2d,double,int32_t,2);
@@ -171,10 +170,10 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_exact,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_gauss,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_sum,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_mean,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(algo_aitken,SUFFIX,config_##SUFFIX);\
 		namespace geometry {\
@@ -183,7 +182,6 @@ SPECIALIZE(3fx,float,int64_t,3);
 			using box##SUFFIX = box<config_##SUFFIX>;\
 			using or_set##SUFFIX = or_set<config_##SUFFIX>;\
 		}
-
 
 SPECIALIZE(1d,double,int32_t,1);
 SPECIALIZE(2d,double,int32_t,2);
@@ -213,10 +211,10 @@ SPECIALIZE(3fx,float,int64_t,3);
 		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_rbf,SUFFIX,CONFIG)\
 		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,CONFIG)\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_exact,SUFFIX,CONFIG);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_gauss,SUFFIX,CONFIG);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_sum,SUFFIX,CONFIG);\
-		DECLARE_SAMPLER_0ARG(chrono_sampler_mean,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_exact,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_gauss,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_sum,SUFFIX,CONFIG);\
+		DECLARE_SAMPLER_0ARG(temporal_sampler_mean,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SUFFIX,CONFIG);\
 		DECLARE_SAMPLER_0ARG(algo_aitken,SUFFIX,CONFIG);\
 		}

@@ -829,236 +829,236 @@ module mui_1d_f
     !******************************************
 
     !Exact temporal sampler
-    subroutine mui_create_chrono_sampler_exact_1f_f(sampler,tolerance) bind(C)
+    subroutine mui_create_temporal_sampler_exact_1f_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: tolerance
-    end subroutine mui_create_chrono_sampler_exact_1f_f
+    end subroutine mui_create_temporal_sampler_exact_1f_f
 
-    subroutine mui_create_chrono_sampler_exact_1fx_f(sampler,tolerance) bind(C)
+    subroutine mui_create_temporal_sampler_exact_1fx_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: tolerance
-    end subroutine mui_create_chrono_sampler_exact_1fx_f
+    end subroutine mui_create_temporal_sampler_exact_1fx_f
 
-    subroutine mui_create_chrono_sampler_exact_1d_f(sampler,tolerance) bind(C)
+    subroutine mui_create_temporal_sampler_exact_1d_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: tolerance
-    end subroutine mui_create_chrono_sampler_exact_1d_f
+    end subroutine mui_create_temporal_sampler_exact_1d_f
 
-    subroutine mui_create_chrono_sampler_exact_1dx_f(sampler,tolerance) bind(C)
+    subroutine mui_create_temporal_sampler_exact_1dx_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: tolerance
-    end subroutine mui_create_chrono_sampler_exact_1dx_f
+    end subroutine mui_create_temporal_sampler_exact_1dx_f
 
-    subroutine mui_create_chrono_sampler_exact_1t_f(sampler,tolerance) bind(C)
+    subroutine mui_create_temporal_sampler_exact_1t_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: tolerance
-    end subroutine mui_create_chrono_sampler_exact_1t_f
+    end subroutine mui_create_temporal_sampler_exact_1t_f
 
     !Gauss temporal sampler
-    subroutine mui_create_chrono_sampler_gauss_1f_f(sampler,cutoff,sigma) bind(C)
+    subroutine mui_create_temporal_sampler_gauss_1f_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: cutoff,sigma
-    end subroutine mui_create_chrono_sampler_gauss_1f_f
+    end subroutine mui_create_temporal_sampler_gauss_1f_f
 
-    subroutine mui_create_chrono_sampler_gauss_1fx_f(sampler,cutoff,sigma) bind(C)
+    subroutine mui_create_temporal_sampler_gauss_1fx_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: cutoff,sigma
-    end subroutine mui_create_chrono_sampler_gauss_1fx_f
+    end subroutine mui_create_temporal_sampler_gauss_1fx_f
 
-    subroutine mui_create_chrono_sampler_gauss_1d_f(sampler,cutoff,sigma) bind(C)
+    subroutine mui_create_temporal_sampler_gauss_1d_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: cutoff,sigma
-    end subroutine mui_create_chrono_sampler_gauss_1d_f
+    end subroutine mui_create_temporal_sampler_gauss_1d_f
 
-    subroutine mui_create_chrono_sampler_gauss_1dx_f(sampler,cutoff,sigma) bind(C)
+    subroutine mui_create_temporal_sampler_gauss_1dx_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: cutoff,sigma
-    end subroutine mui_create_chrono_sampler_gauss_1dx_f
+    end subroutine mui_create_temporal_sampler_gauss_1dx_f
 
-    subroutine mui_create_chrono_sampler_gauss_1t_f(sampler,cutoff,sigma) bind(C)
+    subroutine mui_create_temporal_sampler_gauss_1t_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: cutoff,sigma
-    end subroutine mui_create_chrono_sampler_gauss_1t_f
+    end subroutine mui_create_temporal_sampler_gauss_1t_f
 
     !Mean temporal sampler
-    subroutine mui_create_chrono_sampler_mean_1f_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_mean_1f_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_mean_1f_f
+    end subroutine mui_create_temporal_sampler_mean_1f_f
 
-    subroutine mui_create_chrono_sampler_mean_1fx_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_mean_1fx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_mean_1fx_f
+    end subroutine mui_create_temporal_sampler_mean_1fx_f
 
-    subroutine mui_create_chrono_sampler_mean_1d_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_mean_1d_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_mean_1d_f
+    end subroutine mui_create_temporal_sampler_mean_1d_f
 
-    subroutine mui_create_chrono_sampler_mean_1dx_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_mean_1dx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_mean_1dx_f
+    end subroutine mui_create_temporal_sampler_mean_1dx_f
 
-    subroutine mui_create_chrono_sampler_mean_1t_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_mean_1t_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_mean_1t_f
+    end subroutine mui_create_temporal_sampler_mean_1t_f
 
     !Sum temporal sampler
-    subroutine mui_create_chrono_sampler_sum_1f_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_sum_1f_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_sum_1f_f
+    end subroutine mui_create_temporal_sampler_sum_1f_f
 
-    subroutine mui_create_chrono_sampler_sum_1fx_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_sum_1fx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_float),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_sum_1fx_f
+    end subroutine mui_create_temporal_sampler_sum_1fx_f
 
-    subroutine mui_create_chrono_sampler_sum_1d_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_sum_1d_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_sum_1d_f
+    end subroutine mui_create_temporal_sampler_sum_1d_f
 
-    subroutine mui_create_chrono_sampler_sum_1dx_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_sum_1dx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_sum_1dx_f
+    end subroutine mui_create_temporal_sampler_sum_1dx_f
 
-    subroutine mui_create_chrono_sampler_sum_1t_f(sampler,lower,upper) bind(C)
+    subroutine mui_create_temporal_sampler_sum_1t_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(out), target :: sampler(*)
       real(kind=c_double),intent(in) :: lower,upper
-    end subroutine mui_create_chrono_sampler_sum_1t_f
+    end subroutine mui_create_temporal_sampler_sum_1t_f
 
     !******************************************
     !* Destroy temporal samplers              *
     !******************************************
 
     !Exact temporal sampler
-    subroutine mui_destroy_chrono_sampler_exact_1f_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_exact_1f_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_exact_1f_f
+    end subroutine mui_destroy_temporal_sampler_exact_1f_f
 
-    subroutine mui_destroy_chrono_sampler_exact_1fx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_exact_1fx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_exact_1fx_f
+    end subroutine mui_destroy_temporal_sampler_exact_1fx_f
 
-    subroutine mui_destroy_chrono_sampler_exact_1d_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_exact_1d_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_exact_1d_f
+    end subroutine mui_destroy_temporal_sampler_exact_1d_f
 
-    subroutine mui_destroy_chrono_sampler_exact_1dx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_exact_1dx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_exact_1dx_f
+    end subroutine mui_destroy_temporal_sampler_exact_1dx_f
 
-    subroutine mui_destroy_chrono_sampler_exact_1t_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_exact_1t_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_exact_1t_f
+    end subroutine mui_destroy_temporal_sampler_exact_1t_f
 
     !Gauss temporal sampler
-    subroutine mui_destroy_chrono_sampler_gauss_1f_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_gauss_1f_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_gauss_1f_f
+    end subroutine mui_destroy_temporal_sampler_gauss_1f_f
 
-    subroutine mui_destroy_chrono_sampler_gauss_1fx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_gauss_1fx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_gauss_1fx_f
+    end subroutine mui_destroy_temporal_sampler_gauss_1fx_f
 
-    subroutine mui_destroy_chrono_sampler_gauss_1d_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_gauss_1d_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_gauss_1d_f
+    end subroutine mui_destroy_temporal_sampler_gauss_1d_f
 
-    subroutine mui_destroy_chrono_sampler_gauss_1dx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_gauss_1dx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_gauss_1dx_f
+    end subroutine mui_destroy_temporal_sampler_gauss_1dx_f
 
-    subroutine mui_destroy_chrono_sampler_gauss_1t_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_gauss_1t_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_gauss_1t_f
+    end subroutine mui_destroy_temporal_sampler_gauss_1t_f
 
     !Mean temporal sampler
-    subroutine mui_destroy_chrono_sampler_mean_1f_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_mean_1f_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_mean_1f_f
+    end subroutine mui_destroy_temporal_sampler_mean_1f_f
 
-    subroutine mui_destroy_chrono_sampler_mean_1fx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_mean_1fx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_mean_1fx_f
+    end subroutine mui_destroy_temporal_sampler_mean_1fx_f
 
-    subroutine mui_destroy_chrono_sampler_mean_1d_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_mean_1d_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_mean_1d_f
+    end subroutine mui_destroy_temporal_sampler_mean_1d_f
 
-    subroutine mui_destroy_chrono_sampler_mean_1dx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_mean_1dx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_mean_1dx_f
+    end subroutine mui_destroy_temporal_sampler_mean_1dx_f
 
-    subroutine mui_destroy_chrono_sampler_mean_1t_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_mean_1t_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_mean_1t_f
+    end subroutine mui_destroy_temporal_sampler_mean_1t_f
 
     !Sum temporal sampler
-    subroutine mui_destroy_chrono_sampler_sum_1f_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_sum_1f_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_sum_1f_f
+    end subroutine mui_destroy_temporal_sampler_sum_1f_f
 
-    subroutine mui_destroy_chrono_sampler_sum_1fx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_sum_1fx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_sum_1fx_f
+    end subroutine mui_destroy_temporal_sampler_sum_1fx_f
 
-    subroutine mui_destroy_chrono_sampler_sum_1d_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_sum_1d_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_sum_1d_f
+    end subroutine mui_destroy_temporal_sampler_sum_1d_f
 
-    subroutine mui_destroy_chrono_sampler_sum_1dx_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_sum_1dx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_sum_1dx_f
+    end subroutine mui_destroy_temporal_sampler_sum_1dx_f
 
-    subroutine mui_destroy_chrono_sampler_sum_1t_f(sampler) bind(C)
+    subroutine mui_destroy_temporal_sampler_sum_1t_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_chrono_sampler_sum_1t_f
+    end subroutine mui_destroy_temporal_sampler_sum_1t_f
 
     !******************************************
     !* MUI functions for data push            *

@@ -38,71 +38,82 @@
 *****************************************************************************/
 
 /**
- * @file chrono_sampler_exact.h
+ * @file temporal_sampler_gauss.h
  * @author Y. H. Tang
  * @date 19 February 2014
- * @brief Temporal sampler that samples at exactly the time specified and performs no
- * interpolation.
+ * @brief Temporal sampler that applies Gaussian interpolation and is
+ * symmetric for past and future.
  */
 
-#ifndef MUI_CHRONO_SAMPLER_EXACT_H_
-#define MUI_CHRONO_SAMPLER_EXACT_H_
+#ifndef MUI_TEMPORAL_SAMPLER_GAUSS_H_
+#define MUI_TEMPORAL_SAMPLER_GAUSS_H_
 
-#include <limits>
 #include "../util.h"
 #include "../config.h"
 
 namespace mui {
 
-template<typename CONFIG=default_config> class chrono_sampler_exact {
+template<typename CONFIG=default_config> class temporal_sampler_gauss {
 public:
 	using REAL       = typename CONFIG::REAL;
 	using INT        = typename CONFIG::INT;
 	using time_type  = typename CONFIG::time_type;
-
-	chrono_sampler_exact( time_type tol = time_type(std::numeric_limits<time_type>::epsilon()) ) {
-	  int exponent;
-      frexp10<time_type>( std::numeric_limits<time_type>::max(), exponent );
-      time_type real_precision = static_cast<time_type>( exponent );
-      tolerance = tol*real_precision;
+	
+	temporal_sampler_gauss( time_type newcutoff, REAL newsigma ) {
+		sigma  = newsigma;
+		cutoff = newcutoff;
 	}
 
 	//- Filter based on single time value
 	template<typename TYPE>
 	TYPE filter( time_type focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
-	    for( auto i: points ) {
-			if ( std::abs(i.first.first - focus) <= tolerance ) {
-				return i.second;
+		REAL wsum = REAL(0);
+		TYPE vsum = TYPE(0);
+		for( auto i: points ) {
+			time_type dt = std::abs(i.first.first - focus);
+			if ( dt < cutoff ) {
+				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt * dt / sigma );
+				vsum += i.second * w;
+				wsum += w;
 			}
 		}
-
-		return TYPE();
+		return ( wsum > std::numeric_limits<REAL>::epsilon() ) ? ( vsum / wsum ) : TYPE(0);
 	}
 
 	//- Filter based on two time values
 	template<typename TYPE>
 	TYPE filter( std::pair<time_type,time_type> focus, const std::vector<std::pair<std::pair<time_type,time_type>, TYPE> > &points ) const {
+		REAL wsum = REAL(0);
+		TYPE vsum = TYPE(0);
 		for( auto i: points ) {
-			if ( std::abs(i.first.first - focus.first) <= tolerance && std::abs(i.first.second - focus.second) <= tolerance ) {
-				return i.second;
+			time_type dt1 = std::abs(i.first.first - focus.first);
+			time_type dt2 = std::abs(i.first.second - focus.second);
+			if ( dt1 < cutoff && dt2 < cutoff ) {
+				REAL w = pow( 2*PI*sigma, -0.5 ) * exp( -0.5 * dt1 * dt1 / sigma );
+				vsum += i.second * w;
+				wsum += w;
 			}
 		}
-
-		return TYPE();
+		return ( wsum > std::numeric_limits<REAL>::epsilon() ) ? ( vsum / wsum ) : TYPE(0);
 	}
 
 	time_type get_upper_bound( time_type focus ) const {
-		return focus;
+		return focus + cutoff;
 	}
 
 	time_type get_lower_bound( time_type focus ) const {
-		return focus;
+		return focus - cutoff;
 	}
 
-private:
-	time_type tolerance;
+	time_type tolerance() const {
+		return time_type(0);
+	}
+
+protected:
+	time_type cutoff;
+	REAL sigma;
 };
 
 }
 
-#endif /* MUI_CHRONO_SAMPLER_EXACT_H_ */
+#endif /* MUI_TEMPORAL_SAMPLER_GAUSS_H_ */

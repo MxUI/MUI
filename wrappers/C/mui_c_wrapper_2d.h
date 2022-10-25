@@ -147,29 +147,29 @@ typedef struct mui_sampler_rbf_2dx mui_sampler_rbf_2dx;
 typedef struct mui_sampler_rbf_2t mui_sampler_rbf_2t;
 #endif
 
-typedef struct mui_chrono_sampler_exact_2f mui_chrono_sampler_exact_2f;
-typedef struct mui_chrono_sampler_exact_2fx mui_chrono_sampler_exact_2fx;
-typedef struct mui_chrono_sampler_exact_2d mui_chrono_sampler_exact_2d;
-typedef struct mui_chrono_sampler_exact_2dx mui_chrono_sampler_exact_2dx;
-typedef struct mui_chrono_sampler_exact_2t mui_chrono_sampler_exact_2t;
+typedef struct mui_temporal_sampler_exact_2f mui_temporal_sampler_exact_2f;
+typedef struct mui_temporal_sampler_exact_2fx mui_temporal_sampler_exact_2fx;
+typedef struct mui_temporal_sampler_exact_2d mui_temporal_sampler_exact_2d;
+typedef struct mui_temporal_sampler_exact_2dx mui_temporal_sampler_exact_2dx;
+typedef struct mui_temporal_sampler_exact_2t mui_temporal_sampler_exact_2t;
 
-typedef struct mui_chrono_sampler_gauss_2f mui_chrono_sampler_gauss_2f;
-typedef struct mui_chrono_sampler_gauss_2fx mui_chrono_sampler_gauss_2fx;
-typedef struct mui_chrono_sampler_gauss_2d mui_chrono_sampler_gauss_2d;
-typedef struct mui_chrono_sampler_gauss_2dx mui_chrono_sampler_gauss_2dx;
-typedef struct mui_chrono_sampler_gauss_2t mui_chrono_sampler_gauss_2t;
+typedef struct mui_temporal_sampler_gauss_2f mui_temporal_sampler_gauss_2f;
+typedef struct mui_temporal_sampler_gauss_2fx mui_temporal_sampler_gauss_2fx;
+typedef struct mui_temporal_sampler_gauss_2d mui_temporal_sampler_gauss_2d;
+typedef struct mui_temporal_sampler_gauss_2dx mui_temporal_sampler_gauss_2dx;
+typedef struct mui_temporal_sampler_gauss_2t mui_temporal_sampler_gauss_2t;
 
-typedef struct mui_chrono_sampler_mean_2f mui_chrono_sampler_mean_2f;
-typedef struct mui_chrono_sampler_mean_2fx mui_chrono_sampler_mean_2fx;
-typedef struct mui_chrono_sampler_mean_2d mui_chrono_sampler_mean_2d;
-typedef struct mui_chrono_sampler_mean_2dx mui_chrono_sampler_mean_2dx;
-typedef struct mui_chrono_sampler_mean_2t mui_chrono_sampler_mean_2t;
+typedef struct mui_temporal_sampler_mean_2f mui_temporal_sampler_mean_2f;
+typedef struct mui_temporal_sampler_mean_2fx mui_temporal_sampler_mean_2fx;
+typedef struct mui_temporal_sampler_mean_2d mui_temporal_sampler_mean_2d;
+typedef struct mui_temporal_sampler_mean_2dx mui_temporal_sampler_mean_2dx;
+typedef struct mui_temporal_sampler_mean_2t mui_temporal_sampler_mean_2t;
 
-typedef struct mui_chrono_sampler_sum_2f mui_chrono_sampler_sum_2f;
-typedef struct mui_chrono_sampler_sum_2fx mui_chrono_sampler_sum_2fx;
-typedef struct mui_chrono_sampler_sum_2d mui_chrono_sampler_sum_2d;
-typedef struct mui_chrono_sampler_sum_2dx mui_chrono_sampler_sum_2dx;
-typedef struct mui_chrono_sampler_sum_2t mui_chrono_sampler_sum_2t;
+typedef struct mui_temporal_sampler_sum_2f mui_temporal_sampler_sum_2f;
+typedef struct mui_temporal_sampler_sum_2fx mui_temporal_sampler_sum_2fx;
+typedef struct mui_temporal_sampler_sum_2d mui_temporal_sampler_sum_2d;
+typedef struct mui_temporal_sampler_sum_2dx mui_temporal_sampler_sum_2dx;
+typedef struct mui_temporal_sampler_sum_2t mui_temporal_sampler_sum_2t;
 
 // MUI uniface creation
 mui_uniface_2f* mui_create_uniface_2f(const char *URI);
@@ -311,48 +311,48 @@ void mui_destroy_sampler_rbf_2t(mui_sampler_rbf_2t *sampler);
 #endif
 
 // MUI temporal samplers creation
-mui_chrono_sampler_exact_2f* mui_create_chrono_sampler_exact_2f(float tolerance);
-mui_chrono_sampler_exact_2fx* mui_create_chrono_sampler_exact_2fx(float tolerance);
-mui_chrono_sampler_exact_2d* mui_create_chrono_sampler_exact_2d(double tolerance);
-mui_chrono_sampler_exact_2dx* mui_create_chrono_sampler_exact_2dx(double tolerance);
-mui_chrono_sampler_exact_2t* mui_create_chrono_sampler_exact_2t(double tolerance);
-mui_chrono_sampler_gauss_2f* mui_create_chrono_sampler_gauss_2f(float cutoff, float sigma);
-mui_chrono_sampler_gauss_2fx* mui_create_chrono_sampler_gauss_2fx(float cutoff, float sigma);
-mui_chrono_sampler_gauss_2d* mui_create_chrono_sampler_gauss_2d(double cutoff, double sigma);
-mui_chrono_sampler_gauss_2dx* mui_create_chrono_sampler_gauss_2dx(double cutoff, double sigma);
-mui_chrono_sampler_gauss_2t* mui_create_chrono_sampler_gauss_2t(double cutoff, double sigma);
-mui_chrono_sampler_mean_2f* mui_create_chrono_sampler_mean_2f(float lower, float upper);
-mui_chrono_sampler_mean_2fx* mui_create_chrono_sampler_mean_2fx(float lower, float upper);
-mui_chrono_sampler_mean_2d* mui_create_chrono_sampler_mean_2d(double lower, double upper);
-mui_chrono_sampler_mean_2dx* mui_create_chrono_sampler_mean_2dx(double lower, double upper);
-mui_chrono_sampler_mean_2t* mui_create_chrono_sampler_mean_2t(double lower, double upper);
-mui_chrono_sampler_sum_2f* mui_create_chrono_sampler_sum_2f(float lower, float upper);
-mui_chrono_sampler_sum_2fx* mui_create_chrono_sampler_sum_2fx(float lower, float upper);
-mui_chrono_sampler_sum_2d* mui_create_chrono_sampler_sum_2d(double lower, double upper);
-mui_chrono_sampler_sum_2dx* mui_create_chrono_sampler_sum_2dx(double lower, double upper);
-mui_chrono_sampler_sum_2t* mui_create_chrono_sampler_sum_2t(double lower, double upper);
+mui_temporal_sampler_exact_2f* mui_create_temporal_sampler_exact_2f(float tolerance);
+mui_temporal_sampler_exact_2fx* mui_create_temporal_sampler_exact_2fx(float tolerance);
+mui_temporal_sampler_exact_2d* mui_create_temporal_sampler_exact_2d(double tolerance);
+mui_temporal_sampler_exact_2dx* mui_create_temporal_sampler_exact_2dx(double tolerance);
+mui_temporal_sampler_exact_2t* mui_create_temporal_sampler_exact_2t(double tolerance);
+mui_temporal_sampler_gauss_2f* mui_create_temporal_sampler_gauss_2f(float cutoff, float sigma);
+mui_temporal_sampler_gauss_2fx* mui_create_temporal_sampler_gauss_2fx(float cutoff, float sigma);
+mui_temporal_sampler_gauss_2d* mui_create_temporal_sampler_gauss_2d(double cutoff, double sigma);
+mui_temporal_sampler_gauss_2dx* mui_create_temporal_sampler_gauss_2dx(double cutoff, double sigma);
+mui_temporal_sampler_gauss_2t* mui_create_temporal_sampler_gauss_2t(double cutoff, double sigma);
+mui_temporal_sampler_mean_2f* mui_create_temporal_sampler_mean_2f(float lower, float upper);
+mui_temporal_sampler_mean_2fx* mui_create_temporal_sampler_mean_2fx(float lower, float upper);
+mui_temporal_sampler_mean_2d* mui_create_temporal_sampler_mean_2d(double lower, double upper);
+mui_temporal_sampler_mean_2dx* mui_create_temporal_sampler_mean_2dx(double lower, double upper);
+mui_temporal_sampler_mean_2t* mui_create_temporal_sampler_mean_2t(double lower, double upper);
+mui_temporal_sampler_sum_2f* mui_create_temporal_sampler_sum_2f(float lower, float upper);
+mui_temporal_sampler_sum_2fx* mui_create_temporal_sampler_sum_2fx(float lower, float upper);
+mui_temporal_sampler_sum_2d* mui_create_temporal_sampler_sum_2d(double lower, double upper);
+mui_temporal_sampler_sum_2dx* mui_create_temporal_sampler_sum_2dx(double lower, double upper);
+mui_temporal_sampler_sum_2t* mui_create_temporal_sampler_sum_2t(double lower, double upper);
 
 // MUI temporal samplers destruction
-void mui_destroy_chrono_sampler_exact_2f(mui_chrono_sampler_exact_2f *sampler);
-void mui_destroy_chrono_sampler_exact_2fx(mui_chrono_sampler_exact_2fx *sampler);
-void mui_destroy_chrono_sampler_exact_2d(mui_chrono_sampler_exact_2d *sampler);
-void mui_destroy_chrono_sampler_exact_2dx(mui_chrono_sampler_exact_2dx *sampler);
-void mui_destroy_chrono_sampler_exact_2t(mui_chrono_sampler_exact_2t *sampler);
-void mui_destroy_chrono_sampler_gauss_2f(mui_chrono_sampler_gauss_2f *sampler);
-void mui_destroy_chrono_sampler_gauss_2fx(mui_chrono_sampler_gauss_2fx *sampler);
-void mui_destroy_chrono_sampler_gauss_2d(mui_chrono_sampler_gauss_2d *sampler);
-void mui_destroy_chrono_sampler_gauss_2dx(mui_chrono_sampler_gauss_2dx *sampler);
-void mui_destroy_chrono_sampler_gauss_2t(mui_chrono_sampler_gauss_2t *sampler);
-void mui_destroy_chrono_sampler_mean_2f(mui_chrono_sampler_mean_2f *sampler);
-void mui_destroy_chrono_sampler_mean_2fx(mui_chrono_sampler_mean_2fx *sampler);
-void mui_destroy_chrono_sampler_mean_2d(mui_chrono_sampler_mean_2d *sampler);
-void mui_destroy_chrono_sampler_mean_2dx(mui_chrono_sampler_mean_2dx *sampler);
-void mui_destroy_chrono_sampler_mean_2t(mui_chrono_sampler_mean_2t *sampler);
-void mui_destroy_chrono_sampler_sum_2f(mui_chrono_sampler_sum_2f *sampler);
-void mui_destroy_chrono_sampler_sum_2fx(mui_chrono_sampler_sum_2fx *sampler);
-void mui_destroy_chrono_sampler_sum_2d(mui_chrono_sampler_sum_2d *sampler);
-void mui_destroy_chrono_sampler_sum_2dx(mui_chrono_sampler_sum_2dx *sampler);
-void mui_destroy_chrono_sampler_sum_2t(mui_chrono_sampler_sum_2t *sampler);
+void mui_destroy_temporal_sampler_exact_2f(mui_temporal_sampler_exact_2f *sampler);
+void mui_destroy_temporal_sampler_exact_2fx(mui_temporal_sampler_exact_2fx *sampler);
+void mui_destroy_temporal_sampler_exact_2d(mui_temporal_sampler_exact_2d *sampler);
+void mui_destroy_temporal_sampler_exact_2dx(mui_temporal_sampler_exact_2dx *sampler);
+void mui_destroy_temporal_sampler_exact_2t(mui_temporal_sampler_exact_2t *sampler);
+void mui_destroy_temporal_sampler_gauss_2f(mui_temporal_sampler_gauss_2f *sampler);
+void mui_destroy_temporal_sampler_gauss_2fx(mui_temporal_sampler_gauss_2fx *sampler);
+void mui_destroy_temporal_sampler_gauss_2d(mui_temporal_sampler_gauss_2d *sampler);
+void mui_destroy_temporal_sampler_gauss_2dx(mui_temporal_sampler_gauss_2dx *sampler);
+void mui_destroy_temporal_sampler_gauss_2t(mui_temporal_sampler_gauss_2t *sampler);
+void mui_destroy_temporal_sampler_mean_2f(mui_temporal_sampler_mean_2f *sampler);
+void mui_destroy_temporal_sampler_mean_2fx(mui_temporal_sampler_mean_2fx *sampler);
+void mui_destroy_temporal_sampler_mean_2d(mui_temporal_sampler_mean_2d *sampler);
+void mui_destroy_temporal_sampler_mean_2dx(mui_temporal_sampler_mean_2dx *sampler);
+void mui_destroy_temporal_sampler_mean_2t(mui_temporal_sampler_mean_2t *sampler);
+void mui_destroy_temporal_sampler_sum_2f(mui_temporal_sampler_sum_2f *sampler);
+void mui_destroy_temporal_sampler_sum_2fx(mui_temporal_sampler_sum_2fx *sampler);
+void mui_destroy_temporal_sampler_sum_2d(mui_temporal_sampler_sum_2d *sampler);
+void mui_destroy_temporal_sampler_sum_2dx(mui_temporal_sampler_sum_2dx *sampler);
+void mui_destroy_temporal_sampler_sum_2t(mui_temporal_sampler_sum_2t *sampler);
 
 // MUI functions for data push
 void mui_push_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float value);
@@ -392,370 +392,370 @@ void mui_forecast_2t_pair(mui_uniface_2t *uniface, double t_1, double t_2);
 
 // MUI functions for data fetch
 float mui_fetch_exact_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_exact_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_exact_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_exact_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_exact_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_exact_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_exact_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_exact_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_exact_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_exact_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_exact_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_exact_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_exact_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_exact_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_exact_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_exact_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_exact_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_exact_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_exact_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_exact_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_gauss_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_gauss_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_gauss_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_gauss_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_gauss_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_gauss_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_gauss_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_gauss_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_gauss_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_gauss_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_gauss_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_gauss_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_gauss_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_gauss_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_gauss_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_gauss_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_gauss_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_gauss_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_gauss_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_gauss_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_gauss_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_gauss_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_gauss_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_gauss_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_gauss_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_gauss_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_gauss_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_gauss_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_gauss_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_gauss_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_gauss_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_gauss_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_gauss_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_gauss_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_gauss_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_gauss_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_gauss_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_gauss_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_gauss_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_gauss_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_gauss_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_gauss_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_gauss_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_gauss_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_gauss_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_moving_average_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_moving_average_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_moving_average_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_moving_average_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_moving_average_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_moving_average_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_moving_average_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_moving_average_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_moving_average_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_moving_average_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_moving_average_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_moving_average_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_moving_average_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_moving_average_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_moving_average_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_moving_average_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_moving_average_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_moving_average_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_moving_average_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_moving_average_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_moving_average_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_moving_average_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_moving_average_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_moving_average_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_moving_average_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_moving_average_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_moving_average_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_moving_average_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_moving_average_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_moving_average_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_moving_average_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_moving_average_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_moving_average_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_moving_average_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_moving_average_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_moving_average_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_nearest_neighbor_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_shepard_quintic_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_shepard_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_shepard_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_sph_quintic_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_sph_quintic_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_sph_quintic_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_sph_quintic_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_sph_quintic_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_sph_quintic_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_sph_quintic_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_sph_quintic_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_sph_quintic_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_sph_quintic_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_sph_quintic_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_sph_quintic_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_sum_quintic_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_sum_quintic_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_sum_quintic_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_sum_quintic_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_sum_quintic_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_sum_quintic_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_sum_quintic_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_sum_quintic_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_sum_quintic_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_sum_quintic_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_sum_quintic_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 #ifdef USE_RBF
 float mui_fetch_rbf_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_rbf_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_rbf_exact_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_rbf_exact_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_rbf_exact_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_rbf_gauss_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_rbf_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_rbf_gauss_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_rbf_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_rbf_gauss_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_rbf_mean_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_rbf_mean_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_rbf_mean_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_rbf_mean_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_rbf_mean_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_rbf_sum_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_rbf_sum_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
-		mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_rbf_sum_2d(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t,
-		mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_rbf_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t,
-		mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_rbf_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
-		mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 #endif
 
 /********************************************************
@@ -763,492 +763,492 @@ double mui_fetch_rbf_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point
  *********************************************************/
 
 float mui_fetch_exact_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_exact_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_exact_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_exact_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_exact_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_exact_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_exact_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_exact_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_exact_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_exact_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_exact_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_exact_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_exact_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_exact_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_exact_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_exact_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_exact_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_exact_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_exact_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		float t_2, mui_sampler_exact_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_exact_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		double t_2, mui_sampler_exact_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_exact_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		double t_2, mui_sampler_exact_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_exact_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		double t_2, mui_sampler_exact_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_gauss_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_gauss_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_gauss_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_gauss_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_gauss_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		float t_2, mui_sampler_gauss_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_gauss_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_gauss_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		double t_2, mui_sampler_gauss_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_gauss_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_gauss_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		double t_2, mui_sampler_gauss_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_gauss_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_gauss_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		double t_2, mui_sampler_gauss_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_gauss_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_gauss_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_gauss_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_gauss_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_gauss_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		float t_2, mui_sampler_gauss_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_gauss_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_gauss_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		double t_2, mui_sampler_gauss_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_gauss_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_gauss_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		double t_2, mui_sampler_gauss_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_gauss_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_gauss_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		double t_2, mui_sampler_gauss_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_gauss_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_gauss_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_gauss_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_gauss_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_gauss_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		float t_2, mui_sampler_gauss_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_gauss_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_gauss_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		double t_2, mui_sampler_gauss_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_gauss_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_gauss_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		double t_2, mui_sampler_gauss_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_gauss_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_gauss_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		double t_2, mui_sampler_gauss_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_moving_average_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_moving_average_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_moving_average_2fx *spatial_sampler,
-		mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_moving_average_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_moving_average_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_moving_average_2dx *spatial_sampler,
-		mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_moving_average_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_moving_average_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_moving_average_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_moving_average_2fx *spatial_sampler,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_moving_average_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_moving_average_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_moving_average_2dx *spatial_sampler,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_moving_average_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_moving_average_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_moving_average_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_moving_average_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		float t_2, mui_sampler_moving_average_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_moving_average_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_moving_average_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_moving_average_2dx *spatial_sampler,
-		mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_moving_average_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_moving_average_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		float t_2, mui_sampler_moving_average_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_moving_average_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_moving_average_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		float t_2, mui_sampler_moving_average_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_moving_average_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_moving_average_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_moving_average_2dx *spatial_sampler,
-		mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_moving_average_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		double t_2, mui_sampler_moving_average_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_nearest_neighbor_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		float t_2, mui_sampler_nearest_neighbor_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_nearest_neighbor_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_nearest_neighbor_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		double t_2, mui_sampler_nearest_neighbor_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_nearest_neighbor_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_nearest_neighbor_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		double t_2, mui_sampler_nearest_neighbor_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler,
-		mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler,
-		mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler,
-		mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2f *spatial_sampler,
-		mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_pseudo_nearest_neighbor_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_2fx *spatial_sampler,
-		mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2d *spatial_sampler,
-		mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2dx *spatial_sampler,
-		mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_pseudo_nearest_neighbor_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_2t *spatial_sampler,
-		mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_shepard_quintic_2fx *spatial_sampler,
-		mui_chrono_sampler_exact_2fx *temporal_sampler);
+		mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2d *spatial_sampler,
-		mui_chrono_sampler_exact_2d *temporal_sampler);
+		mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2dx *spatial_sampler,
-		mui_chrono_sampler_exact_2dx *temporal_sampler);
+		mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2t *spatial_sampler,
-		mui_chrono_sampler_exact_2t *temporal_sampler);
+		mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_shepard_quintic_2fx *spatial_sampler,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2d *spatial_sampler,
-		mui_chrono_sampler_gauss_2d *temporal_sampler);
+		mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2dx *spatial_sampler,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2t *spatial_sampler,
-		mui_chrono_sampler_gauss_2t *temporal_sampler);
+		mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point,
 		float t_1, float t_2, mui_sampler_shepard_quintic_2fx *spatial_sampler,
-		mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		double t_2, mui_sampler_shepard_quintic_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2dx *spatial_sampler,
-		mui_chrono_sampler_mean_2dx *temporal_sampler);
+		mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		double t_2, mui_sampler_shepard_quintic_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_shepard_quintic_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		float t_2, mui_sampler_shepard_quintic_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_shepard_quintic_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		float t_2, mui_sampler_shepard_quintic_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_shepard_quintic_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		double t_2, mui_sampler_shepard_quintic_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_shepard_quintic_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point,
 		double t_1, double t_2, mui_sampler_shepard_quintic_2dx *spatial_sampler,
-		mui_chrono_sampler_sum_2dx *temporal_sampler);
+		mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_shepard_quintic_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		double t_2, mui_sampler_shepard_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_sph_quintic_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_sph_quintic_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_sph_quintic_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_sph_quintic_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_sph_quintic_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_sph_quintic_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_sph_quintic_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_sph_quintic_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_sph_quintic_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_sph_quintic_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_sph_quintic_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		float t_2, mui_sampler_sph_quintic_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_sph_quintic_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_sph_quintic_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_sph_quintic_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		double t_2, mui_sampler_sph_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 float mui_fetch_sum_quintic_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_sum_quintic_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_sum_quintic_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_sum_quintic_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_sum_quintic_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_sum_quintic_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_sum_quintic_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_sum_quintic_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_sum_quintic_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_sum_quintic_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_sum_quintic_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		float t_2, mui_sampler_sum_quintic_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		double t_2, mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 #ifdef USE_RBF
 float mui_fetch_rbf_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_exact_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_rbf_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_exact_2fx *temporal_sampler);
+		float t_2, mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_exact_2fx *temporal_sampler);
 double mui_fetch_rbf_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_exact_2d *temporal_sampler);
+		double t_2, mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_exact_2d *temporal_sampler);
 double mui_fetch_rbf_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_exact_2dx *temporal_sampler);
+		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_exact_2dx *temporal_sampler);
 double mui_fetch_rbf_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_exact_2t *temporal_sampler);
+		double t_2, mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_exact_2t *temporal_sampler);
 float mui_fetch_rbf_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_gauss_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_gauss_2f *temporal_sampler);
 float mui_fetch_rbf_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1,
-		float t_2, mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_gauss_2fx *temporal_sampler);
+		float t_2, mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_gauss_2fx *temporal_sampler);
 double mui_fetch_rbf_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1,
-		double t_2, mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_gauss_2d *temporal_sampler);
+		double t_2, mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_gauss_2d *temporal_sampler);
 double mui_fetch_rbf_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_gauss_2dx *temporal_sampler);
+		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_gauss_2dx *temporal_sampler);
 double mui_fetch_rbf_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1,
-		double t_2, mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_gauss_2t *temporal_sampler);
+		double t_2, mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_gauss_2t *temporal_sampler);
 float mui_fetch_rbf_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_mean_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_mean_2f *temporal_sampler);
 float mui_fetch_rbf_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1, float t_2,
-		mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_mean_2fx *temporal_sampler);
+		mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_mean_2fx *temporal_sampler);
 double mui_fetch_rbf_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1, double t_2,
-		mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_mean_2d *temporal_sampler);
+		mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_mean_2d *temporal_sampler);
 double mui_fetch_rbf_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_mean_2dx *temporal_sampler);
+		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_mean_2dx *temporal_sampler);
 double mui_fetch_rbf_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1, double t_2,
-		mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_mean_2t *temporal_sampler);
+		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_mean_2t *temporal_sampler);
 float mui_fetch_rbf_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t_1, float t_2,
-		mui_sampler_rbf_2f *spatial_sampler, mui_chrono_sampler_sum_2f *temporal_sampler);
+		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_sum_2f *temporal_sampler);
 float mui_fetch_rbf_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t_1, float t_2,
-		mui_sampler_rbf_2fx *spatial_sampler, mui_chrono_sampler_sum_2fx *temporal_sampler);
+		mui_sampler_rbf_2fx *spatial_sampler, mui_temporal_sampler_sum_2fx *temporal_sampler);
 double mui_fetch_rbf_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, mui_point_2d point, double t_1, double t_2,
-		mui_sampler_rbf_2d *spatial_sampler, mui_chrono_sampler_sum_2d *temporal_sampler);
+		mui_sampler_rbf_2d *spatial_sampler, mui_temporal_sampler_sum_2d *temporal_sampler);
 double mui_fetch_rbf_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mui_point_2dx point, double t_1,
-		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_chrono_sampler_sum_2dx *temporal_sampler);
+		double t_2, mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_rbf_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t_1, double t_2,
-		mui_sampler_rbf_2t *spatial_sampler, mui_chrono_sampler_sum_2t *temporal_sampler);
+		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
 #endif
 
 // MUI functions for 2D data point only fetch using single time value
 void mui_fetch_points_exact_2f(mui_uniface_2f *uniface, const char *attr, float t,
-		mui_chrono_sampler_exact_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
+		mui_temporal_sampler_exact_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
 void mui_fetch_points_exact_2fx(mui_uniface_2fx *uniface, const char *attr, float t,
-		mui_chrono_sampler_exact_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
+		mui_temporal_sampler_exact_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
 void mui_fetch_points_exact_2d(mui_uniface_2d *uniface, const char *attr, double t,
-		mui_chrono_sampler_exact_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
+		mui_temporal_sampler_exact_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
 void mui_fetch_points_exact_2dx(mui_uniface_2dx *uniface, const char *attr, double t,
-		mui_chrono_sampler_exact_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
+		mui_temporal_sampler_exact_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
 void mui_fetch_points_exact_2t(mui_uniface_2t *uniface, const char *attr, double t,
-		mui_chrono_sampler_exact_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
+		mui_temporal_sampler_exact_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
 void mui_fetch_points_gauss_2f(mui_uniface_2f *uniface, const char *attr, float t,
-		mui_chrono_sampler_gauss_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
+		mui_temporal_sampler_gauss_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
 void mui_fetch_points_gauss_2fx(mui_uniface_2fx *uniface, const char *attr, float t,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
 void mui_fetch_points_gauss_2d(mui_uniface_2d *uniface, const char *attr, double t,
-		mui_chrono_sampler_gauss_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
+		mui_temporal_sampler_gauss_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
 void mui_fetch_points_gauss_2dx(mui_uniface_2dx *uniface, const char *attr, double t,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
 void mui_fetch_points_gauss_2t(mui_uniface_2t *uniface, const char *attr, double t,
-		mui_chrono_sampler_gauss_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
+		mui_temporal_sampler_gauss_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
 void mui_fetch_points_mean_2f(mui_uniface_2f *uniface, const char *attr, float t,
-		mui_chrono_sampler_mean_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
+		mui_temporal_sampler_mean_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
 void mui_fetch_points_mean_2fx(mui_uniface_2fx *uniface, const char *attr, float t,
-		mui_chrono_sampler_mean_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
+		mui_temporal_sampler_mean_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
 void mui_fetch_points_mean_2d(mui_uniface_2d *uniface, const char *attr, double t,
-		mui_chrono_sampler_mean_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
+		mui_temporal_sampler_mean_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
 void mui_fetch_points_mean_2dx(mui_uniface_2dx *uniface, const char *attr, double t,
-		mui_chrono_sampler_mean_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
+		mui_temporal_sampler_mean_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
 void mui_fetch_points_mean_2t(mui_uniface_2t *uniface, const char *attr, double t,
-		mui_chrono_sampler_mean_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
+		mui_temporal_sampler_mean_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
 void mui_fetch_points_sum_2f(mui_uniface_2f *uniface, const char *attr, float t,
-		mui_chrono_sampler_sum_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
+		mui_temporal_sampler_sum_2f *temporal_sampler, mui_point_2f *ret_points, int *num_points);
 void mui_fetch_points_sum_2fx(mui_uniface_2fx *uniface, const char *attr, float t,
-		mui_chrono_sampler_sum_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
+		mui_temporal_sampler_sum_2fx *temporal_sampler, mui_point_2fx *ret_points, int *num_points);
 void mui_fetch_points_sum_2d(mui_uniface_2d *uniface, const char *attr, double t,
-		mui_chrono_sampler_sum_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
+		mui_temporal_sampler_sum_2d *temporal_sampler, mui_point_2d *ret_points, int *num_points);
 void mui_fetch_points_sum_2dx(mui_uniface_2dx *uniface, const char *attr, double t,
-		mui_chrono_sampler_sum_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
+		mui_temporal_sampler_sum_2dx *temporal_sampler, mui_point_2dx *ret_points, int *num_points);
 void mui_fetch_points_sum_2t(mui_uniface_2t *uniface, const char *attr, double t,
-		mui_chrono_sampler_sum_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
+		mui_temporal_sampler_sum_2t *temporal_sampler, mui_point_2t *ret_points, int *num_points);
 
 // MUI functions for 2D data point only fetch using two time values
 void mui_fetch_values_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_exact_2f *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_exact_2f *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_exact_2fx *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_exact_2fx *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_exact_2d_pair(mui_uniface_2d *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_exact_2d *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_exact_2d *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_exact_2dx_pair(mui_uniface_2dx *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_exact_2dx *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_exact_2dx *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_exact_2t_pair(mui_uniface_2t *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_exact_2t *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_exact_2t *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_gauss_2f_pair(mui_uniface_2f *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_gauss_2f *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_gauss_2f *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_gauss_2fx_pair(mui_uniface_2fx *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_gauss_2fx *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_gauss_2fx *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_gauss_2d_pair(mui_uniface_2d *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_gauss_2d *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_gauss_2d *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_gauss_2dx_pair(mui_uniface_2dx *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_gauss_2dx *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_gauss_2dx *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_gauss_2t_pair(mui_uniface_2t *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_gauss_2t *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_gauss_2t *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_mean_2f_pair(mui_uniface_2f *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_mean_2f *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_mean_2f *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_mean_2fx_pair(mui_uniface_2fx *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_mean_2fx *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_mean_2fx *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_mean_2d_pair(mui_uniface_2d *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_mean_2d *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_mean_2d *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_mean_2dx_pair(mui_uniface_2dx *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_mean_2dx *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_mean_2dx *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_mean_2t_pair(mui_uniface_2t *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_mean_2t *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_mean_2t *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_sum_2f_pair(mui_uniface_2f *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_sum_2f *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_sum_2f *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_sum_2fx_pair(mui_uniface_2fx *uniface, const char *attr, float t_1, float t_2,
-		mui_chrono_sampler_sum_2fx *temporal_sampler, float *values, int *num_values);
+		mui_temporal_sampler_sum_2fx *temporal_sampler, float *values, int *num_values);
 void mui_fetch_values_sum_2d_pair(mui_uniface_2d *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_sum_2d *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_sum_2d *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_sum_2dx *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_sum_2dx *temporal_sampler, double *values, int *num_values);
 void mui_fetch_values_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, double t_1, double t_2,
-		mui_chrono_sampler_sum_2t *temporal_sampler, double *values, int *num_values);
+		mui_temporal_sampler_sum_2t *temporal_sampler, double *values, int *num_values);
 
 // MUI functions for single parameter fetch
 float mui_fetch_2f_param(mui_uniface_2f *uniface, const char *attr);
