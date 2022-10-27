@@ -919,7 +919,7 @@ public:
 
 			for( size_t i=0; i < peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -942,7 +942,7 @@ public:
 
 			for( size_t i=0; i < peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -968,7 +968,7 @@ public:
 
 			for( size_t i=0; i < peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -993,7 +993,7 @@ public:
 
 			for( size_t i=0; i<peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -1040,14 +1040,14 @@ private:
 	*/
 	void on_recv_confirm( int32_t sender, std::pair<time_type,iterator_type> timestamp ) {
 		peers[sender].set_current_t(timestamp.first);
-		peers[sender].set_current_it(timestamp.second);
+		peers[sender].set_current_sub(timestamp.second);
 	}
 
 	/** \brief Handles "forecast" messages
 	*/
 	void on_recv_forecast( int32_t sender, std::pair<time_type,iterator_type> timestamp ) {
 		peers[sender].set_next_t(timestamp.first);
-		peers[sender].set_next_it(timestamp.second);
+		peers[sender].set_next_sub(timestamp.second);
 	}
 
 	/** \brief Handles "data" messages
