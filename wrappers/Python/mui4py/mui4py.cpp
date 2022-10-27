@@ -404,7 +404,7 @@ DECLARE_FUNC_HEADER(uniface) {
     .def("barrier", (void (Tclass::*)(Ttime)) &Tclass::barrier, "")
     .def("barrier", (void (Tclass::*)(Ttime, Titer)) &Tclass::barrier, "")
     .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
-    .def("forget", (void (Tclass::*)(Ttime, Titer, bool)) &Tclass::forget, "")
+    .def("forget", (void (Tclass::*)(std::pair<Ttime, Titer>, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
     .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_send_span,"") 
