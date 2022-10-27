@@ -5,8 +5,8 @@ from mui4py.samplers import SamplerExact, SamplerGauss, SamplerMovingAverage,\
                             SamplerNearestNeighbor, SamplerPseudoNearest2Linear,\
                             SamplerPseudoNearestNeighbor, SamplerSherpardQuintic,\
                             SamplerSphQuintic, SamplerSumQuintic, SamplerRbf,\
-                            ChronoSamplerExact, ChronoSamplerGauss,\
-                            ChronoSamplerMean, ChronoSamplerSum
+                            TemporalSamplerExact, TemporalSamplerGauss,\
+                            TemporalSamplerMean, TemporalSamplerSum
 from mui4py.types import STRING, INT32, INT64, INT, FLOAT32, FLOAT64, FLOAT
 from mui4py.config import Config, set_default_config, get_default_config
 import mui4py.geometry
