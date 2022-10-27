@@ -155,7 +155,7 @@ class Uniface(CppClass):
             self.raw.is_ready(attr, t1)
 
     def set_memory(self, t):
-        self.raw.set_memmory(t)
+        self.raw.set_memory(t)
 
     def assign(self, tag, val):
         data_type = map_type[self._get_tag_type(tag)]
