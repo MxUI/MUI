@@ -123,7 +123,7 @@ private:
 	struct peer_state {
 		peer_state() : disable_send(false), disable_recv(false), ss_stat_send(false), ss_stat_recv(false) {}
 
-		using spans_type = std::map<std::pair<time_type,iterator_type>,span_t>;
+		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,recving_spans);
