@@ -133,8 +133,8 @@ class Uniface(CppClass):
         push_fname, data_type = self._get_pushfname("push_many_", tag, type_in=values.dtype.type)
         getattr(self.raw, push_fname)(tag, points, values)
 
-    def commit(self, tstamp):
-        return self.raw.commit(tstamp)
+    def commit(self, tstamp, iterstamp=0):
+        return self.raw.commit(tstamp,iterstamp)
 
     def barrier(self, t1, t2=None):
         if t2 is not None:
