@@ -444,21 +444,21 @@ public:
 	*/
 	template<class SAMPLER, class TIME_SAMPLER, class COUPLING_ALGO, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	fetch( const std::string& attr,const point_type& focus, const time_type t,
+	fetch( const std::string& attr,const point_type& focus, const iterator_type it,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
 		   bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t
-		if( fetch_t_hist_ != t && barrier_enabled )
-			barrier(t_sampler.get_upper_bound(t));
+		if( fetch_t_hist_ != it && barrier_enabled )
+			barrier(t_sampler.get_upper_bound(it));
 
-		fetch_t_hist_ = t;
+		fetch_t_hist_ = it;
 
 		std::vector<std::pair<std::pair<time_type,iterator_type>,typename SAMPLER::OTYPE> > v;
-		std::pair<time_type,iterator_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
-													       std::numeric_limits<iterator_type>::lowest());
+		std::pair<time_type,iterator_type> curr_time_lower(std::numeric_limits<time_type>::lowest(),
+													       t_sampler.get_lower_bound(it)-threshold(it));
 
-		std::pair<time_type,iterator_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
-														   std::numeric_limits<iterator_type>::lowest());
+		std::pair<time_type,iterator_type> curr_time_upper(std::numeric_limits<time_type>::lowest(),
+														   t_sampler.get_upper_bound(it)+threshold(it));
 		auto end = log.upper_bound(curr_time_upper);
 
 		if( log.size() == 1 ) end = log.end();
@@ -469,7 +469,7 @@ public:
 			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return cpl_algo.relaxation(std::make_pair(t,std::numeric_limits<iterator_type>::lowest()), focus, t_sampler.filter(t, v));
+		return cpl_algo.relaxation(std::make_pair(std::numeric_limits<time_type>::lowest(),it), focus, t_sampler.filter(it, v));
 	}
 
 	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t,it
