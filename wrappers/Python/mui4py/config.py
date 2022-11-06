@@ -1,4 +1,4 @@
-from mui4py.types import map_type
+from mui4py.types import map_type, UINT
 __default_config = None
 
 def set_default_config(config):
@@ -14,6 +14,7 @@ class Config:
     def __init__(self, dim=None, float_type=float, force_casting=True):
         #NOTE: int_type is fixed to Python int size at compile time
         self.int_type = map_type[int]
+        self.uint_type = map_type[UINT]
         self.float_type = map_type[float_type]
         self.dim = dim
         self._check_types()

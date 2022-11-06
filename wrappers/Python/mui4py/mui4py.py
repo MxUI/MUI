@@ -15,7 +15,7 @@ def create_unifaces(domain, ifaces_names, config):
     assert issubclass(config.__class__, Config)
     ifaces_out = {}
     cpp_obj_name = get_cpp_name("create_uniface", config.dim,
-                                config.float_type, config.int_type)
+                                config.float_type, config.int_type, config.uint_type)
     ifaceraw = getattr(mui4py_mod,cpp_obj_name)(domain, ifaces_names)
     for i, obj in enumerate(ifaceraw):
         ifaces_out[ifaces_names[i]] = Uniface(config=config,
@@ -133,14 +133,17 @@ class Uniface(CppClass):
         push_fname, data_type = self._get_pushfname("push_many_", tag, type_in=values.dtype.type)
         getattr(self.raw, push_fname)(tag, points, values)
 
-    def commit(self, tstamp, iterstamp=0):
-        return self.raw.commit(tstamp,iterstamp)
-
-    def barrier(self, t1, t2=None):
-        if t2 is not None:
-            self.raw.barrier(t1, t2)
+    def commit(self, tstamp, tstampB=None):
+        if tstampB is not None:
+            return self.raw.commit(tstamp, tstampB)
         else:
-            self.raw.barrier(t1)
+            return self.raw.commit(tstamp, mui4py_mod.numeric_limits_int)
+
+    def barrier(self, tstamp, tstampB=None):
+        if tstampB is not None:
+            self.raw.barrier(tstamp, tstampB)
+        else:
+            self.raw.barrier(tstamp)
 
     def forget(self, tend, tbegin=0.0):
         self.raw.forget(tend, True)
