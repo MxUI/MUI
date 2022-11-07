@@ -97,11 +97,13 @@ public:
 		return TYPE();
 	}
 
-	time_type get_upper_bound( time_type focus ) const {
+	template<typename TYPE>
+	TYPE get_upper_bound( TYPE focus ) const {
 		return focus;
 	}
 
-	time_type get_lower_bound( time_type focus ) const {
+	template<typename TYPE>
+	TYPE get_lower_bound( TYPE focus ) const {
 		return focus;
 	}
 
