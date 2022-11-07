@@ -415,7 +415,7 @@ public:
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t,iteration=it
-		if(fetch_t_hist_ != t && fetch_i_hist_ != it && barrier_enabled)
+		if((fetch_t_hist_ != t || fetch_i_hist_ != it) && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t),t_sampler.get_upper_bound(it));
 
 		fetch_t_hist_ = t;
@@ -448,10 +448,10 @@ public:
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
 		   bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t
-		if( fetch_t_hist_ != it && barrier_enabled )
+		if( fetch_i_hist_ != it && barrier_enabled )
 			barrier(t_sampler.get_upper_bound(it));
 
-		fetch_t_hist_ = it;
+		fetch_i_hist_ = it;
 
 		std::vector<std::pair<std::pair<time_type,iterator_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,iterator_type> curr_time_lower(std::numeric_limits<time_type>::lowest(),
@@ -480,7 +480,7 @@ public:
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
 		   bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t,iteration=it
-		if(fetch_t_hist_ != t && fetch_i_hist_ != it && barrier_enabled)
+		if((fetch_t_hist_ != t || fetch_i_hist_ != it) && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t),t_sampler.get_upper_bound(it));
 
 		fetch_t_hist_ = t;
