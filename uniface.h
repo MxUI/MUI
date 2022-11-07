@@ -442,7 +442,7 @@ public:
 
 	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t
 	*/
-	template<class SAMPLER, class TIME_SAMPLER, class COUPLING_ALGO, typename ... ADDITIONAL>
+/*	template<class SAMPLER, class TIME_SAMPLER, class COUPLING_ALGO, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
 	fetch( const std::string& attr,const point_type& focus, const iterator_type it,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
@@ -459,18 +459,20 @@ public:
 
 		std::pair<time_type,iterator_type> curr_time_upper(std::numeric_limits<time_type>::lowest(),
 														   t_sampler.get_upper_bound(it)+threshold(it));
+
 		auto end = log.upper_bound(curr_time_upper);
 
 		if( log.size() == 1 ) end = log.end();
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
+
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
 			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
 		return cpl_algo.relaxation(std::make_pair(std::numeric_limits<time_type>::lowest(),it), focus, t_sampler.filter(it, v));
-	}
+	}*/
 
 	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t,it
 	 */
