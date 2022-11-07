@@ -59,6 +59,7 @@ public:
     using REAL       = typename CONFIG::REAL;
     using INT        = typename CONFIG::INT;
     using time_type  = typename CONFIG::time_type;
+	using iterator_type = typename CONFIG::iterator_type;
     using point_type = typename CONFIG::point_type;
 
     algo_fixed_relaxation( REAL under_relaxation_factor = 1.0,
@@ -66,14 +67,15 @@ public:
         std::vector<std::pair<point_type, REAL>>() ):
        init_under_relaxation_factor_(under_relaxation_factor) {
 
-        under_relaxation_factor_ = init_under_relaxation_factor_;
+        minimum_iterator_ = 1;
+		under_relaxation_factor_ = init_under_relaxation_factor_;
 
         if (!pts_value_init.empty()) {
             pts_time_value_.insert(pts_time_value_.begin(),
                 std::make_pair(
                     std::make_pair(
                         std::numeric_limits<time_type>::lowest(),
-                        std::numeric_limits<time_type>::lowest()
+						minimum_iterator_
                     ),pts_value_init
                 )
             );
@@ -82,7 +84,7 @@ public:
 
     //- relaxation based on single time value
     template<typename OTYPE>
-    OTYPE relaxation(std::pair<time_type, time_type> t, point_type focus, OTYPE filtered_value) const {
+    OTYPE relaxation(std::pair<time_type, iterator_type> t, point_type focus, OTYPE filtered_value) const {
 
         OTYPE filtered_old_value = 0.0;
 
@@ -101,15 +103,17 @@ public:
         } else { // pts_time_value_ not empty
 
             auto present_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
-                [t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
-                    return (((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
-                            ((t.second - b.first.second) < std::numeric_limits<REAL>::epsilon()));
+                [t](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                    return (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                            ((t.second - b.first.second) < std::numeric_limits<iterator_type>::epsilon()));
                 });
 
             auto previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
-                [t](std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>> b) {
-                    return ((((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
-                            b.first.second < t.second) || (b.first.first < t.first));
+                [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                    return (((t.second - mi) < std::numeric_limits<iterator_type>::epsilon()) ?
+							(b.first.first < t.first) :
+							((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+							 (b.first.second < t.second));
                 });
 
             if ((present_iter == std::end(pts_time_value_)) &&
@@ -279,8 +283,9 @@ private:
 protected:
     REAL init_under_relaxation_factor_;
     REAL under_relaxation_factor_;
+    iterator_type minimum_iterator_;
 
-    mutable std::vector<std::pair<std::pair<time_type,time_type>,std::vector<std::pair<point_type, REAL>>>> pts_time_value_;
+    mutable std::vector<std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>>> pts_time_value_;
 
 };
 
