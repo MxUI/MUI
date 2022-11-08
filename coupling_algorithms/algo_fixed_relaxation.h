@@ -110,10 +110,10 @@ public:
 
             auto previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
                 [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
-                    return (((t.second - mi) < std::numeric_limits<iterator_type>::epsilon()) ?
+                    return ((t.second == mi) ?
 							(b.first.first < t.first) ||
 							 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-							  ((b.first.second - mi - 1) < std::numeric_limits<iterator_type>::epsilon())) :
+							  (b.first.second == (mi - 1))) :
 							((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 							 (b.first.second < t.second));
                 });
