@@ -105,7 +105,7 @@ public:
             auto present_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
                 [t](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
                     return (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-                            ((t.second - b.first.second) < std::numeric_limits<iterator_type>::epsilon()));
+                            (t.second == b.first.second));
                 });
 
             auto previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
