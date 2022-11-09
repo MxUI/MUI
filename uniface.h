@@ -291,7 +291,7 @@ public:
 	void push( const std::string& attr, const TYPE& value ) {
 		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
-    
+
 	/** \brief Push data with tag "attr" to buffer
 	* Push data with tag "attr" to bcuffer. If using CONFIG::FIXEDPOINTS=true,
 	* data must be pushed in the same order that the points were previously pushed.
@@ -442,37 +442,35 @@ public:
 
 	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t
 	*/
-/*	template<class SAMPLER, class TIME_SAMPLER, class COUPLING_ALGO, typename ... ADDITIONAL>
+	template<class SAMPLER, class TIME_SAMPLER, class COUPLING_ALGO, typename ... ADDITIONAL>
 	typename SAMPLER::OTYPE
-	fetch( const std::string& attr,const point_type& focus, const iterator_type it,
+	fetch( const std::string& attr,const point_type& focus, const time_type t,
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
 		   bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t
-		if( fetch_i_hist_ != it && barrier_enabled )
-			barrier(t_sampler.get_upper_bound(it));
+		if( fetch_t_hist_ != t && barrier_enabled )
+			barrier(t_sampler.get_upper_bound(t));
 
-		fetch_i_hist_ = it;
+		fetch_t_hist_ = t;
 
 		std::vector<std::pair<std::pair<time_type,iterator_type>,typename SAMPLER::OTYPE> > v;
-		std::pair<time_type,iterator_type> curr_time_lower(std::numeric_limits<time_type>::lowest(),
-													       t_sampler.get_lower_bound(it)-threshold(it));
+		std::pair<time_type,iterator_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
+														std::numeric_limits<iterator_type>::lowest());
 
-		std::pair<time_type,iterator_type> curr_time_upper(std::numeric_limits<time_type>::lowest(),
-														   t_sampler.get_upper_bound(it)+threshold(it));
-
+		std::pair<time_type,iterator_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
+														std::numeric_limits<iterator_type>::lowest());
 		auto end = log.upper_bound(curr_time_upper);
 
 		if( log.size() == 1 ) end = log.end();
 
 		for( auto start = log.lower_bound(curr_time_lower); start != end; ++start ) {
-
 			const auto& iter = start->second.find(attr);
 			if( iter == start->second.end() ) continue;
 			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return cpl_algo.relaxation(std::make_pair(std::numeric_limits<time_type>::lowest(),it), focus, t_sampler.filter(it, v));
-	}*/
+		return cpl_algo.relaxation(std::make_pair(std::numeric_limits<time_type>::lowest(), static_cast<iterator_type>(t)), focus, t_sampler.filter(t, v));
+	}
 
 	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t,it
 	 */
@@ -1121,7 +1119,7 @@ private:
 		else 
 			assigned_values.insert( std::pair<std::string, storage_single_t>( attr, data ) );
 	}
-    
+
 	/** \brief Associates raw data and stored point data together
 	*/
 	inline frame_type associate( int32_t sender, frame_raw_type& frame ) {
