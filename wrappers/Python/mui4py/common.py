@@ -1,7 +1,7 @@
 import collections
 import mui4py.mui4py_mod as mui4py_mod
 from mui4py.config import get_default_config
-from mui4py.types import map_type, get_float_type_str, get_int_type_str, get_io_type_str
+from mui4py.types import map_type, get_float_type_str, get_int_type_str, get_uint_type_str, get_io_type_str
 import re
 import numpy as np
 
@@ -51,7 +51,7 @@ class CppClass(object):
     def configure(self, config, io_data_type=None, cpp_obj=None, onlycheck=False): 
         self.config = config
         self.point_class_name = get_cpp_name("Point", config.dim,\
-                                             config.float_type, config.int_type)
+                                             config.float_type, config.int_type, config.uint_type)
         self.raw_point = getattr(mui4py_mod, self.point_class_name)
         self.io_data_type = map_type[io_data_type]
         if self.io_data_type is not None and self.io_data_type not in self._ALLOWED_IO_TYPES:
@@ -60,7 +60,7 @@ class CppClass(object):
             self.io_data_type = None
         self.raw = cpp_obj
         self._cpp_class_name = get_cpp_name(self._split_class_name(), config.dim, config.float_type,
-                                             config.int_type, namespace=self.namespace, type_io=self.io_data_type) 
+                                             config.int_type, config.uint_type, namespace=self.namespace, type_io=self.io_data_type)
         if self.raw is None: 
             # Configure class arguments
             for a in self.args:
@@ -96,12 +96,12 @@ def array2Point(arr, config, cpp_point):
         raise Exception("Size of point is different than uniface dimensions.")
 
 
-def get_cpp_name(cname, dim, float_type, int_type, namespace="", type_io=None):
+def get_cpp_name(cname, dim, float_type, int_type, uint_type, namespace="", type_io=None):
     s = ""
     if namespace:
         s += "_" + namespace
-    s += "_{}{}d_{}_{}".format(cname, dim, get_float_type_str(float_type),\
-                                  get_int_type_str(int_type))
+    s += "_{}{}d_{}_{}_{}".format(cname, dim, get_float_type_str(float_type),\
+                                  get_int_type_str(int_type),get_uint_type_str(uint_type))
     if type_io is not None:
         s += "_" + get_io_type_str(type_io)
     return s

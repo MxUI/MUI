@@ -121,8 +121,8 @@ namespace mui {
 		DECLARE_SAMPLER_0ARG(temporal_sampler_gauss,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(temporal_sampler_sum,SUFFIX,config_##SUFFIX);\
 		DECLARE_SAMPLER_0ARG(temporal_sampler_mean,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SdUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(algo_aitken,SdUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SUFFIX,config_##SUFFIX);\
+		DECLARE_SAMPLER_0ARG(algo_aitken,SUFFIX,config_##SUFFIX);\
 		namespace geometry {\
 			using point##SUFFIX = point<config_##SUFFIX>;\
 			using sphere##SUFFIX = sphere<config_##SUFFIX>;\

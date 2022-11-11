@@ -272,20 +272,20 @@ using std::string;
 
 #ifdef PYTHON_INT_64
 #define DECLARE_MUI_CPP2PY_CLASSES_1ARG(FUNCNAME,CLASSNAME,ARG1)	\
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1dx,ARG1>(m, #CLASSNAME, string("1d_f64_i64"), #ARG1); \
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2dx,ARG1>(m, #CLASSNAME, string("2d_f64_i64"), #ARG1); \
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3dx,ARG1>(m, #CLASSNAME, string("3d_f64_i64"), #ARG1); \
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1fx,ARG1>(m, #CLASSNAME, string("1d_f32_i64"), #ARG1); \
-    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2fx,ARG1>(m, #CLASSNAME, string("2d_f32_i64"), #ARG1); \
-    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3fx,ARG1>(m, #CLASSNAME, string("3d_f32_i64"), #ARG1);
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1dx,ARG1>(m, #CLASSNAME, string("1d_f64_i64_u64"), #ARG1); \
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2dx,ARG1>(m, #CLASSNAME, string("2d_f64_i64_u64"), #ARG1); \
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3dx,ARG1>(m, #CLASSNAME, string("3d_f64_i64_u64"), #ARG1); \
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1fx,ARG1>(m, #CLASSNAME, string("1d_f32_i64_u64"), #ARG1); \
+    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2fx,ARG1>(m, #CLASSNAME, string("2d_f32_i64_u64"), #ARG1); \
+    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3fx,ARG1>(m, #CLASSNAME, string("3d_f32_i64_u64"), #ARG1);
 #elif defined PYTHON_INT_32
 #define DECLARE_MUI_CPP2PY_CLASSES_1ARG(FUNCNAME,CLASSNAME,ARG1)	\
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1d,ARG1>(m, #CLASSNAME, string("1d_f64_i32"), #ARG1); \
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2d,ARG1>(m, #CLASSNAME, string("2d_f64_i32"), #ARG1); \
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3d,ARG1>(m, #CLASSNAME, string("3d_f64_i32"), #ARG1); \
-	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1f,ARG1>(m, #CLASSNAME, string("1d_f32_i32"), #ARG1); \
-    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2f,ARG1>(m, #CLASSNAME, string("2d_f32_i32"), #ARG1); \
-    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3f,ARG1>(m, #CLASSNAME, string("3d_f32_i32"), #ARG1);
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1d,ARG1>(m, #CLASSNAME, string("1d_f64_i32_u32"), #ARG1); \
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2d,ARG1>(m, #CLASSNAME, string("2d_f64_i32_u32"), #ARG1); \
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3d,ARG1>(m, #CLASSNAME, string("3d_f64_i32_u32"), #ARG1); \
+	declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_1f,ARG1>(m, #CLASSNAME, string("1d_f32_i32_u32"), #ARG1); \
+    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_2f,ARG1>(m, #CLASSNAME, string("2d_f32_i32_u32"), #ARG1); \
+    declare_##FUNCNAME<mui::CLASSNAME,mui::mui_config_3f,ARG1>(m, #CLASSNAME, string("3d_f32_i32_u32"), #ARG1);
 #else
 #error PYTHON_INT_[32|64] not defined.
 #endif
@@ -404,7 +404,7 @@ DECLARE_FUNC_HEADER(uniface) {
     .def("barrier", (void (Tclass::*)(Ttime)) &Tclass::barrier, "")
     .def("barrier", (void (Tclass::*)(Ttime, Titer)) &Tclass::barrier, "")
     .def("forget", (void (Tclass::*)(Ttime, bool)) &Tclass::forget, "")
-    .def("forget", (void (Tclass::*)(Ttime, Titer, bool)) &Tclass::forget, "")
+    .def("forget", (void (Tclass::*)(std::pair<Ttime, Titer>, bool)) &Tclass::forget, "")
     .def("set_memory", (void (Tclass::*)(Ttime)) &Tclass::set_memory, "")
     .def("announce_send_span", (void (Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>, bool synchronised))\
            &Tclass::announce_send_span,"") 
@@ -576,7 +576,7 @@ DECLARE_FUNC_HEADER(sampler_rbf) {
     using Tpoint = typename Tconfig::point_type;
     using Tclass = TclassTemplate<Tconfig,TArg1,TArg1>;
     py::class_<Tclass>(m, pyclass_name.c_str())
-    .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool, bool, bool, const std::string&, Treal, Treal, int, int>());
+    .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool, bool, const std::string&, Treal, Treal, int, int>());
 }
 
 #endif
@@ -616,20 +616,20 @@ DECLARE_FUNC_HEADER(point) {
 
 #ifdef PYTHON_INT_64
 #define DECLARE_MUI_CPP2PY_FUNCTIONS(FUNCNAME)	\
-    DECLARE_MUI_FUNCTION(FUNCNAME,1dx,1d_f64_i64) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,2dx,2d_f64_i64) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,3dx,3d_f64_i64) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,1fx,1d_f32_i64) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,2fx,2d_f32_i64) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,3fx,3d_f32_i64)
+    DECLARE_MUI_FUNCTION(FUNCNAME,1dx,1d_f64_i64_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,2dx,2d_f64_i64_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,3dx,3d_f64_i64_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,1fx,1d_f32_i64_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,2fx,2d_f32_i64_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,3fx,3d_f32_i64_u64)
 #elif defined PYTHON_INT_32
 #define DECLARE_MUI_CPP2PY_FUNCTIONS(FUNCNAME)	\
-    DECLARE_MUI_FUNCTION(FUNCNAME,1d,1d_f64_i32) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,2d,2d_f64_i32) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,3d,3d_f64_i32) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,1f,1d_f32_i32) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,2f,2d_f32_i32) \
-    DECLARE_MUI_FUNCTION(FUNCNAME,3f,3d_f32_i32)
+    DECLARE_MUI_FUNCTION(FUNCNAME,1d,1d_f64_i32_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,2d,2d_f64_i32_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,3d,3d_f64_i32_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,1f,1d_f32_i32_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,2f,2d_f32_i32_u64) \
+    DECLARE_MUI_FUNCTION(FUNCNAME,3f,3d_f32_i32_u64)
 #else
 #error PYTHON_INT_[32|64] not defined.
 #endif

@@ -123,7 +123,7 @@ private:
 	struct peer_state {
 		peer_state() : disable_send(false), disable_recv(false), ss_stat_send(false), ss_stat_recv(false) {}
 
-		using spans_type = std::map<std::pair<time_type,iterator_type>,span_t>;
+		using spans_type = std::map<std::pair<time_type,time_type>,span_t>;
 
 		bool is_recving(time_type t, const span_t& s) const {
 			return scan_spans_(t,s,recving_spans);
@@ -291,7 +291,7 @@ public:
 	void push( const std::string& attr, const TYPE& value ) {
 		comm->send(message::make("assignedVals", attr, storage_single_t(TYPE(value))));
 	}
-    
+
 	/** \brief Push data with tag "attr" to buffer
 	* Push data with tag "attr" to bcuffer. If using CONFIG::FIXEDPOINTS=true,
 	* data must be pushed in the same order that the points were previously pushed.
@@ -415,7 +415,7 @@ public:
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true,
 		   ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t,iteration=it
-		if(fetch_t_hist_ != t && fetch_i_hist_ != it && barrier_enabled)
+		if((fetch_t_hist_ != t || fetch_i_hist_ != it) && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t),t_sampler.get_upper_bound(it));
 
 		fetch_t_hist_ = t;
@@ -455,10 +455,10 @@ public:
 
 		std::vector<std::pair<std::pair<time_type,iterator_type>,typename SAMPLER::OTYPE> > v;
 		std::pair<time_type,iterator_type> curr_time_lower(t_sampler.get_lower_bound(t)-threshold(t),
-													       std::numeric_limits<iterator_type>::lowest());
+														std::numeric_limits<iterator_type>::lowest());
 
 		std::pair<time_type,iterator_type> curr_time_upper(t_sampler.get_upper_bound(t)+threshold(t),
-														   std::numeric_limits<iterator_type>::lowest());
+														std::numeric_limits<iterator_type>::lowest());
 		auto end = log.upper_bound(curr_time_upper);
 
 		if( log.size() == 1 ) end = log.end();
@@ -469,7 +469,7 @@ public:
 			v.emplace_back( start->first, iter->second.build_and_query_ts( focus, sampler, additional... ) );
 		}
 
-		return cpl_algo.relaxation(std::make_pair(t,std::numeric_limits<iterator_type>::lowest()), focus, t_sampler.filter(t, v));
+		return cpl_algo.relaxation(std::make_pair(std::numeric_limits<time_type>::lowest(), static_cast<iterator_type>(t)), focus, t_sampler.filter(t, v));
 	}
 
 	/** \brief Fetch from the interface with coupling algorithms, blocking with barrier at time=t,it
@@ -480,7 +480,7 @@ public:
 		   SAMPLER& sampler, const TIME_SAMPLER &t_sampler, const COUPLING_ALGO &cpl_algo, 
 		   bool barrier_enabled = true, ADDITIONAL && ... additional ) {
 		// Only enter barrier on first fetch for time=t,iteration=it
-		if(fetch_t_hist_ != t && fetch_i_hist_ != it && barrier_enabled)
+		if((fetch_t_hist_ != t || fetch_i_hist_ != it) && barrier_enabled)
 			barrier(t_sampler.get_upper_bound(t),t_sampler.get_upper_bound(it));
 
 		fetch_t_hist_ = t;
@@ -919,7 +919,7 @@ public:
 
 			for( size_t i=0; i < peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -942,7 +942,7 @@ public:
 
 			for( size_t i=0; i < peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -968,7 +968,7 @@ public:
 
 			for( size_t i=0; i < peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -993,7 +993,7 @@ public:
 
 			for( size_t i=0; i<peers.size(); i++ ) {
 				peers[i].set_current_t(curr_time.first);
-				peers[i].set_current_it(curr_time.second);
+				peers[i].set_current_sub(curr_time.second);
 			}
 		}
 
@@ -1040,14 +1040,14 @@ private:
 	*/
 	void on_recv_confirm( int32_t sender, std::pair<time_type,iterator_type> timestamp ) {
 		peers[sender].set_current_t(timestamp.first);
-		peers[sender].set_current_it(timestamp.second);
+		peers[sender].set_current_sub(timestamp.second);
 	}
 
 	/** \brief Handles "forecast" messages
 	*/
 	void on_recv_forecast( int32_t sender, std::pair<time_type,iterator_type> timestamp ) {
 		peers[sender].set_next_t(timestamp.first);
-		peers[sender].set_next_it(timestamp.second);
+		peers[sender].set_next_sub(timestamp.second);
 	}
 
 	/** \brief Handles "data" messages
@@ -1119,7 +1119,7 @@ private:
 		else 
 			assigned_values.insert( std::pair<std::string, storage_single_t>( attr, data ) );
 	}
-    
+
 	/** \brief Associates raw data and stored point data together
 	*/
 	inline frame_type associate( int32_t sender, frame_raw_type& frame ) {

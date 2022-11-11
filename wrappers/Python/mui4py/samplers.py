@@ -2,7 +2,7 @@ from mui4py.common import CppClass
 from mui4py.config import Config
 from mui4py.types import *
 
-# Inteface for Sampler and ChronoSampler
+# Inteface for Sampler and TemporalSampler
 def sampler_fetch_signature(self):
     sig = self._split_class_name(title=False)
     sig = sig.replace("_sampler", "")
@@ -62,36 +62,36 @@ class SamplerSumQuintic(Sampler):
         self._ALLOWED_IO_TYPES = [INT32, INT64, FLOAT32, FLOAT64]
 
 class SamplerRbf(Sampler, CppClass):
-    def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
+    def __init__(self, r, pointvect, basisFunc, conservative,
         smoothFunc, readMatrix, writeMatrix, fileAddress, cutoff, cgSolveTol, cgMaxIter, pouSize):
             super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
-            conservative, polynomial, smoothFunc, readMatrix, writeMatrix, fileAddress, 
+            conservative, smoothFunc, readMatrix, writeMatrix, fileAddress,
             cutoff, cgSolveTol, cgMaxIter, pouSize,))
             self._ALLOWED_IO_TYPES = [INT32, INT64, FLOAT32, FLOAT64]
 
 # Chrono samplers
-class ChronoSampler(CppClass):
+class TemporalSampler(CppClass):
     def __init__(self, args=(), kwargs={}):
         # Empty config to not trigger error in default config.
-        super(ChronoSampler, self).__init__(Config(), args, kwargs)
-ChronoSampler.fetch_signature = sampler_fetch_signature
+        super(TemporalSampler, self).__init__(Config(), args, kwargs)
+TemporalSampler.fetch_signature = sampler_fetch_signature
 
-class ChronoSamplerExact(ChronoSampler):
+class TemporalSamplerExact(TemporalSampler):
     def __init__(self, tol=None):
-        super(ChronoSamplerExact, self).__init__(kwargs={"tol": tol})
+        super(TemporalSamplerExact, self).__init__(kwargs={"tol": tol})
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, FLOAT, FLOAT32, FLOAT64, STRING]
 
-class ChronoSamplerGauss(ChronoSampler):
+class TemporalSamplerGauss(TemporalSampler):
     def __init__(self, cutoff, sigma):
-        super(ChronoSamplerGauss, self).__init__(args=(cutoff, sigma))
+        super(TemporalSamplerGauss, self).__init__(args=(cutoff, sigma))
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, FLOAT, FLOAT32, FLOAT64]
 
-class ChronoSamplerMean(ChronoSampler):
+class TemporalSamplerMean(TemporalSampler):
     def __init__(self, newleft=None, newright=None):
-        super(ChronoSamplerMean, self).__init__(kwargs={"newleft": newleft, "newright": newright})
+        super(TemporalSamplerMean, self).__init__(kwargs={"newleft": newleft, "newright": newright})
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, FLOAT, FLOAT32, FLOAT64]
 
-class ChronoSamplerSum(ChronoSampler):
+class TemporalSamplerSum(TemporalSampler):
     def __init__(self, newleft=None, newright=None):
-        super(ChronoSamplerSum, self).__init__(kwargs={"newleft": newleft, "newright": newright})
+        super(TemporalSamplerSum, self).__init__(kwargs={"newleft": newleft, "newright": newright})
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, FLOAT, FLOAT32, FLOAT64]
