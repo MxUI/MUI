@@ -3400,7 +3400,7 @@ void mui_fetch_points_exact_1fx(mui_uniface_1fx *uniface, const char *attr, floa
 
 void mui_fetch_points_exact_1d(mui_uniface_1d *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_1d *temporal_sampler, mui_point_1d *ret_points, int *num_points) {
-	std::vector<mui::point1d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1d*) malloc(ret_pts.size() * sizeof(mui_point_1d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3410,7 +3410,7 @@ void mui_fetch_points_exact_1d(mui_uniface_1d *uniface, const char *attr, double
 
 void mui_fetch_points_exact_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_1dx *temporal_sampler, mui_point_1dx *ret_points, int *num_points) {
-	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1dx*) malloc(ret_pts.size() * sizeof(mui_point_1dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3420,8 +3420,8 @@ void mui_fetch_points_exact_1dx(mui_uniface_1dx *uniface, const char *attr, doub
 
 void mui_fetch_points_exact_1t(mui_uniface_1t *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
-			*temporal_sampler);
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = static_cast<double>(ret_pts[i][0]);
@@ -3452,7 +3452,7 @@ void mui_fetch_points_gauss_1fx(mui_uniface_1fx *uniface, const char *attr, floa
 
 void mui_fetch_points_gauss_1d(mui_uniface_1d *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_1d *temporal_sampler, mui_point_1d *ret_points, int *num_points) {
-	std::vector<mui::point1d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1d*) malloc(ret_pts.size() * sizeof(mui_point_1d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3462,7 +3462,7 @@ void mui_fetch_points_gauss_1d(mui_uniface_1d *uniface, const char *attr, double
 
 void mui_fetch_points_gauss_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_1dx *temporal_sampler, mui_point_1dx *ret_points, int *num_points) {
-	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1dx*) malloc(ret_pts.size() * sizeof(mui_point_1dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3472,8 +3472,8 @@ void mui_fetch_points_gauss_1dx(mui_uniface_1dx *uniface, const char *attr, doub
 
 void mui_fetch_points_gauss_1t(mui_uniface_1t *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
-			*temporal_sampler);
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = static_cast<double>(ret_pts[i][0]);
@@ -3504,7 +3504,7 @@ void mui_fetch_points_mean_1fx(mui_uniface_1fx *uniface, const char *attr, float
 
 void mui_fetch_points_mean_1d(mui_uniface_1d *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_1d *temporal_sampler, mui_point_1d *ret_points, int *num_points) {
-	std::vector<mui::point1d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1d*) malloc(ret_pts.size() * sizeof(mui_point_1d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3514,7 +3514,7 @@ void mui_fetch_points_mean_1d(mui_uniface_1d *uniface, const char *attr, double 
 
 void mui_fetch_points_mean_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_1dx *temporal_sampler, mui_point_1dx *ret_points, int *num_points) {
-	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1dx*) malloc(ret_pts.size() * sizeof(mui_point_1dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3524,8 +3524,8 @@ void mui_fetch_points_mean_1dx(mui_uniface_1dx *uniface, const char *attr, doubl
 
 void mui_fetch_points_mean_1t(mui_uniface_1t *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
-			*temporal_sampler);
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = static_cast<double>(ret_pts[i][0]);
@@ -3556,7 +3556,7 @@ void mui_fetch_points_sum_1fx(mui_uniface_1fx *uniface, const char *attr, float 
 
 void mui_fetch_points_sum_1d(mui_uniface_1d *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_1d *temporal_sampler, mui_point_1d *ret_points, int *num_points) {
-	std::vector<mui::point1d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1d*) malloc(ret_pts.size() * sizeof(mui_point_1d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3566,7 +3566,7 @@ void mui_fetch_points_sum_1d(mui_uniface_1d *uniface, const char *attr, double t
 
 void mui_fetch_points_sum_1dx(mui_uniface_1dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_1dx *temporal_sampler, mui_point_1dx *ret_points, int *num_points) {
-	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point1dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_1dx*) malloc(ret_pts.size() * sizeof(mui_point_1dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3576,8 +3576,8 @@ void mui_fetch_points_sum_1dx(mui_uniface_1dx *uniface, const char *attr, double
 
 void mui_fetch_points_sum_1t(mui_uniface_1t *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
-			*temporal_sampler);
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = static_cast<double>(ret_pts[i][0]);
@@ -3632,7 +3632,8 @@ void mui_fetch_points_exact_1dx_pair(mui_uniface_1dx *uniface, const char *attr,
 
 void mui_fetch_points_exact_1t_pair(mui_uniface_1t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it,
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t), static_cast<mui::mui_c_wrapper_1D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -3684,7 +3685,7 @@ void mui_fetch_points_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr,
 
 void mui_fetch_points_gauss_1t_pair(mui_uniface_1t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr),
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
 			static_cast<mui::mui_c_wrapper_1D::time_type>(t), static_cast<mui::mui_c_wrapper_1D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
@@ -3737,7 +3738,7 @@ void mui_fetch_points_mean_1dx_pair(mui_uniface_1dx *uniface, const char *attr, 
 
 void mui_fetch_points_mean_1t_pair(mui_uniface_1t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr),
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
 			static_cast<mui::mui_c_wrapper_1D::time_type>(t), static_cast<mui::mui_c_wrapper_1D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));
@@ -3790,7 +3791,7 @@ void mui_fetch_points_sum_1dx_pair(mui_uniface_1dx *uniface, const char *attr, d
 
 void mui_fetch_points_sum_1t_pair(mui_uniface_1t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_1t *temporal_sampler, mui_point_1t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr),
+	std::vector<mui::mui_c_wrapper_1D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_1D::REAL>(std::string(attr),
 			static_cast<mui::mui_c_wrapper_1D::time_type>(t), static_cast<mui::mui_c_wrapper_1D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_1t*) malloc(ret_pts.size() * sizeof(mui_point_1t));

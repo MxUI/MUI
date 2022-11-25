@@ -1114,26 +1114,26 @@ void mui_commit_3t(mui_uniface_3t *uniface, double t) {
 	uniface->commit(static_cast<mui::mui_c_wrapper_3D::time_type>(t));
 }
 
-// Commit using two time values
-void mui_commit_3f_pair(mui_uniface_3f *uniface, float t_1, float t_2) {
-	uniface->commit(t_1, t_2);
+// Commit using time and iterator values
+void mui_commit_3f_pair(mui_uniface_3f *uniface, float t, float it) {
+	uniface->commit(t, it);
 }
 
-void mui_commit_3fx_pair(mui_uniface_3fx *uniface, float t_1, float t_2) {
-	uniface->commit(t_1, t_2);
+void mui_commit_3fx_pair(mui_uniface_3fx *uniface, float t, float it) {
+	uniface->commit(t, it);
 }
 
-void mui_commit_3d_pair(mui_uniface_3d *uniface, double t_1, double t_2) {
-	uniface->commit(t_1, t_2);
+void mui_commit_3d_pair(mui_uniface_3d *uniface, double t, double it) {
+	uniface->commit(t, it);
 }
 
-void mui_commit_3dx_pair(mui_uniface_3dx *uniface, double t_1, double t_2) {
-	uniface->commit(t_1, t_2);
+void mui_commit_3dx_pair(mui_uniface_3dx *uniface, double t, double it) {
+	uniface->commit(t, it);
 }
 
-void mui_commit_3t_pair(mui_uniface_3t *uniface, double t_1, double t_2) {
-	uniface->commit(static_cast<mui::mui_c_wrapper_3D::time_type>(t_1),
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_2));
+void mui_commit_3t_pair(mui_uniface_3t *uniface, double t, double it) {
+	uniface->commit(static_cast<mui::mui_c_wrapper_3D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_3D::iterator_type>(it));
 }
 
 /******************************************
@@ -1161,26 +1161,26 @@ void mui_forecast_3t(mui_uniface_3t *uniface, double t) {
 	uniface->forecast(static_cast<mui::mui_c_wrapper_3D::time_type>(t));
 }
 
-// Forecast using two time values
-void mui_forecast_3f_pair(mui_uniface_3f *uniface, float t_1, float t_2) {
-	uniface->forecast(t_1, t_2);
+// Forecast using time and iterator values
+void mui_forecast_3f_pair(mui_uniface_3f *uniface, float t, float it) {
+	uniface->forecast(t, it);
 }
 
-void mui_forecast_3fx_pair(mui_uniface_3fx *uniface, float t_1, float t_2) {
-	uniface->forecast(t_1, t_2);
+void mui_forecast_3fx_pair(mui_uniface_3fx *uniface, float t, float it) {
+	uniface->forecast(t, it);
 }
 
-void mui_forecast_3d_pair(mui_uniface_3d *uniface, double t_1, double t_2) {
-	uniface->forecast(t_1, t_2);
+void mui_forecast_3d_pair(mui_uniface_3d *uniface, double t, double it) {
+	uniface->forecast(t, it);
 }
 
-void mui_forecast_3dx_pair(mui_uniface_3dx *uniface, double t_1, double t_2) {
-	uniface->forecast(t_1, t_2);
+void mui_forecast_3dx_pair(mui_uniface_3dx *uniface, double t, double it) {
+	uniface->forecast(t, it);
 }
 
-void mui_forecast_3t_pair(mui_uniface_3t *uniface, double t_1, double t_2) {
-	uniface->forecast(static_cast<mui::mui_c_wrapper_3D::time_type>(t_1),
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_2));
+void mui_forecast_3t_pair(mui_uniface_3t *uniface, double t, double it) {
+	uniface->forecast(static_cast<mui::mui_c_wrapper_3D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_3D::iterator_type>(it));
 }
 
 /*******************************************************
@@ -2433,1313 +2433,1313 @@ double mui_fetch_rbf_sum_3t(mui_uniface_3t *uniface, const char *attr, mui_point
  *********************************************************/
 
 // Spatial sampler: exact; temporal sampler: exact
-float mui_fetch_exact_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_exact_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_exact_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_exact_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_exact_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
+double mui_fetch_exact_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: exact; temporal sampler: gauss
-float mui_fetch_exact_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_exact_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_exact_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_exact_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_exact_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
+double mui_fetch_exact_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: exact; temporal sampler: mean
-float mui_fetch_exact_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_exact_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_exact_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_exact_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_exact_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
+double mui_fetch_exact_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: exact; temporal sampler: sum
-float mui_fetch_exact_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_exact_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_exact_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_exact_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_exact_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_exact_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_exact_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_exact_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_exact_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_exact_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
+double mui_fetch_exact_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_exact_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: gauss; temporal sampler: exact
-float mui_fetch_gauss_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_gauss_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_gauss_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_gauss_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_gauss_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_gauss_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_gauss_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_gauss_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_gauss_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_gauss_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_gauss_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_gauss_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_gauss_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_gauss_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
+double mui_fetch_gauss_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_gauss_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: gauss; temporal sampler: gauss
-float mui_fetch_gauss_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_gauss_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_gauss_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_gauss_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_gauss_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_gauss_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_gauss_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_gauss_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_gauss_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_gauss_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_gauss_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_gauss_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_gauss_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_gauss_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
+double mui_fetch_gauss_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_gauss_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: gauss; temporal sampler: mean
-float mui_fetch_gauss_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_gauss_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_gauss_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_gauss_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_gauss_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_gauss_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_gauss_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_gauss_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_gauss_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_gauss_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_gauss_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_gauss_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_gauss_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_gauss_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_gauss_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
+double mui_fetch_gauss_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_gauss_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: moving average; temporal sampler: exact
-float mui_fetch_moving_average_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_moving_average_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_moving_average_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_moving_average_3fx *spatial_sampler,
+		float t, float it, mui_sampler_moving_average_3fx *spatial_sampler,
 		mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_moving_average_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_moving_average_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_moving_average_3dx *spatial_sampler,
+		double t, double it, mui_sampler_moving_average_3dx *spatial_sampler,
 		mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
+double mui_fetch_moving_average_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: moving average; temporal sampler: gauss
-float mui_fetch_moving_average_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_moving_average_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_moving_average_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_moving_average_3fx *spatial_sampler,
+		float t, float it, mui_sampler_moving_average_3fx *spatial_sampler,
 		mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_moving_average_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_moving_average_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_moving_average_3dx *spatial_sampler,
+		double t, double it, mui_sampler_moving_average_3dx *spatial_sampler,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
+double mui_fetch_moving_average_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: moving average; temporal sampler: mean
-float mui_fetch_moving_average_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_moving_average_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_moving_average_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_moving_average_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_moving_average_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_moving_average_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_moving_average_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_moving_average_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_moving_average_3dx *spatial_sampler,
+		double t, double it, mui_sampler_moving_average_3dx *spatial_sampler,
 		mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
+double mui_fetch_moving_average_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: moving average; temporal sampler: sum
-float mui_fetch_moving_average_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_moving_average_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_moving_average_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_moving_average_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_moving_average_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_moving_average_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_moving_average_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_moving_average_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_moving_average_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_moving_average_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_moving_average_3dx *spatial_sampler,
+		double t, double it, mui_sampler_moving_average_3dx *spatial_sampler,
 		mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_moving_average_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
+double mui_fetch_moving_average_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_moving_average_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: exact
-float mui_fetch_nearest_neighbor_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_nearest_neighbor_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_nearest_neighbor_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: gauss
-float mui_fetch_nearest_neighbor_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_nearest_neighbor_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_nearest_neighbor_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: mean
-float mui_fetch_nearest_neighbor_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_nearest_neighbor_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_nearest_neighbor_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: sum
-float mui_fetch_nearest_neighbor_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_nearest_neighbor_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_nearest_neighbor_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_nearest_neighbor_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_nearest_neighbor_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_nearest_neighbor_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_nearest_neighbor_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_nearest_neighbor_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_nearest_neighbor_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_nearest_neighbor_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_nearest_neighbor_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
+double mui_fetch_nearest_neighbor_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_nearest_neighbor_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: exact
 float mui_fetch_pseudo_nearest_neighbor_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
 		mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_pseudo_nearest_neighbor_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: gauss
 float mui_fetch_pseudo_nearest_neighbor_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
 		mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_pseudo_nearest_neighbor_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: mean
 float mui_fetch_pseudo_nearest_neighbor_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
 		mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_pseudo_nearest_neighbor_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: nearest neighbor; temporal sampler: sum
 float mui_fetch_pseudo_nearest_neighbor_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3f *spatial_sampler,
 		mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_pseudo_nearest_neighbor_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
+		float t, float it, mui_sampler_pseudo_nearest_neighbor_3fx *spatial_sampler,
 		mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3d *spatial_sampler,
 		mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3dx *spatial_sampler,
 		mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_pseudo_nearest_neighbor_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
+		double t, double it, mui_sampler_pseudo_nearest_neighbor_3t *spatial_sampler,
 		mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: shepard quintic; temporal sampler: exact
-float mui_fetch_shepard_quintic_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_shepard_quintic_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_shepard_quintic_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_shepard_quintic_3fx *spatial_sampler,
+		float t, float it, mui_sampler_shepard_quintic_3fx *spatial_sampler,
 		mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3d *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3d *spatial_sampler,
 		mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3dx *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3dx *spatial_sampler,
 		mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3t *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3t *spatial_sampler,
 		mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: shepard quintic; temporal sampler: gauss
-float mui_fetch_shepard_quintic_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_shepard_quintic_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_shepard_quintic_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_shepard_quintic_3fx *spatial_sampler,
+		float t, float it, mui_sampler_shepard_quintic_3fx *spatial_sampler,
 		mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3d *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3d *spatial_sampler,
 		mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3dx *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3dx *spatial_sampler,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3t *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3t *spatial_sampler,
 		mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: shepard quintic; temporal sampler: mean
-float mui_fetch_shepard_quintic_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_shepard_quintic_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 float mui_fetch_shepard_quintic_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point,
-		float t_1, float t_2, mui_sampler_shepard_quintic_3fx *spatial_sampler,
+		float t, float it, mui_sampler_shepard_quintic_3fx *spatial_sampler,
 		mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_shepard_quintic_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_shepard_quintic_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_shepard_quintic_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3dx *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3dx *spatial_sampler,
 		mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_shepard_quintic_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
+double mui_fetch_shepard_quintic_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_shepard_quintic_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: shepard quintic; temporal sampler: sum
-float mui_fetch_shepard_quintic_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_shepard_quintic_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_shepard_quintic_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_shepard_quintic_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_shepard_quintic_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_shepard_quintic_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_shepard_quintic_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_shepard_quintic_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_shepard_quintic_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_shepard_quintic_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
 double mui_fetch_shepard_quintic_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point,
-		double t_1, double t_2, mui_sampler_shepard_quintic_3dx *spatial_sampler,
+		double t, double it, mui_sampler_shepard_quintic_3dx *spatial_sampler,
 		mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_shepard_quintic_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_shepard_quintic_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
+double mui_fetch_shepard_quintic_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_shepard_quintic_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: sph-derived quintic; temporal sampler: exact
-float mui_fetch_sph_quintic_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sph_quintic_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
+double mui_fetch_sph_quintic_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: sph-derived quintic; temporal sampler: gauss
-float mui_fetch_sph_quintic_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sph_quintic_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
+double mui_fetch_sph_quintic_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: sph-derived quintic; temporal sampler: mean
-float mui_fetch_sph_quintic_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sph_quintic_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
+double mui_fetch_sph_quintic_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: sph-derived quintic; temporal sampler: sum
-float mui_fetch_sph_quintic_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sph_quintic_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sph_quintic_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sph_quintic_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sph_quintic_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sph_quintic_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sph_quintic_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sph_quintic_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sph_quintic_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
+double mui_fetch_sph_quintic_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sph_quintic_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: summation quintic; temporal sampler: exact
-float mui_fetch_sum_quintic_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sum_quintic_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
+double mui_fetch_sum_quintic_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: summation quintic; temporal sampler: gauss
-float mui_fetch_sum_quintic_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sum_quintic_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
+double mui_fetch_sum_quintic_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: summation quintic; temporal sampler: mean
-float mui_fetch_sum_quintic_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sum_quintic_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
+double mui_fetch_sum_quintic_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: summation quintic; temporal sampler: sum
-float mui_fetch_sum_quintic_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t,
+		float it, mui_sampler_sum_quintic_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_sum_quintic_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_sum_quintic_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_sum_quintic_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_sum_quintic_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_sum_quintic_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_sum_quintic_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_sum_quintic_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
+double mui_fetch_sum_quintic_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_sum_quintic_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 #ifdef USE_RBF
 // Spatial sampler: radial basis function; temporal sampler: exact
-float mui_fetch_rbf_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_rbf_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_rbf_3f *spatial_sampler, mui_temporal_sampler_exact_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_rbf_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_rbf_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_rbf_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_rbf_3fx *spatial_sampler, mui_temporal_sampler_exact_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_rbf_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_rbf_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_rbf_3d *spatial_sampler, mui_temporal_sampler_exact_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_rbf_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_exact_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_rbf_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
+double mui_fetch_rbf_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_rbf_3t *spatial_sampler, mui_temporal_sampler_exact_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: radial basis function; temporal sampler: gauss
-float mui_fetch_rbf_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_rbf_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_rbf_3f *spatial_sampler, mui_temporal_sampler_gauss_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_rbf_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1,
-		float t_2, mui_sampler_rbf_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+float mui_fetch_rbf_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t,
+		float it, mui_sampler_rbf_3fx *spatial_sampler, mui_temporal_sampler_gauss_3fx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1,
-		double t_2, mui_sampler_rbf_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_rbf_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t,
+		double it, mui_sampler_rbf_3d *spatial_sampler, mui_temporal_sampler_gauss_3d *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_rbf_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_gauss_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1,
-		double t_2, mui_sampler_rbf_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
+double mui_fetch_rbf_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t,
+		double it, mui_sampler_rbf_3t *spatial_sampler, mui_temporal_sampler_gauss_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: radial basis function; temporal sampler: mean
-float mui_fetch_rbf_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_rbf_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_rbf_3f *spatial_sampler, mui_temporal_sampler_mean_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_rbf_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1, float t_2,
+float mui_fetch_rbf_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t, float it,
 		mui_sampler_rbf_3fx *spatial_sampler, mui_temporal_sampler_mean_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1, double t_2,
+double mui_fetch_rbf_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t, double it,
 		mui_sampler_rbf_3d *spatial_sampler, mui_temporal_sampler_mean_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_rbf_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_mean_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1, double t_2,
+double mui_fetch_rbf_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t, double it,
 		mui_sampler_rbf_3t *spatial_sampler, mui_temporal_sampler_mean_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
 
 // Spatial sampler: radial basis function; temporal sampler: sum
-float mui_fetch_rbf_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t_1, float t_2,
+float mui_fetch_rbf_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float t, float it,
 		mui_sampler_rbf_3f *spatial_sampler, mui_temporal_sampler_sum_3f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3f(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-float mui_fetch_rbf_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t_1, float t_2,
+float mui_fetch_rbf_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, mui_point_3fx point, float t, float it,
 		mui_sampler_rbf_3fx *spatial_sampler, mui_temporal_sampler_sum_3fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3fx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t_1, double t_2,
+double mui_fetch_rbf_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, mui_point_3d point, double t, double it,
 		mui_sampler_rbf_3d *spatial_sampler, mui_temporal_sampler_sum_3d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t_1, t_2,
+	return uniface->fetch(std::string(attr), mui::point3d(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t_1,
-		double t_2, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t_1, t_2,
+double mui_fetch_rbf_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, mui_point_3dx point, double t,
+		double it, mui_sampler_rbf_3dx *spatial_sampler, mui_temporal_sampler_sum_3dx *temporal_sampler) {
+	return uniface->fetch(std::string(attr), mui::point3dx(point.point_1, point.point_2, point.point_3), t, it,
 			*spatial_sampler, *temporal_sampler);
 }
 
-double mui_fetch_rbf_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t_1, double t_2,
+double mui_fetch_rbf_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, mui_point_3t point, double t, double it,
 		mui_sampler_rbf_3t *spatial_sampler, mui_temporal_sampler_sum_3t *temporal_sampler) {
 	mui::mui_c_wrapper_3D::point_type point_fetch(static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_1),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_2),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(point.point_3));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_1), static_cast<mui::mui_c_wrapper_3D::time_type>(t_2),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*spatial_sampler, *temporal_sampler));
 	return result;
 }
@@ -3776,7 +3776,7 @@ void mui_fetch_points_exact_3fx(mui_uniface_3fx *uniface, const char *attr, floa
 
 void mui_fetch_points_exact_3d(mui_uniface_3d *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3788,7 +3788,7 @@ void mui_fetch_points_exact_3d(mui_uniface_3d *uniface, const char *attr, double
 
 void mui_fetch_points_exact_3dx(mui_uniface_3dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3800,7 +3800,7 @@ void mui_fetch_points_exact_3dx(mui_uniface_3dx *uniface, const char *attr, doub
 
 void mui_fetch_points_exact_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr), t,
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -3838,7 +3838,7 @@ void mui_fetch_points_gauss_3fx(mui_uniface_3fx *uniface, const char *attr, floa
 
 void mui_fetch_points_gauss_3d(mui_uniface_3d *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3850,7 +3850,7 @@ void mui_fetch_points_gauss_3d(mui_uniface_3d *uniface, const char *attr, double
 
 void mui_fetch_points_gauss_3dx(mui_uniface_3dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3862,7 +3862,7 @@ void mui_fetch_points_gauss_3dx(mui_uniface_3dx *uniface, const char *attr, doub
 
 void mui_fetch_points_gauss_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr), t,
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -3900,7 +3900,7 @@ void mui_fetch_points_mean_3fx(mui_uniface_3fx *uniface, const char *attr, float
 
 void mui_fetch_points_mean_3d(mui_uniface_3d *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3912,7 +3912,7 @@ void mui_fetch_points_mean_3d(mui_uniface_3d *uniface, const char *attr, double 
 
 void mui_fetch_points_mean_3dx(mui_uniface_3dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3924,7 +3924,7 @@ void mui_fetch_points_mean_3dx(mui_uniface_3dx *uniface, const char *attr, doubl
 
 void mui_fetch_points_mean_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr), t,
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -3962,7 +3962,7 @@ void mui_fetch_points_sum_3fx(mui_uniface_3fx *uniface, const char *attr, float 
 
 void mui_fetch_points_sum_3d(mui_uniface_3d *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3974,7 +3974,7 @@ void mui_fetch_points_sum_3d(mui_uniface_3d *uniface, const char *attr, double t
 
 void mui_fetch_points_sum_3dx(mui_uniface_3dx *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -3986,7 +3986,7 @@ void mui_fetch_points_sum_3dx(mui_uniface_3dx *uniface, const char *attr, double
 
 void mui_fetch_points_sum_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr), t,
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -4002,9 +4002,9 @@ void mui_fetch_points_sum_3t(mui_uniface_3t *uniface, const char *attr, double t
  ********************************************************************/
 
 // Temporal sampler: exact
-void mui_fetch_points_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_exact_3f *temporal_sampler, mui_point_3f *ret_points, int *num_points) {
-	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3f*) malloc(ret_pts.size() * sizeof(mui_point_3f));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4014,9 +4014,9 @@ void mui_fetch_points_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, f
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_exact_3fx *temporal_sampler, mui_point_3fx *ret_points, int *num_points) {
-	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3fx*) malloc(ret_pts.size() * sizeof(mui_point_3fx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4026,9 +4026,9 @@ void mui_fetch_points_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr,
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4038,9 +4038,9 @@ void mui_fetch_points_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, d
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4050,9 +4050,10 @@ void mui_fetch_points_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr,
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -4064,9 +4065,9 @@ void mui_fetch_points_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, d
 }
 
 // Temporal sampler: gauss
-void mui_fetch_points_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_gauss_3f *temporal_sampler, mui_point_3f *ret_points, int *num_points) {
-	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3f*) malloc(ret_pts.size() * sizeof(mui_point_3f));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4076,9 +4077,9 @@ void mui_fetch_points_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, f
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_gauss_3fx *temporal_sampler, mui_point_3fx *ret_points, int *num_points) {
-	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3fx*) malloc(ret_pts.size() * sizeof(mui_point_3fx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4088,9 +4089,9 @@ void mui_fetch_points_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr,
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4100,9 +4101,9 @@ void mui_fetch_points_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, d
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4112,9 +4113,10 @@ void mui_fetch_points_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr,
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -4126,9 +4128,9 @@ void mui_fetch_points_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, d
 }
 
 // Temporal sampler: mean
-void mui_fetch_points_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_mean_3f *temporal_sampler, mui_point_3f *ret_points, int *num_points) {
-	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3f*) malloc(ret_pts.size() * sizeof(mui_point_3f));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4139,9 +4141,9 @@ void mui_fetch_points_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, fl
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_mean_3fx *temporal_sampler, mui_point_3fx *ret_points, int *num_points) {
-	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3fx*) malloc(ret_pts.size() * sizeof(mui_point_3fx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4150,9 +4152,9 @@ void mui_fetch_points_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, 
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4162,9 +4164,9 @@ void mui_fetch_points_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, do
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4174,9 +4176,10 @@ void mui_fetch_points_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, 
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -4188,9 +4191,9 @@ void mui_fetch_points_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, do
 }
 
 // Temporal sampler: sum
-void mui_fetch_points_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_sum_3f *temporal_sampler, mui_point_3f *ret_points, int *num_points) {
-	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3f> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3f*) malloc(ret_pts.size() * sizeof(mui_point_3f));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4200,9 +4203,9 @@ void mui_fetch_points_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, flo
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_points_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_sum_3fx *temporal_sampler, mui_point_3fx *ret_points, int *num_points) {
-	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3fx> ret_pts = uniface->fetch_points<float>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3fx*) malloc(ret_pts.size() * sizeof(mui_point_3fx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4212,9 +4215,9 @@ void mui_fetch_points_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, f
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_3d *temporal_sampler, mui_point_3d *ret_points, int *num_points) {
-	std::vector<mui::point3d> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3d> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3d*) malloc(ret_pts.size() * sizeof(mui_point_3d));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4224,9 +4227,9 @@ void mui_fetch_points_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, dou
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_3dx *temporal_sampler, mui_point_3dx *ret_points, int *num_points) {
-	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<mui::point3dx> ret_pts = uniface->fetch_points<double>(std::string(attr), t, it, *temporal_sampler);
 	ret_points = (mui_point_3dx*) malloc(ret_pts.size() * sizeof(mui_point_3dx));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
 		ret_points[i].point_1 = ret_pts[i][0];
@@ -4236,9 +4239,10 @@ void mui_fetch_points_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, d
 	*num_points = static_cast<int>(ret_pts.size());
 }
 
-void mui_fetch_points_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_points_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_3t *temporal_sampler, mui_point_3t *ret_points, int *num_points) {
-	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), t_1, t_2,
+	std::vector<mui::mui_c_wrapper_3D::point_type> ret_pts = uniface->fetch_points<mui::mui_c_wrapper_3D::REAL>(std::string(attr),
+			static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
 			*temporal_sampler);
 	ret_points = (mui_point_3t*) malloc(ret_pts.size() * sizeof(mui_point_3t));
 	for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -4297,7 +4301,7 @@ void mui_fetch_values_exact_3dx(mui_uniface_3dx *uniface, const char *attr, doub
 void mui_fetch_values_exact_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_exact_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4349,7 +4353,7 @@ void mui_fetch_values_gauss_3dx(mui_uniface_3dx *uniface, const char *attr, doub
 void mui_fetch_values_gauss_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_gauss_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4401,7 +4405,7 @@ void mui_fetch_values_mean_3dx(mui_uniface_3dx *uniface, const char *attr, doubl
 void mui_fetch_values_mean_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_mean_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4453,7 +4457,7 @@ void mui_fetch_values_sum_3dx(mui_uniface_3dx *uniface, const char *attr, double
 void mui_fetch_values_sum_3t(mui_uniface_3t *uniface, const char *attr, double t,
 		mui_temporal_sampler_sum_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4466,9 +4470,9 @@ void mui_fetch_values_sum_3t(mui_uniface_3t *uniface, const char *attr, double t
  *********************************************************************/
 
 // Temporal sampler: exact
-void mui_fetch_values_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_exact_3f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4476,9 +4480,9 @@ void mui_fetch_values_exact_3f_pair(mui_uniface_3f *uniface, const char *attr, f
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_exact_3fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4486,9 +4490,9 @@ void mui_fetch_values_exact_3fx_pair(mui_uniface_3fx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_3d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4496,9 +4500,9 @@ void mui_fetch_values_exact_3d_pair(mui_uniface_3d *uniface, const char *attr, d
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_3dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4506,10 +4510,11 @@ void mui_fetch_values_exact_3dx_pair(mui_uniface_3dx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_exact_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
+			*temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4518,9 +4523,9 @@ void mui_fetch_values_exact_3t_pair(mui_uniface_3t *uniface, const char *attr, d
 }
 
 // Temporal sampler: gauss
-void mui_fetch_values_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_gauss_3f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4528,9 +4533,9 @@ void mui_fetch_values_gauss_3f_pair(mui_uniface_3f *uniface, const char *attr, f
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_gauss_3fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4538,9 +4543,9 @@ void mui_fetch_values_gauss_3fx_pair(mui_uniface_3fx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_3d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4548,9 +4553,9 @@ void mui_fetch_values_gauss_3d_pair(mui_uniface_3d *uniface, const char *attr, d
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_3dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4558,10 +4563,11 @@ void mui_fetch_values_gauss_3dx_pair(mui_uniface_3dx *uniface, const char *attr,
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_gauss_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
+			*temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4570,9 +4576,9 @@ void mui_fetch_values_gauss_3t_pair(mui_uniface_3t *uniface, const char *attr, d
 }
 
 // Temporal sampler: mean
-void mui_fetch_values_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_mean_3f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4580,9 +4586,9 @@ void mui_fetch_values_mean_3f_pair(mui_uniface_3f *uniface, const char *attr, fl
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_mean_3fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4590,9 +4596,9 @@ void mui_fetch_values_mean_3fx_pair(mui_uniface_3fx *uniface, const char *attr, 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_3d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4600,9 +4606,9 @@ void mui_fetch_values_mean_3d_pair(mui_uniface_3d *uniface, const char *attr, do
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_3dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4610,10 +4616,11 @@ void mui_fetch_values_mean_3dx_pair(mui_uniface_3dx *uniface, const char *attr, 
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_mean_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
+			*temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4622,9 +4629,9 @@ void mui_fetch_values_mean_3t_pair(mui_uniface_3t *uniface, const char *attr, do
 }
 
 // Temporal sampler: sum
-void mui_fetch_values_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_sum_3f *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4632,9 +4639,9 @@ void mui_fetch_values_sum_3f_pair(mui_uniface_3f *uniface, const char *attr, flo
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2,
+void mui_fetch_values_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it,
 		mui_temporal_sampler_sum_3fx *temporal_sampler, float *values, int *num_values) {
-	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), t, it, *temporal_sampler);
 	values = (float*) malloc(ret_vals.size() * sizeof(float));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4642,9 +4649,9 @@ void mui_fetch_values_sum_3fx_pair(mui_uniface_3fx *uniface, const char *attr, f
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_3d *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4652,9 +4659,9 @@ void mui_fetch_values_sum_3d_pair(mui_uniface_3d *uniface, const char *attr, dou
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_3dx *temporal_sampler, double *values, int *num_values) {
-	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t_1, t_2, *temporal_sampler);
+	std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), t, it, *temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = ret_vals[i];
@@ -4662,10 +4669,11 @@ void mui_fetch_values_sum_3dx_pair(mui_uniface_3dx *uniface, const char *attr, d
 	*num_values = static_cast<int>(ret_vals.size());
 }
 
-void mui_fetch_values_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2,
+void mui_fetch_values_sum_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it,
 		mui_temporal_sampler_sum_3t *temporal_sampler, double *values, int *num_values) {
 	std::vector<mui::mui_c_wrapper_3D::REAL> ret_vals = uniface->fetch_values<mui::mui_c_wrapper_3D::REAL>(
-			std::string(attr), t_1, t_2, *temporal_sampler);
+			std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t), static_cast<mui::mui_c_wrapper_3D::iterator_type>(it),
+			*temporal_sampler);
 	values = (double*) malloc(ret_vals.size() * sizeof(double));
 	for (size_t i = 0; i < ret_vals.size(); i++) {
 		values[i] = static_cast<double>(ret_vals[i]);
@@ -4724,25 +4732,25 @@ int mui_is_ready_3t(mui_uniface_3t *uniface, const char *attr, double t) {
 }
 
 // Data ready test using two time values
-int mui_is_ready_3f_pair(mui_uniface_3f *uniface, const char *attr, float t_1, float t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_3f_pair(mui_uniface_3f *uniface, const char *attr, float t, float it) {
+	return uniface->is_ready(std::string(attr), t, it);
 }
 
-int mui_is_ready_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t_1, float t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_3fx_pair(mui_uniface_3fx *uniface, const char *attr, float t, float it) {
+	return uniface->is_ready(std::string(attr), t, it);
 }
 
-int mui_is_ready_3d_pair(mui_uniface_3d *uniface, const char *attr, double t_1, double t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_3d_pair(mui_uniface_3d *uniface, const char *attr, double t, double it) {
+	return uniface->is_ready(std::string(attr), t, it);
 }
 
-int mui_is_ready_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t_1, double t_2) {
-	return uniface->is_ready(std::string(attr), t_1, t_2);
+int mui_is_ready_3dx_pair(mui_uniface_3dx *uniface, const char *attr, double t, double it) {
+	return uniface->is_ready(std::string(attr), t, it);
 }
 
-int mui_is_ready_3t_pair(mui_uniface_3t *uniface, const char *attr, double t_1, double t_2) {
-	return uniface->is_ready(std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t_1),
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_2));
+int mui_is_ready_3t_pair(mui_uniface_3t *uniface, const char *attr, double t, double it) {
+	return uniface->is_ready(std::string(attr), static_cast<mui::mui_c_wrapper_3D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_3D::iterator_type>(it));
 }
 
 /******************************************
@@ -4855,7 +4863,7 @@ void mui_announce_recv_span_3t_box(mui_uniface_3t *uniface, double box_1_1, doub
 			static_cast<mui::mui_c_wrapper_3D::time_type>(t_timeout), bound_box, static_cast<bool>(synchronised));
 }
 
-// Receive span announce using 1D sphere geometry
+// Receive span announce using 3D sphere geometry
 void mui_announce_recv_span_3f_sphere(mui_uniface_3f *uniface, mui_point_3f centre, float radius, float t_start,
 		float t_timeout, int synchronised) {
 	mui::geometry::sphere3f bound_sphere(mui::point3f(centre.point_1, centre.point_2, centre.point_3), radius);
@@ -4959,25 +4967,25 @@ void mui_barrier_3t(mui_uniface_3t *uniface, double t) {
 }
 
 // Barrier at two time values
-void mui_barrier_3f_pair(mui_uniface_3f *uniface, float t_1, float t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_3f_pair(mui_uniface_3f *uniface, float t, float it) {
+	uniface->barrier(t, it);
 }
 
-void mui_barrier_3fx_pair(mui_uniface_3fx *uniface, float t_1, float t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_3fx_pair(mui_uniface_3fx *uniface, float t, float it) {
+	uniface->barrier(t, it);
 }
 
-void mui_barrier_3d_pair(mui_uniface_3d *uniface, double t_1, double t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_3d_pair(mui_uniface_3d *uniface, double t, double it) {
+	uniface->barrier(t, it);
 }
 
-void mui_barrier_3dx_pair(mui_uniface_3dx *uniface, double t_1, double t_2) {
-	uniface->barrier(t_1, t_2);
+void mui_barrier_3dx_pair(mui_uniface_3dx *uniface, double t, double it) {
+	uniface->barrier(t, it);
 }
 
-void mui_barrier_3t_pair(mui_uniface_3t *uniface, double t_1, double t_2) {
-	uniface->barrier(static_cast<mui::mui_c_wrapper_3D::time_type>(t_1),
-			static_cast<mui::mui_c_wrapper_3D::time_type>(t_2));
+void mui_barrier_3t_pair(mui_uniface_3t *uniface, double t, double it) {
+	uniface->barrier(static_cast<mui::mui_c_wrapper_3D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_3D::iterator_type>(it));
 }
 
 /******************************************
@@ -5028,7 +5036,7 @@ void mui_forget_upper_3dx_pair(mui_uniface_3dx *uniface, double upper_1, double 
 
 void mui_forget_upper_3t_pair(mui_uniface_3t *uniface, double upper_1, double upper_2, int reset_log) {
 	mui::mui_c_wrapper_3D::time_type time_1 = static_cast<mui::mui_c_wrapper_3D::time_type>(upper_1);
-	mui::mui_c_wrapper_3D::time_type time_2 = static_cast<mui::mui_c_wrapper_3D::time_type>(upper_2);
+	mui::mui_c_wrapper_3D::iterator_type time_2 = static_cast<mui::mui_c_wrapper_3D::iterator_type>(upper_2);
 	std::pair<mui::mui_c_wrapper_3D::time_type, mui::mui_c_wrapper_3D::time_type> forget_time(time_1, time_2);
 	uniface->forget(forget_time, static_cast<bool>(reset_log));
 }
@@ -5088,9 +5096,9 @@ void mui_forget_lower_upper_3dx_pair(mui_uniface_3dx *uniface, double lower_1, d
 void mui_forget_lower_upper_3t_pair(mui_uniface_3t *uniface, double lower_1, double lower_2, double upper_1,
 		double upper_2, int reset_log) {
 	mui::mui_c_wrapper_3D::time_type time_1 = static_cast<mui::mui_c_wrapper_3D::time_type>(lower_1);
-	mui::mui_c_wrapper_3D::time_type time_2 = static_cast<mui::mui_c_wrapper_3D::time_type>(lower_2);
+	mui::mui_c_wrapper_3D::iterator_type time_2 = static_cast<mui::mui_c_wrapper_3D::iterator_type>(lower_2);
 	mui::mui_c_wrapper_3D::time_type time_3 = static_cast<mui::mui_c_wrapper_3D::time_type>(upper_1);
-	mui::mui_c_wrapper_3D::time_type time_4 = static_cast<mui::mui_c_wrapper_3D::time_type>(upper_2);
+	mui::mui_c_wrapper_3D::iterator_type time_4 = static_cast<mui::mui_c_wrapper_3D::iterator_type>(upper_2);
 	std::pair<mui::mui_c_wrapper_3D::time_type, mui::mui_c_wrapper_3D::time_type> forget_time_1(time_1, time_2);
 	std::pair<mui::mui_c_wrapper_3D::time_type, mui::mui_c_wrapper_3D::time_type> forget_time_2(time_3, time_4);
 	uniface->forget(forget_time_1, forget_time_2, static_cast<bool>(reset_log));
