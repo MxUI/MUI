@@ -240,19 +240,19 @@ mui_sampler_sum_quintic_2dx* mui_create_sampler_sum_quintic_2dx(double r);
 mui_sampler_sum_quintic_2t* mui_create_sampler_sum_quintic_2t(double r);
 #ifdef USE_RBF
 mui_sampler_rbf_2f* mui_create_sampler_rbf_2f(float r, mui_point_2f *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
 mui_sampler_rbf_2fx* mui_create_sampler_rbf_2fx(float r, mui_point_2fx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
 mui_sampler_rbf_2d* mui_create_sampler_rbf_2d(double r, mui_point_2d *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
 mui_sampler_rbf_2dx* mui_create_sampler_rbf_2dx(double r, mui_point_2dx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
 mui_sampler_rbf_2t* mui_create_sampler_rbf_2t(double r, mui_point_2t *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
 #endif
 

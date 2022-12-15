@@ -108,8 +108,9 @@ public:
                             (t.second == b.first.second));
                 });
 
+            auto mi=minimum_iterator_;
             auto previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
-                [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
                     return ((t.second == mi) ?
 							(b.first.first < t.first) ||
 							 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&

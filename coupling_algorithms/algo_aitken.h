@@ -134,8 +134,9 @@ public:
                         return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
                             (t.second == b.first.second);});
 
+                auto mi = minimum_iterator_;
                 auto previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
-                    [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                    [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
                         return ((t.second == mi) ?
                                 (b.first.first < t.first) ||
                                  (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -148,8 +149,9 @@ public:
                         return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
                             (t.second == b.first.second);});
 
+                mi = minimum_iterator_;
                 auto previous_res_iter = std::find_if(pts_time_res_.begin(), pts_time_res_.end(),
-                    [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                    [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
                         return ((t.second == mi) ?
                                 (b.first.first < t.first) ||
                                  (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -291,8 +293,9 @@ public:
                                 return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
                                         (t.second == b.first.second);});
 
+                        auto mi = minimum_iterator_;
                         previous_iter = std::find_if(pts_time_value_.begin(), pts_time_value_.end(),
-                            [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                            [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
                                 return ((t.second == mi) ?
                                         (b.first.first < t.first) ||
                                          (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -305,8 +308,9 @@ public:
                                 return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
                                         (t.second == b.first.second);});
 
+                        mi = minimum_iterator_;
                         previous_res_iter = std::find_if(pts_time_res_.begin(), pts_time_res_.end(),
-                            [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                            [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
                             return ((t.second == mi) ?
                                     (b.first.first < t.first) ||
                                      (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -536,8 +540,9 @@ public:
 
         update_under_relaxation_factor(t);
 
+        auto mi = minimum_iterator_;
         auto res_l2_norm_nm1_iter = std::find_if(residual_l2_norm_.begin(),
-            residual_l2_norm_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
+            residual_l2_norm_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
         return ((t.second == mi) ?
                 (b.first.first < t.first) ||
                  (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -558,8 +563,9 @@ public:
 
         update_under_relaxation_factor(time);
 
+        auto mi = minimum_iterator_;
         auto res_l2_norm_nm1_iter = std::find_if(residual_l2_norm_.begin(),
-            residual_l2_norm_.end(), [time, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
+            residual_l2_norm_.end(), [time, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
         return ((time.second == mi) ?
                 (b.first.first < time.first) ||
                  (((time.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -599,8 +605,9 @@ private:
         return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
             (t.second == b.first.second);});
 
+        auto mi = minimum_iterator_;
         auto under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-            under_relaxation_factor_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+            under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
         return ((t.second == mi) ?
                 (b.first.first < t.first) ||
                  (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -608,8 +615,9 @@ private:
                 ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
                  (b.first.second < t.second));});
 
+        mi = minimum_iterator_;
         auto res_l2_norm_nm1_iter = std::find_if(residual_l2_norm_.begin(),
-            residual_l2_norm_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
+            residual_l2_norm_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
         return ((t.second == mi) ?
                 (b.first.first < t.first) ||
                  (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -617,8 +625,9 @@ private:
                 ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
                  (b.first.second < t.second));});
 
+        mi = minimum_iterator_;
         auto res_l2_norm_nm2_iter = std::find_if(residual_l2_norm_.begin(),
-            residual_l2_norm_.end(), [res_l2_norm_nm1_iter, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
+            residual_l2_norm_.end(), [res_l2_norm_nm1_iter, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
         return ((res_l2_norm_nm1_iter->first.second == mi) ?
                 (b.first.first < res_l2_norm_nm1_iter->first.first) ||
                  (((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -636,8 +645,9 @@ private:
 			return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 					(t.second == b.first.second);});
 
+			auto mi = minimum_iterator_;
 			under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-				under_relaxation_factor_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+				under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
 			return ((t.second == mi) ?
 					(b.first.first < t.first) ||
 					 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -658,8 +668,9 @@ private:
 					return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 							(t.second == b.first.second);});
 
+					auto mi = minimum_iterator_;
 					under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-						under_relaxation_factor_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+						under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
 					return ((t.second == mi) ?
 							(b.first.first < t.first) ||
 							 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -744,8 +755,9 @@ private:
 								(t.second == b.first.second);
 							});
 
+							auto mi = minimum_iterator_;
 							under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-								under_relaxation_factor_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+								under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
 							return ((t.second == mi) ?
 									(b.first.first < t.first) ||
 									 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -766,8 +778,9 @@ private:
 							return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 								(t.second == b.first.second);});
 
+							auto mi = minimum_iterator_;
 							under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-								under_relaxation_factor_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+								under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
 							return ((t.second == mi) ?
 									(b.first.first < t.first) ||
 									 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -784,8 +797,9 @@ private:
 						return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
 								(t.second == b.first.second);});
 
+						auto mi = minimum_iterator_;
 						under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-							under_relaxation_factor_.end(), [t, &mi=minimum_iterator_](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+							under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
 						return ((t.second == mi) ?
 								(b.first.first < t.first) ||
 								 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
@@ -800,7 +814,7 @@ private:
 
 				if(res_l2_norm_nm2_iter == std::end(residual_l2_norm_) ) {
 					if(under_relaxation_present_iter->second != init_under_relaxation_factor_) {
-						std::cout << "change under Relx Factor to its initial value." << std::endl;
+						std::cout << "change under Relax Factor to its initial value." << std::endl;
 						under_relaxation_present_iter->second = init_under_relaxation_factor_;
 					}
 				} else {
