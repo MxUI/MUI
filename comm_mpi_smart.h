@@ -97,7 +97,6 @@ private:
 		// Catch any unsent MPI_Isend calls, non-blocking
 		test_completion();
 
-		int flag = false;
 		MPI_Status status;
 		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
 		int count;

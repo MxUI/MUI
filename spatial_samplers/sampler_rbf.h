@@ -363,8 +363,8 @@ private:
 
 				//set Css
 				std::vector<Eigen::Triplet<REAL>> coefsC;
-				for ( INT i = 0; i < NP; i++ ) {
-					for ( INT j = i; j < NP; j++ ) {
+				for ( size_t i = 0; i < NP; i++ ) {
+					for ( size_t j = i; j < NP; j++ ) {
 						int glob_i = connectivityAB_[row][i];
 						int glob_j = connectivityAB_[row][j];
 
@@ -379,7 +379,7 @@ private:
 					}
 				}
 
-				for ( INT i = 0; i < NP; i++ ) {
+				for ( size_t i = 0; i < NP; i++ ) {
 					coefsC.emplace_back(Eigen::Triplet < REAL > (i, NP, 1));
 					coefsC.emplace_back(Eigen::Triplet < REAL > (NP, i, 1));
 
@@ -396,7 +396,7 @@ private:
 
 				//set Aas
 				std::vector<Eigen::Triplet<REAL>> coefs;
-				for ( INT j = 0; j < NP; j++ ) {
+				for ( size_t j = 0; j < NP; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 
 					auto d = norm(pts_[row] - data_points[glob_j].first);
@@ -877,7 +877,7 @@ private:
 
 		for ( size_t i = 0; i < pts_.size(); i++ ) {
 			INT pointsCount = 0;
-			for ( INT n = 0; n < NP; n++ ) {
+			for ( size_t n = 0; n < NP; n++ ) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for ( size_t j = 0; j < data_points.size(); j++ ) {
@@ -1047,7 +1047,7 @@ private:
 		connectivityAA_.resize(pts_.size());
 
 		for ( size_t i = 0; i < pts_.size(); i++ ) {
-			for ( INT n = 0; n < MP; n++ ) {
+			for ( size_t n = 0; n < MP; n++ ) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for ( size_t j = 0; j < pts_.size(); j++ ) {
@@ -1064,7 +1064,7 @@ private:
 					auto d = normsq(pts_[i] - pts_[j]);
 					if ( d < cur ) {
 						cur = d;
-						bestj = j;
+						bestj = static_cast<INT>(j);
 					}
 				}
 
