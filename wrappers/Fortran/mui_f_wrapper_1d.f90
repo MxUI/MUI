@@ -503,57 +503,57 @@ module mui_1d_f
 #ifdef USE_RBF
     !Radial Basis Function sampler
     subroutine mui_create_sampler_rbf_1f_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,polynomial,smoothFunc,readMatrix, &
+               basis_func,conservative,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
-      import :: c_ptr,c_int,c_float
+      import :: c_ptr,c_int,c_float,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
       type(c_float), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol
     end subroutine mui_create_sampler_rbf_1f_f
 
     subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,polynomial,smoothFunc,readMatrix, &
+               basis_func,conservative,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
-      import :: c_ptr,c_int,c_float
+      import :: c_ptr,c_int,c_float,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
       type(c_float), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol
     end subroutine mui_create_sampler_rbf_1fx_f
 
     subroutine mui_create_sampler_rbf_1d_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,polynomial,smoothFunc,readMatrix, &
+               basis_func,conservative,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
-      import :: c_ptr,c_int,c_double
+      import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
       type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
     end subroutine mui_create_sampler_rbf_1d_f
 
     subroutine mui_create_sampler_rbf_1dx_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,polynomial,smoothFunc,readMatrix, &
+               basis_func,conservative,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
-      import :: c_ptr,c_int,c_double
+      import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
       type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
     end subroutine mui_create_sampler_rbf_1dx_f
 
     subroutine mui_create_sampler_rbf_1t_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,polynomial,smoothFunc,readMatrix, &
+               basis_func,conservative,smoothFunc,readMatrix, &
                file_address,cutoff) bind(C)
-      import :: c_ptr,c_int,c_double
+      import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
       type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
     end subroutine mui_create_sampler_rbf_1t_f
 #endif
@@ -2775,1659 +2775,1659 @@ module mui_1d_f
     !*********************************************************
 
     !Spatial sampler: exact; temporal sampler: exact
-    subroutine mui_fetch_exact_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_1f_pair_f
 
-    subroutine mui_fetch_exact_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_1fx_pair_f
 
-    subroutine mui_fetch_exact_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_1d_pair_f
 
-    subroutine mui_fetch_exact_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_1dx_pair_f
 
-    subroutine mui_fetch_exact_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_1t_pair_f
 
     !Spatial sampler: exact; temporal sampler: gauss
-    subroutine mui_fetch_exact_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_gauss_1f_pair_f
 
-    subroutine mui_fetch_exact_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_gauss_1fx_pair_f
 
-    subroutine mui_fetch_exact_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_gauss_1d_pair_f
 
-    subroutine mui_fetch_exact_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_gauss_1dx_pair_f
 
-    subroutine mui_fetch_exact_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_gauss_1t_pair_f
 
     !Spatial sampler: exact; temporal sampler: mean
-    subroutine mui_fetch_exact_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_mean_1f_pair_f
 
-    subroutine mui_fetch_exact_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_mean_1fx_pair_f
 
-    subroutine mui_fetch_exact_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_mean_1d_pair_f
 
-    subroutine mui_fetch_exact_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_mean_1dx_pair_f
 
-    subroutine mui_fetch_exact_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_mean_1t_pair_f
 
     !Spatial sampler: exact; temporal sampler: sum
-    subroutine mui_fetch_exact_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_sum_1f_pair_f
 
-    subroutine mui_fetch_exact_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_exact_sum_1fx_pair_f
 
-    subroutine mui_fetch_exact_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_sum_1d_pair_f
 
-    subroutine mui_fetch_exact_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_sum_1dx_pair_f
 
-    subroutine mui_fetch_exact_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_exact_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_sum_1t_pair_f
 
     !Spatial sampler: gauss; temporal sampler: exact
-    subroutine mui_fetch_gauss_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_exact_1f_pair_f
 
-    subroutine mui_fetch_gauss_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_exact_1fx_pair_f
 
-    subroutine mui_fetch_gauss_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_exact_1d_pair_f
 
-    subroutine mui_fetch_gauss_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_exact_1dx_pair_f
 
-    subroutine mui_fetch_gauss_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_exact_1t_pair_f
 
     !Spatial sampler: gauss; temporal sampler: gauss
-    subroutine mui_fetch_gauss_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_gauss_1f_pair_f
 
-    subroutine mui_fetch_gauss_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_gauss_1fx_pair_f
 
-    subroutine mui_fetch_gauss_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_gauss_1d_pair_f
 
-    subroutine mui_fetch_gauss_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_gauss_1dx_pair_f
 
-    subroutine mui_fetch_gauss_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_gauss_1t_pair_f
 
     !Spatial sampler: gauss; temporal sampler: mean
-    subroutine mui_fetch_gauss_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_mean_1f_pair_f
 
-    subroutine mui_fetch_gauss_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_mean_1fx_pair_f
 
-    subroutine mui_fetch_gauss_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_mean_1d_pair_f
 
-    subroutine mui_fetch_gauss_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_mean_1dx_pair_f
 
-    subroutine mui_fetch_gauss_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_mean_1t_pair_f
 
     !Spatial sampler: gauss; temporal sampler: sum
-    subroutine mui_fetch_gauss_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_sum_1f_pair_f
 
-    subroutine mui_fetch_gauss_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_gauss_sum_1fx_pair_f
 
-    subroutine mui_fetch_gauss_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_sum_1d_pair_f
 
-    subroutine mui_fetch_gauss_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_sum_1dx_pair_f
 
-    subroutine mui_fetch_gauss_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_gauss_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_gauss_sum_1t_pair_f
 
     !Spatial sampler: moving average; temporal sampler: exact
-    subroutine mui_fetch_moving_average_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_exact_1f_pair_f
 
-    subroutine mui_fetch_moving_average_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_exact_1fx_pair_f
 
-    subroutine mui_fetch_moving_average_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_exact_1d_pair_f
 
-    subroutine mui_fetch_moving_average_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_exact_1dx_pair_f
 
-    subroutine mui_fetch_moving_average_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_exact_1t_pair_f
 
     !Spatial sampler: moving average; temporal sampler: gauss
-    subroutine mui_fetch_moving_average_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_gauss_1f_pair_f
 
-    subroutine mui_fetch_moving_average_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_gauss_1fx_pair_f
 
-    subroutine mui_fetch_moving_average_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_gauss_1d_pair_f
 
-    subroutine mui_fetch_moving_average_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_gauss_1dx_pair_f
 
-    subroutine mui_fetch_moving_average_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_gauss_1t_pair_f
 
     !Spatial sampler: moving average; temporal sampler: mean
-    subroutine mui_fetch_moving_average_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_mean_1f_pair_f
 
-    subroutine mui_fetch_moving_average_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_mean_1fx_pair_f
 
-    subroutine mui_fetch_moving_average_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_mean_1d_pair_f
 
-    subroutine mui_fetch_moving_average_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_mean_1dx_pair_f
 
-    subroutine mui_fetch_moving_average_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_mean_1t_pair_f
 
     !Spatial sampler: moving average; temporal sampler: sum
-    subroutine mui_fetch_moving_average_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_sum_1f_pair_f
 
-    subroutine mui_fetch_moving_average_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_sum_1fx_pair_f
 
-    subroutine mui_fetch_moving_average_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_sum_1d_pair_f
 
-    subroutine mui_fetch_moving_average_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_sum_1dx_pair_f
 
-    subroutine mui_fetch_moving_average_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_moving_average_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_moving_average_sum_1t_pair_f
 
     !Spatial sampler: nearest neighbor; temporal sampler: exact
-    subroutine mui_fetch_nearest_neighbor_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_exact_1f_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_exact_1fx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_exact_1d_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_exact_1dx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_exact_1t_pair_f
 
     !Spatial sampler: nearest neighbor; temporal sampler: gauss
-    subroutine mui_fetch_nearest_neighbor_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_gauss_1f_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_gauss_1fx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_gauss_1d_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_gauss_1dx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_gauss_1t_pair_f
 
     !Spatial sampler: nearest neighbor; temporal sampler: mean
-    subroutine mui_fetch_nearest_neighbor_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_mean_1f_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_mean_1fx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_mean_1d_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_mean_1dx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_mean_1t_pair_f
 
     !Spatial sampler: nearest neighbor; temporal sampler: sum
-    subroutine mui_fetch_nearest_neighbor_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_sum_1f_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_sum_1fx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_sum_1d_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_sum_1dx_pair_f
 
-    subroutine mui_fetch_nearest_neighbor_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_nearest_neighbor_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_nearest_neighbor_sum_1t_pair_f
 
     !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
-    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1f_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1fx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1d_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1dx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1t_pair_f
 
     !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
-    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1f_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1fx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1d_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1dx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1t_pair_f
 
     !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean
-    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_mean_1f_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_mean_1fx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_mean_1d_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_mean_1dx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_mean_1t_pair_f
 
     !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum
-    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_1f_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_1fx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_1d_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_1dx_pair_f
 
-    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_pseudo_nearest_neighbor_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_1t_pair_f
 
     !Spatial sampler: shepard quintic; temporal sampler: exact
-    subroutine mui_fetch_shepard_quintic_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_exact_1f_pair_f
 
-    subroutine mui_fetch_shepard_quintic_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_exact_1fx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_exact_1d_pair_f
 
-    subroutine mui_fetch_shepard_quintic_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_exact_1dx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_exact_1t_pair_f
 
     !Spatial sampler: shepard quintic; temporal sampler: gauss
-    subroutine mui_fetch_shepard_quintic_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_gauss_1f_pair_f
 
-    subroutine mui_fetch_shepard_quintic_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_gauss_1fx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_gauss_1d_pair_f
 
-    subroutine mui_fetch_shepard_quintic_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_gauss_1dx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_gauss_1t_pair_f
 
     !Spatial sampler: shepard quintic; temporal sampler: mean
-    subroutine mui_fetch_shepard_quintic_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_mean_1f_pair_f
 
-    subroutine mui_fetch_shepard_quintic_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_mean_1fx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_mean_1d_pair_f
 
-    subroutine mui_fetch_shepard_quintic_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_mean_1dx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_mean_1t_pair_f
 
     !Spatial sampler: shepard quintic; temporal sampler: sum
-    subroutine mui_fetch_shepard_quintic_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_sum_1f_pair_f
 
-    subroutine mui_fetch_shepard_quintic_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_sum_1fx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_sum_1d_pair_f
 
-    subroutine mui_fetch_shepard_quintic_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_sum_1dx_pair_f
 
-    subroutine mui_fetch_shepard_quintic_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_shepard_quintic_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_shepard_quintic_sum_1t_pair_f
 
     !Spatial sampler: sph-derived quintic; temporal sampler: exact
-    subroutine mui_fetch_sph_quintic_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_exact_1f_pair_f
 
-    subroutine mui_fetch_sph_quintic_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_exact_1fx_pair_f
 
-    subroutine mui_fetch_sph_quintic_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_exact_1d_pair_f
 
-    subroutine mui_fetch_sph_quintic_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_exact_1dx_pair_f
 
-    subroutine mui_fetch_sph_quintic_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_exact_1t_pair_f
 
     !Spatial sampler: sph-derived quintic; temporal sampler: gauss
-    subroutine mui_fetch_sph_quintic_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_gauss_1f_pair_f
 
-    subroutine mui_fetch_sph_quintic_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_gauss_1fx_pair_f
 
-    subroutine mui_fetch_sph_quintic_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_gauss_1d_pair_f
 
-    subroutine mui_fetch_sph_quintic_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_gauss_1dx_pair_f
 
-    subroutine mui_fetch_sph_quintic_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_gauss_1t_pair_f
 
     !Spatial sampler: sph-derived quintic; temporal sampler: mean
-    subroutine mui_fetch_sph_quintic_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_mean_1f_pair_f
 
-    subroutine mui_fetch_sph_quintic_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_mean_1fx_pair_f
 
-    subroutine mui_fetch_sph_quintic_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_mean_1d_pair_f
 
-    subroutine mui_fetch_sph_quintic_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_mean_1dx_pair_f
 
-    subroutine mui_fetch_sph_quintic_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_mean_1t_pair_f
 
     !Spatial sampler: sph-derived quintic; temporal sampler: sum
-    subroutine mui_fetch_sph_quintic_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_sum_1f_pair_f
 
-    subroutine mui_fetch_sph_quintic_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_sum_1fx_pair_f
 
-    subroutine mui_fetch_sph_quintic_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_sum_1d_pair_f
 
-    subroutine mui_fetch_sph_quintic_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_sum_1dx_pair_f
 
-    subroutine mui_fetch_sph_quintic_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sph_quintic_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sph_quintic_sum_1t_pair_f
 
     !Spatial sampler: summation quintic; temporal sampler: exact
-    subroutine mui_fetch_sum_quintic_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_exact_1f_pair_f
 
-    subroutine mui_fetch_sum_quintic_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_exact_1fx_pair_f
 
-    subroutine mui_fetch_sum_quintic_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_exact_1d_pair_f
 
-    subroutine mui_fetch_sum_quintic_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_exact_1dx_pair_f
 
-    subroutine mui_fetch_sum_quintic_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_exact_1t_pair_f
 
     !Spatial sampler: summation quintic; temporal sampler: gauss
-    subroutine mui_fetch_sum_quintic_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_gauss_1f_pair_f
 
-    subroutine mui_fetch_sum_quintic_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_gauss_1fx_pair_f
 
-    subroutine mui_fetch_sum_quintic_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_gauss_1d_pair_f
 
-    subroutine mui_fetch_sum_quintic_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_gauss_1dx_pair_f
 
-    subroutine mui_fetch_sum_quintic_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_gauss_1t_pair_f
 
     !Spatial sampler: summation quintic; temporal sampler: mean
-    subroutine mui_fetch_sum_quintic_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_mean_1f_pair_f
 
-    subroutine mui_fetch_sum_quintic_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_mean_1fx_pair_f
 
-    subroutine mui_fetch_sum_quintic_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_mean_1d_pair_f
 
-    subroutine mui_fetch_sum_quintic_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_mean_1dx_pair_f
 
-    subroutine mui_fetch_sum_quintic_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_mean_1t_pair_f
 
     !Spatial sampler: summation quintic; temporal sampler: sum
-    subroutine mui_fetch_sum_quintic_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_1f_pair_f
 
-    subroutine mui_fetch_sum_quintic_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_1fx_pair_f
 
-    subroutine mui_fetch_sum_quintic_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_1d_pair_f
 
-    subroutine mui_fetch_sum_quintic_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_1dx_pair_f
 
-    subroutine mui_fetch_sum_quintic_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_sum_quintic_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_1t_pair_f
 
 #ifdef USE_RBF
     !Spatial sampler: radial basis function; temporal sampler: exact
-    subroutine mui_fetch_rbf_exact_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_exact_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_exact_1f_pair_f
 
-    subroutine mui_fetch_rbf_exact_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_exact_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_exact_1fx_pair_f
 
-    subroutine mui_fetch_rbf_exact_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_exact_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_exact_1d_pair_f
 
-    subroutine mui_fetch_rbf_exact_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_exact_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_exact_1dx_pair_f
 
-    subroutine mui_fetch_rbf_exact_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_exact_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_exact_1t_pair_f
 
     !Spatial sampler: radial basis function; temporal sampler: gauss
-    subroutine mui_fetch_rbf_gauss_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_gauss_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_gauss_1f_pair_f
 
-    subroutine mui_fetch_rbf_gauss_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_gauss_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_gauss_1fx_pair_f
 
-    subroutine mui_fetch_rbf_gauss_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_gauss_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_gauss_1d_pair_f
 
-    subroutine mui_fetch_rbf_gauss_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_gauss_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_gauss_1dx_pair_f
 
-    subroutine mui_fetch_rbf_gauss_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_gauss_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_gauss_1t_pair_f
 
     !Spatial sampler: radial basis function; temporal sampler: mean
-    subroutine mui_fetch_rbf_mean_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_mean_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_mean_1f_pair_f
 
-    subroutine mui_fetch_rbf_mean_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_mean_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_mean_1fx_pair_f
 
-    subroutine mui_fetch_rbf_mean_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_mean_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_mean_1d_pair_f
 
-    subroutine mui_fetch_rbf_mean_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_mean_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_mean_1dx_pair_f
 
-    subroutine mui_fetch_rbf_mean_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_mean_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_mean_1t_pair_f
 
     !Spatial sampler: radial basis function; temporal sampler: sum
-    subroutine mui_fetch_rbf_sum_1f_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_sum_1f_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_1f_pair_f
 
-    subroutine mui_fetch_rbf_sum_1fx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_sum_1fx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: point_1,t_1,t_2
+      real(kind=c_float), intent(in) :: point_1,t,it
       real(kind=c_float), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_1fx_pair_f
 
-    subroutine mui_fetch_rbf_sum_1d_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_sum_1d_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_1d_pair_f
 
-    subroutine mui_fetch_rbf_sum_1dx_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_sum_1dx_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_1dx_pair_f
 
-    subroutine mui_fetch_rbf_sum_1t_pair_f(uniface,attr,point_1,t_1,t_2,&
+    subroutine mui_fetch_rbf_sum_1t_pair_f(uniface,attr,point_1,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_double
       type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: point_1,t_1,t_2
+      real(kind=c_double), intent(in) :: point_1,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_1t_pair_f
 #endif
@@ -4645,205 +4645,205 @@ module mui_1d_f
     !********************************************************************
 
     !Temporal sampler: exact
-    subroutine mui_fetch_points_exact_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_exact_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_exact_1f_pair_f
 
-    subroutine mui_fetch_points_exact_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_exact_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_exact_1fx_pair_f
 
-    subroutine mui_fetch_points_exact_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_exact_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_exact_1d_pair_f
 
-    subroutine mui_fetch_points_exact_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_exact_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_exact_1dx_pair_f
 
-    subroutine mui_fetch_points_exact_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_exact_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_exact_1t_pair_f
 
     !Temporal sampler: gauss
-    subroutine mui_fetch_points_gauss_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_gauss_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_gauss_1f_pair_f
 
-    subroutine mui_fetch_points_gauss_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_gauss_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_gauss_1fx_pair_f
 
-    subroutine mui_fetch_points_gauss_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_gauss_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_gauss_1d_pair_f
 
-    subroutine mui_fetch_points_gauss_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_gauss_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_gauss_1dx_pair_f
 
-    subroutine mui_fetch_points_gauss_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_gauss_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_gauss_1t_pair_f
 
     !Temporal sampler: mean
-    subroutine mui_fetch_points_mean_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_mean_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_mean_1f_pair_f
 
-    subroutine mui_fetch_points_mean_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_mean_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_mean_1fx_pair_f
 
-    subroutine mui_fetch_points_mean_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_mean_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_mean_1d_pair_f
 
-    subroutine mui_fetch_points_mean_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_mean_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_mean_1dx_pair_f
 
-    subroutine mui_fetch_points_mean_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_mean_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_mean_1t_pair_f
 
     !Temporal sampler: sum
-    subroutine mui_fetch_points_sum_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_sum_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_sum_1f_pair_f
 
-    subroutine mui_fetch_points_sum_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_sum_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_sum_1fx_pair_f
 
-    subroutine mui_fetch_points_sum_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_sum_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_sum_1d_pair_f
 
-    subroutine mui_fetch_points_sum_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_sum_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_sum_1dx_pair_f
 
-    subroutine mui_fetch_points_sum_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_points_sum_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_points_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_points_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_points_sum_1t_pair_f
@@ -5061,205 +5061,205 @@ module mui_1d_f
     !*********************************************************************
 
     !Temporal sampler: exact
-    subroutine mui_fetch_values_exact_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_exact_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_exact_1f_pair_f
 
-    subroutine mui_fetch_values_exact_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_exact_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_exact_1fx_pair_f
 
-    subroutine mui_fetch_values_exact_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_exact_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_exact_1d_pair_f
 
-    subroutine mui_fetch_values_exact_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_exact_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_exact_1dx_pair_f
 
-    subroutine mui_fetch_values_exact_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_exact_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_exact_1t_pair_f
 
     !Temporal sampler: gauss
-    subroutine mui_fetch_values_gauss_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_gauss_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_gauss_1f_pair_f
 
-    subroutine mui_fetch_values_gauss_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_gauss_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_gauss_1fx_pair_f
 
-    subroutine mui_fetch_values_gauss_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_gauss_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_gauss_1d_pair_f
 
-    subroutine mui_fetch_values_gauss_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_gauss_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_gauss_1dx_pair_f
 
-    subroutine mui_fetch_values_gauss_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_gauss_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_gauss_1t_pair_f
 
     !Temporal sampler: mean
-    subroutine mui_fetch_values_mean_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_mean_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_mean_1f_pair_f
 
-    subroutine mui_fetch_values_mean_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_mean_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_mean_1fx_pair_f
 
-    subroutine mui_fetch_values_mean_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_mean_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_mean_1d_pair_f
 
-    subroutine mui_fetch_values_mean_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_mean_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_mean_1dx_pair_f
 
-    subroutine mui_fetch_values_mean_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_mean_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_mean_1t_pair_f
 
     !Temporal sampler: sum
-    subroutine mui_fetch_values_sum_1f_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_sum_1f_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_sum_1f_pair_f
 
-    subroutine mui_fetch_values_sum_1fx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_sum_1fx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_sum_1fx_pair_f
 
-    subroutine mui_fetch_values_sum_1d_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_sum_1d_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_sum_1d_pair_f
 
-    subroutine mui_fetch_values_sum_1dx_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_sum_1dx_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_sum_1dx_pair_f
 
-    subroutine mui_fetch_values_sum_1t_pair_f(uniface,attr,t_1,t_2,&
+    subroutine mui_fetch_values_sum_1t_pair_f(uniface,attr,t,it,&
         temporal_sampler,ret_values_1,num_points) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface,temporal_sampler
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       type(c_ptr), intent(out) :: ret_values_1(*)
       integer(kind=c_int), intent(in) :: num_points
     end subroutine mui_fetch_values_sum_1t_pair_f
@@ -5349,43 +5349,43 @@ module mui_1d_f
     end subroutine mui_is_ready_1t_f
 
     !Data ready test using two time values
-    subroutine mui_is_ready_1f_pair_f(uniface,attr,t_1,t_2,return_value) bind(C)
+    subroutine mui_is_ready_1f_pair_f(uniface,attr,t,it,return_value) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       integer(kind=c_int), intent(out) :: return_value
     end subroutine mui_is_ready_1f_pair_f
 
-    subroutine mui_is_ready_1fx_pair_f(uniface,attr,t_1,t_2,return_value) bind(C)
+    subroutine mui_is_ready_1fx_pair_f(uniface,attr,t,it,return_value) bind(C)
       import :: c_ptr,c_char,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_float), intent(in) :: t_1,t_2
+      real(kind=c_float), intent(in) :: t,it
       integer(kind=c_int), intent(out) :: return_value
     end subroutine mui_is_ready_1fx_pair_f
 
-    subroutine mui_is_ready_1d_pair_f(uniface,attr,t_1,t_2,return_value) bind(C)
+    subroutine mui_is_ready_1d_pair_f(uniface,attr,t,it,return_value) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       integer(kind=c_int), intent(out) :: return_value
     end subroutine mui_is_ready_1d_pair_f
 
-    subroutine mui_is_ready_1dx_pair_f(uniface,attr,t_1,t_2,return_value) bind(C)
+    subroutine mui_is_ready_1dx_pair_f(uniface,attr,t,it,return_value) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       integer(kind=c_int), intent(out) :: return_value
     end subroutine mui_is_ready_1dx_pair_f
 
-    subroutine mui_is_ready_1t_pair_f(uniface,attr,t_1,t_2,return_value) bind(C)
+    subroutine mui_is_ready_1t_pair_f(uniface,attr,t,it,return_value) bind(C)
       import :: c_ptr,c_char,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
       character(kind=c_char), intent(in) :: attr(*)
-      real(kind=c_double), intent(in) :: t_1,t_2
+      real(kind=c_double), intent(in) :: t,it
       integer(kind=c_int), intent(out) :: return_value
     end subroutine mui_is_ready_1t_pair_f
 
@@ -5635,34 +5635,34 @@ module mui_1d_f
     end subroutine mui_barrier_1t_f
 
     !Barrier at two time values
-    subroutine mui_barrier_1f_pair_f(uniface,t_1,t_2) bind(C)
+    subroutine mui_barrier_1f_pair_f(uniface,t,it) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: t_1,t_2
+      real(kind=c_float), intent(in), value :: t,it
     end subroutine mui_barrier_1f_pair_f
 
-    subroutine mui_barrier_1fx_pair_f(uniface,t_1,t_2) bind(C)
+    subroutine mui_barrier_1fx_pair_f(uniface,t,it) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: t_1,t_2
+      real(kind=c_float), intent(in), value :: t,it
     end subroutine mui_barrier_1fx_pair_f
 
-    subroutine mui_barrier_1d_pair_f(uniface,t_1,t_2) bind(C)
+    subroutine mui_barrier_1d_pair_f(uniface,t,it) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t_1,t_2
+      real(kind=c_double), intent(in), value :: t,it
     end subroutine mui_barrier_1d_pair_f
 
-    subroutine mui_barrier_1dx_pair_f(uniface,t_1,t_2) bind(C)
+    subroutine mui_barrier_1dx_pair_f(uniface,t,it) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t_1,t_2
+      real(kind=c_double), intent(in), value :: t,it
     end subroutine mui_barrier_1dx_pair_f
 
-    subroutine mui_barrier_1t_pair_f(uniface,t_1,t_2) bind(C)
+    subroutine mui_barrier_1t_pair_f(uniface,t,it) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t_1,t_2
+      real(kind=c_double), intent(in), value :: t,it
     end subroutine mui_barrier_1t_pair_f
 
     !******************************************
