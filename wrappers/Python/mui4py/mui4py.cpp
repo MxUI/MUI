@@ -45,97 +45,6 @@ void py_create_uniface(py::module &m)
         { return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD); });
 }
 
-template <typename Tconfig, typename TArg1>
-void declare_sampler_exact(py::module &m)
-{
-  std::string name = "_sampler_exact_" + config_name<Tconfig>();
-  using Tclass = mui::sampler_exact<Tconfig, TArg1, TArg1>;
-  using Treal = typename Tconfig::REAL;
-  py::class_<Tclass>(m, name.c_str())
-      .def(py::init<Treal>(),
-           py::arg("tol") = Treal(std::numeric_limits<Treal>::epsilon()));
-}
-
-// SPATIAL_SAMPLER_GAUSS CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_gauss(py::module &m)
-{
-  std::string name = "_sampler_gauss_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_gauss<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, Treal>());
-}
-
-// SPATIAL_SAMPLER_MOVING_AVERAGE CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_moving_average(py::module &m)
-{
-  std::string name = "_sampler_moving_average_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_moving_average<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str())
-      .def(py::init<mui::point<Treal, Tconfig::D>>());
-}
-
-// SPATIAL_SAMPLER_NEAREST_NEIGHBOR CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_nearest_neighbor(py::module &m)
-{
-  std::string name = "_sampler_nearest_neighbor" + config_name<Tconfig>();
-  using Tclass = mui::sampler_nearest_neighbor<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<>());
-}
-
-// SPATIAL_sampler_pseudo_n2_linear CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_pseudo_n2_linear(py::module &m)
-{
-  std::string name = "_sampler_pseudo_n2_linear_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_pseudo_n2_linear<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
-}
-
-// SPATIAL_SAMPLER_PSEUDO_NEAREST_NEIGHBOR CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_pseudo_nearest_neighbor(py::module &m)
-{
-  std::string name = "_sampler_pseudo_nearest_neighbor" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_pseudo_nearest_neighbor<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
-}
-
-// SPATIAL_SAMPLER_SHEPARD_QUINTIC CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_shepard_quintic(py::module &m)
-{
-  std::string name = "_sampler_shepard_quintic_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_shepard_quintic<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
-}
-
-// SPATIAL_SAMPLER_SPH_QUINTIC CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_sph_quintic(py::module &m)
-{
-  std::string name = "_sampler_sph_quintic_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_sph_quintic<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
-}
-
-// SPATIAL_SAMPLER_SUM_QUINTIC CLASS//
-template <typename Tconfig, typename TArg1 = void>
-void declare_sampler_sum_quintic(py::module &m)
-{
-  std::string name = "_sampler_sum_quintic_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Tclass = mui::sampler_sum_quintic<Tconfig, TArg1, TArg1>;
-  py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
-}
-
 template <typename Tconfig>
 void declare_uniface_class(py::module &m)
 {
@@ -172,11 +81,11 @@ void declare_uniface_class(py::module &m)
       // template later.
       //     DEFINE_MUI_UNIFACE_FETCH_POINTS()
       .def(py::init<const std::string &>());
-  py::implicitly_convertible<mui::geometry::shape<Tconfig>,
-                             mui::geometry::any_shape<Tconfig>>();
 }
 
+// Declaration of other files
 void chrono_sampler(py::module &m);
+void sampler(py::module &m);
 void geometry(py::module &m);
 
 PYBIND11_MODULE(mui4py_mod, m)
@@ -188,13 +97,17 @@ PYBIND11_MODULE(mui4py_mod, m)
   m.attr("numeric_limits_int") = std::numeric_limits<int>::min();
 
   geometry(m);
-
-  declare_uniface_class<mui::mui_config_1dx>(m);
-
-  declare_sampler_exact<mui::mui_config_1dx, double>(m);
-  declare_sampler_nearest_neighbor<mui::mui_config_1dx, double>(m);
+  sampler(m);
+  chrono_sampler(m);
 
 #ifdef PYTHON_INT_64
+  declare_uniface_class<mui::mui_config_1dx>(m);
+  declare_uniface_class<mui::mui_config_2dx>(m);
+  declare_uniface_class<mui::mui_config_3dx>(m);
+  declare_uniface_class<mui::mui_config_1fx>(m);
+  declare_uniface_class<mui::mui_config_2fx>(m);
+  declare_uniface_class<mui::mui_config_3fx>(m);
+
   py_create_uniface<mui::mui_config_1dx>(m);
   py_create_uniface<mui::mui_config_2dx>(m);
   py_create_uniface<mui::mui_config_3dx>(m);
@@ -202,6 +115,13 @@ PYBIND11_MODULE(mui4py_mod, m)
   py_create_uniface<mui::mui_config_2fx>(m);
   py_create_uniface<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
+  declare_uniface_class<mui::mui_config_1d>(m);
+  declare_uniface_class<mui::mui_config_2d>(m);
+  declare_uniface_class<mui::mui_config_3d>(m);
+  declare_uniface_class<mui::mui_config_1f>(m);
+  declare_uniface_class<mui::mui_config_2f>(m);
+  declare_uniface_class<mui::mui_config_3f>(m);
+
   py_create_uniface<mui::mui_config_1d>(m);
   py_create_uniface<mui::mui_config_2d>(m);
   py_create_uniface<mui::mui_config_3d>(m);

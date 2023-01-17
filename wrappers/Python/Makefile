@@ -201,6 +201,30 @@ mui4py/mui4py.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/mui4py.cpp.s
 .PHONY : mui4py/mui4py.cpp.s
 
+mui4py/sampler.o: mui4py/sampler.cpp.o
+.PHONY : mui4py/sampler.o
+
+# target to build an object file
+mui4py/sampler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/sampler.cpp.o
+.PHONY : mui4py/sampler.cpp.o
+
+mui4py/sampler.i: mui4py/sampler.cpp.i
+.PHONY : mui4py/sampler.i
+
+# target to preprocess a source file
+mui4py/sampler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/sampler.cpp.i
+.PHONY : mui4py/sampler.cpp.i
+
+mui4py/sampler.s: mui4py/sampler.cpp.s
+.PHONY : mui4py/sampler.s
+
+# target to generate assembly for a file
+mui4py/sampler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/sampler.cpp.s
+.PHONY : mui4py/sampler.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -219,6 +243,9 @@ help:
 	@echo "... mui4py/mui4py.o"
 	@echo "... mui4py/mui4py.i"
 	@echo "... mui4py/mui4py.s"
+	@echo "... mui4py/sampler.o"
+	@echo "... mui4py/sampler.i"
+	@echo "... mui4py/sampler.s"
 .PHONY : help
 
 
