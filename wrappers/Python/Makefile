@@ -129,6 +129,54 @@ mui4py_mod/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/build
 .PHONY : mui4py_mod/fast
 
+mui4py/chrono_sampler.o: mui4py/chrono_sampler.cpp.o
+.PHONY : mui4py/chrono_sampler.o
+
+# target to build an object file
+mui4py/chrono_sampler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/chrono_sampler.cpp.o
+.PHONY : mui4py/chrono_sampler.cpp.o
+
+mui4py/chrono_sampler.i: mui4py/chrono_sampler.cpp.i
+.PHONY : mui4py/chrono_sampler.i
+
+# target to preprocess a source file
+mui4py/chrono_sampler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/chrono_sampler.cpp.i
+.PHONY : mui4py/chrono_sampler.cpp.i
+
+mui4py/chrono_sampler.s: mui4py/chrono_sampler.cpp.s
+.PHONY : mui4py/chrono_sampler.s
+
+# target to generate assembly for a file
+mui4py/chrono_sampler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/chrono_sampler.cpp.s
+.PHONY : mui4py/chrono_sampler.cpp.s
+
+mui4py/geometry.o: mui4py/geometry.cpp.o
+.PHONY : mui4py/geometry.o
+
+# target to build an object file
+mui4py/geometry.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/geometry.cpp.o
+.PHONY : mui4py/geometry.cpp.o
+
+mui4py/geometry.i: mui4py/geometry.cpp.i
+.PHONY : mui4py/geometry.i
+
+# target to preprocess a source file
+mui4py/geometry.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/geometry.cpp.i
+.PHONY : mui4py/geometry.cpp.i
+
+mui4py/geometry.s: mui4py/geometry.cpp.s
+.PHONY : mui4py/geometry.s
+
+# target to generate assembly for a file
+mui4py/geometry.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mui4py_mod.dir/build.make CMakeFiles/mui4py_mod.dir/mui4py/geometry.cpp.s
+.PHONY : mui4py/geometry.cpp.s
+
 mui4py/mui4py.o: mui4py/mui4py.cpp.o
 .PHONY : mui4py/mui4py.o
 
@@ -162,6 +210,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... mui4py_mod"
+	@echo "... mui4py/chrono_sampler.o"
+	@echo "... mui4py/chrono_sampler.i"
+	@echo "... mui4py/chrono_sampler.s"
+	@echo "... mui4py/geometry.o"
+	@echo "... mui4py/geometry.i"
+	@echo "... mui4py/geometry.s"
 	@echo "... mui4py/mui4py.o"
 	@echo "... mui4py/mui4py.i"
 	@echo "... mui4py/mui4py.s"

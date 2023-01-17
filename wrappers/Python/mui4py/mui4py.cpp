@@ -6,11 +6,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <mpi4py/mpi4py.h>
-
 #include <string>
 
-#define STRINGIFY2(X) #X
-#define STRINGIFY(X) STRINGIFY2(X)
+#include "config_name.h"
 
 std::string get_mpi_version()
 {
@@ -37,35 +35,6 @@ std::string get_compiler_config()
 #else
   return "";
 #endif
-}
-
-template <typename CONFIG>
-std::string config_name()
-{
-  if (std::is_same<CONFIG, mui::mui_config_1d>())
-    return "1d_f64_i32";
-  if (std::is_same<CONFIG, mui::mui_config_2d>())
-    return "2d_f64_i32";
-  if (std::is_same<CONFIG, mui::mui_config_3d>())
-    return "3d_f64_i32";
-  if (std::is_same<CONFIG, mui::mui_config_1dx>())
-    return "1d_f64_i64";
-  if (std::is_same<CONFIG, mui::mui_config_2dx>())
-    return "2d_f64_i64";
-  if (std::is_same<CONFIG, mui::mui_config_3dx>())
-    return "3d_f64_i64";
-  if (std::is_same<CONFIG, mui::mui_config_1f>())
-    return "1d_f32_i32";
-  if (std::is_same<CONFIG, mui::mui_config_2f>())
-    return "2d_f32_i32";
-  if (std::is_same<CONFIG, mui::mui_config_3f>())
-    return "3d_f32_i32";
-  if (std::is_same<CONFIG, mui::mui_config_1fx>())
-    return "1d_f32_i64";
-  if (std::is_same<CONFIG, mui::mui_config_2fx>())
-    return "2d_f32_i64";
-  if (std::is_same<CONFIG, mui::mui_config_3fx>())
-    return "3d_f32_i64";
 }
 
 template <class Tconfig>
@@ -167,59 +136,6 @@ void declare_sampler_sum_quintic(py::module &m)
   py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
 }
 
-// Geometry
-// TODO: split to another file geometry.cpp
-
-template <typename Tconfig>
-void declare_geometry_shape(py::module &m)
-{
-  std::string name = "_geometry_shape_" + config_name<Tconfig>();
-  py::class_<mui::geometry::shape<Tconfig>>(m, name.c_str());
-  // .def("__add__", (void (Tclass::*)()) &Tclass::forget, "")
-  // .def("__add__", [](mui::geometry::any_shape<Tconfig>,
-  // mui::geometry::any_shape<Tconfig>));
-}
-
-template <typename Tconfig>
-void declare_geometry_any_shape(py::module &m)
-{
-  std::string name = "_geometry_any_shape_" + config_name<Tconfig>();
-  using Tclass = mui::geometry::any_shape<Tconfig>;
-  py::class_<Tclass>(m, name.c_str())
-      .def(py::init<const mui::geometry::shape<Tconfig> &>());
-
-  // .def("__add__", (void (Tclass::*)()) &Tclass::forget, "")
-  // .def("__add__", [](mui::geometry::any_shape<Tconfig>,
-  // mui::geometry::any_shape<Tconfig>));
-}
-
-template <typename Tconfig>
-void declare_geometry_point(py::module &m)
-{
-  std::string name = "_geometry_point_" + config_name<Tconfig>();
-  py::class_<mui::geometry::point<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
-      .def(py::init<const mui::point<typename Tconfig::REAL, Tconfig::D> &>());
-}
-
-template <typename Tconfig>
-void declare_geometry_sphere(py::module &m)
-{
-  std::string name = "_geometry_sphere_" + config_name<Tconfig>();
-  py::class_<mui::geometry::sphere<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
-      .def(py::init<const mui::point<typename Tconfig::REAL, Tconfig::D> &,
-                    typename Tconfig::REAL>());
-}
-
-template <typename Tconfig>
-void declare_geometry_box(py::module &m)
-{
-  std::string name = "_geometry_box_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  py::class_<mui::geometry::box<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
-      .def(py::init<const mui::point<Treal, Tconfig::D> &,
-                    const mui::point<Treal, Tconfig::D> &>());
-}
-
 template <typename Tconfig>
 void declare_uniface_class(py::module &m)
 {
@@ -260,44 +176,8 @@ void declare_uniface_class(py::module &m)
                              mui::geometry::any_shape<Tconfig>>();
 }
 
-template <typename Tconfig>
-void declare_chrono_sampler_exact(py::module &m)
-{
-  std::string name = "_chrono_sampler_exact_" + config_name<Tconfig>();
-  using Ttime = typename Tconfig::time_type;
-  py::class_<mui::chrono_sampler_exact<Tconfig>>(m, name.c_str())
-      .def(py::init<Ttime>(), py::arg("tol") = Ttime(0.0));
-}
-
-template <template <typename Type> class TclassTemplate, typename Tconfig>
-void declare_chrono_sampler_gauss(py::module &m)
-{
-  std::string name = "_chrono_sampler_gauss_" + config_name<Tconfig>();
-  using Treal = typename Tconfig::REAL;
-  using Ttime = typename Tconfig::time_type;
-  py::class_<mui::chrono_sampler_gauss<Tconfig>>(m, name.c_str()).def(py::init<Ttime, Treal>());
-}
-
-template <typename Tconfig>
-void declare_chrono_sampler_mean(py::module &m)
-{
-  std::string name = "_chrono_sampler_mean_" + config_name<Tconfig>();
-  using Ttime = typename Tconfig::time_type;
-  py::class_<mui::chrono_sampler_mean<Tconfig>>(m, name.c_str())
-      .def(py::init<Ttime, Ttime>(), py::arg("newleft") = Ttime(0),
-           py::arg("newright") = Ttime(0));
-}
-
-template <typename Tconfig>
-void declare_chrono_sampler_sum(py::module &m)
-{
-  std::string name = "_chrono_sampler_sum_" + config_name<Tconfig>();
-  using Tclass = mui::chrono_sampler_sum<Tconfig>;
-  using Ttime = typename Tconfig::time_type;
-  py::class_<Tclass>(m, name.c_str())
-      .def(py::init<Ttime, Ttime>(), py::arg("newleft") = Ttime(0),
-           py::arg("newright") = Ttime(0));
-}
+void chrono_sampler(py::module &m);
+void geometry(py::module &m);
 
 PYBIND11_MODULE(mui4py_mod, m)
 {
@@ -307,24 +187,14 @@ PYBIND11_MODULE(mui4py_mod, m)
   m.attr("numeric_limits_real") = std::numeric_limits<double>::min();
   m.attr("numeric_limits_int") = std::numeric_limits<int>::min();
 
+  geometry(m);
+
   declare_uniface_class<mui::mui_config_1dx>(m);
-  declare_geometry_point<mui::mui_config_1dx>(m);
-  declare_geometry_box<mui::mui_config_1dx>(m);
-  declare_geometry_sphere<mui::mui_config_1dx>(m);
-  declare_geometry_any_shape<mui::mui_config_1dx>(m);
-  declare_geometry_shape<mui::mui_config_1dx>(m);
 
   declare_sampler_exact<mui::mui_config_1dx, double>(m);
   declare_sampler_nearest_neighbor<mui::mui_config_1dx, double>(m);
 
 #ifdef PYTHON_INT_64
-  declare_chrono_sampler_sum<mui::mui_config_1dx>(m);
-  declare_chrono_sampler_sum<mui::mui_config_2dx>(m);
-  declare_chrono_sampler_sum<mui::mui_config_3dx>(m);
-  declare_chrono_sampler_sum<mui::mui_config_1fx>(m);
-  declare_chrono_sampler_sum<mui::mui_config_2fx>(m);
-  declare_chrono_sampler_sum<mui::mui_config_3fx>(m);
-
   py_create_uniface<mui::mui_config_1dx>(m);
   py_create_uniface<mui::mui_config_2dx>(m);
   py_create_uniface<mui::mui_config_3dx>(m);
@@ -332,13 +202,6 @@ PYBIND11_MODULE(mui4py_mod, m)
   py_create_uniface<mui::mui_config_2fx>(m);
   py_create_uniface<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
-  declare_chrono_sampler_sum<mui::mui_config_1d>(m);
-  declare_chrono_sampler_sum<mui::mui_config_2d>(m);
-  declare_chrono_sampler_sum<mui::mui_config_3d>(m);
-  declare_chrono_sampler_sum<mui::mui_config_1f>(m);
-  declare_chrono_sampler_sum<mui::mui_config_2f>(m);
-  declare_chrono_sampler_sum<mui::mui_config_3f>(m);
-
   py_create_uniface<mui::mui_config_1d>(m);
   py_create_uniface<mui::mui_config_2d>(m);
   py_create_uniface<mui::mui_config_3d>(m);
