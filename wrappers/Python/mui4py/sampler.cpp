@@ -95,6 +95,16 @@ void declare_sampler_pseudo_n2_linear_t(py::module &m)
     py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
 }
 
+template <typename Tconfig>
+void declare_sampler_pseudo_n2_linear(py::module &m)
+{
+    declare_sampler_pseudo_n2_linear_t<Tconfig, double>(m);
+    declare_sampler_pseudo_n2_linear_t<Tconfig, float>(m);
+    declare_sampler_pseudo_n2_linear_t<Tconfig, std::int32_t>(m);
+    declare_sampler_pseudo_n2_linear_t<Tconfig, std::int64_t>(m);
+    declare_sampler_pseudo_n2_linear_t<Tconfig, std::string>(m);
+}
+
 // SPATIAL_SAMPLER_PSEUDO_NEAREST_NEIGHBOR CLASS//
 template <typename Tconfig, typename T = void>
 void declare_sampler_pseudo_nearest_neighbor_t(py::module &m)
@@ -103,6 +113,16 @@ void declare_sampler_pseudo_nearest_neighbor_t(py::module &m)
     using Treal = typename Tconfig::REAL;
     using Tclass = mui::sampler_pseudo_nearest_neighbor<Tconfig, T, T>;
     py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
+}
+
+template <typename Tconfig>
+void declare_sampler_pseudo_nearest_neighbor(py::module &m)
+{
+    declare_sampler_pseudo_nearest_neighbor_t<Tconfig, double>(m);
+    declare_sampler_pseudo_nearest_neighbor_t<Tconfig, float>(m);
+    declare_sampler_pseudo_nearest_neighbor_t<Tconfig, std::int32_t>(m);
+    declare_sampler_pseudo_nearest_neighbor_t<Tconfig, std::int64_t>(m);
+    declare_sampler_pseudo_nearest_neighbor_t<Tconfig, std::string>(m);
 }
 
 // SPATIAL_SAMPLER_SHEPARD_QUINTIC CLASS//
@@ -115,14 +135,34 @@ void declare_sampler_shepard_quintic_t(py::module &m)
     py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
 }
 
+template <typename Tconfig>
+void declare_sampler_shepard_quintic(py::module &m)
+{
+    declare_sampler_shepard_quintic_t<Tconfig, double>(m);
+    declare_sampler_shepard_quintic_t<Tconfig, float>(m);
+    declare_sampler_shepard_quintic_t<Tconfig, std::int32_t>(m);
+    declare_sampler_shepard_quintic_t<Tconfig, std::int64_t>(m);
+    declare_sampler_shepard_quintic_t<Tconfig, std::string>(m);
+}
+
 // SPATIAL_SAMPLER_SPH_QUINTIC CLASS//
 template <typename Tconfig, typename T = void>
-void declare_sampler_sph_quintic(py::module &m)
+void declare_sampler_sph_quintic_t(py::module &m)
 {
     std::string name = "_Sampler_sph_quintic" + config_name<Tconfig>() + "_" + type_name<T>();
     using Treal = typename Tconfig::REAL;
     using Tclass = mui::sampler_sph_quintic<Tconfig, T, T>;
     py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
+}
+
+template <typename Tconfig>
+void declare_sampler_sph_quintic(py::module &m)
+{
+    declare_sampler_sph_quintic_t<Tconfig, double>(m);
+    declare_sampler_sph_quintic_t<Tconfig, float>(m);
+    declare_sampler_sph_quintic_t<Tconfig, std::int32_t>(m);
+    declare_sampler_sph_quintic_t<Tconfig, std::int64_t>(m);
+    declare_sampler_sph_quintic_t<Tconfig, std::string>(m);
 }
 
 // SPATIAL_SAMPLER_SUM_QUINTIC CLASS//
@@ -133,6 +173,16 @@ void declare_sampler_sum_quintic_t(py::module &m)
     using Treal = typename Tconfig::REAL;
     using Tclass = mui::sampler_sum_quintic<Tconfig, T, T>;
     py::class_<Tclass>(m, name.c_str()).def(py::init<Treal>());
+}
+
+template <typename Tconfig>
+void declare_sampler_sum_quintic(py::module &m)
+{
+    declare_sampler_sum_quintic_t<Tconfig, double>(m);
+    declare_sampler_sum_quintic_t<Tconfig, float>(m);
+    declare_sampler_sum_quintic_t<Tconfig, std::int32_t>(m);
+    declare_sampler_sum_quintic_t<Tconfig, std::int64_t>(m);
+    declare_sampler_sum_quintic_t<Tconfig, std::string>(m);
 }
 
 void sampler(py::module &m)
@@ -166,6 +216,41 @@ void sampler(py::module &m)
     declare_sampler_nearest_neighbor<mui::mui_config_1fx>(m);
     declare_sampler_nearest_neighbor<mui::mui_config_2fx>(m);
     declare_sampler_nearest_neighbor<mui::mui_config_3fx>(m);
+
+    declare_sampler_pseudo_n2_linear<mui::mui_config_1dx>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_2dx>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_3dx>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_1fx>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_2fx>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_3fx>(m);
+
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1dx>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2dx>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3dx>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1fx>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2fx>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3fx>(m);
+
+    declare_sampler_shepard_quintic<mui::mui_config_1dx>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_2dx>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_3dx>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_1fx>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_2fx>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_3fx>(m);
+
+    declare_sampler_sph_quintic<mui::mui_config_1dx>(m);
+    declare_sampler_sph_quintic<mui::mui_config_2dx>(m);
+    declare_sampler_sph_quintic<mui::mui_config_3dx>(m);
+    declare_sampler_sph_quintic<mui::mui_config_1fx>(m);
+    declare_sampler_sph_quintic<mui::mui_config_2fx>(m);
+    declare_sampler_sph_quintic<mui::mui_config_3fx>(m);
+
+    declare_sampler_sum_quintic<mui::mui_config_1dx>(m);
+    declare_sampler_sum_quintic<mui::mui_config_2dx>(m);
+    declare_sampler_sum_quintic<mui::mui_config_3dx>(m);
+    declare_sampler_sum_quintic<mui::mui_config_1fx>(m);
+    declare_sampler_sum_quintic<mui::mui_config_2fx>(m);
+    declare_sampler_sum_quintic<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
 
     declare_sampler_exact<mui::mui_config_1d>(m);
