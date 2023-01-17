@@ -29,4 +29,19 @@ std::string config_name()
         return "2d_f32_i64";
     if (std::is_same<CONFIG, mui::mui_config_3fx>())
         return "3d_f32_i64";
+    throw std::runtime_error("Invalid config type");
+}
+
+template <typename T>
+std::string type_name()
+{
+    if (std::is_same<T, double>())
+        return "double";
+    if (std::is_same<T, float>())
+        return "float";
+    if (std::is_same<T, std::int32_t>())
+        return "int32_t";
+    if (std::is_same<T, std::int64_t>())
+        return "int64_t";
+    throw std::runtime_error("Invalid type");
 }

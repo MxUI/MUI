@@ -9,7 +9,7 @@
 template <typename Tconfig>
 void declare_geometry_shape(py::module &m)
 {
-    std::string name = "_geometry_shape_" + config_name<Tconfig>();
+    std::string name = "_geometry_Shape" + config_name<Tconfig>();
     py::class_<mui::geometry::shape<Tconfig>>(m, name.c_str());
 
     py::implicitly_convertible<mui::geometry::shape<Tconfig>,
@@ -19,7 +19,7 @@ void declare_geometry_shape(py::module &m)
 template <typename Tconfig>
 void declare_geometry_any_shape(py::module &m)
 {
-    std::string name = "_geometry_any_shape_" + config_name<Tconfig>();
+    std::string name = "_geometry_Any_shape" + config_name<Tconfig>();
     using Tclass = mui::geometry::any_shape<Tconfig>;
     py::class_<Tclass>(m, name.c_str())
         .def(py::init<const mui::geometry::shape<Tconfig> &>());
@@ -28,7 +28,7 @@ void declare_geometry_any_shape(py::module &m)
 template <typename Tconfig>
 void declare_geometry_point(py::module &m)
 {
-    std::string name = "_geometry_point_" + config_name<Tconfig>();
+    std::string name = "_geometry_Point" + config_name<Tconfig>();
     py::class_<mui::geometry::point<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
         .def(py::init<const mui::point<typename Tconfig::REAL, Tconfig::D> &>());
 }
@@ -36,7 +36,7 @@ void declare_geometry_point(py::module &m)
 template <typename Tconfig>
 void declare_geometry_sphere(py::module &m)
 {
-    std::string name = "_geometry_sphere_" + config_name<Tconfig>();
+    std::string name = "_geometry_Sphere" + config_name<Tconfig>();
     py::class_<mui::geometry::sphere<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
         .def(py::init<const mui::point<typename Tconfig::REAL, Tconfig::D> &,
                       typename Tconfig::REAL>());
@@ -45,7 +45,7 @@ void declare_geometry_sphere(py::module &m)
 template <typename Tconfig>
 void declare_geometry_box(py::module &m)
 {
-    std::string name = "_geometry_box_" + config_name<Tconfig>();
+    std::string name = "_geometry_Box" + config_name<Tconfig>();
     using Treal = typename Tconfig::REAL;
     py::class_<mui::geometry::box<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
         .def(py::init<const mui::point<Treal, Tconfig::D> &,

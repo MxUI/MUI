@@ -7,7 +7,7 @@
 template <typename Tconfig>
 void declare_chrono_sampler_exact(py::module &m)
 {
-    std::string name = "_chrono_sampler_exact_" + config_name<Tconfig>();
+    std::string name = "_Chrono_sampler_exact" + config_name<Tconfig>();
     using Ttime = typename Tconfig::time_type;
     py::class_<mui::chrono_sampler_exact<Tconfig>>(m, name.c_str())
         .def(py::init<Ttime>(), py::arg("tol") = Ttime(0.0));
@@ -16,7 +16,7 @@ void declare_chrono_sampler_exact(py::module &m)
 template <template <typename Type> class TclassTemplate, typename Tconfig>
 void declare_chrono_sampler_gauss(py::module &m)
 {
-    std::string name = "_chrono_sampler_gauss_" + config_name<Tconfig>();
+    std::string name = "_Chrono_sampler_gauss" + config_name<Tconfig>();
     using Treal = typename Tconfig::REAL;
     using Ttime = typename Tconfig::time_type;
     py::class_<mui::chrono_sampler_gauss<Tconfig>>(m, name.c_str()).def(py::init<Ttime, Treal>());
@@ -25,7 +25,7 @@ void declare_chrono_sampler_gauss(py::module &m)
 template <typename Tconfig>
 void declare_chrono_sampler_mean(py::module &m)
 {
-    std::string name = "_chrono_sampler_mean_" + config_name<Tconfig>();
+    std::string name = "_Chrono_sampler_mean" + config_name<Tconfig>();
     using Ttime = typename Tconfig::time_type;
     py::class_<mui::chrono_sampler_mean<Tconfig>>(m, name.c_str())
         .def(py::init<Ttime, Ttime>(), py::arg("newleft") = Ttime(0),
@@ -35,7 +35,7 @@ void declare_chrono_sampler_mean(py::module &m)
 template <typename Tconfig>
 void declare_chrono_sampler_sum(py::module &m)
 {
-    std::string name = "_chrono_sampler_sum_" + config_name<Tconfig>();
+    std::string name = "_Chrono_sampler_sum" + config_name<Tconfig>();
     using Tclass = mui::chrono_sampler_sum<Tconfig>;
     using Ttime = typename Tconfig::time_type;
     py::class_<Tclass>(m, name.c_str())
