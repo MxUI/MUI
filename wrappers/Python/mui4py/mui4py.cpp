@@ -48,7 +48,7 @@ void py_create_uniface(py::module &m)
 template <typename Tconfig>
 void declare_uniface_class(py::module &m)
 {
-  std::string name = "_uniface_" + config_name<Tconfig>();
+  std::string name = "_Uniface" + config_name<Tconfig>();
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;

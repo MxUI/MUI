@@ -43,5 +43,7 @@ std::string type_name()
         return "int32_t";
     if (std::is_same<T, std::int64_t>())
         return "int64_t";
+    if (std::is_same<T, std::string>())
+        return "string";
     throw std::runtime_error("Invalid type");
 }
