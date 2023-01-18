@@ -38,11 +38,40 @@ std::string get_compiler_config()
 }
 
 template <class Tconfig>
-void py_create_uniface(py::module &m)
+void declare_create_uniface(py::module &m)
 {
-  std::string name = "_create_uniface_" + config_name<Tconfig>();
+  std::string name = "_create_uniface" + config_name<Tconfig>();
   m.def(name.c_str(), [](std::string domain, std::vector<std::string> interfaces, py::handle world)
         { return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD); });
+}
+
+template <typename Tconfig, typename T>
+void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+
+  std::string push_name = "push_" + type_name<T>();
+  std::string push_many_name = "push_many_" + type_name<T>();
+  std::string fetch_name = "fetch_" + type_name<T>();
+  uniface.def(push_name.c_str(),
+              (void(Tclass::*)(const std::string &, const mui::point<Treal, Tconfig::D> &,
+                               const T &)) &
+                  Tclass::push,
+              "")
+      .def(push_name.c_str(),
+           (void(Tclass::*)(const std::string &, const T &)) & Tclass::push,
+           "")
+      .def(fetch_name.c_str(),
+           (T(Tclass::*)(const std::string &)) & Tclass::fetch, "");
+
+  // Do not enable push_many for string (C++17 required)
+  if constexpr (!std::is_same_v<T, std::string>)
+    uniface.def(push_many_name.c_str(),
+                (void(Tclass::*)(const std::string &attr, const py::array_t<Treal> &points,
+                                 const py::array_t<T> &values)) &
+                    Tclass::push_many,
+                "");
 }
 
 template <typename Tconfig>
@@ -52,7 +81,9 @@ void declare_uniface_class(py::module &m)
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
-  py::class_<Tclass>(m, name.c_str())
+  py::class_<Tclass> uniface(m, name.c_str());
+
+  uniface
       .def("commit", (int(Tclass::*)(Ttime)) & Tclass::commit, "")
       .def("forecast", (void(Tclass::*)(Ttime)) & Tclass::forecast, "")
       //.def("is_ready", &Tclass::is_ready, "")
@@ -75,12 +106,15 @@ void declare_uniface_class(py::module &m)
            (void(Tclass::*)()) & Tclass::announce_send_disable, "")
       .def("announce_recv_disable",
            (void(Tclass::*)()) & Tclass::announce_recv_disable, "")
-      // DEFINE_MUI_UNIFACE_PUSH() DEFINE_MUI_UNIFACE_FETCH_1ARG()
       //    DEFINE_MUI_UNIFACE_FETCH_5ARGS() DEFINE_MUI_UNIFACE_FETCH_6ARGS()
-      // Temporarily disabled the fetch_point function. Bind the variadic
-      // template later.
-      //     DEFINE_MUI_UNIFACE_FETCH_POINTS()
+
       .def(py::init<const std::string &>());
+
+  declare_uniface_funcs<Tconfig, double>(uniface);
+  declare_uniface_funcs<Tconfig, float>(uniface);
+  declare_uniface_funcs<Tconfig, std::int32_t>(uniface);
+  declare_uniface_funcs<Tconfig, std::int64_t>(uniface);
+  declare_uniface_funcs<Tconfig, std::string>(uniface);
 }
 
 // Declaration of other files
@@ -108,12 +142,12 @@ PYBIND11_MODULE(mui4py_mod, m)
   declare_uniface_class<mui::mui_config_2fx>(m);
   declare_uniface_class<mui::mui_config_3fx>(m);
 
-  py_create_uniface<mui::mui_config_1dx>(m);
-  py_create_uniface<mui::mui_config_2dx>(m);
-  py_create_uniface<mui::mui_config_3dx>(m);
-  py_create_uniface<mui::mui_config_1fx>(m);
-  py_create_uniface<mui::mui_config_2fx>(m);
-  py_create_uniface<mui::mui_config_3fx>(m);
+  declare_create_uniface<mui::mui_config_1dx>(m);
+  declare_create_uniface<mui::mui_config_2dx>(m);
+  declare_create_uniface<mui::mui_config_3dx>(m);
+  declare_create_uniface<mui::mui_config_1fx>(m);
+  declare_create_uniface<mui::mui_config_2fx>(m);
+  declare_create_uniface<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
   declare_uniface_class<mui::mui_config_1d>(m);
   declare_uniface_class<mui::mui_config_2d>(m);
@@ -122,12 +156,12 @@ PYBIND11_MODULE(mui4py_mod, m)
   declare_uniface_class<mui::mui_config_2f>(m);
   declare_uniface_class<mui::mui_config_3f>(m);
 
-  py_create_uniface<mui::mui_config_1d>(m);
-  py_create_uniface<mui::mui_config_2d>(m);
-  py_create_uniface<mui::mui_config_3d>(m);
-  py_create_uniface<mui::mui_config_1f>(m);
-  py_create_uniface<mui::mui_config_2f>(m);
-  py_create_uniface<mui::mui_config_3f>(m);
+  declare_create_uniface<mui::mui_config_1d>(m);
+  declare_create_uniface<mui::mui_config_2d>(m);
+  declare_create_uniface<mui::mui_config_3d>(m);
+  declare_create_uniface<mui::mui_config_1f>(m);
+  declare_create_uniface<mui::mui_config_2f>(m);
+  declare_create_uniface<mui::mui_config_3f>(m);
 #else
 #error PYTHON_INT_[32|64] not defined.
 #endif

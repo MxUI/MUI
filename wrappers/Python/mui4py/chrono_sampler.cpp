@@ -1,6 +1,8 @@
 
 #include <mui.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 #include <string>
 #include "config_name.h"
 
@@ -13,7 +15,7 @@ void declare_chrono_sampler_exact(py::module &m)
         .def(py::init<Ttime>(), py::arg("tol") = Ttime(0.0));
 }
 
-template <template <typename Type> class TclassTemplate, typename Tconfig>
+template <typename Tconfig>
 void declare_chrono_sampler_gauss(py::module &m)
 {
     std::string name = "_Chrono_sampler_gauss" + config_name<Tconfig>();
@@ -46,6 +48,27 @@ void declare_chrono_sampler_sum(py::module &m)
 void chrono_sampler(py::module &m)
 {
 #ifdef PYTHON_INT_64
+    declare_chrono_sampler_exact<mui::mui_config_1dx>(m);
+    declare_chrono_sampler_exact<mui::mui_config_2dx>(m);
+    declare_chrono_sampler_exact<mui::mui_config_3dx>(m);
+    declare_chrono_sampler_exact<mui::mui_config_1fx>(m);
+    declare_chrono_sampler_exact<mui::mui_config_2fx>(m);
+    declare_chrono_sampler_exact<mui::mui_config_3fx>(m);
+
+    declare_chrono_sampler_gauss<mui::mui_config_1dx>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_2dx>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_3dx>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_1fx>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_2fx>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_3fx>(m);
+
+    declare_chrono_sampler_mean<mui::mui_config_1dx>(m);
+    declare_chrono_sampler_mean<mui::mui_config_2dx>(m);
+    declare_chrono_sampler_mean<mui::mui_config_3dx>(m);
+    declare_chrono_sampler_mean<mui::mui_config_1fx>(m);
+    declare_chrono_sampler_mean<mui::mui_config_2fx>(m);
+    declare_chrono_sampler_mean<mui::mui_config_3fx>(m);
+
     declare_chrono_sampler_sum<mui::mui_config_1dx>(m);
     declare_chrono_sampler_sum<mui::mui_config_2dx>(m);
     declare_chrono_sampler_sum<mui::mui_config_3dx>(m);
@@ -53,6 +76,27 @@ void chrono_sampler(py::module &m)
     declare_chrono_sampler_sum<mui::mui_config_2fx>(m);
     declare_chrono_sampler_sum<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
+    declare_chrono_sampler_exact<mui::mui_config_1d>(m);
+    declare_chrono_sampler_exact<mui::mui_config_2d>(m);
+    declare_chrono_sampler_exact<mui::mui_config_3d>(m);
+    declare_chrono_sampler_exact<mui::mui_config_1f>(m);
+    declare_chrono_sampler_exact<mui::mui_config_2f>(m);
+    declare_chrono_sampler_exact<mui::mui_config_3f>(m);
+
+    declare_chrono_sampler_gauss<mui::mui_config_1d>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_2d>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_3d>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_1f>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_2f>(m);
+    declare_chrono_sampler_gauss<mui::mui_config_3f>(m);
+
+    declare_chrono_sampler_mean<mui::mui_config_1d>(m);
+    declare_chrono_sampler_mean<mui::mui_config_2d>(m);
+    declare_chrono_sampler_mean<mui::mui_config_3d>(m);
+    declare_chrono_sampler_mean<mui::mui_config_1f>(m);
+    declare_chrono_sampler_mean<mui::mui_config_2f>(m);
+    declare_chrono_sampler_mean<mui::mui_config_3f>(m);
+
     declare_chrono_sampler_sum<mui::mui_config_1d>(m);
     declare_chrono_sampler_sum<mui::mui_config_2d>(m);
     declare_chrono_sampler_sum<mui::mui_config_3d>(m);
