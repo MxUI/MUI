@@ -60,7 +60,7 @@ module mui_1d_f
   end type ptr_typ_1d
 
   !Create an allocatable array to collect MUI uniface pointers with the type of
-  ! ptr_typ_1d for multi-domian function
+  ! ptr_typ_1d for multi-domain function
   type(ptr_typ_1d), target, save, allocatable :: uniface_pointers_1d(:)
 
   interface
@@ -110,7 +110,7 @@ module mui_1d_f
       import :: c_char,c_int
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end subroutine mui_create_uniface_multi_1f_f
 
     !Set of 1D interfaces with float=single and int=int64
@@ -120,7 +120,7 @@ module mui_1d_f
       import :: c_char,c_int
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end subroutine mui_create_uniface_multi_1fx_f
 
     !Set of 1D interfaces with float=double and int=int32
@@ -130,7 +130,7 @@ module mui_1d_f
       import :: c_char,c_int
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end subroutine mui_create_uniface_multi_1d_f
 
     !Set of 1D interfaces with float=double and int=int64
@@ -140,7 +140,7 @@ module mui_1d_f
       import :: c_char,c_int
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end subroutine mui_create_uniface_multi_1dx_f
 
     !Set of 1D interfaces using config from config_c_wrapper.h
@@ -150,7 +150,7 @@ module mui_1d_f
       import :: c_char,c_int
       character(kind=c_char), intent(in) :: domain(*)
       character(kind=c_char,len=*), intent(in) :: interfaces(*)
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end subroutine mui_create_uniface_multi_1t_f
 
     !Access to MUI set of 1D interfaces with float=single and int=int32
@@ -158,7 +158,7 @@ module mui_1d_f
     ! this subroutine directly
     type(c_ptr) function get_mui_uniface_multi_1f_f(interface_count) bind(C)
       import :: c_ptr,c_int
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end function get_mui_uniface_multi_1f_f
 
     !Access to MUI set of 1D interfaces with float=single and int=int64
@@ -166,7 +166,7 @@ module mui_1d_f
     ! this subroutine directly
     type(c_ptr) function get_mui_uniface_multi_1fx_f(interface_count) bind(C)
       import :: c_ptr,c_int
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end function get_mui_uniface_multi_1fx_f
 
     !Access to MUI set of 1D interfaces with float=double and int=int32
@@ -174,7 +174,7 @@ module mui_1d_f
     ! this subroutine directly
     type(c_ptr) function get_mui_uniface_multi_1d_f(interface_count) bind(C)
       import :: c_ptr,c_int
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end function get_mui_uniface_multi_1d_f
 
     !Access to MUI set of 1D interfaces with float=double and int=int64
@@ -182,7 +182,7 @@ module mui_1d_f
     ! this subroutine directly
     type(c_ptr) function get_mui_uniface_multi_1dx_f(interface_count) bind(C)
       import :: c_ptr,c_int
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end function get_mui_uniface_multi_1dx_f
 
     !Access to MUI set of 1D interfaces using config from config_f_wrapper.h
@@ -190,7 +190,7 @@ module mui_1d_f
     ! this subroutine directly
     type(c_ptr) function get_mui_uniface_multi_1t_f(interface_count) bind(C)
       import :: c_ptr,c_int
-      integer(kind=c_int), VALUE :: interface_count
+      integer(kind=c_int), value :: interface_count
     end function get_mui_uniface_multi_1t_f
 
     !****************************************
@@ -502,59 +502,59 @@ module mui_1d_f
 
 #ifdef USE_RBF
     !Radial Basis Function sampler
-    subroutine mui_create_sampler_rbf_1f_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,smoothFunc,readMatrix, &
-               file_address,cutoff) bind(C)
+    subroutine mui_create_sampler_rbf_1f_f(sampler,r,points_1,points_count,basis_func,conservative,smoothFunc,readMatrix, &
+               writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
       import :: c_ptr,c_int,c_float,c_char
       type(c_ptr), intent(out), target :: sampler(*)
-      character(kind=c_char), intent(in) :: file_address(*)
-      type(c_float), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      character(c_char), intent(in) :: file_address(*)
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolveIt, &
+      pouSize
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol
+      real(kind=c_float), intent(in), dimension(points_count), target :: points_1
     end subroutine mui_create_sampler_rbf_1f_f
 
-    subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,smoothFunc,readMatrix, &
-               file_address,cutoff) bind(C)
+    subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points_1,points_count,basis_func,conservative,smoothFunc,readMatrix, &
+               writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
       import :: c_ptr,c_int,c_float,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_float), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolveIt, &
+      pouSize
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol
+      real(kind=c_float), intent(in), dimension(points_count), target :: points_1
     end subroutine mui_create_sampler_rbf_1fx_f
 
-    subroutine mui_create_sampler_rbf_1d_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,smoothFunc,readMatrix, &
-               file_address,cutoff) bind(C)
+    subroutine mui_create_sampler_rbf_1d_f(sampler,r,points_1,points_count,basis_func,conservative,smoothFunc,readMatrix, &
+               writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
       import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolveIt, &
+      pouSize
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
+      real(kind=c_double), intent(in), dimension(points_count), target :: points_1
     end subroutine mui_create_sampler_rbf_1d_f
 
-    subroutine mui_create_sampler_rbf_1dx_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,smoothFunc,readMatrix, &
-               file_address,cutoff) bind(C)
+    subroutine mui_create_sampler_rbf_1dx_f(sampler,r,points_1,points_count,basis_func,conservative,smoothFunc,readMatrix, &
+               writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
       import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolveIt, &
+      pouSize
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
+      real(kind=c_double), intent(in), dimension(points_count), target :: points_1
     end subroutine mui_create_sampler_rbf_1dx_f
 
-    subroutine mui_create_sampler_rbf_1t_f(sampler,r,points_1,points_count, &
-               basis_func,conservative,smoothFunc,readMatrix, &
-               file_address,cutoff) bind(C)
+    subroutine mui_create_sampler_rbf_1t_f(sampler,r,points_1,points_count,basis_func,conservative,smoothFunc,readMatrix, &
+               writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
       import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,readMatrix,writeMatrix,cgSolveIt, &
+      pouSize
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
+      real(c_double), intent(in), dimension(points_count), target :: points_1
     end subroutine mui_create_sampler_rbf_1t_f
 #endif
 
