@@ -58,13 +58,29 @@ std::string sampler_name()
     return "nearest_neighbor";
   if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_pseudo_n2_linear<Tconfig, T, T>>::value)
     return "pseudo_n2_linear";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_pseudo_nearest_neighbor<Tconfig, T, T>>::value)
+    return "pseudo_nearest_neighbor";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_shepard_quintic<Tconfig, T, T>>::value)
+    return "shepard_quintic";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_sph_quintic<Tconfig, T, T>>::value)
+    return "sph_quintic";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_sum_quintic<Tconfig, T, T>>::value)
+    return "sum_quintic";
   throw std::runtime_error("Invalid sampler type");
 }
 
-template <typename Tchrono>
+template <typename Tconfig, template <typename> class Tchrono>
 std::string chrono_sampler_name()
 {
-  return "chrono_exact";
+  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_exact<Tconfig>>::value)
+    return "chrono_exact";
+  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_gauss<Tconfig>>::value)
+    return "chrono_gauss";
+  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_sum<Tconfig>>::value)
+    return "chrono_sum";
+  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_mean<Tconfig>>::value)
+    return "chrono_mean";
+  throw std::runtime_error("Invalid chrono sampler type");
 }
 
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Tchrono>
@@ -74,14 +90,33 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
 
-  std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_";
+  std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
+  std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
   uniface.def(fetch_name.c_str(),
               (T(Tclass::*)(
                   const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
                   const Tsampler<Tconfig, T, T> &,
                   const Tchrono<Tconfig> &, bool)) &
                   Tclass::fetch,
-              "");
+              "")
+      .def(fetch_name.c_str(),
+           (T(Tclass::*)(
+               const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
+               const Ttime,
+               const Tsampler<Tconfig, T, T> &,
+               const Tchrono<Tconfig> &, bool)) &
+               Tclass::fetch,
+           "");
+
+  if constexpr (!std::is_same_v<T, std::string>)
+    uniface.def(fetch_many_name.c_str(),
+                (py::array_t<T, py::array::c_style>(Tclass::*)(
+                    const std::string &attr,
+                    const py::array_t<Treal, py::array::c_style> points, const Ttime t,
+                    const Tsampler<Tconfig, T, T> &sampler,
+                    const Tchrono<Tconfig> &t_sampler)) &
+                    Tclass::fetch_many,
+                "");
 }
 
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
@@ -126,6 +161,13 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
                     Tclass::push_many,
                 "");
     declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_gauss>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_moving_average>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_nearest_neighbor>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_n2_linear>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_nearest_neighbor>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_shepard_quintic>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sum_quintic>(uniface);
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sph_quintic>(uniface);
   }
 
   declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_exact>(uniface);
