@@ -91,7 +91,6 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
   using Ttime = typename Tconfig::time_type;
 
   std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
-  std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
   uniface.def(fetch_name.c_str(),
               (T(Tclass::*)(
                   const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
@@ -108,7 +107,10 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
                Tclass::fetch,
            "");
 
+  // Disable fetch_many for std::string
   if constexpr (!std::is_same_v<T, std::string>)
+  {
+    std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
     uniface.def(fetch_many_name.c_str(),
                 (py::array_t<T, py::array::c_style>(Tclass::*)(
                     const std::string &attr,
@@ -117,15 +119,17 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
                     const Tchrono<Tconfig> &t_sampler)) &
                     Tclass::fetch_many,
                 "");
+  }
 }
 
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
 void declare_uniface_fetch_all_chrono(py::class_<mui::uniface<Tconfig>> &uniface)
 {
   declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_exact>(uniface);
+
+  // Disable these chrono samplers for std::string
   if constexpr (!std::is_same_v<T, std::string>)
   {
-    // Disable these chrono samplers for std::string
     declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
     declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
     declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
@@ -223,7 +227,7 @@ void geometry(py::module &m);
 
 PYBIND11_MODULE(mui4py_mod, m)
 {
-  m.doc() = "MUI bindings for Python."; // optional module docstring
+  m.doc() = "MUI bindings for Python.";
 
   // Expose numerical limits from C++
   m.attr("numeric_limits_real") = std::numeric_limits<double>::min();
