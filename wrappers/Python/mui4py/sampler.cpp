@@ -276,10 +276,75 @@ void sampler(py::module &m)
     declare_sampler_sum_quintic<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
 
+    declare_point<mui::mui_config_1d>(m);
+    declare_point<mui::mui_config_2d>(m);
+    declare_point<mui::mui_config_3d>(m);
+    declare_point<mui::mui_config_1f>(m);
+    declare_point<mui::mui_config_2f>(m);
+    declare_point<mui::mui_config_3f>(m);
+
     declare_sampler_exact<mui::mui_config_1d>(m);
+    declare_sampler_exact<mui::mui_config_2d>(m);
+    declare_sampler_exact<mui::mui_config_3d>(m);
+    declare_sampler_exact<mui::mui_config_1f>(m);
+    declare_sampler_exact<mui::mui_config_2f>(m);
+    declare_sampler_exact<mui::mui_config_3f>(m);
+
     declare_sampler_gauss<mui::mui_config_1d>(m);
+    declare_sampler_gauss<mui::mui_config_2d>(m);
+    declare_sampler_gauss<mui::mui_config_3d>(m);
+    declare_sampler_gauss<mui::mui_config_1f>(m);
+    declare_sampler_gauss<mui::mui_config_2f>(m);
+    declare_sampler_gauss<mui::mui_config_3f>(m);
+
     declare_sampler_moving_average<mui::mui_config_1d>(m);
+    declare_sampler_moving_average<mui::mui_config_2d>(m);
+    declare_sampler_moving_average<mui::mui_config_3d>(m);
+    declare_sampler_moving_average<mui::mui_config_1f>(m);
+    declare_sampler_moving_average<mui::mui_config_2f>(m);
+    declare_sampler_moving_average<mui::mui_config_3f>(m);
+
     declare_sampler_nearest_neighbor<mui::mui_config_1d>(m);
+    declare_sampler_nearest_neighbor<mui::mui_config_2d>(m);
+    declare_sampler_nearest_neighbor<mui::mui_config_3d>(m);
+    declare_sampler_nearest_neighbor<mui::mui_config_1f>(m);
+    declare_sampler_nearest_neighbor<mui::mui_config_2f>(m);
+    declare_sampler_nearest_neighbor<mui::mui_config_3f>(m);
+
+    declare_sampler_pseudo_n2_linear<mui::mui_config_1d>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_2d>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_3d>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_1f>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_2f>(m);
+    declare_sampler_pseudo_n2_linear<mui::mui_config_3f>(m);
+
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1d>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2d>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3d>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1f>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2f>(m);
+    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3f>(m);
+
+    declare_sampler_shepard_quintic<mui::mui_config_1d>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_2d>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_3d>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_1f>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_2f>(m);
+    declare_sampler_shepard_quintic<mui::mui_config_3f>(m);
+
+    declare_sampler_sph_quintic<mui::mui_config_1d>(m);
+    declare_sampler_sph_quintic<mui::mui_config_2d>(m);
+    declare_sampler_sph_quintic<mui::mui_config_3d>(m);
+    declare_sampler_sph_quintic<mui::mui_config_1f>(m);
+    declare_sampler_sph_quintic<mui::mui_config_2f>(m);
+    declare_sampler_sph_quintic<mui::mui_config_3f>(m);
+
+    declare_sampler_sum_quintic<mui::mui_config_1d>(m);
+    declare_sampler_sum_quintic<mui::mui_config_2d>(m);
+    declare_sampler_sum_quintic<mui::mui_config_3d>(m);
+    declare_sampler_sum_quintic<mui::mui_config_1f>(m);
+    declare_sampler_sum_quintic<mui::mui_config_2f>(m);
+    declare_sampler_sum_quintic<mui::mui_config_3f>(m);
 
 #else
 #error PYTHON_INT_[32|64] not defined.

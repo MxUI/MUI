@@ -35,15 +35,15 @@ std::string config_name()
 template <typename T>
 std::string type_name()
 {
-    if (std::is_same<T, double>())
+    if (std::is_same<T, double>::value)
         return "double";
-    if (std::is_same<T, float>())
+    if (std::is_same<T, float>::value)
         return "float";
-    if (std::is_same<T, std::int32_t>())
+    if (std::is_same<T, std::int32_t>::value)
         return "int32_t";
-    if (std::is_same<T, std::int64_t>())
+    if (std::is_same<T, std::int64_t>::value)
         return "int64_t";
-    if (std::is_same<T, std::string>())
+    if (std::is_same<T, std::string>::value)
         return "string";
     throw std::runtime_error("Invalid type");
 }

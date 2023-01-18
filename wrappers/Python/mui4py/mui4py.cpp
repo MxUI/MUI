@@ -45,6 +45,58 @@ void declare_create_uniface(py::module &m)
         { return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD); });
 }
 
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
+std::string sampler_name()
+{
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_exact<Tconfig, T, T>>::value)
+    return "exact";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_gauss<Tconfig, T, T>>::value)
+    return "gauss";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_moving_average<Tconfig, T, T>>::value)
+    return "moving_average";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_nearest_neighbor<Tconfig, T, T>>::value)
+    return "nearest_neighbor";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_pseudo_n2_linear<Tconfig, T, T>>::value)
+    return "pseudo_n2_linear";
+  throw std::runtime_error("Invalid sampler type");
+}
+
+template <typename Tchrono>
+std::string chrono_sampler_name()
+{
+  return "chrono_exact";
+}
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Tchrono>
+void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+  using Ttime = typename Tconfig::time_type;
+
+  std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_";
+  uniface.def(fetch_name.c_str(),
+              (T(Tclass::*)(
+                  const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
+                  const Tsampler<Tconfig, T, T> &,
+                  const Tchrono<Tconfig> &, bool)) &
+                  Tclass::fetch,
+              "");
+}
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
+void declare_uniface_fetch_all_chrono(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_exact>(uniface);
+  if constexpr (!std::is_same_v<T, std::string>)
+  {
+    // Disable these chrono samplers for std::string
+    declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
+    declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
+    declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
+  }
+}
+
 template <typename Tconfig, typename T>
 void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
 {
@@ -65,13 +117,18 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
       .def(fetch_name.c_str(),
            (T(Tclass::*)(const std::string &)) & Tclass::fetch, "");
 
-  // Do not enable push_many for string (C++17 required)
+  // Do not use std::string in the following templates (C++17)
   if constexpr (!std::is_same_v<T, std::string>)
+  {
     uniface.def(push_many_name.c_str(),
                 (void(Tclass::*)(const std::string &attr, const py::array_t<Treal> &points,
                                  const py::array_t<T> &values)) &
                     Tclass::push_many,
                 "");
+    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_gauss>(uniface);
+  }
+
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_exact>(uniface);
 }
 
 template <typename Tconfig>
