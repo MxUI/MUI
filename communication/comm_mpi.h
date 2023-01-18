@@ -49,7 +49,7 @@
 
 #include <mpi.h>
 #include "comm.h"
-#include "util.h"
+#include "../general/util.h"
 #include "lib_uri.h"
 
 namespace mui {

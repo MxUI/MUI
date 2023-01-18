@@ -48,8 +48,8 @@
 #ifndef BIN_H
 #define BIN_H
 
-#include "geometry.h"
-#include "config.h"
+#include "../geometry/geometry.h"
+#include "../config.h"
 
 namespace mui {
 

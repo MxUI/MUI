@@ -49,34 +49,34 @@
 #define MUI_H_
 
 //Include spatial samplers
-#include "spatial_samplers/sampler_exact.h"
-#include "spatial_samplers/sampler_gauss.h"
-#include "spatial_samplers/sampler_mov_avg.h"
-#include "spatial_samplers/sampler_nn.h"
-#include "spatial_samplers/sampler_pseudo_nn.h"
-#include "spatial_samplers/sampler_pseudo_n2_linear.h"
-#include "spatial_samplers/sampler_sum_quintic.h"
-#include "spatial_samplers/sampler_sph_quintic.h"
-#include "spatial_samplers/sampler_shepard_quintic.h"
+#include "samplers/spatial/sampler_exact.h"
+#include "samplers/spatial/sampler_gauss.h"
+#include "samplers/spatial/sampler_mov_avg.h"
+#include "samplers/spatial/sampler_nn.h"
+#include "samplers/spatial/sampler_pseudo_nn.h"
+#include "samplers/spatial/sampler_pseudo_n2_linear.h"
+#include "samplers/spatial/sampler_sum_quintic.h"
+#include "samplers/spatial/sampler_sph_quintic.h"
+#include "samplers/spatial/sampler_shepard_quintic.h"
 #ifdef USE_RBF
-#include "spatial_samplers/sampler_rbf.h"
+#include "samplers/spatial/sampler_rbf.h"
 #endif
 
 //Include temporal samplers
-#include "temporal_samplers/temporal_sampler_exact.h"
-#include "temporal_samplers/temporal_sampler_gauss.h"
-#include "temporal_samplers/temporal_sampler_mean.h"
-#include "temporal_samplers/temporal_sampler_sum.h"
+#include "samplers/temporal/temporal_sampler_exact.h"
+#include "samplers/temporal/temporal_sampler_gauss.h"
+#include "samplers/temporal/temporal_sampler_mean.h"
+#include "samplers/temporal/temporal_sampler_sum.h"
 
 //Include coupling algorithms
-#include "coupling_algorithms/algo_fixed_relaxation.h"
-#include "coupling_algorithms/algo_aitken.h"
+#include "samplers/algorithm/algo_fixed_relaxation.h"
+#include "samplers/algorithm/algo_aitken.h"
 
 #include "sampler.h"
-#include "comm.h"
-#include "comm_mpi.h"
-#include "comm_mpi_smart.h"
-#include "dim.h"
+#include "communication/comm.h"
+#include "communication/comm_mpi.h"
+#include "communication/comm_mpi_smart.h"
+#include "general/dim.h"
 #include "lib_mpi_split.h"
 #include "lib_mpi_multidomain.h"
 #include "uniface.h"

@@ -38,106 +38,35 @@
 ******************************************************************************/
 
 /**
- * @file comm_mpi_smart.h
+ * @file comm_factory.h
  * @author Y. H. Tang
- * @date 12 March 2014
- * @brief Structures and methods for a smart (communication reducing)
- * communicator type.
+ * @date 14 March 2014
+ * @brief Structures and methods to create a new communicator based on chosen
+ * protocols.
  */
 
-#ifndef COMM_MPI_SMART_H
-#define COMM_MPI_SMART_H
+#ifndef COMM_FACTORY_H_
+#define COMM_FACTORY_H_
 
-#include <cstdint>
-#include <cstdlib>
-#include "util.h"
+#include "../general/util.h"
+#include "../general/exception.h"
+#include "lib_uri.h"
+#include "lib_dispatcher.h"
+#include "lib_singleton.h"
 #include "comm.h"
-#include "comm_mpi.h"
-#include "comm_factory.h"
-#include "message.h"
-#include "stream.h"
 
 namespace mui {
 
-class comm_mpi_smart : public comm_mpi {
-private:
-	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
-
-public:
-	comm_mpi_smart( const char URI[], const bool quiet, MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, quiet, world) {}
-	virtual ~comm_mpi_smart() {
-		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
-		test_completion_blocking();
-	}
-
-private:
-	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
-	  auto bytes = std::vector<char>(msg.detach());
-
-		if(bytes.size() > INT_MAX) {
-			std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
-					<< "This is likely because there is too much data per MPI rank." << std::endl
-					<< "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
-			std::abort();
+struct comm_factory: public singleton<dispatcher<std::string, std::function<communicator *(const char [], const bool)> > >
+{
+	static communicator *create_comm( const char URI[], const bool quiet ) {
+		if ( !instance().exist(uri(URI).protocol()) ) {
+			exception_segv( "MUI Error [comm_factory.h]: Unknown communicator type ", uri(URI).protocol() );
 		}
-
-		for( int i = 0; i < remote_size_; i++ ) {
-			if( is_sending[i] ) {
-				send_buf.emplace_back(MPI_Request(), std::make_shared<std::vector<char> >(bytes));
-				MPI_Isend(send_buf.back().second->data(), send_buf.back().second->size(), MPI_BYTE, i, 0,
-				          domain_remote_, &(send_buf.back().first));
-		 	}
-		}
-
-		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
-		test_completion();
-	}
-
-	message recv_impl_() {
-		// Catch any unsent MPI_Isend calls, non-blocking
-		test_completion();
-
-		MPI_Status status;
-		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
-		int count;
-		MPI_Get_count(&status, MPI_BYTE, &count);
-		std::vector<char> rcv_buf(count);
-		MPI_Recv( rcv_buf.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
-
-		// Catch any unsent MPI_Isend calls, non-blocking
-		test_completion();
-
-		return message::make(std::move(rcv_buf));
-	}
-
-	/** \brief Non-blocking check for complete MPI_Isend calls
-	 */
-	void test_completion() {
-	  for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ) {
-			int test = false;
-			MPI_Test(&(itr->first), &test, MPI_STATUS_IGNORE);
-			if( test ) itr = send_buf.erase(itr);
-			else ++itr;
-		}
-	}
-
-	/** \brief Time-limited blocking check for complete MPI_Isend calls
-	 */
-	void test_completion_blocking() {
-	  while (send_buf.size() > 0) {
-			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ) {
-				MPI_Wait(&(itr->first), MPI_STATUS_IGNORE);
-				itr = send_buf.erase(itr);
-			}
-		}
+		return instance()[uri(URI).protocol()]( URI, quiet );
 	}
 };
 
-inline communicator *create_comm_mpi_smart( const char URI[], const bool quiet ) {
-	return new comm_mpi_smart(URI, quiet);
 }
 
-const static bool registered = comm_factory::instance().link( "mpi", create_comm_mpi_smart );
-
-}
-#endif
+#endif /* COMM_FACTORY_H_ */

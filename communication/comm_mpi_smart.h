@@ -38,114 +38,106 @@
 ******************************************************************************/
 
 /**
- * @file comm_mpi_nxn.h
- * @author S. Kudo
- * @date 4 March 2014
- * @brief Structures and methods for a many-to-many (nxn) communicator type.
+ * @file comm_mpi_smart.h
+ * @author Y. H. Tang
+ * @date 12 March 2014
+ * @brief Structures and methods for a smart (communication reducing)
+ * communicator type.
  */
 
-#ifndef COMM_MPI_NXN_H
-#define COMM_MPI_NXN_H
+#ifndef COMM_MPI_SMART_H
+#define COMM_MPI_SMART_H
 
-#include <algorithm>
-#include <list>
-#include <deque>
-#include <vector>
-#include <mpi.h>
+#include <cstdint>
+#include <cstdlib>
+#include "../general/util.h"
 #include "comm.h"
+#include "comm_mpi.h"
+#include "comm_factory.h"
+#include "message.h"
+#include "stream.h"
 
 namespace mui {
-class mpicomm_nxn : public communicator {
+
+class comm_mpi_smart : public comm_mpi {
 private:
-	int tag;
-	MPI_Comm local_comm;
-	MPI_Comm intercomm;
-	std::list<std::pair<MPI_Request,std::vector<char> > > bufs;
-	std::deque<char> recv_buf;
+	std::list<std::pair<MPI_Request,std::shared_ptr<std::vector<char> > > > send_buf;
+
 public:
-	mpicomm_nxn( int tag_, MPI_Comm local_comm_, MPI_Comm remote_comm )
-		: tag(tag_), local_comm(local_comm_)
-	{
-		MPI_Intercomm_create( local_comm_, 0, remote_comm, 0, tag, &intercomm );
-	}
-	virtual ~mpicomm_nxn(){}
-	virtual int local_size() const {
-		int size;
-		MPI_Comm_size(local_comm,&size);
-		return size;
-	}
-	virtual int remote_size() const {
-		int size;
-		MPI_Comm_remote_size(inter_comm,&size);
-		return size;
+	comm_mpi_smart( const char URI[], const bool quiet, MPI_Comm world = MPI_COMM_WORLD ) : comm_mpi(URI, quiet, world) {}
+	virtual ~comm_mpi_smart() {
+		// Call blocking MPI_Test on any remaining MPI_Isend messages in buffer and if complete, pop before destruction or warn
+		test_completion_blocking();
 	}
 
-protected:
-	std::size_t send_impl_( const char* ptr, std::size_t size, std::vector<bool> is_sending ) {
-		_M_test();
-		if( local_rank == 0 ){
-			std::vector<int> recvsizes(local_size());
-			MPI_Gather((void*)&size, 1, MPI_INT,
-			           (void*)recvsizes.data(), 1, MPI_INT,
-			           0, local_comm);
-			std::vector<int> displ(local_size());
-			for( std::size_t i=0; i<displ.size(); ++i ) displ[i] = (!i ? 0: displ[i-1]+recvsizes[i-1]);
-			int total=0;
-			for( size_t v : recvsizes ) total += v;
-
-			bufs.push_back(std::make_pair(MPI_Request(),std::vector<char>(total)));
-			MPI_Gatherv(const_cast<char*>(ptr), size, MPI_BYTE,
-			            bufs.back().second.data(), recvsizes.data(), displ.data(), MPI_BYTE, 0, local_comm );
-			MPI_Isend(bufs.back().second.data(), total, MPI_BYTE, 0, tag, intercomm, &(bufs.back().first));
-		} else {
-			MPI_Gather((void*)&size, 1, MPI_INT,
-			           NULL, 0, MPI_INT, 0, local_comm);
-			MPI_Gatherv(const_cast<char*>(ptr), size, MPI_BYTE,
-			            0, 0, 0, MPI_BYTE, 0, local_comm );
-		}
-		return size;
-	}
-	std::size_t recv_impl_( char* ptr, std::size_t size ) {
-		_M_test();
-		int count;
-		std::vector<char> temp;
-		if( local_rank() ==  0 ){
-			MPI_Status status;
-			MPI_Probe(0, tag, intercomm, &status);
-			MPI_Get_count(&statuc,MPI_BYTE,&count);
-			temp.resize(count);
-			MPI_Recv(temp.data(),count,MPI_BYTE,0,tag,intercomm,MPI_IGNORE);
-		}
-		MPI_Bcast(&count,1,MPI_INT,0,local_comm);
-		if( local_rank() != 0 ) temp.resize(count);
-		MPI_Bcast(temp.data(),count,MPI_BYTE,0,local_comm);
-		recv_buf.insert(recv_buf.end(), temp.begin(), temp.end());
-
-		std::size_t ret_size = std::min(size,recv_buf.size());
-		std::copy_n(recv_buf.begin(),ret_size,ptr);
-		return ret_size;
-	}
-	int try_recv_impl_( char* ptr, std::size_t size, std::size_t* received_size ){
-		// not implemented yet
-		throw("mui::mpicomm::try_recv_impl_ is not implemented yet.");
-	}
 private:
-	int local_rank() const {
-		int rank;
-		MPI_Comm_rank(local_comm,&rank);
-		return rank;
+	void send_impl_( message msg, const std::vector<bool> &is_sending ) {
+	  auto bytes = std::vector<char>(msg.detach());
+
+		if(bytes.size() > INT_MAX) {
+			std::cerr << "MUI Error [comm_mpi_smart.h]: Trying to send more data than is possible with MPI_Isend." << std::endl
+					<< "This is likely because there is too much data per MPI rank." << std::endl
+					<< "The program will now abort. Try increasing the number of MPI ranks." << std::endl;
+			std::abort();
+		}
+
+		for( int i = 0; i < remote_size_; i++ ) {
+			if( is_sending[i] ) {
+				send_buf.emplace_back(MPI_Request(), std::make_shared<std::vector<char> >(bytes));
+				MPI_Isend(send_buf.back().second->data(), send_buf.back().second->size(), MPI_BYTE, i, 0,
+				          domain_remote_, &(send_buf.back().first));
+		 	}
+		}
+
+		// Call non-blocking MPI_Test on outstanding MPI_Isend messages in buffer and if complete, pop
+		test_completion();
 	}
 
-	void _M_test() {
-		if( local_rank() == 0 ){
-			int test = true;
-			while( test&&!bufs.empty() ) {
-				MPI_Test(&(bufs.front().first),&test,MPI_STATUS_IGNORE);
-				if( test ) bufs.pop_front();
+	message recv_impl_() {
+		// Catch any unsent MPI_Isend calls, non-blocking
+		test_completion();
+
+		MPI_Status status;
+		MPI_Probe(MPI_ANY_SOURCE, 0, domain_remote_, &status);
+		int count;
+		MPI_Get_count(&status, MPI_BYTE, &count);
+		std::vector<char> rcv_buf(count);
+		MPI_Recv( rcv_buf.data(), count, MPI_BYTE, status.MPI_SOURCE, status.MPI_TAG, domain_remote_, MPI_STATUS_IGNORE );
+
+		// Catch any unsent MPI_Isend calls, non-blocking
+		test_completion();
+
+		return message::make(std::move(rcv_buf));
+	}
+
+	/** \brief Non-blocking check for complete MPI_Isend calls
+	 */
+	void test_completion() {
+	  for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ) {
+			int test = false;
+			MPI_Test(&(itr->first), &test, MPI_STATUS_IGNORE);
+			if( test ) itr = send_buf.erase(itr);
+			else ++itr;
+		}
+	}
+
+	/** \brief Time-limited blocking check for complete MPI_Isend calls
+	 */
+	void test_completion_blocking() {
+	  while (send_buf.size() > 0) {
+			for( auto itr=send_buf.begin(), end=send_buf.end(); itr != end; ) {
+				MPI_Wait(&(itr->first), MPI_STATUS_IGNORE);
+				itr = send_buf.erase(itr);
 			}
 		}
 	}
-
 };
+
+inline communicator *create_comm_mpi_smart( const char URI[], const bool quiet ) {
+	return new comm_mpi_smart(URI, quiet);
+}
+
+const static bool registered = comm_factory::instance().link( "mpi", create_comm_mpi_smart );
+
 }
 #endif

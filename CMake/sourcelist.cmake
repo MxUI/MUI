@@ -3,7 +3,6 @@ set (mui_h
 	comm_factory.h
 	comm.h
 	comm_mpi.h
-	comm_mpi_nxn.h
 	comm_mpi_smart.h
 	comm_tcp.h
 	config.h
@@ -36,20 +35,23 @@ set (mui_h
 	uniface.h
 	util.h
 	virtual_container.h
-	spatial_samplers/sampler_exact.h
-	spatial_samplers/sampler_gauss.h
-	spatial_samplers/sampler_mov_avg.h
-	spatial_samplers/sampler_nn.h
-	spatial_samplers/sampler_null.h
-	spatial_samplers/sampler_pseudo_n2_linear.h
-	spatial_samplers/sampler_pseudo_nn.h
-	spatial_samplers/sampler_rbf.h
-	spatial_samplers/sampler_shepard_quintic.h
-	spatial_samplers/sampler_sph_quintic.h
-	spatial_samplers/sampler_sum_quintic.h
-	temporal_samplers/temporal_sampler_exact.h
-	temporal_samplers/temporal_sampler_gauss.h
-	temporal_samplers/temporal_sampler_mean.h
-	temporal_samplers/temporal_sampler_null.h
-	temporal_samplers/temporal_sampler_sum.h
+	samplers/spatial/sampler_exact.h
+	samplers/spatial/sampler_gauss.h
+	samplers/spatial/sampler_mov_avg.h
+	samplers/spatial/sampler_nn.h
+	samplers/spatial/sampler_null.h
+	samplers/spatial/sampler_pseudo_n2_linear.h
+	samplers/spatial/sampler_pseudo_nn.h
+	samplers/spatial/sampler_rbf.h
+	samplers/spatial/sampler_shepard_quintic.h
+	samplers/spatial/sampler_sph_quintic.h
+	samplers/spatial/sampler_sum_quintic.h
+	samplers/temporal/temporal_sampler_exact.h
+	samplers/temporal/temporal_sampler_gauss.h
+	samplers/temporal/temporal_sampler_mean.h
+	samplers/temporal/temporal_sampler_null.h
+	samplers/temporal/temporal_sampler_sum.h
+	samplers/algorithm/algo_aitken.h
+	samplers/algorithm/algo_fixed_relaxation.h
+	samplers/algorithm/algo_null.h
 )

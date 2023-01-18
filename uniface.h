@@ -53,8 +53,8 @@
 #define UNIFACE_H_
 
 #include "util.h"
-#include "comm.h"
-#include "comm_factory.h"
+#include "communication/comm.h"
+#include "communication/comm_factory.h"
 #include "config.h"
 #include "dynstorage.h"
 #include "spatial_storage.h"
@@ -64,7 +64,7 @@
 #include "stream_vector.h"
 #include "stream_unordered.h"
 #include "stream_string.h"
-#include "bin.h"
+#include "storage/bin.h"
 #include "stream.h"
 
 #ifdef PYTHON_BINDINGS

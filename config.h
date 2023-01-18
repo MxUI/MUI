@@ -48,9 +48,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "util.h"
-#include "dim.h"
-#include "exception.h"
+#include "general/util.h"
+#include "general/dim.h"
+#include "general/exception.h"
 
 namespace mui {
 
