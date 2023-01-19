@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.18)
 
 project(mui4py)
 
@@ -10,30 +10,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Development component which includes both Development.Module and
 # Development.Embed is not required for building a Python module.  Correct
 # COMPONENT specification Development.Module added only in CMake 3.18 and above.
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0")
-  find_package(
-    Python3
-    COMPONENTS Interpreter Development.Module
-    REQUIRED
-  )
-else()
-  find_package(
-    Python3
-    COMPONENTS Interpreter Development
-    REQUIRED
-  )
-endif()
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
 find_package(MPI REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 
-get_cmake_property(_variableNames VARIABLES)
-list(SORT _variableNames)
+# get_cmake_property(_variableNames VARIABLES)
+# list(SORT _variableNames)
 
-foreach(_variableName ${_variableNames})
-  message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
-
+# foreach(_variableName ${_variableNames})
+# message(STATUS "${_variableName}=${${_variableName}}")
+# endforeach()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I../.. -I${EIGEN3_INCLUDE_DIR} -I${MPI_INCLUDE_PATH} -DPYTHON_BINDINGS -DPYTHON_INT_64")
 
 find_package(
