@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(mui4py)
 
 # Set C++ standard before finding pybind11
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -24,9 +24,17 @@ else()
   )
 endif()
 
-find_package(MPI)
+find_package(MPI REQUIRED)
+find_package(Eigen3 REQUIRED NO_MODULE)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I../.. -I${MPI_INCLUDE_PATH} -DPYTHON_BINDINGS -DPYTHON_INT_64")
+get_cmake_property(_variableNames VARIABLES)
+list(SORT _variableNames)
+
+foreach(_variableName ${_variableNames})
+  message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I../.. -I${EIGEN3_INCLUDE_DIR} -I${MPI_INCLUDE_PATH} -DPYTHON_BINDINGS -DPYTHON_INT_64")
 
 find_package(
   pybind11

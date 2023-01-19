@@ -106,34 +106,38 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
                const Tchrono<Tconfig> &, bool)) &
                Tclass::fetch,
            "");
+}
 
-  // Disable fetch_many for std::string
-  if constexpr (!std::is_same_v<T, std::string>)
-  {
-    std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
-    uniface.def(fetch_many_name.c_str(),
-                (py::array_t<T, py::array::c_style>(Tclass::*)(
-                    const std::string &attr,
-                    const py::array_t<Treal, py::array::c_style> points, const Ttime t,
-                    const Tsampler<Tconfig, T, T> &sampler,
-                    const Tchrono<Tconfig> &t_sampler)) &
-                    Tclass::fetch_many,
-                "");
-  }
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Tchrono>
+void declare_uniface_fetch_many(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+  using Ttime = typename Tconfig::time_type;
+
+  std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
+  uniface.def(fetch_many_name.c_str(),
+              (py::array_t<T, py::array::c_style>(Tclass::*)(
+                  const std::string &attr,
+                  const py::array_t<Treal, py::array::c_style> points, const Ttime t,
+                  const Tsampler<Tconfig, T, T> &sampler,
+                  const Tchrono<Tconfig> &t_sampler)) &
+                  Tclass::fetch_many,
+              "");
 }
 
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
 void declare_uniface_fetch_all_chrono(py::class_<mui::uniface<Tconfig>> &uniface)
 {
   declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_exact>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
 
-  // Disable these chrono samplers for std::string
-  if constexpr (!std::is_same_v<T, std::string>)
-  {
-    declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
-    declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
-    declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
-  }
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_exact>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
 }
 
 template <typename Tconfig, typename T>
@@ -156,24 +160,19 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
       .def(fetch_name.c_str(),
            (T(Tclass::*)(const std::string &)) & Tclass::fetch, "");
 
-  // Do not use std::string in the following templates (C++17)
-  if constexpr (!std::is_same_v<T, std::string>)
-  {
-    uniface.def(push_many_name.c_str(),
-                (void(Tclass::*)(const std::string &attr, const py::array_t<Treal> &points,
-                                 const py::array_t<T> &values)) &
-                    Tclass::push_many,
-                "");
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_gauss>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_moving_average>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_nearest_neighbor>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_n2_linear>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_nearest_neighbor>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_shepard_quintic>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sum_quintic>(uniface);
-    declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sph_quintic>(uniface);
-  }
-
+  uniface.def(push_many_name.c_str(),
+              (void(Tclass::*)(const std::string &attr, const py::array_t<Treal> &points,
+                               const py::array_t<T> &values)) &
+                  Tclass::push_many,
+              "");
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_gauss>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_moving_average>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_nearest_neighbor>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_n2_linear>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_nearest_neighbor>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_shepard_quintic>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sum_quintic>(uniface);
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sph_quintic>(uniface);
   declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_exact>(uniface);
 }
 
@@ -213,11 +212,23 @@ void declare_uniface_class(py::module &m)
 
       .def(py::init<const std::string &>());
 
+  // Special cases for string
+  uniface.def("push_string",
+              (void(Tclass::*)(const std::string &, const mui::point<Treal, Tconfig::D> &,
+                               const std::string &)) &
+                  Tclass::push,
+              "")
+      .def("push_string",
+           (void(Tclass::*)(const std::string &, const std::string &)) & Tclass::push,
+           "")
+      .def("fetch_string",
+           (std::string(Tclass::*)(const std::string &)) & Tclass::fetch, "");
+  declare_uniface_fetch<Tconfig, std::string, mui::sampler_exact, mui::chrono_sampler_exact>(uniface);
+
   declare_uniface_funcs<Tconfig, double>(uniface);
   declare_uniface_funcs<Tconfig, float>(uniface);
   declare_uniface_funcs<Tconfig, std::int32_t>(uniface);
   declare_uniface_funcs<Tconfig, std::int64_t>(uniface);
-  declare_uniface_funcs<Tconfig, std::string>(uniface);
 }
 
 // Declaration of other files

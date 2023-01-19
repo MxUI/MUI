@@ -201,150 +201,69 @@ void declare_sampler_sum_quintic(py::module &m)
     declare_sampler_sum_quintic_t<Tconfig, std::int64_t>(m);
 }
 
+#ifdef USE_RBF
+// SPATIAL_SAMPLER_RBF CLASS//
+template <typename Tconfig, typename T>
+void declare_sampler_rbf_t(py::module &m)
+{
+    string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
+    using Treal = typename Tconfig::REAL;
+    using Tint = typename Tconfig::INT;
+    using Tpoint = typename Tconfig::point_type;
+    using Tclass = TclassTemplate<Tconfig, T, T>;
+    py::class_<Tclass>(m, name.c_str())
+        .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool, bool,
+                      bool, const std::string &, Treal, Treal, int, int>());
+}
+
+template <typename Tconfig>
+void declare_sampler_rbf(py::module &m)
+{
+    declare_sampler_rbf_t<Tconfig, double>(m);
+    declare_sampler_rbf_t<Tconfig, float>(m);
+    declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
+    declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
+}
+#endif
+
+template <typename Tconfig>
+declare_samplers(py::module &m)
+{
+    declare_point<Tconfig>(m);
+
+    declare_sampler_exact<Tconfig>(m);
+    declare_sampler_gauss<Tconfig>(m);
+    declare_sampler_moving_average<Tconfig>(m);
+    declare_sampler_nearest_neighbor<Tconfig>(m);
+    declare_sampler_pseudo_n2_linear<Tconfig>(m);
+    declare_sampler_pseudo_nearest_neighbor<Tconfig>(m);
+    declare_sampler_shepard_quintic<Tconfig>(m);
+    declare_sampler_sph_quintic<Tconfig>(m);
+    declare_sampler_sum_quintic<Tconfig>(m);
+#ifdef USE_RBF
+    declare_sampler_rbf<Tconfig>(m);
+#endif
+}
+
 void sampler(py::module &m)
 {
 #ifdef PYTHON_INT_64
 
-    declare_point<mui::mui_config_1dx>(m);
-    declare_point<mui::mui_config_2dx>(m);
-    declare_point<mui::mui_config_3dx>(m);
-    declare_point<mui::mui_config_1fx>(m);
-    declare_point<mui::mui_config_2fx>(m);
-    declare_point<mui::mui_config_3fx>(m);
+    declare_samplers<mui::mui_config_1dx>(m);
+    declare_samplers<mui::mui_config_2dx>(m);
+    declare_samplers<mui::mui_config_3dx>(m);
+    declare_samplers<mui::mui_config_1fx>(m);
+    declare_samplers<mui::mui_config_2fx>(m);
+    declare_samplers<mui::mui_config_3fx>(m);
 
-    declare_sampler_exact<mui::mui_config_1dx>(m);
-    declare_sampler_exact<mui::mui_config_2dx>(m);
-    declare_sampler_exact<mui::mui_config_3dx>(m);
-    declare_sampler_exact<mui::mui_config_1fx>(m);
-    declare_sampler_exact<mui::mui_config_2fx>(m);
-    declare_sampler_exact<mui::mui_config_3fx>(m);
-
-    declare_sampler_gauss<mui::mui_config_1dx>(m);
-    declare_sampler_gauss<mui::mui_config_2dx>(m);
-    declare_sampler_gauss<mui::mui_config_3dx>(m);
-    declare_sampler_gauss<mui::mui_config_1fx>(m);
-    declare_sampler_gauss<mui::mui_config_2fx>(m);
-    declare_sampler_gauss<mui::mui_config_3fx>(m);
-
-    declare_sampler_moving_average<mui::mui_config_1dx>(m);
-    declare_sampler_moving_average<mui::mui_config_2dx>(m);
-    declare_sampler_moving_average<mui::mui_config_3dx>(m);
-    declare_sampler_moving_average<mui::mui_config_1fx>(m);
-    declare_sampler_moving_average<mui::mui_config_2fx>(m);
-    declare_sampler_moving_average<mui::mui_config_3fx>(m);
-
-    declare_sampler_nearest_neighbor<mui::mui_config_1dx>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_2dx>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_3dx>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_1fx>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_2fx>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_3fx>(m);
-
-    declare_sampler_pseudo_n2_linear<mui::mui_config_1dx>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_2dx>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_3dx>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_1fx>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_2fx>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_3fx>(m);
-
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1dx>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2dx>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3dx>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1fx>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2fx>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3fx>(m);
-
-    declare_sampler_shepard_quintic<mui::mui_config_1dx>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_2dx>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_3dx>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_1fx>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_2fx>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_3fx>(m);
-
-    declare_sampler_sph_quintic<mui::mui_config_1dx>(m);
-    declare_sampler_sph_quintic<mui::mui_config_2dx>(m);
-    declare_sampler_sph_quintic<mui::mui_config_3dx>(m);
-    declare_sampler_sph_quintic<mui::mui_config_1fx>(m);
-    declare_sampler_sph_quintic<mui::mui_config_2fx>(m);
-    declare_sampler_sph_quintic<mui::mui_config_3fx>(m);
-
-    declare_sampler_sum_quintic<mui::mui_config_1dx>(m);
-    declare_sampler_sum_quintic<mui::mui_config_2dx>(m);
-    declare_sampler_sum_quintic<mui::mui_config_3dx>(m);
-    declare_sampler_sum_quintic<mui::mui_config_1fx>(m);
-    declare_sampler_sum_quintic<mui::mui_config_2fx>(m);
-    declare_sampler_sum_quintic<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
 
-    declare_point<mui::mui_config_1d>(m);
-    declare_point<mui::mui_config_2d>(m);
-    declare_point<mui::mui_config_3d>(m);
-    declare_point<mui::mui_config_1f>(m);
-    declare_point<mui::mui_config_2f>(m);
-    declare_point<mui::mui_config_3f>(m);
-
-    declare_sampler_exact<mui::mui_config_1d>(m);
-    declare_sampler_exact<mui::mui_config_2d>(m);
-    declare_sampler_exact<mui::mui_config_3d>(m);
-    declare_sampler_exact<mui::mui_config_1f>(m);
-    declare_sampler_exact<mui::mui_config_2f>(m);
-    declare_sampler_exact<mui::mui_config_3f>(m);
-
-    declare_sampler_gauss<mui::mui_config_1d>(m);
-    declare_sampler_gauss<mui::mui_config_2d>(m);
-    declare_sampler_gauss<mui::mui_config_3d>(m);
-    declare_sampler_gauss<mui::mui_config_1f>(m);
-    declare_sampler_gauss<mui::mui_config_2f>(m);
-    declare_sampler_gauss<mui::mui_config_3f>(m);
-
-    declare_sampler_moving_average<mui::mui_config_1d>(m);
-    declare_sampler_moving_average<mui::mui_config_2d>(m);
-    declare_sampler_moving_average<mui::mui_config_3d>(m);
-    declare_sampler_moving_average<mui::mui_config_1f>(m);
-    declare_sampler_moving_average<mui::mui_config_2f>(m);
-    declare_sampler_moving_average<mui::mui_config_3f>(m);
-
-    declare_sampler_nearest_neighbor<mui::mui_config_1d>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_2d>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_3d>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_1f>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_2f>(m);
-    declare_sampler_nearest_neighbor<mui::mui_config_3f>(m);
-
-    declare_sampler_pseudo_n2_linear<mui::mui_config_1d>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_2d>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_3d>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_1f>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_2f>(m);
-    declare_sampler_pseudo_n2_linear<mui::mui_config_3f>(m);
-
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1d>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2d>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3d>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_1f>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_2f>(m);
-    declare_sampler_pseudo_nearest_neighbor<mui::mui_config_3f>(m);
-
-    declare_sampler_shepard_quintic<mui::mui_config_1d>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_2d>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_3d>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_1f>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_2f>(m);
-    declare_sampler_shepard_quintic<mui::mui_config_3f>(m);
-
-    declare_sampler_sph_quintic<mui::mui_config_1d>(m);
-    declare_sampler_sph_quintic<mui::mui_config_2d>(m);
-    declare_sampler_sph_quintic<mui::mui_config_3d>(m);
-    declare_sampler_sph_quintic<mui::mui_config_1f>(m);
-    declare_sampler_sph_quintic<mui::mui_config_2f>(m);
-    declare_sampler_sph_quintic<mui::mui_config_3f>(m);
-
-    declare_sampler_sum_quintic<mui::mui_config_1d>(m);
-    declare_sampler_sum_quintic<mui::mui_config_2d>(m);
-    declare_sampler_sum_quintic<mui::mui_config_3d>(m);
-    declare_sampler_sum_quintic<mui::mui_config_1f>(m);
-    declare_sampler_sum_quintic<mui::mui_config_2f>(m);
-    declare_sampler_sum_quintic<mui::mui_config_3f>(m);
+    declare_samplers<mui::mui_config_1d>(m);
+    declare_samplers<mui::mui_config_2d>(m);
+    declare_samplers<mui::mui_config_3d>(m);
+    declare_samplers<mui::mui_config_1f>(m);
+    declare_samplers<mui::mui_config_2f>(m);
+    declare_samplers<mui::mui_config_3f>(m);
 
 #else
 #error PYTHON_INT_[32|64] not defined.
