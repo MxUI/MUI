@@ -38,88 +38,50 @@
 *****************************************************************************/
 
 /**
- * @file message.h
+ * @file lib_dispatcher.h
  * @author Y. H. Tang
- * @date 11 March 2014
- * @brief Structure to contain and manipulate data from internal data to MPI
- * message.
+ * @date 10 March 2014
+ * @brief Structure for communicator used in comm_factory.h
  */
 
-#ifndef MESSAGE_H_
-#define MESSAGE_H_
+#ifndef LIB_DISPATCHER_H_
+#define LIB_DISPATCHER_H_
 
-#include <memory>
+#include "../general/util.h"
+#include "../general/exception.h"
+#include <unordered_map>
 
-#include "stream.h"
-#include "util.h"
-#include "stream_string.h"
-#include "stream_vector.h"
-#include "stream_tuple.h"
-
-namespace mui {
-
-struct message
+namespace mui
 {
-public:
-	using id_type = std::string;
-private:
-        id_type     id_;
-        std::size_t id_size_;
-        std::vector<char> data_;
-public:
-	message() : id_(), id_size_(0u), data_() {}
 
-	template<typename... types>
-	static message make( const id_type& id, types&&... data ) {
-		message msg;
-		msg.id_ = id;
-		msg.id_size_ = streamed_size(id);
-		std::size_t n = msg.id_size_ + streamed_size(data...);
-		msg.data_.resize(n);
-		auto stream = make_ostream(msg.data_.data());
-		stream << id << std::forward_as_tuple(data...);
-		return msg;
+template<
+	typename UUID,
+	class    FPTR,
+	class    EXCEPTION=exception_segv>
+struct dispatcher
+{
+	FPTR dispatch( const UUID &id ) {
+		auto i = dtable_.find(id);
+		if ( i == dtable_.end() ) EXCEPTION();
+		return i->second;
 	}
-	static message make( std::vector<char> data ){
-		message m;
-		m.data_.swap(data);
-		auto in = make_istream(m.data_.begin());
-		in >> m.id_;
-		m.id_size_ = streamed_size(m.id_);
-		return m;
+	bool exist( const UUID &id ) {
+		return dtable_.find(id) != dtable_.end();
 	}
-
-	bool has_id() const { return !id_.empty(); }
-
-	const id_type& id() const { return id_; }
-	const char* data() const { return data_.data() + id_size_; }
-	std::size_t size() const { return data_.size() - id_size_; }
-	std::vector<char> detach() {
-		std::vector<char> data;
-		data.swap(data_);
-		id_.clear();
-		id_size_ = 0;
-		return data;
+	FPTR operator [] ( const UUID &id ) {
+		return dispatch(id);
 	}
-private:
-	friend ostream& operator<<( ostream&, const message&);
+	bool link( const UUID &id, FPTR parser ) {
+		return dtable_.insert( std::make_pair(id,parser) ).second;
+	}
+	bool unlink( const UUID &id ) {
+		return dtable_.erase(id) == 1;
+	}
+protected:
+	using assoc_table = std::unordered_map<UUID,FPTR>;
+	assoc_table dtable_;
 };
 
-// serialization & deserialization method
-inline ostream& operator<< ( ostream& stream, const message& m )
-{
-	stream << m.data_;
-	return stream;
 }
 
-inline istream& operator>> ( istream& stream, message& m )
-{
-	std::vector<char> v;
-	stream >> v;
-	m = message::make(v);
-	return stream;
-}
-
-}
-
-#endif /* MESSAGE_H_ */
+#endif /* LIB_DISPATCHER_H_ */

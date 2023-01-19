@@ -38,51 +38,50 @@
 *****************************************************************************/
 
 /**
- * @file sampler.h
+ * @file lib_uri.h
  * @author Y. H. Tang
- * @date 10 February 2014
- * @brief A reference file for making custom samplers. The new sampler does
- * not have to derive from this class, it just needs to implement all the
- * interfaces with the signatures specified.
+ * @date 14 March 2014
+ * @brief Base class to contain and manipulate a unique URI (Uniform Resource
+ * Identifier).
  */
 
-#ifndef MUI_SAMPLER_H_
-#define MUI_SAMPLER_H_
+#ifndef LIB_URI_H_
+#define LIB_URI_H_
 
-#include "config.h"
-#include "geometry.h"
-#include "virtual_container.h"
+#include "../general/util.h"
 
 namespace mui {
 
-#if 0
-class sampler {
+class uri {
 public:
-    sampler() {
-        r = 1.0;
-    }
+	uri(const std::string& url_s) {
+		parse(url_s);
+	}
+	uri(const char url_c[]) {
+		parse(url_c);
+	}
+	const std::string& protocol() const { return protocol_; }
+	const std::string& host()     const { return host_; }
+	const std::string& path()     const { return path_; }
 
-    double filter( point<double,3> focus, const virtual_container<double> &data_points ) const {
-        double sum = 0.;
-        int n = 0;
-        for( size_t i = 0 ; i < data_points.size() ; i++ ) {
-            if ( ( focus - data_points[i].first ).norm() < r ) {
-                sum += data_points[i].second;
-                n++;
-            }
-        }
-        if (n) return sum / n;
-        else return 0;
-    }
-    inline span<> support() const {
-        return span<>() || geometry::sphere<>( point<double,3>(0), r );
-    }
+	uri( const uri &another ) = delete;
+	uri& operator = ( const uri &another ) = delete;
+private:
+	void parse(const std::string& url_s) {
+		// "__protocol__://__host__/__path__"
+		std::size_t prot_end = url_s.find("://");
+		protocol_ = url_s.substr(0,prot_end);
+		std::size_t host_end = url_s.find("/",prot_end+3);
+		host_ = url_s.substr(prot_end+3,host_end-prot_end-3);
+		path_ = url_s.substr(host_end+1);
 
-protected:
-    double r;
+		std::transform(protocol_.begin(), protocol_.end(), protocol_.begin(), ::tolower);
+		std::transform(host_.begin(), host_.end(), host_.begin(), ::tolower);
+	}
+
+	std::string protocol_, host_, path_;
 };
 
-#endif
 }
 
-#endif /* MUI_SAMPLER_H_ */
+#endif /* LIB_URI_H_ */

@@ -38,50 +38,51 @@
 *****************************************************************************/
 
 /**
- * @file lib_dispatcher.h
+ * @file sampler.h
  * @author Y. H. Tang
- * @date 10 March 2014
- * @brief Structure for communicator used in comm_factory.h
+ * @date 10 February 2014
+ * @brief A reference file for making custom samplers. The new sampler does
+ * not have to derive from this class, it just needs to implement all the
+ * interfaces with the signatures specified.
  */
 
-#ifndef LIB_DISPATCHER_H_
-#define LIB_DISPATCHER_H_
+#ifndef MUI_SAMPLER_H_
+#define MUI_SAMPLER_H_
 
-#include "util.h"
-#include "exception.h"
-#include <unordered_map>
+#include "../config.h"
+#include "../geometry/geometry.h"
+#include "../storage/virtual_container.h"
 
-namespace mui
-{
+namespace mui {
 
-template<
-	typename UUID,
-	class    FPTR,
-	class    EXCEPTION=exception_segv>
-struct dispatcher
-{
-	FPTR dispatch( const UUID &id ) {
-		auto i = dtable_.find(id);
-		if ( i == dtable_.end() ) EXCEPTION();
-		return i->second;
-	}
-	bool exist( const UUID &id ) {
-		return dtable_.find(id) != dtable_.end();
-	}
-	FPTR operator [] ( const UUID &id ) {
-		return dispatch(id);
-	}
-	bool link( const UUID &id, FPTR parser ) {
-		return dtable_.insert( std::make_pair(id,parser) ).second;
-	}
-	bool unlink( const UUID &id ) {
-		return dtable_.erase(id) == 1;
-	}
+#if 0
+class sampler {
+public:
+    sampler() {
+        r = 1.0;
+    }
+
+    double filter( point<double,3> focus, const virtual_container<double> &data_points ) const {
+        double sum = 0.;
+        int n = 0;
+        for( size_t i = 0 ; i < data_points.size() ; i++ ) {
+            if ( ( focus - data_points[i].first ).norm() < r ) {
+                sum += data_points[i].second;
+                n++;
+            }
+        }
+        if (n) return sum / n;
+        else return 0;
+    }
+    inline span<> support() const {
+        return span<>() || geometry::sphere<>( point<double,3>(0), r );
+    }
+
 protected:
-	using assoc_table = std::unordered_map<UUID,FPTR>;
-	assoc_table dtable_;
+    double r;
 };
 
+#endif
 }
 
-#endif /* LIB_DISPATCHER_H_ */
+#endif /* MUI_SAMPLER_H_ */

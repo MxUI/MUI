@@ -50,9 +50,9 @@
 
 #include <memory>
 
-#include "config.h"
-#include "stream.h"
-#include "stream_string.h"
+#include "../config.h"
+#include "../stream.h"
+#include "../communication/message/stream_string.h"
 
 namespace mui {
 namespace geometry{

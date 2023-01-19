@@ -51,7 +51,7 @@
 #include "lib_uri.h"
 #include "comm_mpi.h"
 #include "lib_mpi_helper.h"
-#include "uniface.h"
+#include "../uniface.h"
 
 namespace mui
 {

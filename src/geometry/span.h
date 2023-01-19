@@ -47,11 +47,11 @@
 #ifndef SPAN_H_
 #define SPAN_H_
 
-#include "util.h"
-#include "config.h"
+#include "../general/util.h"
+#include "../config.h"
 #include "geometry.h"
-#include "stream.h"
-#include "stream_vector.h"
+#include "../storage/stream.h"
+#include "../storage/stream_vector.h"
 
 namespace mui {
 

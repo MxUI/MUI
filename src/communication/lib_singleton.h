@@ -47,7 +47,7 @@
 #ifndef LIB_SINGLETON_H_
 #define LIB_SINGLETON_H_
 
-#include "util.h"
+#include "../general/util.h"
 
 namespace mui {
 

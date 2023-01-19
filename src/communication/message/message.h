@@ -38,50 +38,88 @@
 *****************************************************************************/
 
 /**
- * @file lib_uri.h
+ * @file message.h
  * @author Y. H. Tang
- * @date 14 March 2014
- * @brief Base class to contain and manipulate a unique URI (Uniform Resource
- * Identifier).
+ * @date 11 March 2014
+ * @brief Structure to contain and manipulate data from internal data to MPI
+ * message.
  */
 
-#ifndef LIB_URI_H_
-#define LIB_URI_H_
+#ifndef MESSAGE_H_
+#define MESSAGE_H_
 
-#include "util.h"
+#include <memory>
+
+#include "stream.h"
+#include "../../general/util.h"
+#include "stream_string.h"
+#include "stream_vector.h"
+#include "stream_tuple.h"
 
 namespace mui {
 
-class uri {
+struct message
+{
 public:
-	uri(const std::string& url_s) {
-		parse(url_s);
-	}
-	uri(const char url_c[]) {
-		parse(url_c);
-	}
-	const std::string& protocol() const { return protocol_; }
-	const std::string& host()     const { return host_; }
-	const std::string& path()     const { return path_; }
-
-	uri( const uri &another ) = delete;
-	uri& operator = ( const uri &another ) = delete;
+	using id_type = std::string;
 private:
-	void parse(const std::string& url_s) {
-		// "__protocol__://__host__/__path__"
-		std::size_t prot_end = url_s.find("://");
-		protocol_ = url_s.substr(0,prot_end);
-		std::size_t host_end = url_s.find("/",prot_end+3);
-		host_ = url_s.substr(prot_end+3,host_end-prot_end-3);
-		path_ = url_s.substr(host_end+1);
+        id_type     id_;
+        std::size_t id_size_;
+        std::vector<char> data_;
+public:
+	message() : id_(), id_size_(0u), data_() {}
 
-		std::transform(protocol_.begin(), protocol_.end(), protocol_.begin(), ::tolower);
-		std::transform(host_.begin(), host_.end(), host_.begin(), ::tolower);
+	template<typename... types>
+	static message make( const id_type& id, types&&... data ) {
+		message msg;
+		msg.id_ = id;
+		msg.id_size_ = streamed_size(id);
+		std::size_t n = msg.id_size_ + streamed_size(data...);
+		msg.data_.resize(n);
+		auto stream = make_ostream(msg.data_.data());
+		stream << id << std::forward_as_tuple(data...);
+		return msg;
+	}
+	static message make( std::vector<char> data ){
+		message m;
+		m.data_.swap(data);
+		auto in = make_istream(m.data_.begin());
+		in >> m.id_;
+		m.id_size_ = streamed_size(m.id_);
+		return m;
 	}
 
-	std::string protocol_, host_, path_;
+	bool has_id() const { return !id_.empty(); }
+
+	const id_type& id() const { return id_; }
+	const char* data() const { return data_.data() + id_size_; }
+	std::size_t size() const { return data_.size() - id_size_; }
+	std::vector<char> detach() {
+		std::vector<char> data;
+		data.swap(data_);
+		id_.clear();
+		id_size_ = 0;
+		return data;
+	}
+private:
+	friend ostream& operator<<( ostream&, const message&);
 };
+
+// serialization & deserialization method
+inline ostream& operator<< ( ostream& stream, const message& m )
+{
+	stream << m.data_;
+	return stream;
+}
+
+inline istream& operator>> ( istream& stream, message& m )
+{
+	std::vector<char> v;
+	stream >> v;
+	m = message::make(v);
+	return stream;
+}
 
 }
 
-#endif /* LIB_URI_H_ */
+#endif /* MESSAGE_H_ */

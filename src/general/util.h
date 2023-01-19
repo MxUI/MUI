@@ -86,8 +86,8 @@
 #include <omp.h>
 #endif
 
-#include "stream.h"
-#include "point.h"
+#include "../storage/stream.h"
+#include "../geometry/point.h"
 
 namespace mui {
 

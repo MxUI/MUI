@@ -14,7 +14,7 @@ option(PYTHON_WRAPPER "Compile Python wrapper" OFF)
 option(PIP_INSTALL "Install compiled Python wrapper using pip" OFF)
 
 include(CMakePackageConfigHelpers)
-include(CMake/sourcelist.cmake)
+include(cmake/sourcelist.cmake)
 
 find_package(MPI REQUIRED)
 if(MPI_FOUND)
@@ -26,7 +26,7 @@ endif(MPI_FOUND)
 if(USE_RBF)
 	find_package(Eigen3 REQUIRED)
 	if( NOT EIGEN3_INCLUDE_DIR )
-    		message(FATAL_ERROR "Please set the environment variable EIGEN3_INCLUDE_DIR to the include directory of valid Eigen3 installation")
+    		message(FATAL_ERROR "Please set the environment variable EIGEN3_INCLUDE_DIR to a valid Eigen3 installation")
 	endif()
 endif(USE_RBF)
 
@@ -53,7 +53,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/
 	PATTERN ".git" EXCLUDE
 	PATTERN "build" EXCLUDE
 	PATTERN "wrappers/Python" EXCLUDE
-	PATTERN "CMake" EXCLUDE
+	PATTERN "cmake" EXCLUDE
 	PATTERN "doc" EXCLUDE)
 
 install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib)
@@ -190,7 +190,7 @@ set(MUI_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/inclu
 set(MUI_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib CACHE STRING "Location of MUI wrapper libraries")
 set(MUI_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION} CACHE STRING "Base location of MUI installation")
 
-configure_package_config_file(CMake/MUIConfig.cmake.in
+configure_package_config_file(cmake/MUIConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/MUIConfig.cmake
   INSTALL_DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake
   PATH_VARS MUI_INCLUDE_INSTALL_DIR MUI_LIB_INSTALL_DIR MUI_INSTALL_DIR)
