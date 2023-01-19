@@ -26,7 +26,7 @@ class CMakeBuild(build_ext):
 
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir+"/mui4py",
+        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir + "/mui4py",
                        '-DPython3_EXECUTABLE=' + sys.executable,
                        f'-DPython3_LIBRARIES={sysconfig.get_config_var("LIBDEST")}',
                        f'-DPython3_INCLUDE_DIRS={sysconfig.get_config_var("INCLUDEPY")}']
@@ -61,7 +61,7 @@ setup(
       packages=['mui4py', 'mui4py.cpp'],
       install_requires=[
             'mpi4py',
-            'numpy',
+            'numpy>=1.21',
       ],
       setup_requires=["pybind11"],
       include_package_data=True,
