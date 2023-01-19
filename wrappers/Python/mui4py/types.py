@@ -51,14 +51,16 @@ def get_float_type_str(typein):
     if typein in ALLOWED_FLOAT_TYPES.keys():
         return ALLOWED_FLOAT_TYPES[typein]
     else:
-        raise Exception("Float type '{}' not supported. Supported types : [float, np.float32, np.float64]".format(typein))
+        raise Exception("Float type '{}' not supported. "
+                        "Supported types : [float, np.float32, np.float64]".format(typein))
 
 
 def get_io_type_str(typein):
     if typein in ALLOWED_IO_TYPES.keys():
         return ALLOWED_IO_TYPES[typein]
     else:
-        raise Exception("Float type '{}' not supported. Supported types : [float, np.float32, np.float64]".format(typein))
+        raise Exception("Float type '{}' not supported. "
+                        "Supported types : [float, np.float32, np.float64]".format(typein))
 
 
 def safe_cast(value_type, value):

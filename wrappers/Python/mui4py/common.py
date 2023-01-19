@@ -55,7 +55,8 @@ class CppClass(object):
         self.raw_point = getattr(mui4py_mod, self.point_class_name)
         self.io_data_type = map_type[io_data_type]
         if self.io_data_type is not None and self.io_data_type not in self._ALLOWED_IO_TYPES:
-            raise Exception("Data type not supported by spatial sampler ''. Supported types : {float, np.float32, np.float64, etc.}")
+            raise Exception("Data type not supported by spatial sampler ''. "
+                            "Supported types : [float, np.float32, np.float64, etc.]")
         if onlycheck:
             self.io_data_type = None
         self.raw = cpp_obj
