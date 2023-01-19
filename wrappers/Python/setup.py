@@ -1,46 +1,56 @@
 import sys
 import os
-import pybind11
-import mpi4py
 from setuptools import setup, Extension
-import setuptools.command.build_py
 import sysconfig
 import subprocess
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
 
-#TODO: Maybe produce a meta-package which download the library, mui4py branch and produce the binary package with some
-#      extra configuration like MPI compiler and flags.
 
-# os.environ["CC"] = "mpic++"
-# os.environ["LD"] = "mpic++"
-# extra_compile_args = sysconfig.get_config_var('CFLAGS').split()
-# extra_compile_args += ["-Wall", "-std=c++11", "-O3"]
-# extra_link_args = sysconfig.get_config_var('LDFLAGS').split()
-# extra_link_args += ["-Wl,-undefined dynamic_lookup"]
-# includedir_mpi4py = os.path.dirname(sys.modules['mpi4py'].__file__)
-# includedir_mpi4py = os.path.join(includedir_mpi4py, "include")
-# includedir_pybind = pybind11.get_include()
-# mui4py_mod = Extension('mui4py_mod',
-# 		    # Do this for MAC/LINUX/compiiler
-#                     define_macros = [('MAJOR_VERSION', '1'),
-#                                      ('MINOR_VERSION', '0')],
-#                     include_dirs = [includedir_mpi4py, includedir_pybind],
-#                     extra_compile_args = extra_compile_args,
-#                     extra_link_args = extra_link_args,
-#                     sources = ['mui4py/mui4py.cpp'])
-#
-# class Build(setuptools.command.build_py.build_py):
-#     """Customized setuptools build command - builds mui_mod on build."""
-#     def run(self):
-#         protoc_command = ["make", "mui4py_mod"]
-#         if subprocess.call(protoc_command) != 0:
-#             sys.exit(-1)
-#         setuptools.command.build_py.build_py.run(self)
-#
+class CMakeExtension(Extension):
+    def __init__(self, name, sourcedir=''):
+        Extension.__init__(self, name, sources=[])
+        self.sourcedir = os.path.abspath(sourcedir)
+
+
+class CMakeBuild(build_ext):
+    def run(self):
+        try:
+            _ = subprocess.check_output(['cmake', '--version'])
+        except OSError:
+            raise RuntimeError("CMake must be installed to build the following extensions: "
+                               + ", ".join(e.name for e in self.extensions))
+
+        for ext in self.extensions:
+            self.build_extension(ext)
+
+    def build_extension(self, ext):
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir+"/mui4py",
+                       '-DPython3_EXECUTABLE=' + sys.executable,
+                       f'-DPython3_LIBRARIES={sysconfig.get_config_var("LIBDEST")}',
+                       f'-DPython3_INCLUDE_DIRS={sysconfig.get_config_var("INCLUDEPY")}']
+
+        cfg = 'Debug' if self.debug else 'Release'
+        build_args = ['--config', cfg]
+        cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
+
+        env = os.environ.copy()
+        # default to 3 build threads
+        if "CMAKE_BUILD_PARALLEL_LEVEL" not in env:
+            env["CMAKE_BUILD_PARALLEL_LEVEL"] = "3"
+
+        import pybind11
+        env['pybind11_DIR'] = pybind11.get_cmake_dir()
+
+        if not os.path.exists(self.build_temp):
+            os.makedirs(self.build_temp)
+        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp, env=env)
+
 setup(
-      #  cmdclass={
-	#        'build_py': Build,
-      # },
-      # ext_modules = [mui4py_mod],
+      ext_modules=[CMakeExtension('mui4py_mod')],
+      cmdclass=dict(build_ext=CMakeBuild),
       name='mui4py',
       version='1.2.4',
       description='Python bindings for MUI coupling library.',
@@ -48,10 +58,11 @@ setup(
       author='Eduardo Ramos Fernandez',
       author_email='eduardo.rf159@gmail.com',
       license='GPLv3 or Apache v2.0',
-      packages=['mui4py'],
+      packages=['mui4py', 'mui4py.cpp'],
       install_requires=[
             'mpi4py',
             'numpy',
       ],
+      setup_requires=["pybind11"],
       include_package_data=True,
       zip_safe=False)

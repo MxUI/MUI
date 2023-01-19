@@ -40,12 +40,14 @@ find_package(
 # Create the binding library pybind11 handles its own calls to
 # target_link_libraries
 pybind11_add_module(mui4py_mod MODULE
-  mui4py/mui4py.cpp
-  mui4py/sampler.cpp
-  mui4py/chrono_sampler.cpp
-  mui4py/geometry.cpp)
+  mui4py/cpp/mui4py.cpp
+  mui4py/cpp/sampler.cpp
+  mui4py/cpp/chrono_sampler.cpp
+  mui4py/cpp/geometry.cpp)
 
 if(USE_RBF)
+  # Note that -fpermissive is required to compile using the rbf sampler
+  # and that it is not supported by clang++
   find_package(Eigen3 REQUIRED NO_MODULE)
   target_include_directories(mui4py_mod PRIVATE ${EIGEN3_INCLUDE_DIR})
   target_compile_definitions(mui4py_mod PRIVATE USE_RBF)
