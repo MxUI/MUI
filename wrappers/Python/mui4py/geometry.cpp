@@ -13,9 +13,6 @@ void declare_geometry(py::module &m)
 {
     std::string name = "_geometry_Shape" + config_name<Tconfig>();
     py::class_<mui::geometry::shape<Tconfig>>(m, name.c_str());
-    py::implicitly_convertible<mui::geometry::shape<Tconfig>,
-                               mui::geometry::any_shape<Tconfig>>();
-
     name = "_geometry_Any_shape" + config_name<Tconfig>();
     using Tclass = mui::geometry::any_shape<Tconfig>;
     py::class_<Tclass>(m, name.c_str())
@@ -32,6 +29,9 @@ void declare_geometry(py::module &m)
     py::class_<mui::geometry::sphere<Tconfig>, mui::geometry::shape<Tconfig>>(m, name.c_str())
         .def(py::init<const mui::point<typename Tconfig::REAL, Tconfig::D> &,
                       typename Tconfig::REAL>());
+
+    py::implicitly_convertible<mui::geometry::shape<Tconfig>,
+                               mui::geometry::any_shape<Tconfig>>();
 }
 
 void geometry(py::module &m)

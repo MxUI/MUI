@@ -37,14 +37,6 @@ std::string get_compiler_config()
 #endif
 }
 
-template <class Tconfig>
-void declare_create_uniface(py::module &m)
-{
-  std::string name = "_create_uniface" + config_name<Tconfig>();
-  m.def(name.c_str(), [](std::string domain, std::vector<std::string> interfaces, py::handle world)
-        { return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD); });
-}
-
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
 std::string sampler_name()
 {
@@ -183,7 +175,11 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
 template <typename Tconfig>
 void declare_uniface_class(py::module &m)
 {
-  std::string name = "_Uniface" + config_name<Tconfig>();
+  std::string name = "_create_uniface" + config_name<Tconfig>();
+  m.def(name.c_str(), [](std::string domain, std::vector<std::string> interfaces, py::handle world)
+        { return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD); });
+
+  name = "_Uniface" + config_name<Tconfig>();
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
@@ -260,12 +256,6 @@ PYBIND11_MODULE(mui4py_mod, m)
   declare_uniface_class<mui::mui_config_2fx>(m);
   declare_uniface_class<mui::mui_config_3fx>(m);
 
-  declare_create_uniface<mui::mui_config_1dx>(m);
-  declare_create_uniface<mui::mui_config_2dx>(m);
-  declare_create_uniface<mui::mui_config_3dx>(m);
-  declare_create_uniface<mui::mui_config_1fx>(m);
-  declare_create_uniface<mui::mui_config_2fx>(m);
-  declare_create_uniface<mui::mui_config_3fx>(m);
 #elif defined PYTHON_INT_32
   declare_uniface_class<mui::mui_config_1d>(m);
   declare_uniface_class<mui::mui_config_2d>(m);
@@ -274,12 +264,6 @@ PYBIND11_MODULE(mui4py_mod, m)
   declare_uniface_class<mui::mui_config_2f>(m);
   declare_uniface_class<mui::mui_config_3f>(m);
 
-  declare_create_uniface<mui::mui_config_1d>(m);
-  declare_create_uniface<mui::mui_config_2d>(m);
-  declare_create_uniface<mui::mui_config_3d>(m);
-  declare_create_uniface<mui::mui_config_1f>(m);
-  declare_create_uniface<mui::mui_config_2f>(m);
-  declare_create_uniface<mui::mui_config_3f>(m);
 #else
 #error PYTHON_INT_[32|64] not defined.
 #endif

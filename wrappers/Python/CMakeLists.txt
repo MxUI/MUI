@@ -13,15 +13,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
 find_package(MPI REQUIRED)
-find_package(Eigen3 REQUIRED NO_MODULE)
 
-# get_cmake_property(_variableNames VARIABLES)
-# list(SORT _variableNames)
+# Check for numpy int size
+execute_process(
+  COMMAND "${Python3_EXECUTABLE}" "-c"
+  "import numpy; print(str(numpy.iinfo(int).dtype)[-2:])"
+  OUTPUT_VARIABLE NUMPY_INT_SIZE
+  RESULT_VARIABLE NUMPY_COMMAND_RESULT
+  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-# foreach(_variableName ${_variableNames})
-# message(STATUS "${_variableName}=${${_variableName}}")
-# endforeach()
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fpermissive -DUSE_RBF=1 -I../.. -I${EIGEN3_INCLUDE_DIR} -I${MPI_INCLUDE_PATH} -DPYTHON_BINDINGS -DPYTHON_INT_64")
+message(STATUS "numpy int size = ${NUMPY_INT_SIZE}")
 
 find_package(
   pybind11
@@ -43,12 +45,16 @@ pybind11_add_module(mui4py_mod MODULE
   mui4py/chrono_sampler.cpp
   mui4py/geometry.cpp)
 
-# Add strict compiler flags
-# include(CheckCXXCompilerFlag)
-# check_cxx_compiler_flag("-Wall -Werror -pedantic" HAVE_PEDANTIC)
-# if(HAVE_PEDANTIC)
-# target_compile_options(cpp PRIVATE -Wall;-Werror;-pedantic)
-# endif()
+if(USE_RBF)
+  find_package(Eigen3 REQUIRED NO_MODULE)
+  target_include_directories(mui4py_mod PRIVATE ${EIGEN3_INCLUDE_DIR})
+  target_compile_definitions(mui4py_mod PRIVATE USE_RBF)
+  target_compile_options(mui4py_mod PRIVATE -fpermissive)
+endif()
+
+target_include_directories(mui4py_mod PRIVATE ${MPI_INCLUDE_PATH} ../..)
+target_compile_definitions(mui4py_mod PRIVATE PYTHON_BINDINGS PYTHON_INT_${NUMPY_INT_SIZE})
+target_compile_options(mui4py_mod PRIVATE -Wall)
 
 # In Debug mode override pybind11 symbols visibility Symbols must be visible to
 # backtrace_symbols() to produce nice logs
