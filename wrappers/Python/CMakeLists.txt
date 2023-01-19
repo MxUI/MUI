@@ -21,7 +21,7 @@ find_package(Eigen3 REQUIRED NO_MODULE)
 # foreach(_variableName ${_variableNames})
 # message(STATUS "${_variableName}=${${_variableName}}")
 # endforeach()
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_RBF=1 -I../.. -I${EIGEN3_INCLUDE_DIR} -I${MPI_INCLUDE_PATH} -DPYTHON_BINDINGS -DPYTHON_INT_64")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fpermissive -DUSE_RBF=1 -I../.. -I${EIGEN3_INCLUDE_DIR} -I${MPI_INCLUDE_PATH} -DPYTHON_BINDINGS -DPYTHON_INT_64")
 
 find_package(
   pybind11

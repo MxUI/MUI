@@ -174,6 +174,10 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
   declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sum_quintic>(uniface);
   declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sph_quintic>(uniface);
   declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_exact>(uniface);
+
+#ifdef USE_RBF
+  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_rbf>(uniface);
+#endif
 }
 
 template <typename Tconfig>
