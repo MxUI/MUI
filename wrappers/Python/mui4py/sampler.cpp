@@ -206,13 +206,13 @@ void declare_sampler_sum_quintic(py::module &m)
 template <typename Tconfig, typename T>
 void declare_sampler_rbf_t(py::module &m)
 {
-    string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
+    std::string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
     using Treal = typename Tconfig::REAL;
     using Tint = typename Tconfig::INT;
     using Tpoint = typename Tconfig::point_type;
-    using Tclass = TclassTemplate<Tconfig, T, T>;
+    using Tclass = mui::sampler_rbf<Tconfig, T, T>;
     py::class_<Tclass>(m, name.c_str())
-        .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool, bool,
+        .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool,
                       bool, const std::string &, Treal, Treal, int, int>());
 }
 
@@ -227,7 +227,7 @@ void declare_sampler_rbf(py::module &m)
 #endif
 
 template <typename Tconfig>
-declare_samplers(py::module &m)
+void declare_samplers(py::module &m)
 {
     declare_point<Tconfig>(m);
 
