@@ -52,9 +52,9 @@
 #include <functional>
 #include <utility>
 #include "message.h"
-#include "stream.h"
-#include "stream_tuple.h"
-#include "stream_string.h"
+#include "../../storage/stream.h"
+#include "../../storage/stream_tuple.h"
+#include "../../storage/stream_string.h"
 
 namespace mui
 {

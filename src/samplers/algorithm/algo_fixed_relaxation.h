@@ -48,8 +48,8 @@
 #ifndef MUI_COUPLING_ALGORITHM_FIXED_RELAXATION_H_
 #define MUI_COUPLING_ALGORITHM_FIXED_RELAXATION_H_
 
-#include "../util.h"
-#include "../config.h"
+#include "../../general/util.h"
+#include "../../config.h"
 #include <iterator>
 
 namespace mui {

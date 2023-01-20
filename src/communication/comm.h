@@ -49,7 +49,7 @@
 #define COMM_H_
 
 #include <vector>
-#include "message.h"
+#include "message/message.h"
 
 namespace mui {
 class communicator {

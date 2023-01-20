@@ -51,8 +51,8 @@
 #include <memory>
 
 #include "../config.h"
-#include "../stream.h"
-#include "../communication/message/stream_string.h"
+#include "../storage/stream.h"
+#include "../storage/stream_string.h"
 
 namespace mui {
 namespace geometry{

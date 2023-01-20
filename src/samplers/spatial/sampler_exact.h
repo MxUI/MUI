@@ -49,7 +49,7 @@
 #define MUI_SAMPLER_EXACT_H_
 
 #include <limits>
-#include "../config.h"
+#include "../../config.h"
 #include "../sampler.h"
 
 namespace mui {

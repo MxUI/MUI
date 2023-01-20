@@ -47,9 +47,9 @@
 #ifndef MUI_SAMPLER_RBF_H_
 #define MUI_SAMPLER_RBF_H_
 
-#include "../util.h"
+#include "../../general/util.h"
 #include <Eigen/Sparse>
-#include "../uniface.h"
+#include "../../uniface.h"
 #include <iterator>
 #include <ctime>
 

@@ -49,8 +49,8 @@
 #ifndef MUI_COUPLING_ALGORITHM_NULL_H_
 #define MUI_COUPLING_ALGORITHM_NULL_H_
 
-#include "../util.h"
-#include "../config.h"
+#include "../../general/util.h"
+#include "../../config.h"
 
 namespace mui {
 

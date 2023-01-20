@@ -49,8 +49,8 @@
 #define MUI_TEMPORAL_SAMPLER_EXACT_H_
 
 #include <limits>
-#include "../util.h"
-#include "../config.h"
+#include "../../general/util.h"
+#include "../../config.h"
 
 namespace mui {
 

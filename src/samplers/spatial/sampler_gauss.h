@@ -48,8 +48,8 @@
 #ifndef MUI_SAMPLER_GAUSS_H_
 #define MUI_SAMPLER_GAUSS_H_
 
-#include "../util.h"
-#include "../config.h"
+#include "../../general/util.h"
+#include "../../config.h"
 #include "../sampler.h"
 
 namespace mui {

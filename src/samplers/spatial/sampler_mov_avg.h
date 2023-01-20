@@ -48,7 +48,7 @@
 #ifndef MUI_SAMPLER_MOVING_AVG_H_
 #define MUI_SAMPLER_MOVING_AVG_H_
 
-#include "../config.h"
+#include "../../config.h"
 #include "../sampler.h"
 #include <cmath>
 

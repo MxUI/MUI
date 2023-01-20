@@ -54,7 +54,7 @@
 #include <memory>
 #include <algorithm>
 
-#include "endian_traits.h"
+#include "../general/endian_traits.h"
 
 namespace mui {
 

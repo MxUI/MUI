@@ -72,15 +72,16 @@
 #include "samplers/algorithm/algo_fixed_relaxation.h"
 #include "samplers/algorithm/algo_aitken.h"
 
-#include "sampler.h"
+//Include other library headers
+#include "samplers/sampler.h"
 #include "communication/comm.h"
 #include "communication/comm_mpi.h"
 #include "communication/comm_mpi_smart.h"
 #include "general/dim.h"
-#include "lib_mpi_split.h"
-#include "lib_mpi_multidomain.h"
+#include "communication/lib_mpi_split.h"
+#include "communication/lib_mpi_multidomain.h"
 #include "uniface.h"
-#include "util.h"
+#include "general/util.h"
 #include <string>
 
 namespace mui {

@@ -49,12 +49,11 @@
 #define MESSAGE_H_
 
 #include <memory>
-
-#include "stream.h"
 #include "../../general/util.h"
-#include "stream_string.h"
-#include "stream_vector.h"
-#include "stream_tuple.h"
+#include "../../storage/stream.h"
+#include "../../storage/stream_string.h"
+#include "../../storage/stream_vector.h"
+#include "../../storage/stream_tuple.h"
 
 namespace mui {
 
