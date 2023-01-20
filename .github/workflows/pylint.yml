@@ -20,4 +20,5 @@ jobs:
         pip install flake8
     - name: Analysing the code with flake8
       run: |
-        flake8 $(git ls-files '*.py')
+        cd wrappers/Python
+        flake8 .

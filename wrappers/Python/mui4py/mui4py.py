@@ -205,13 +205,13 @@ class Uniface(CppClass):
             rehash_fetch = True
         if rehash_fetch:
             self._tags_fetch[tag][("fetch", cs.signature, ss.signature)] = \
-                    "fetch_{}_{}_{}".format(ALLOWED_IO_TYPES[data_type],
-                                            ss.fetch_signature(),
-                                            cs.fetch_signature())
+                "fetch_{}_{}_{}".format(ALLOWED_IO_TYPES[data_type],
+                                        ss.fetch_signature(),
+                                        cs.fetch_signature())
             self._tags_fetch[tag][("fetch_many", cs.signature, ss.signature)] = \
-                    "fetch_many_{}_{}_{}".format(ALLOWED_IO_TYPES[data_type],
-                                                 ss.fetch_signature(),
-                                                 cs.fetch_signature())
+                "fetch_many_{}_{}_{}".format(ALLOWED_IO_TYPES[data_type],
+                                             ss.fetch_signature(),
+                                             cs.fetch_signature())
         return self._tags_fetch[tag][(fname_root, cs.signature, ss.signature)], ss, cs
 
     def _get_fetch_6args(self, fname_root, tag, data_type, spatial_sampler, chrono_sampler):
@@ -236,14 +236,16 @@ class Uniface(CppClass):
             self._tags_chrono_samplers[tag][cs.signature] = cs
             rehash_fetch = True
         if rehash_fetch:
-            self._tags_fetch[tag][("fetch6", cs.signature, ss.signature)] = "{}_{}_{}_{}".format("fetch",
-                                                                    ALLOWED_IO_TYPES[data_type],
-                                                                    ss.fetch_signature(),
-                                                                    cs.fetch_signature())
-            self._tags_fetch[tag][("fetch_many6", cs.signature, ss.signature)] = "{}_{}_{}_{}".format("fetch_many6",
-                                                                                  ALLOWED_IO_TYPES[data_type],
-                                                                                 ss.fetch_signature(),
-                                                                                 cs.fetch_signature())
+            self._tags_fetch[tag][("fetch6", cs.signature, ss.signature)] = \
+                    "{}_{}_{}_{}".format("fetch",
+                                         ALLOWED_IO_TYPES[data_type],
+                                         ss.fetch_signature(),
+                                         cs.fetch_signature())
+            self._tags_fetch[tag][("fetch_many6", cs.signature, ss.signature)] = \
+                "{}_{}_{}_{}".format("fetch_many6",
+                                     ALLOWED_IO_TYPES[data_type],
+                                     ss.fetch_signature(),
+                                     cs.fetch_signature())
 
         return self._tags_fetch[tag][(fname_root, cs.signature, ss.signature)], ss, cs
 
