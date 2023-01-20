@@ -66,7 +66,7 @@ public:
 	static const bool QUIET = CONFIG::QUIET;
 
 	sampler_exact( REAL tol = std::numeric_limits<REAL>::epsilon() ) {
-	    INT exponent;
+	    int exponent;
 		frexp10<REAL>( std::numeric_limits<REAL>::max(), exponent );
 		real_precision = static_cast<REAL>( exponent );
 		tolerance = tol;
