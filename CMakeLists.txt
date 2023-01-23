@@ -14,7 +14,6 @@ option(PYTHON_WRAPPER "Compile Python wrapper" OFF)
 option(PIP_INSTALL "Install compiled Python wrapper using pip" OFF)
 
 include(CMakePackageConfigHelpers)
-include(cmake/sourcelist.cmake)
 
 find_package(MPI REQUIRED)
 if(MPI_FOUND)
@@ -45,7 +44,7 @@ endif(USE_RBF)
 target_compile_definitions(MUI INTERFACE LIBRARY_HEADER_ONLY)
 
 install(TARGETS MUI EXPORT muiTargets INCLUDES DESTINATION include LIBRARY DESTINATION lib)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/
+install(DIRECTORY ${CMAKE_SOURCE_DIR}
 	DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include
 	FILES_MATCHING
 	PATTERN "*.h"
