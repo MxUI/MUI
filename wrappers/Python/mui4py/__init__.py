@@ -1,3 +1,4 @@
+# flake8: noqa
 from mui4py.mui4py import Uniface, mpi_split_by_app, set_quiet,\
                           set_data_types_unifaces, create_unifaces,\
                           get_mpi_version, get_compiler_version, get_compiler_config
