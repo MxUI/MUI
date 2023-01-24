@@ -153,6 +153,8 @@ public:
 				cgMaxIter_ = 0;
 			if ( cgSolveTol_ < 0 )
 				cgSolveTol_ = 0;
+			// Initialise the extened local points (ptsExtend_) by assign local points (pts_)
+			ptsExtend_.assign(pts_.begin(), pts_.end());
 
 			if ( local_mpi_comm_world_ != MPI_COMM_NULL ) {
 				MPI_Comm_size( local_mpi_comm_world_, &local_size_ );
@@ -176,15 +178,16 @@ public:
 
 		std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
 		std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+		std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
 
-		auto p = std::find_if(pts_.begin(), pts_.end(), [focus](point_type b) {
+		auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
 			return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
 		});
 
-		if ( p == std::end(pts_) )
+		if ( p == std::end(ptsExtend_) )
 			EXCEPTION(std::runtime_error("Point not found. Must pre-set points for RBF interpolation"));
 
-		auto i = std::distance(pts_.begin(), p);
+		auto i = std::distance(ptsExtend_.begin(), p);
 
 		OTYPE sum = 0.;
 		for (size_t j = 0; j < data_points.size(); j++) {
@@ -203,8 +206,18 @@ public:
 		initialised_ = false;
 	}
 
+	void preSetFetchPointsExtend(std::vector<point_type> &pts) {
+		ptsExtend_ = pts;
+		initialised_ = false;
+	}
+
 	void addFetchPoint(point_type pt) {
 		pts_.emplace_back(pt);
+		initialised_ = false;
+	}
+
+	void addFetchPointExtend(point_type pt) {
+		ptsExtend_.emplace_back(pt);
 		initialised_ = false;
 	}
 
@@ -215,11 +228,11 @@ private:
 		// and if problem size smaller than defined patch size
 		if ( conservative_ ) { // Conservative RBF, using local point set for size
 			if ( pouEnabled_ ) { // PoU enabled so check patch size not larger than point set
-				if ( pts_.size() < N_sp_ )
-					N_sp_ = pts_.size();
+				if ( ptsExtend_.size() < N_sp_ )
+					N_sp_ = ptsExtend_.size();
 			}
 			else
-				N_sp_ = pts_.size();
+				N_sp_ = ptsExtend_.size();
 		}
 
 		if ( consistent_ ) { // Consistent RBF, using remote point set for size
@@ -232,8 +245,8 @@ private:
 		}
 
 		if ( smoothFunc_ ) {
-			if ( pts_.size() < M_ap_ )
-				M_ap_ = pts_.size() - 1;
+			if ( ptsExtend_.size() < M_ap_ )
+				M_ap_ = ptsExtend_.size() - 1;
 		}
 
 		REAL errorReturn = 0;
@@ -247,12 +260,12 @@ private:
 			else
 				buildConnectivityConsistent(data_points, N_sp_);
 
-			H_.resize(pts_.size(), data_points.size());
+			H_.resize(ptsExtend_.size(), data_points.size());
 			H_.setZero();
 
 			if ( smoothFunc_ ) {
 				buildConnectivitySmooth(M_ap_);
-				H_toSmooth_.resize(pts_.size(), data_points.size());
+				H_toSmooth_.resize(ptsExtend_.size(), data_points.size());
 				H_toSmooth_.setZero();
 			}
 
@@ -366,7 +379,7 @@ private:
 	inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing, bool pou) {
 		REAL errorReturn = 0;
 		if( pou ) { // Using PoU approach
-			for ( size_t row = 0; row < pts_.size(); row++ ) {
+			for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
 				Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
 				Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
@@ -411,7 +424,7 @@ private:
 				for ( INT j = 0; j < NP; j++ ) {
 					int glob_j = connectivityAB_[row][j];
 
-					auto d = norm(pts_[row] - data_points[glob_j].first);
+					auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
 
 					if ( d < r_ ) {
 						coefs.emplace_back(Eigen::Triplet<REAL> (j, 0, rbf(d)));
@@ -421,7 +434,7 @@ private:
 				coefs.emplace_back(Eigen::Triplet<REAL> (NP, 0, 1));
 
 				for (int dim = 0; dim < CONFIG::D; dim++) {
-					coefs.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), 0, pts_[row][dim]));
+					coefs.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), 0, ptsExtend_[row][dim]));
 				}
 
 				Aas.reserve(coefs.size());
@@ -460,10 +473,10 @@ private:
 				}
 			}
 
-			errorReturn /= static_cast<REAL>(pts_.size());
+			errorReturn /= static_cast<REAL>(ptsExtend_.size());
 
 			if ( smoothing ) {
-				for ( size_t row = 0; row < pts_.size(); row++ ) {
+				for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
 					for ( size_t j = 0; j < NP; j++ ) {
 						INT glob_j = connectivityAB_[row][j];
 						REAL h_j_sum = 0.;
@@ -501,7 +514,7 @@ private:
 			Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
 			Css.resize((1 + data_points.size() + CONFIG::D), (1 + data_points.size() + CONFIG::D));
-			Aas.resize(pts_.size(), (1 + data_points.size() + CONFIG::D));
+			Aas.resize(ptsExtend_.size(), (1 + data_points.size() + CONFIG::D));
 
 			std::vector<Eigen::Triplet<REAL> > coefsC;
 
@@ -526,9 +539,9 @@ private:
 			//set Aas
 			std::vector<Eigen::Triplet<REAL> > coefs;
 
-			for ( size_t i = 0; i < pts_.size(); i++ ) {
+			for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 				for ( size_t j = 0; j < data_points.size(); j++ ) {
-					auto d = norm(pts_[i] - data_points[j].first);
+					auto d = norm(ptsExtend_[i] - data_points[j].first);
 
 					if ( d < r_ ) {
 						coefs.emplace_back(Eigen::Triplet<REAL> (i, (j + CONFIG::D + 1), rbf(d)));
@@ -560,21 +573,21 @@ private:
 
 			if ( smoothing ) {
 				for ( size_t i = 0; i < data_points.size(); i++ ) {
-					for (size_t j = 0; j < pts_.size(); j++ ) {
+					for (size_t j = 0; j < ptsExtend_.size(); j++ ) {
 						H_toSmooth_(j, i) = H_more((i + CONFIG::D + 1), j);
 					}
 				}
 			}
 			else {
 				for ( size_t i = 0; i < data_points.size(); i++ ) {
-					for ( size_t j = 0; j < pts_.size(); j++ ) {
+					for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
 						H_(j, i) = H_more((i + CONFIG::D + 1), j);
 					}
 				}
 			}
 
 			if ( smoothing ) {
-				for ( size_t row = 0; row < pts_.size(); row++ ) {
+				for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
 					for ( size_t j = 0; j < data_points.size(); j++ ) {
 						REAL h_j_sum = 0.;
 						REAL f_sum = 0.;
@@ -624,7 +637,7 @@ private:
 						INT glob_i = connectivityAB_[row][i];
 						INT glob_j = connectivityAB_[row][j];
 
-						auto d = norm(pts_[glob_i] - pts_[glob_j]);
+						auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
 
 						if ( d < r_ ) {
 							REAL w = rbf(d);
@@ -642,8 +655,8 @@ private:
 					INT glob_i = connectivityAB_[row][i];
 
 					for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-						coefsC.emplace_back(Eigen::Triplet<REAL> (i, (NP + dim + 1), pts_[glob_i][dim]));
-						coefsC.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), i, pts_[glob_i][dim]));
+						coefsC.emplace_back(Eigen::Triplet<REAL> (i, (NP + dim + 1), ptsExtend_[glob_i][dim]));
+						coefsC.emplace_back(Eigen::Triplet<REAL> ((NP + dim + 1), i, ptsExtend_[glob_i][dim]));
 					}
 				}
 
@@ -656,7 +669,7 @@ private:
 				for ( size_t j = 0; j < NP; j++ ) {
 					INT glob_j = connectivityAB_[row][j];
 
-					auto d = norm(data_points[row].first - pts_[glob_j]);
+					auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
 
 					if ( d < r_ ) {
 						coefs.emplace_back(Eigen::Triplet<REAL> (j, 0, rbf(d)));
@@ -746,15 +759,15 @@ private:
 			Eigen::SparseMatrix<REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
 			Eigen::SparseMatrix<REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-			Css.resize((1 + pts_.size() + CONFIG::D), (1 + pts_.size() + CONFIG::D));
-			Aas.resize(data_points.size(), (1 + pts_.size() + CONFIG::D));
+			Css.resize((1 + ptsExtend_.size() + CONFIG::D), (1 + ptsExtend_.size() + CONFIG::D));
+			Aas.resize(data_points.size(), (1 + ptsExtend_.size() + CONFIG::D));
 
 			std::vector<Eigen::Triplet<REAL> > coefsC;
 
 			//set Css
-			for ( size_t i = 0; i < pts_.size(); i++ ) {
-				for ( size_t j = i; j < pts_.size(); j++ ) {
-					auto d = norm(pts_[i] - pts_[j]);
+			for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
+				for ( size_t j = i; j < ptsExtend_.size(); j++ ) {
+					auto d = norm(ptsExtend_[i] - ptsExtend_[j]);
 
 					if ( d < r_ ) {
 						REAL w = rbf(d);
@@ -773,8 +786,8 @@ private:
 			std::vector<Eigen::Triplet<REAL> > coefs;
 
 			for ( size_t i = 0; i < data_points.size(); i++ ) {
-				for ( size_t j = 0; j < pts_.size(); j++ ) {
-					auto d = norm(data_points[i].first - pts_[j]);
+				for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
+					auto d = norm(data_points[i].first - ptsExtend_[j]);
 
 					if ( d < r_ ) {
 						coefs.emplace_back(Eigen::Triplet<REAL> (i, (j + CONFIG::D + 1), rbf(d)));
@@ -805,14 +818,14 @@ private:
 			errorReturn = solver.error();
 
 			if ( smoothing ) {
-				for ( size_t i = 0; i < pts_.size(); i++ ) {
+				for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 					for (size_t j = 0; j < data_points.size(); j++ ) {
 						H_toSmooth_(i, j) = H_more((i + CONFIG::D + 1), j);
 					}
 				}
 			}
 			else {
-				for ( size_t i = 0; i < pts_.size(); i++ ) {
+				for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 					for ( size_t j = 0; j < data_points.size(); j++ ) {
 						H_(i, j) = H_more((i + CONFIG::D + 1), j);
 					}
@@ -820,7 +833,7 @@ private:
 			}
 
 			if ( smoothing ) {
-				for ( size_t row = 0; row < pts_.size(); row++ ) {
+				for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
 					for ( size_t j = 0; j < data_points.size(); j++ ) {
 						REAL h_j_sum = 0.;
 						REAL f_sum = 0.;
@@ -885,9 +898,9 @@ private:
 		INT pointsCountGlobalMax = std::numeric_limits<INT>::min();
 		INT pointsCountGlobalMin = std::numeric_limits<INT>::max();
 
-		connectivityAB_.resize(pts_.size());
+		connectivityAB_.resize(ptsExtend_.size());
 
-		for ( size_t i = 0; i < pts_.size(); i++ ) {
+		for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 			INT pointsCount = 0;
 			for ( INT n = 0; n < NP; n++ ) {
 				REAL cur = std::numeric_limits<REAL>::max();
@@ -900,7 +913,7 @@ private:
 					if ( added != connectivityAB_[i].end() )
 						continue;
 
-					auto d = normsq(pts_[i] - data_points[j].first);
+					auto d = normsq(ptsExtend_[i] - data_points[j].first);
 					if ( d < cur ) {
 						cur = d;
 						bestj = j;
@@ -918,7 +931,7 @@ private:
 					outputFileCAB << bestj;
 			}
 
-			if ( writeMatrix_ && i < pts_.size() - 1 )
+			if ( writeMatrix_ && i < ptsExtend_.size() - 1 )
 				outputFileCAB << '\n';
 			if ( pointsCount < pointsCountGlobalMin )
 				pointsCountGlobalMin = pointsCount;
@@ -979,7 +992,7 @@ private:
 			for ( size_t n = 0; n < NP; n++ ) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
-				for ( size_t j = 0; j < pts_.size(); j++ ) {
+				for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
 					auto added = std::find_if(connectivityAB_[i].begin(), connectivityAB_[i].end(), [j](INT k) {
 						return static_cast<size_t>(k) == j;
 					});
@@ -987,7 +1000,7 @@ private:
 					if ( added != connectivityAB_[i].end() )
 						continue;
 
-					auto d = normsq(data_points[i].first - pts_[j]);
+					auto d = normsq(data_points[i].first - ptsExtend_[j]);
 					if ( d < cur ) {
 						cur = d;
 						bestj = j;
@@ -1005,7 +1018,7 @@ private:
 					outputFileCAB << bestj;
 			}
 
-			if ( writeMatrix_ && i < pts_.size() - 1 )
+			if ( writeMatrix_ && i < ptsExtend_.size() - 1 )
 				outputFileCAB << '\n';
 			if ( pointsCount < pointsCountGlobalMin )
 				pointsCountGlobalMin = pointsCount;
@@ -1056,13 +1069,13 @@ private:
 			}
 		}
 
-		connectivityAA_.resize(pts_.size());
+		connectivityAA_.resize(ptsExtend_.size());
 
-		for ( size_t i = 0; i < pts_.size(); i++ ) {
+		for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 			for ( INT n = 0; n < MP; n++ ) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
-				for ( size_t j = 0; j < pts_.size(); j++ ) {
+				for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
 					if ( i == j )
 						continue;
 
@@ -1073,7 +1086,7 @@ private:
 					if ( added != connectivityAA_[i].end() )
 						continue;
 
-					auto d = normsq(pts_[i] - pts_[j]);
+					auto d = normsq(ptsExtend_[i] - ptsExtend_[j]);
 					if ( d < cur ) {
 						cur = d;
 						bestj = j;
@@ -1088,7 +1101,7 @@ private:
 					outputFileCAA << bestj;
 			}
 
-			if ( writeMatrix_ && i < pts_.size() - 1 )
+			if ( writeMatrix_ && i < ptsExtend_.size() - 1 )
 				outputFileCAA << '\n';
 		}
 
@@ -1134,17 +1147,17 @@ private:
 	}
 
 	///Distances function
-	inline REAL dist_h_i(INT pts_i, INT pts_j) {
+	inline REAL dist_h_i(INT ptsExtend_i, INT ptsExtend_j) {
 		switch ( CONFIG::D ) {
 			case 1:
-				return std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.)));
+				return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0] - ptsExtend_[ptsExtend_j][0]), 2.)));
 			case 2:
-				return std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.))
-						+ (std::pow((pts_[pts_i][1] - pts_[pts_j][1]), 2.)));
+				return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0] - ptsExtend_[ptsExtend_j][0]), 2.))
+						+ (std::pow((ptsExtend_[ptsExtend_i][1] - ptsExtend_[ptsExtend_j][1]), 2.)));
 			case 3:
-				return std::sqrt((std::pow((pts_[pts_i][0] - pts_[pts_j][0]), 2.))
-						+ (std::pow((pts_[pts_i][1] - pts_[pts_j][1]), 2.))
-						+ (std::pow((pts_[pts_i][2] - pts_[pts_j][2]), 2.)));
+				return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0] - ptsExtend_[ptsExtend_j][0]), 2.))
+						+ (std::pow((ptsExtend_[ptsExtend_i][1] - ptsExtend_[ptsExtend_j][1]), 2.))
+						+ (std::pow((ptsExtend_[ptsExtend_i][2] - ptsExtend_[ptsExtend_j][2]), 2.)));
 			default:
 				std::cerr << "CONFIG::D must equal 1-3" << std::endl;
 				return 0.;
@@ -1304,7 +1317,8 @@ size_t M_ap_;
 INT cgMaxIter_;
 REAL cgSolveTol_;
 
-const std::vector<point_type> pts_;
+const std::vector<point_type> pts_; //< Local points
+std::vector<point_type> ptsExtend_; //< Extened local points, i.e. local points and ghost local points
 Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_; //< Transformation Matrix
 Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_toSmooth_;
 
