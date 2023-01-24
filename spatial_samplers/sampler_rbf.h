@@ -52,6 +52,7 @@
 #include "../uniface.h"
 #include <iterator>
 #include <ctime>
+#include <mpi.h>
 
 namespace mui {
 
@@ -121,7 +122,7 @@ public:
 		bool conservative = false, bool smoothFunc = false,
 		bool readMatrix = false, bool writeMatrix = true,
 		const std::string &fileAddress = std::string(), REAL cutOff = 1e-9,
-		REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 0) :
+		REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
 		r_(r),
 		initialised_(false),
 		CABrow_(0),
@@ -140,7 +141,10 @@ public:
 		N_sp_(pouSize),
 		M_ap_(pouSize),
 		basisFunc_(basisFunc),
-		pts_(pts) {
+		pts_(pts),
+		local_mpi_comm_world_(local_comm),
+		local_rank_(0),
+		local_size_(0){
 			//set s to give rbf(r)=cutOff (default 1e-9)
 			s_ = std::pow(-std::log(cutOff), 0.5) / r_;
 			twor_ = r_ * r_;
@@ -149,6 +153,11 @@ public:
 				cgMaxIter_ = 0;
 			if ( cgSolveTol_ < 0 )
 				cgSolveTol_ = 0;
+
+			if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+				MPI_Comm_size( local_mpi_comm_world_, &local_size_ );
+				MPI_Comm_rank( local_mpi_comm_world_, &local_rank_ );
+			}
 	}
 
 	template<template<typename, typename > class CONTAINER>
@@ -164,6 +173,9 @@ public:
 				std::cout << std::endl;
 			}
 		}
+
+		std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+		std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
 
 		auto p = std::find_if(pts_.begin(), pts_.end(), [focus](point_type b) {
 			return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
@@ -1298,6 +1310,11 @@ Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_toSmooth_;
 
 std::vector<std::vector<INT> > connectivityAB_;
 std::vector<std::vector<INT> > connectivityAA_;
+
+MPI_Comm local_mpi_comm_world_;
+int local_size_;
+int local_rank_;
+
 }
 ;
 }
