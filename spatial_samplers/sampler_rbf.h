@@ -154,7 +154,7 @@ public:
 			if ( cgSolveTol_ < 0 )
 				cgSolveTol_ = 0;
 
-			if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+			if ( local_mpi_comm_world_ != MPI_COMM_NULL ) {
 				MPI_Comm_size( local_mpi_comm_world_, &local_size_ );
 				MPI_Comm_rank( local_mpi_comm_world_, &local_rank_ );
 			}
