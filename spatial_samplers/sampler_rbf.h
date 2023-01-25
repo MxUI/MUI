@@ -166,6 +166,17 @@ public:
     inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) {
         if ( !initialised_ ) {
             const clock_t begin_time = clock();
+
+            point_type locp0(2, 2);
+            addFetchPointGhost(locp0);
+            point_type locp1(3, 3);
+            addFetchPointGhost(locp1);
+            point_type locp2(4, 4);
+            addFetchPointGhost(locp2);
+
+            // Construct the extened local points by combine local points with ghost points
+            ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
+
             REAL error = computeRBFtransformationMatrix(data_points);
             if (!QUIET) {
                 std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
@@ -176,32 +187,35 @@ public:
             }
         }
 
-        std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-        std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-        std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-        std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-        for (auto xPtsExtend : ptsExtend_) {
-            std::cout << "          ";
-            int xPtsExtendSize;
-            try {
-                if (sizeof(xPtsExtend) == 0) {
-                    throw "Error zero xPtsExtend element exception";
-                } else if (sizeof(xPtsExtend) < 0) {
-                    throw "Error invalid xPtsExtend element exception";
-                } else if (sizeof(xPtsExtend[0]) == 0) {
-                    throw "Division by zero value of xPtsExtend[0] exception";
-                } else if (sizeof(xPtsExtend[0]) < 0) {
-                    throw "Division by invalid value of xPtsExtend[0] exception";
-                }
-                xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
-            } catch (const char* msg) {
-                std::cerr << msg << std::endl;
-            }
-            for (int i = 0; i < xPtsExtendSize; ++i) {
-                std::cout << xPtsExtend[i] << " ";
-            }
-            std::cout << std::endl;
-        }
+		// output for debugging
+		if((!QUIET)&&(DEBUG)) {
+			std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			for (auto xPtsExtend : ptsExtend_) {
+				std::cout << "          ";
+				int xPtsExtendSize;
+				try {
+					if (sizeof(xPtsExtend) == 0) {
+						throw "Error zero xPtsExtend element exception";
+					} else if (sizeof(xPtsExtend) < 0) {
+						throw "Error invalid xPtsExtend element exception";
+					} else if (sizeof(xPtsExtend[0]) == 0) {
+						throw "Division by zero value of xPtsExtend[0] exception";
+					} else if (sizeof(xPtsExtend[0]) < 0) {
+						throw "Division by invalid value of xPtsExtend[0] exception";
+					}
+					xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
+				} catch (const char* msg) {
+					std::cerr << msg << std::endl;
+				}
+				for (int i = 0; i < xPtsExtendSize; ++i) {
+					std::cout << xPtsExtend[i] << " ";
+				}
+				std::cout << std::endl;
+			}
+		}
 
         auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
             return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
@@ -241,6 +255,10 @@ public:
 
     void addFetchPointExtend(point_type pt) {
         ptsExtend_.emplace_back(pt);
+        initialised_ = false;
+    }
+    void addFetchPointGhost(point_type pt) {
+        ptsGhost_.emplace_back(pt);
         initialised_ = false;
     }
 
