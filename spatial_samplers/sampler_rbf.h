@@ -167,12 +167,79 @@ public:
         if ( !initialised_ ) {
             const clock_t begin_time = clock();
 
-            point_type locp0(2, 2);
+            // Determine bounding box of local points
+            point_type lbbMax, lbbMin;
+			try {
+				if (CONFIG::D == 1) {
+					lbbMax = (-std::numeric_limits<double>::max());
+					lbbMin = (std::numeric_limits<double>::max());
+				}else if (CONFIG::D == 2) {
+					lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
+					lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
+				}else if (CONFIG::D == 3) {
+					lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
+					lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
+				}else {
+					throw "Invalid value of CONFIG::D exception";
+				}
+			} catch (const char* msg) {
+				std::cerr << msg << std::endl;
+			}
+
+			for (auto xPts : pts_) {
+				try {
+					switch(CONFIG::D) {
+					  case 1:
+						if (xPts[0] >= lbbMax[0])
+							lbbMax[0] = xPts[0];
+						if (xPts[0] <= lbbMin[0])
+							lbbMin[0] = xPts[0];
+						break;
+					  case 2:
+						if (xPts[0] >= lbbMax[0])
+							lbbMax[0] = xPts[0];
+						if (xPts[0] <= lbbMin[0])
+							lbbMin[0] = xPts[0];
+						if (xPts[1] >= lbbMax[1])
+							lbbMax[1] = xPts[1];
+						if (xPts[1] <= lbbMin[1])
+							lbbMin[1] = xPts[1];
+						break;
+					  case 3:
+						if (xPts[0] >= lbbMax[0])
+							lbbMax[0] = xPts[0];
+						if (xPts[0] <= lbbMin[0])
+							lbbMin[0] = xPts[0];
+						if (xPts[1] >= lbbMax[1])
+							lbbMax[1] = xPts[1];
+						if (xPts[1] <= lbbMin[1])
+							lbbMin[1] = xPts[1];
+						if (xPts[2] >= lbbMax[2])
+							lbbMax[2] = xPts[2];
+						if (xPts[2] <= lbbMin[2])
+							lbbMin[2] = xPts[2];
+						break;
+					  default:
+						throw "Invalid value of CONFIG::D exception";
+					}
+				} catch (const char* msg) {
+					std::cerr << msg << std::endl;
+				}
+			}
+
+			// output for debugging
+			if((!QUIET)&&(DEBUG))
+				std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+
+//            std::vector<double> localBoundingBoxVec = {lbbMaxX, lbbMaxY, lbbMaxZ, lbbMinX, lbbMinY, lbbMinZ};
+
+            point_type locp0((-10*local_rank_+1), (-10*local_rank_+1));
             addFetchPointGhost(locp0);
-            point_type locp1(3, 3);
+            point_type locp1((10*local_rank_+1), (10*local_rank_+1));
             addFetchPointGhost(locp1);
-            point_type locp2(4, 4);
-            addFetchPointGhost(locp2);
+
+            // Gather the data from all processes
+//            MPI_Allgather(local_vec.data(), local_vec.size(), MPI_DOUBLE, all_vec.data(), local_vec.size(), MPI_INT, MPI_COMM_WORLD);
 
             // Construct the extened local points by combine local points with ghost points
             ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
