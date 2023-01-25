@@ -178,6 +178,7 @@ public:
 
         std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
         std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+        std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
         std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
         for (auto xPtsExtend : ptsExtend_) {
             std::cout << "          ";
@@ -1340,6 +1341,7 @@ INT cgMaxIter_;
 REAL cgSolveTol_;
 
 const std::vector<point_type> pts_; //< Local points
+std::vector<point_type> ptsGhost_; //< Local ghost points
 std::vector<point_type> ptsExtend_; //< Extened local points, i.e. local points and ghost local points
 Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_; //< Transformation Matrix
 Eigen::Matrix<REAL, Eigen::Dynamic, Eigen::Dynamic> H_toSmooth_;
