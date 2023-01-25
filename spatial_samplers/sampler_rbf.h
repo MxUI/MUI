@@ -168,7 +168,7 @@ public:
             const clock_t begin_time = clock();
 
             // Determine bounding box of local points
-            point_type lbbMax, lbbMin;
+            point_type lbbMax,lbbMin,lbbExtendMax,lbbExtendMin;
 			try {
 				if (CONFIG::D == 1) {
 					lbbMax = (-std::numeric_limits<double>::max());
@@ -227,10 +227,19 @@ public:
 				}
 			}
 
-			// output for debugging
-			if((!QUIET)&&(DEBUG))
-				std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			// Determine extended bounding box of local points include ghost area
+			lbbExtendMax = lbbMax;
+			lbbExtendMin = lbbMin;
+			for (INT i = 0; i < CONFIG::D; ++i) {
+				lbbExtendMax[i] += r_;
+				lbbExtendMin[i] -= r_;
+			}
 
+			// output for debugging
+			if((!QUIET)&&(DEBUG)) {
+				std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+				std::cout << "extended local bounding box: " << lbbExtendMax[0] << " " << lbbExtendMax[1] << " "<< lbbExtendMin[0] << " "<< lbbExtendMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			}
 //            std::vector<double> localBoundingBoxVec = {lbbMaxX, lbbMaxY, lbbMaxZ, lbbMinX, lbbMinY, lbbMinZ};
 
             point_type locp0((-10*local_rank_+1), (-10*local_rank_+1));
