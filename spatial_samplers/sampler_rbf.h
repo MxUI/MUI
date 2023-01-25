@@ -167,10 +167,10 @@ public:
         if ( !initialised_ ) {
             const clock_t begin_time = clock();
 
-            // Create an array to hold the rank IDs from all processes
-            INT rankGather[local_size_];
-            // Gather the rank IDs from all processes
-            MPI_Allgather(&local_rank_, 1, MPI_INT, rankGather, 1, MPI_INT, local_mpi_comm_world_);
+//            // Create an array to hold the rank IDs from all processes
+//            INT rankGather[local_size_];
+//            // Gather the rank IDs from all processes
+//            MPI_Allgather(&local_rank_, 1, MPI_INT, rankGather, 1, MPI_INT, local_mpi_comm_world_);
 
             // Determine bounding box of local points
             point_type lbbMax,lbbMin,lbbExtendMax,lbbExtendMin;
@@ -250,16 +250,94 @@ public:
             // Gather the bounding boxes from all processes
             MPI_Allgather(&localBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, globalBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, local_mpi_comm_world_);
 
-            for (auto xGlobalBB : globalBB) {
-                std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
+            // output for debugging
+            if((!QUIET)&&(DEBUG)) {
+                for (auto xGlobalBB : globalBB) {
+                    std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
+                }
             }
 
-//            for ( size_t i = 0; i < pts_.size(); ++i ) {
-//                for (INT j : globalBB) {
-//                  cout << i << "\n";
-//                }
-//
-//            }
+            // Loop over local points to collect ghost points for other processors
+            std::vector<std::pair<INT,std::vector<point_type>>> ghostPointsToSend;
+            for ( size_t i = 0; i < pts_.size(); ++i ) {
+                for (auto xGlobalBB : globalBB) {
+                    if (xGlobalBB.first == local_rank_)
+                        continue;
+                    try {
+                        switch(CONFIG::D) {
+                          case 1: {
+                            if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+                               (pts_[i][0] >= xGlobalBB.second.second[0])) {
+
+                                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+                                    return b.first == xGlobalBB.first;});
+
+                                if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+                                    std::vector<point_type> vecPointTemp{pts_[i]};
+                                    ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+                                } else {
+                                    ghostPointsToSendIter->second.push_back(pts_[i]);
+                                }
+                            }
+                            break;
+                          }
+                          case 2: {
+                            if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+                               (pts_[i][0] >= xGlobalBB.second.second[0]) &&
+                               (pts_[i][1] <= xGlobalBB.second.first[1])  &&
+                               (pts_[i][1] >= xGlobalBB.second.second[1])) {
+
+                                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+                                    return b.first == xGlobalBB.first;});
+
+                                if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+                                    std::vector<point_type> vecPointTemp{pts_[i]};
+                                    ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+                                } else {
+                                    ghostPointsToSendIter->second.push_back(pts_[i]);
+                                }
+                            }
+                            break;
+                          }
+                          case 3: {
+                            if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+                               (pts_[i][0] >= xGlobalBB.second.second[0]) &&
+                               (pts_[i][1] <= xGlobalBB.second.first[1])  &&
+                               (pts_[i][1] >= xGlobalBB.second.second[1]) &&
+                               (pts_[i][2] <= xGlobalBB.second.first[2])  &&
+                               (pts_[i][2] >= xGlobalBB.second.second[2])) {
+
+                                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+                                    return b.first == xGlobalBB.first;});
+
+                                if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+                                    std::vector<point_type> vecPointTemp{pts_[i]};
+                                    ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+                                } else {
+                                    ghostPointsToSendIter->second.push_back(pts_[i]);
+                                }
+                            }
+                            break;
+                          }
+                          default:
+                            throw "Invalid value of CONFIG::D exception";
+                        }
+                    } catch (const char* msg) {
+                        std::cerr << msg << std::endl;
+                    }
+                }
+            }
+
+            // output for debugging
+            if((!QUIET)&&(DEBUG)) {
+                std::cout << "total size of GhostPointsToSend " << ghostPointsToSend.size() << " at rank " << local_rank_  << std::endl;
+                for (auto xGhostPointsToSend : ghostPointsToSend) {
+                    std::cout << "xGhostPointsToSend to rank " << xGhostPointsToSend.first << " at rank " << local_rank_  << std::endl;
+                    for (auto xVectPts : xGhostPointsToSend.second) {
+                        std::cout << xVectPts[0] << " " << xVectPts[1] << " at rank " << local_rank_  << std::endl;
+                    }
+                }
+            }
 
 
 
