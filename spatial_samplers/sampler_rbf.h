@@ -254,14 +254,10 @@ public:
 
             // Declear vector to gather number of points to send to each processors
             std::vector<std::pair<INT,INT>> ghostPointsCount;
-            // Create an array to hold the rank IDs from all processes
-            INT rankGather[local_size_];
-            // Gather the rank IDs from all processes
-            MPI_Allgather(&local_rank_, 1, MPI_INT, rankGather, 1, MPI_INT, local_mpi_comm_world_);
-            for (INT rankID : rankGather) {
-                if (rankID == local_rank_)
+            for (auto xGlobalBB : globalBB) {
+                if (xGlobalBB.first == local_rank_)
                      continue;
-                ghostPointsCount.push_back(std::make_pair(rankID,0));
+                ghostPointsCount.push_back(std::make_pair(xGlobalBB.first,0));
             }
 
             // Loop over local points to collect ghost points for other processors
