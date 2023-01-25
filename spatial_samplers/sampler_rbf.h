@@ -167,88 +167,119 @@ public:
         if ( !initialised_ ) {
             const clock_t begin_time = clock();
 
+            // Create an array to hold the rank IDs from all processes
+            INT rankGather[local_size_];
+            // Gather the rank IDs from all processes
+            MPI_Allgather(&local_rank_, 1, MPI_INT, rankGather, 1, MPI_INT, local_mpi_comm_world_);
+
             // Determine bounding box of local points
             point_type lbbMax,lbbMin,lbbExtendMax,lbbExtendMin;
-			try {
-				if (CONFIG::D == 1) {
-					lbbMax = (-std::numeric_limits<double>::max());
-					lbbMin = (std::numeric_limits<double>::max());
-				}else if (CONFIG::D == 2) {
-					lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
-					lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
-				}else if (CONFIG::D == 3) {
-					lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
-					lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
-				}else {
-					throw "Invalid value of CONFIG::D exception";
-				}
-			} catch (const char* msg) {
-				std::cerr << msg << std::endl;
-			}
+            try {
+                if (CONFIG::D == 1) {
+                    lbbMax = (-std::numeric_limits<double>::max());
+                    lbbMin = (std::numeric_limits<double>::max());
+                }else if (CONFIG::D == 2) {
+                    lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
+                    lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
+                }else if (CONFIG::D == 3) {
+                    lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
+                    lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
+                }else {
+                    throw "Invalid value of CONFIG::D exception";
+                }
+            } catch (const char* msg) {
+                std::cerr << msg << std::endl;
+            }
 
-			for (auto xPts : pts_) {
-				try {
-					switch(CONFIG::D) {
-					  case 1:
-						if (xPts[0] >= lbbMax[0])
-							lbbMax[0] = xPts[0];
-						if (xPts[0] <= lbbMin[0])
-							lbbMin[0] = xPts[0];
-						break;
-					  case 2:
-						if (xPts[0] >= lbbMax[0])
-							lbbMax[0] = xPts[0];
-						if (xPts[0] <= lbbMin[0])
-							lbbMin[0] = xPts[0];
-						if (xPts[1] >= lbbMax[1])
-							lbbMax[1] = xPts[1];
-						if (xPts[1] <= lbbMin[1])
-							lbbMin[1] = xPts[1];
-						break;
-					  case 3:
-						if (xPts[0] >= lbbMax[0])
-							lbbMax[0] = xPts[0];
-						if (xPts[0] <= lbbMin[0])
-							lbbMin[0] = xPts[0];
-						if (xPts[1] >= lbbMax[1])
-							lbbMax[1] = xPts[1];
-						if (xPts[1] <= lbbMin[1])
-							lbbMin[1] = xPts[1];
-						if (xPts[2] >= lbbMax[2])
-							lbbMax[2] = xPts[2];
-						if (xPts[2] <= lbbMin[2])
-							lbbMin[2] = xPts[2];
-						break;
-					  default:
-						throw "Invalid value of CONFIG::D exception";
-					}
-				} catch (const char* msg) {
-					std::cerr << msg << std::endl;
-				}
-			}
+            for (auto xPts : pts_) {
+                try {
+                    switch(CONFIG::D) {
+                      case 1:
+                        if (xPts[0] >= lbbMax[0])
+                            lbbMax[0] = xPts[0];
+                        if (xPts[0] <= lbbMin[0])
+                            lbbMin[0] = xPts[0];
+                        break;
+                      case 2:
+                        if (xPts[0] >= lbbMax[0])
+                            lbbMax[0] = xPts[0];
+                        if (xPts[0] <= lbbMin[0])
+                            lbbMin[0] = xPts[0];
+                        if (xPts[1] >= lbbMax[1])
+                            lbbMax[1] = xPts[1];
+                        if (xPts[1] <= lbbMin[1])
+                            lbbMin[1] = xPts[1];
+                        break;
+                      case 3:
+                        if (xPts[0] >= lbbMax[0])
+                            lbbMax[0] = xPts[0];
+                        if (xPts[0] <= lbbMin[0])
+                            lbbMin[0] = xPts[0];
+                        if (xPts[1] >= lbbMax[1])
+                            lbbMax[1] = xPts[1];
+                        if (xPts[1] <= lbbMin[1])
+                            lbbMin[1] = xPts[1];
+                        if (xPts[2] >= lbbMax[2])
+                            lbbMax[2] = xPts[2];
+                        if (xPts[2] <= lbbMin[2])
+                            lbbMin[2] = xPts[2];
+                        break;
+                      default:
+                        throw "Invalid value of CONFIG::D exception";
+                    }
+                } catch (const char* msg) {
+                    std::cerr << msg << std::endl;
+                }
+            }
 
-			// Determine extended bounding box of local points include ghost area
-			lbbExtendMax = lbbMax;
-			lbbExtendMin = lbbMin;
-			for (INT i = 0; i < CONFIG::D; ++i) {
-				lbbExtendMax[i] += r_;
-				lbbExtendMin[i] -= r_;
-			}
+            // Determine extended bounding box of local points include ghost area
+            lbbExtendMax = lbbMax;
+            lbbExtendMin = lbbMin;
+            for (INT i = 0; i < CONFIG::D; ++i) {
+                lbbExtendMax[i] += r_;
+                lbbExtendMin[i] -= r_;
+            }
 
-			// output for debugging
-			if((!QUIET)&&(DEBUG)) {
-				std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-				std::cout << "extended local bounding box: " << lbbExtendMax[0] << " " << lbbExtendMax[1] << " "<< lbbExtendMin[0] << " "<< lbbExtendMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-			}
-//            std::vector<double> localBoundingBoxVec = {lbbMaxX, lbbMaxY, lbbMaxZ, lbbMinX, lbbMinY, lbbMinZ};
+            std::pair<INT, std::pair<point_type,point_type>> localBB, globalBB[local_size_];
+
+            // Assign rank ID and extended bounding box of local points to localBB
+            localBB.first = local_rank_;
+            localBB.second.first = lbbExtendMax;
+            localBB.second.second = lbbExtendMin;
+
+            // Gather the bounding boxes from all processes
+            MPI_Allgather(&localBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, globalBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, local_mpi_comm_world_);
+
+            for (auto xGlobalBB : globalBB) {
+                std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
+            }
+
+//            for ( size_t i = 0; i < pts_.size(); ++i ) {
+//                for (INT j : globalBB) {
+//                  cout << i << "\n";
+//                }
+//
+//            }
+
+
+
+
+
+
+
+            // output for debugging
+            if((!QUIET)&&(DEBUG)) {
+                std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+                std::cout << "extended local bounding box: " << lbbExtendMax[0] << " " << lbbExtendMax[1] << " "<< lbbExtendMin[0] << " "<< lbbExtendMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+                std::cout << "localBB: " << localBB.first << " " << localBB.second.first[0] << " " << localBB.second.first[1] << " "<< localBB.second.second[0] << " "<< localBB.second.second[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+            }
+
+
 
             point_type locp0((-10*local_rank_+1), (-10*local_rank_+1));
             addFetchPointGhost(locp0);
             point_type locp1((10*local_rank_+1), (10*local_rank_+1));
             addFetchPointGhost(locp1);
-
-            // Gather the data from all processes
-//            MPI_Allgather(local_vec.data(), local_vec.size(), MPI_DOUBLE, all_vec.data(), local_vec.size(), MPI_INT, MPI_COMM_WORLD);
 
             // Construct the extened local points by combine local points with ghost points
             ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
@@ -263,35 +294,35 @@ public:
             }
         }
 
-		// output for debugging
-		if((!QUIET)&&(DEBUG)) {
-			std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-			std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-			std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-			std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-			for (auto xPtsExtend : ptsExtend_) {
-				std::cout << "          ";
-				int xPtsExtendSize;
-				try {
-					if (sizeof(xPtsExtend) == 0) {
-						throw "Error zero xPtsExtend element exception";
-					} else if (sizeof(xPtsExtend) < 0) {
-						throw "Error invalid xPtsExtend element exception";
-					} else if (sizeof(xPtsExtend[0]) == 0) {
-						throw "Division by zero value of xPtsExtend[0] exception";
-					} else if (sizeof(xPtsExtend[0]) < 0) {
-						throw "Division by invalid value of xPtsExtend[0] exception";
-					}
-					xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
-				} catch (const char* msg) {
-					std::cerr << msg << std::endl;
-				}
-				for (int i = 0; i < xPtsExtendSize; ++i) {
-					std::cout << xPtsExtend[i] << " ";
-				}
-				std::cout << std::endl;
-			}
-		}
+        // output for debugging
+        if((!QUIET)&&(DEBUG)) {
+            std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+            std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+            std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+            std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+            for (auto xPtsExtend : ptsExtend_) {
+                std::cout << "          ";
+                int xPtsExtendSize;
+                try {
+                    if (sizeof(xPtsExtend) == 0) {
+                        throw "Error zero xPtsExtend element exception";
+                    } else if (sizeof(xPtsExtend) < 0) {
+                        throw "Error invalid xPtsExtend element exception";
+                    } else if (sizeof(xPtsExtend[0]) == 0) {
+                        throw "Division by zero value of xPtsExtend[0] exception";
+                    } else if (sizeof(xPtsExtend[0]) < 0) {
+                        throw "Division by invalid value of xPtsExtend[0] exception";
+                    }
+                    xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
+                } catch (const char* msg) {
+                    std::cerr << msg << std::endl;
+                }
+                for (int i = 0; i < xPtsExtendSize; ++i) {
+                    std::cout << xPtsExtend[i] << " ";
+                }
+                std::cout << std::endl;
+            }
+        }
 
         auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
             return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
@@ -1444,8 +1475,8 @@ std::vector<std::vector<INT> > connectivityAB_;
 std::vector<std::vector<INT> > connectivityAA_;
 
 MPI_Comm local_mpi_comm_world_;
-int local_size_;
-int local_rank_;
+INT local_size_;
+INT local_rank_;
 
 }
 ;
