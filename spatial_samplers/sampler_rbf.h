@@ -167,310 +167,313 @@ public:
         if ( !initialised_ ) {
             const clock_t begin_time = clock();
 
-            // Determine bounding box of local points
-            point_type lbbMax,lbbMin,lbbExtendMax,lbbExtendMin;
-            try {
-                if (CONFIG::D == 1) {
-                    lbbMax = (-std::numeric_limits<double>::max());
-                    lbbMin = (std::numeric_limits<double>::max());
-                }else if (CONFIG::D == 2) {
-                    lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
-                    lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
-                }else if (CONFIG::D == 3) {
-                    lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
-                    lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
-                }else {
-                    throw "Invalid value of CONFIG::D exception";
-                }
-            } catch (const char* msg) {
-                std::cerr << msg << std::endl;
+            // Facilitate Ghost cells
+            if ( local_mpi_comm_world_ != MPI_COMM_NULL ) {
+				// Determine bounding box of local points
+				point_type lbbMax,lbbMin,lbbExtendMax,lbbExtendMin;
+				try {
+					if (CONFIG::D == 1) {
+						lbbMax = (-std::numeric_limits<double>::max());
+						lbbMin = (std::numeric_limits<double>::max());
+					}else if (CONFIG::D == 2) {
+						lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
+						lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
+					}else if (CONFIG::D == 3) {
+						lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
+						lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
+					}else {
+						throw "Invalid value of CONFIG::D exception";
+					}
+				} catch (const char* msg) {
+					std::cerr << msg << std::endl;
+				}
+
+				for (auto xPts : pts_) {
+					try {
+						switch(CONFIG::D) {
+						  case 1:
+							if (xPts[0] >= lbbMax[0])
+								lbbMax[0] = xPts[0];
+							if (xPts[0] <= lbbMin[0])
+								lbbMin[0] = xPts[0];
+							break;
+						  case 2:
+							if (xPts[0] >= lbbMax[0])
+								lbbMax[0] = xPts[0];
+							if (xPts[0] <= lbbMin[0])
+								lbbMin[0] = xPts[0];
+							if (xPts[1] >= lbbMax[1])
+								lbbMax[1] = xPts[1];
+							if (xPts[1] <= lbbMin[1])
+								lbbMin[1] = xPts[1];
+							break;
+						  case 3:
+							if (xPts[0] >= lbbMax[0])
+								lbbMax[0] = xPts[0];
+							if (xPts[0] <= lbbMin[0])
+								lbbMin[0] = xPts[0];
+							if (xPts[1] >= lbbMax[1])
+								lbbMax[1] = xPts[1];
+							if (xPts[1] <= lbbMin[1])
+								lbbMin[1] = xPts[1];
+							if (xPts[2] >= lbbMax[2])
+								lbbMax[2] = xPts[2];
+							if (xPts[2] <= lbbMin[2])
+								lbbMin[2] = xPts[2];
+							break;
+						  default:
+							throw "Invalid value of CONFIG::D exception";
+						}
+					} catch (const char* msg) {
+						std::cerr << msg << std::endl;
+					}
+				}
+
+				// Determine extended bounding box of local points include ghost area
+				lbbExtendMax = lbbMax;
+				lbbExtendMin = lbbMin;
+				for (INT i = 0; i < CONFIG::D; ++i) {
+					lbbExtendMax[i] += r_;
+					lbbExtendMin[i] -= r_;
+				}
+
+				std::pair<INT, std::pair<point_type,point_type>> localBB, globalBB[local_size_];
+
+				// Assign rank ID and extended bounding box of local points to localBB
+				localBB.first = local_rank_;
+				localBB.second.first = lbbExtendMax;
+				localBB.second.second = lbbExtendMin;
+
+				// Gather the bounding boxes from all processes
+				MPI_Allgather(&localBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, globalBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, local_mpi_comm_world_);
+
+				// output for debugging
+				if((!QUIET)&&(DEBUG)) {
+					for (auto xGlobalBB : globalBB) {
+						std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
+					}
+				}
+
+				// Declear vector to gather number of points to send to each processors
+				std::vector<std::pair<INT,INT>> ghostPointsCountToSend;
+				for (auto xGlobalBB : globalBB) {
+					if (xGlobalBB.first == local_rank_)
+						 continue;
+					ghostPointsCountToSend.push_back(std::make_pair(xGlobalBB.first,0));
+				}
+
+				// Loop over local points to collect ghost points for other processors
+				std::vector<std::pair<INT,std::vector<point_type>>> ghostPointsToSend;
+				for ( size_t i = 0; i < pts_.size(); ++i ) {
+					for (auto xGlobalBB : globalBB) {
+						if (xGlobalBB.first == local_rank_)
+							continue;
+						try {
+							switch(CONFIG::D) {
+							  case 1: {
+								if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+								   (pts_[i][0] >= xGlobalBB.second.second[0])) {
+
+									auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+										return b.first == xGlobalBB.first;});
+									auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
+										return b.first == xGlobalBB.first;});
+
+									if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+										std::vector<point_type> vecPointTemp{pts_[i]};
+										ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+									} else {
+										ghostPointsToSendIter->second.push_back(pts_[i]);
+									}
+
+									assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+									++ghostPointsCountToSendIter->second;
+								}
+								break;
+							  }
+							  case 2: {
+								if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+								   (pts_[i][0] >= xGlobalBB.second.second[0]) &&
+								   (pts_[i][1] <= xGlobalBB.second.first[1])  &&
+								   (pts_[i][1] >= xGlobalBB.second.second[1])) {
+
+									auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+										return b.first == xGlobalBB.first;});
+									auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
+										return b.first == xGlobalBB.first;});
+
+									if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+										std::vector<point_type> vecPointTemp{pts_[i]};
+										ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+									} else {
+										ghostPointsToSendIter->second.push_back(pts_[i]);
+									}
+
+									assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+									++ghostPointsCountToSendIter->second;
+								}
+								break;
+							  }
+							  case 3: {
+								if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+								   (pts_[i][0] >= xGlobalBB.second.second[0]) &&
+								   (pts_[i][1] <= xGlobalBB.second.first[1])  &&
+								   (pts_[i][1] >= xGlobalBB.second.second[1]) &&
+								   (pts_[i][2] <= xGlobalBB.second.first[2])  &&
+								   (pts_[i][2] >= xGlobalBB.second.second[2])) {
+
+									auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+										return b.first == xGlobalBB.first;});
+									auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
+										return b.first == xGlobalBB.first;});
+
+									if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+										std::vector<point_type> vecPointTemp{pts_[i]};
+										ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+									} else {
+										ghostPointsToSendIter->second.push_back(pts_[i]);
+									}
+
+									assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+									++ghostPointsCountToSendIter->second;
+								}
+								break;
+							  }
+							  default:
+								throw "Invalid value of CONFIG::D exception";
+							}
+						} catch (const char* msg) {
+							std::cerr << msg << std::endl;
+						}
+					}
+				}
+
+				// output for debugging
+				if((!QUIET)&&(DEBUG)) {
+					std::cout << "total size of GhostPointsToSend " << ghostPointsToSend.size() << " at rank " << local_rank_  << std::endl;
+					for (auto xGhostPointsToSend : ghostPointsToSend) {
+						std::cout << "xGhostPointsToSend to rank " << xGhostPointsToSend.first << " at rank " << local_rank_  << std::endl;
+						for (auto xVectPts : xGhostPointsToSend.second) {
+							std::cout << xVectPts[0] << " " << xVectPts[1] << " at rank " << local_rank_  << std::endl;
+						}
+					}
+					for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
+						std::cout << "xGhostPointsCountToSend to rank " << xGhostPointsCountToSend.first << " has " << xGhostPointsCountToSend.second << " points to send at rank " << local_rank_  << std::endl;
+					}
+				}
+
+				// Distribution of ghost points among processors by all to all
+				std::vector<std::pair<INT,INT>> ghostPointsCountToRecv;
+				for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
+					assert(xGhostPointsCountToSend.first != local_rank_);
+					assert(xGhostPointsCountToSend.second >= 0);
+					// Determined of number of points to transfer by pairwise communication
+					MPI_Send(&xGhostPointsCountToSend.second, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_mpi_comm_world_);
+					int pointsCountTemp = -1;
+					MPI_Recv(&pointsCountTemp, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_mpi_comm_world_, MPI_STATUS_IGNORE);
+					assert(pointsCountTemp >= 0);
+					ghostPointsCountToRecv.push_back(std::make_pair(xGhostPointsCountToSend.first,pointsCountTemp));
+
+					// Send ghost points by pairwise communication
+					if(xGhostPointsCountToSend.second != 0) {
+						auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGhostPointsCountToSend](std::pair<INT,std::vector<point_type>> b) {
+							return b.first == xGhostPointsCountToSend.first;});
+						assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
+						int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
+						char* buffer = new char[buffer_size];
+						int position = 0;
+						for (auto &pointElement : ghostPointsToSendIter->second) {
+							  MPI_Pack(&pointElement, sizeof(point_type), MPI_BYTE, buffer, buffer_size, &position, local_mpi_comm_world_);
+						}
+						MPI_Send(buffer, position, MPI_PACKED, xGhostPointsCountToSend.first, 1, local_mpi_comm_world_);
+						delete[] buffer;
+						// output for debugging
+						if((!QUIET)&&(DEBUG)) {
+							for (auto xsend : ghostPointsToSendIter->second) {
+								std::cout << "send ghost point to rank " << xGhostPointsCountToSend.first << " with value of " <<  xsend[0] << " " << xsend[1] << " at rank " << local_rank_  << std::endl;
+							}
+						}
+					}
+
+					// Receive ghost points by pairwise communication
+					auto ghostPointsCountToRecvIter = std::find_if(ghostPointsCountToRecv.begin(), ghostPointsCountToRecv.end(), [xGhostPointsCountToSend](std::pair<INT,INT> b) {
+						return b.first == xGhostPointsCountToSend.first;});
+					if(ghostPointsCountToRecvIter->second != 0) {
+						std::vector<point_type> vecPointTemp;
+						MPI_Status status;
+						MPI_Probe(ghostPointsCountToRecvIter->first, 1, local_mpi_comm_world_, &status);
+						int buffer_size;
+						MPI_Get_count(&status, MPI_PACKED, &buffer_size);
+						char* buffer = new char[buffer_size];
+						MPI_Recv(buffer, buffer_size, MPI_PACKED, ghostPointsCountToRecvIter->first, 1, local_mpi_comm_world_, MPI_STATUS_IGNORE);
+						int position = 0;
+						int count;
+						MPI_Get_elements(&status, MPI_BYTE, &count);
+						vecPointTemp.resize(count / sizeof(point_type));
+						for (auto &pointElement : vecPointTemp) {
+							MPI_Unpack(buffer, buffer_size, &position, &pointElement, sizeof(point_type), MPI_BYTE, local_mpi_comm_world_);
+						}
+						delete[] buffer;
+						for (auto xvecPointTemp : vecPointTemp) {
+							addFetchPointGhost(xvecPointTemp);
+							// output for debugging
+							if((!QUIET)&&(DEBUG)) {
+								std::cout << "receive ghost point from rank " << ghostPointsCountToRecvIter->first << " with value of " <<  xvecPointTemp[0] << " " << xvecPointTemp[1] << " at rank " << local_rank_  << std::endl;
+							}
+						}
+					}
+				}
+
+				// output for debugging
+				if((!QUIET)&&(DEBUG)) {
+					std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+					std::cout << "extended local bounding box: " << lbbExtendMax[0] << " " << lbbExtendMax[1] << " "<< lbbExtendMin[0] << " "<< lbbExtendMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+					std::cout << "localBB: " << localBB.first << " " << localBB.second.first[0] << " " << localBB.second.first[1] << " "<< localBB.second.second[0] << " "<< localBB.second.second[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+				}
+
+				// Construct the extened local points by combine local points with ghost points
+				ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
             }
 
-            for (auto xPts : pts_) {
-                try {
-                    switch(CONFIG::D) {
-                      case 1:
-                        if (xPts[0] >= lbbMax[0])
-                            lbbMax[0] = xPts[0];
-                        if (xPts[0] <= lbbMin[0])
-                            lbbMin[0] = xPts[0];
-                        break;
-                      case 2:
-                        if (xPts[0] >= lbbMax[0])
-                            lbbMax[0] = xPts[0];
-                        if (xPts[0] <= lbbMin[0])
-                            lbbMin[0] = xPts[0];
-                        if (xPts[1] >= lbbMax[1])
-                            lbbMax[1] = xPts[1];
-                        if (xPts[1] <= lbbMin[1])
-                            lbbMin[1] = xPts[1];
-                        break;
-                      case 3:
-                        if (xPts[0] >= lbbMax[0])
-                            lbbMax[0] = xPts[0];
-                        if (xPts[0] <= lbbMin[0])
-                            lbbMin[0] = xPts[0];
-                        if (xPts[1] >= lbbMax[1])
-                            lbbMax[1] = xPts[1];
-                        if (xPts[1] <= lbbMin[1])
-                            lbbMin[1] = xPts[1];
-                        if (xPts[2] >= lbbMax[2])
-                            lbbMax[2] = xPts[2];
-                        if (xPts[2] <= lbbMin[2])
-                            lbbMin[2] = xPts[2];
-                        break;
-                      default:
-                        throw "Invalid value of CONFIG::D exception";
-                    }
-                } catch (const char* msg) {
-                    std::cerr << msg << std::endl;
-                }
-            }
-
-            // Determine extended bounding box of local points include ghost area
-            lbbExtendMax = lbbMax;
-            lbbExtendMin = lbbMin;
-            for (INT i = 0; i < CONFIG::D; ++i) {
-                lbbExtendMax[i] += r_;
-                lbbExtendMin[i] -= r_;
-            }
-
-            std::pair<INT, std::pair<point_type,point_type>> localBB, globalBB[local_size_];
-
-            // Assign rank ID and extended bounding box of local points to localBB
-            localBB.first = local_rank_;
-            localBB.second.first = lbbExtendMax;
-            localBB.second.second = lbbExtendMin;
-
-            // Gather the bounding boxes from all processes
-            MPI_Allgather(&localBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, globalBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, local_mpi_comm_world_);
-
-            // output for debugging
-            if((!QUIET)&&(DEBUG)) {
-                for (auto xGlobalBB : globalBB) {
-                    std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
-                }
-            }
-
-            // Declear vector to gather number of points to send to each processors
-            std::vector<std::pair<INT,INT>> ghostPointsCountToSend;
-            for (auto xGlobalBB : globalBB) {
-                if (xGlobalBB.first == local_rank_)
-                     continue;
-                ghostPointsCountToSend.push_back(std::make_pair(xGlobalBB.first,0));
-            }
-
-            // Loop over local points to collect ghost points for other processors
-            std::vector<std::pair<INT,std::vector<point_type>>> ghostPointsToSend;
-            for ( size_t i = 0; i < pts_.size(); ++i ) {
-                for (auto xGlobalBB : globalBB) {
-                    if (xGlobalBB.first == local_rank_)
-                        continue;
-                    try {
-                        switch(CONFIG::D) {
-                          case 1: {
-                            if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
-                               (pts_[i][0] >= xGlobalBB.second.second[0])) {
-
-                                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
-                                    return b.first == xGlobalBB.first;});
-                                auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
-                                    return b.first == xGlobalBB.first;});
-
-                                if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
-                                    std::vector<point_type> vecPointTemp{pts_[i]};
-                                    ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
-                                } else {
-                                    ghostPointsToSendIter->second.push_back(pts_[i]);
-                                }
-
-                                assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
-                                ++ghostPointsCountToSendIter->second;
-                            }
-                            break;
-                          }
-                          case 2: {
-                            if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
-                               (pts_[i][0] >= xGlobalBB.second.second[0]) &&
-                               (pts_[i][1] <= xGlobalBB.second.first[1])  &&
-                               (pts_[i][1] >= xGlobalBB.second.second[1])) {
-
-                                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
-                                    return b.first == xGlobalBB.first;});
-                                auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
-                                    return b.first == xGlobalBB.first;});
-
-                                if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
-                                    std::vector<point_type> vecPointTemp{pts_[i]};
-                                    ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
-                                } else {
-                                    ghostPointsToSendIter->second.push_back(pts_[i]);
-                                }
-
-                                assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
-                                ++ghostPointsCountToSendIter->second;
-                            }
-                            break;
-                          }
-                          case 3: {
-                            if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
-                               (pts_[i][0] >= xGlobalBB.second.second[0]) &&
-                               (pts_[i][1] <= xGlobalBB.second.first[1])  &&
-                               (pts_[i][1] >= xGlobalBB.second.second[1]) &&
-                               (pts_[i][2] <= xGlobalBB.second.first[2])  &&
-                               (pts_[i][2] >= xGlobalBB.second.second[2])) {
-
-                                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
-                                    return b.first == xGlobalBB.first;});
-                                auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
-                                    return b.first == xGlobalBB.first;});
-
-                                if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
-                                    std::vector<point_type> vecPointTemp{pts_[i]};
-                                    ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
-                                } else {
-                                    ghostPointsToSendIter->second.push_back(pts_[i]);
-                                }
-
-                                assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
-                                ++ghostPointsCountToSendIter->second;
-                            }
-                            break;
-                          }
-                          default:
-                            throw "Invalid value of CONFIG::D exception";
-                        }
-                    } catch (const char* msg) {
-                        std::cerr << msg << std::endl;
-                    }
-                }
-            }
-
-            // output for debugging
-            if((!QUIET)&&(DEBUG)) {
-                std::cout << "total size of GhostPointsToSend " << ghostPointsToSend.size() << " at rank " << local_rank_  << std::endl;
-                for (auto xGhostPointsToSend : ghostPointsToSend) {
-                    std::cout << "xGhostPointsToSend to rank " << xGhostPointsToSend.first << " at rank " << local_rank_  << std::endl;
-                    for (auto xVectPts : xGhostPointsToSend.second) {
-                        std::cout << xVectPts[0] << " " << xVectPts[1] << " at rank " << local_rank_  << std::endl;
-                    }
-                }
-                for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
-                    std::cout << "xGhostPointsCountToSend to rank " << xGhostPointsCountToSend.first << " has " << xGhostPointsCountToSend.second << " points to send at rank " << local_rank_  << std::endl;
-                }
-            }
-
-            // Distribution of ghost points among processors by all to all
-            std::vector<std::pair<INT,INT>> ghostPointsCountToRecv;
-            for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
-                assert(xGhostPointsCountToSend.first != local_rank_);
-                assert(xGhostPointsCountToSend.second >= 0);
-                // Determined of number of points to transfer by pairwise communication
-                MPI_Send(&xGhostPointsCountToSend.second, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_mpi_comm_world_);
-                int pointsCountTemp = -1;
-                MPI_Recv(&pointsCountTemp, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_mpi_comm_world_, MPI_STATUS_IGNORE);
-                assert(pointsCountTemp >= 0);
-                ghostPointsCountToRecv.push_back(std::make_pair(xGhostPointsCountToSend.first,pointsCountTemp));
-
-                // Send ghost points by pairwise communication
-                if(xGhostPointsCountToSend.second != 0) {
-                    auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGhostPointsCountToSend](std::pair<INT,std::vector<point_type>> b) {
-                        return b.first == xGhostPointsCountToSend.first;});
-                    assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
-                    int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
-                    char* buffer = new char[buffer_size];
-                    int position = 0;
-                    for (auto &pointElement : ghostPointsToSendIter->second) {
-                          MPI_Pack(&pointElement, sizeof(point_type), MPI_BYTE, buffer, buffer_size, &position, local_mpi_comm_world_);
-                    }
-                    MPI_Send(buffer, position, MPI_PACKED, xGhostPointsCountToSend.first, 1, local_mpi_comm_world_);
-                    delete[] buffer;
-                    // output for debugging
-                    if((!QUIET)&&(DEBUG)) {
-                        for (auto xsend : ghostPointsToSendIter->second) {
-                            std::cout << "send ghost point to rank " << xGhostPointsCountToSend.first << " with value of " <<  xsend[0] << " " << xsend[1] << " at rank " << local_rank_  << std::endl;
-                        }
-                    }
-                }
-
-                // Receive ghost points by pairwise communication
-                auto ghostPointsCountToRecvIter = std::find_if(ghostPointsCountToRecv.begin(), ghostPointsCountToRecv.end(), [xGhostPointsCountToSend](std::pair<INT,INT> b) {
-                    return b.first == xGhostPointsCountToSend.first;});
-                if(ghostPointsCountToRecvIter->second != 0) {
-                    std::vector<point_type> vecPointTemp;
-                    MPI_Status status;
-                    MPI_Probe(ghostPointsCountToRecvIter->first, 1, local_mpi_comm_world_, &status);
-                    int buffer_size;
-                    MPI_Get_count(&status, MPI_PACKED, &buffer_size);
-                    char* buffer = new char[buffer_size];
-                    MPI_Recv(buffer, buffer_size, MPI_PACKED, ghostPointsCountToRecvIter->first, 1, local_mpi_comm_world_, MPI_STATUS_IGNORE);
-                    int position = 0;
-                    int count;
-                    MPI_Get_elements(&status, MPI_BYTE, &count);
-                    vecPointTemp.resize(count / sizeof(point_type));
-                    for (auto &pointElement : vecPointTemp) {
-                        MPI_Unpack(buffer, buffer_size, &position, &pointElement, sizeof(point_type), MPI_BYTE, local_mpi_comm_world_);
-                    }
-                    delete[] buffer;
-                    for (auto xvecPointTemp : vecPointTemp) {
-                        addFetchPointGhost(xvecPointTemp);
-                        // output for debugging
-                        if((!QUIET)&&(DEBUG)) {
-                            std::cout << "receive ghost point from rank " << ghostPointsCountToRecvIter->first << " with value of " <<  xvecPointTemp[0] << " " << xvecPointTemp[1] << " at rank " << local_rank_  << std::endl;
-                        }
-                    }
-                }
-            }
-
-            // output for debugging
-            if((!QUIET)&&(DEBUG)) {
-                std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-                std::cout << "extended local bounding box: " << lbbExtendMax[0] << " " << lbbExtendMax[1] << " "<< lbbExtendMin[0] << " "<< lbbExtendMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-                std::cout << "localBB: " << localBB.first << " " << localBB.second.first[0] << " " << localBB.second.first[1] << " "<< localBB.second.second[0] << " "<< localBB.second.second[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-            }
-
-            // Construct the extened local points by combine local points with ghost points
-            ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
-
-            REAL error = computeRBFtransformationMatrix(data_points);
-            if (!QUIET) {
-                std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
-                        << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
-                if( !readMatrix_ )
-                    std::cout << std::endl << "                     Average Eigen CG error: " << error;
-                std::cout << std::endl;
-            }
+			REAL error = computeRBFtransformationMatrix(data_points);
+			if (!QUIET) {
+				std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
+						<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
+				if( !readMatrix_ )
+					std::cout << std::endl << "                     Average Eigen CG error: " << error;
+				std::cout << std::endl;
+			}
         }
 
-        // output for debugging
-        if((!QUIET)&&(DEBUG)) {
-            std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-            std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-            std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-            std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-            for (auto xPtsExtend : ptsExtend_) {
-                std::cout << "          ";
-                int xPtsExtendSize;
-                try {
-                    if (sizeof(xPtsExtend) == 0) {
-                        throw "Error zero xPtsExtend element exception";
-                    } else if (sizeof(xPtsExtend) < 0) {
-                        throw "Error invalid xPtsExtend element exception";
-                    } else if (sizeof(xPtsExtend[0]) == 0) {
-                        throw "Division by zero value of xPtsExtend[0] exception";
-                    } else if (sizeof(xPtsExtend[0]) < 0) {
-                        throw "Division by invalid value of xPtsExtend[0] exception";
-                    }
-                    xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
-                } catch (const char* msg) {
-                    std::cerr << msg << std::endl;
-                }
-                for (int i = 0; i < xPtsExtendSize; ++i) {
-                    std::cout << xPtsExtend[i] << " ";
-                }
-                std::cout << std::endl;
-            }
-        }
+		// output for debugging
+		if((!QUIET)&&(DEBUG)) {
+			std::cout << "Number of remote points: " << data_points.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			std::cout << "Number of local points: " << pts_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			std::cout << "Number of ghost local points: " << ptsGhost_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			std::cout << "Number of extended local points: " << ptsExtend_.size() << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+			for (auto xPtsExtend : ptsExtend_) {
+				std::cout << "          ";
+				int xPtsExtendSize;
+				try {
+					if (sizeof(xPtsExtend) == 0) {
+						throw "Error zero xPtsExtend element exception";
+					} else if (sizeof(xPtsExtend) < 0) {
+						throw "Error invalid xPtsExtend element exception";
+					} else if (sizeof(xPtsExtend[0]) == 0) {
+						throw "Division by zero value of xPtsExtend[0] exception";
+					} else if (sizeof(xPtsExtend[0]) < 0) {
+						throw "Division by invalid value of xPtsExtend[0] exception";
+					}
+					xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
+				} catch (const char* msg) {
+					std::cerr << msg << std::endl;
+				}
+				for (int i = 0; i < xPtsExtendSize; ++i) {
+					std::cout << xPtsExtend[i] << " ";
+				}
+				std::cout << std::endl;
+			}
+		}
 
         auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
             return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
