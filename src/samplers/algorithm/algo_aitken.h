@@ -494,9 +494,8 @@ public:
                         }
 
                         return calculate_relaxed_value(t,filtered_value,filtered_old_value);
-
                 }
-
+                return calculate_relaxed_value(t,filtered_value,filtered_old_value);
         }
     }
 
@@ -582,7 +581,7 @@ public:
 
 private:
     template<typename OTYPE>
-    OTYPE calculate_relaxed_value(std::pair<time_type,iterator_type> t, OTYPE filtered_value, OTYPE filtered_old_value) {
+    OTYPE calculate_relaxed_value(std::pair<time_type,iterator_type> t, OTYPE filtered_value, OTYPE filtered_old_value) const {
  
         update_under_relaxation_factor(t);
 
@@ -598,7 +597,7 @@ private:
 
     }
 
-    void update_under_relaxation_factor(std::pair<time_type,iterator_type> t) {
+    void update_under_relaxation_factor(std::pair<time_type,iterator_type> t) const {
 
         auto under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
             under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
@@ -917,13 +916,13 @@ private:
         return (std::min(std::abs(under_relaxation_factor),under_relaxation_factor_max_));
     }
 
-    REAL calculate_aitken_constraint_pnz_control(REAL under_relaxation_factor) {
+    REAL calculate_aitken_constraint_pnz_control(REAL under_relaxation_factor) const {
 
         return ((std::min(std::abs(under_relaxation_factor),under_relaxation_factor_max_)) < init_under_relaxation_factor_) ? init_under_relaxation_factor_ : (std::min(std::abs(under_relaxation_factor),under_relaxation_factor_max_));
     }
 
     template<typename OTYPE>
-    OTYPE calculate_point_residual(std::pair<time_type,iterator_type> t, OTYPE filtered_value, OTYPE filtered_old_value) {
+    OTYPE calculate_point_residual(std::pair<time_type,iterator_type> t, OTYPE filtered_value, OTYPE filtered_old_value) const {
 
         return (filtered_value - calculate_relaxed_value(t, filtered_value, filtered_old_value));
 
