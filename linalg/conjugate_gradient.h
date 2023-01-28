@@ -81,8 +81,8 @@ class conjugate_gradient {
               b_(b),
               cg_solve_tol_(cg_solve_tol),
               cg_max_iter_(cg_max_iter),
-			  M_(M){
-                assert(b_.get_cols() == 1 && 
+              M_(M){
+                assert(b_.get_cols() == 1 &&
                         "MUI Error [conjugate_gradient.h]: Number of column of b matrix must be 1");
                 x_.resize_null(A_.get_rows(),1);
                 r_.resize_null(A_.get_rows(),1);
@@ -92,7 +92,7 @@ class conjugate_gradient {
 
         std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> x_init = sparse_matrix<ITYPE,VTYPE>()) {
             if (!x_init.empty()){
-                assert(((x_init.get_rows() == x_.get_rows()) && (x_init.get_cols() == x_.get_cols())) && 
+                assert(((x_init.get_rows() == x_.get_rows()) && (x_init.get_cols() == x_.get_cols())) &&
                         "MUI Error [conjugate_gradient.h]: Size of x_init matrix mismatch with size of x_ matrix");
                 // Initialize x_ with x_init
                 x_.copy(x_init);
@@ -118,7 +118,7 @@ class conjugate_gradient {
             p_.copy(z_);
 
             VTYPE r_norm0 = r_.dot_product(z_);
-            assert(r_norm0 >= std::numeric_limits<VTYPE>::min() && 
+            assert(std::abs(r_norm0) >= std::numeric_limits<VTYPE>::min() &&
                     "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm0");
             VTYPE r_norm = r_norm0;
             VTYPE r_norm_rel = std::sqrt(r_norm/r_norm0);
@@ -136,7 +136,7 @@ class conjugate_gradient {
                 ++acturalKIterCount;
                 sparse_matrix<ITYPE,VTYPE> Ap = A_*p_;
                 VTYPE p_dot_Ap = p_.dot_product(Ap);
-                assert(p_dot_Ap >= std::numeric_limits<VTYPE>::min() && 
+                assert(std::abs(p_dot_Ap) >= std::numeric_limits<VTYPE>::min() &&
                         "MUI Error [conjugate_gradient.h]: Divide by zero assert for p_dot_Ap");
                 VTYPE alpha = r_norm / p_dot_Ap;
                 for (ITYPE j = 0; j < A_.get_rows(); ++j) {
@@ -155,7 +155,7 @@ class conjugate_gradient {
                 }
 
                 VTYPE updated_r_norm = r_.dot_product(z_);
-                assert(r_norm >= std::numeric_limits<VTYPE>::min() && 
+                assert(std::abs(r_norm) >= std::numeric_limits<VTYPE>::min() &&
                         "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm");
                 VTYPE beta = updated_r_norm / r_norm;
                 r_norm = updated_r_norm;
