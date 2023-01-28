@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../linalg/conjugate_gradient.h"
+#include "../linalg/ilu_preconditioner.h"
 
 int main() {
 
@@ -33,7 +34,9 @@ int main() {
     Aas.set_value(0, 0, 1.3864);
     Aas.set_value(1, 0, 0.3719);
 
-    mui::linalg::conjugate_gradient<int,double> cg(Css, Aas, cg_solve_tol, cg_max_iter);
+
+    mui::linalg::ilu_preconditioner<int,double> M(Css);
+    mui::linalg::conjugate_gradient<int,double> cg(Css, Aas, cg_solve_tol, cg_max_iter, &M);
     cgReturn = cg.solve();
     H_ = cg.getSolution();
 
@@ -47,6 +50,8 @@ int main() {
 
     std::cout << "Difference between calculated value and reference value: " << std::endl;
     H_diff.print();
+
+    std::cout << "Total CG iteration number: " << cgReturn.first <<" with final r_norm_rel: " << cgReturn.second << std::endl;
 
     return 0;
 }

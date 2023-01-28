@@ -108,14 +108,17 @@ class conjugate_gradient {
             z_.copy(r_);
 
             if (M_) {
-                z_ = M_->apply(z_);
+                sparse_matrix<ITYPE,VTYPE> tempZ(z_.get_rows(), z_.get_cols());
+                tempZ = M_->apply(z_);
+                z_.set_zero();
+                z_.copy(tempZ);
             }
 
             // Initialise p_ with z_
             p_.copy(z_);
 
             VTYPE r_norm0 = r_.dot_product(z_);
-            assert(r_norm0 >= cg_solve_tol_ && 
+            assert(r_norm0 >= std::numeric_limits<VTYPE>::min() && 
                     "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm0");
             VTYPE r_norm = r_norm0;
             VTYPE r_norm_rel = std::sqrt(r_norm/r_norm0);
@@ -133,7 +136,7 @@ class conjugate_gradient {
                 ++acturalKIterCount;
                 sparse_matrix<ITYPE,VTYPE> Ap = A_*p_;
                 VTYPE p_dot_Ap = p_.dot_product(Ap);
-                assert(p_dot_Ap >= cg_solve_tol_ && 
+                assert(p_dot_Ap >= std::numeric_limits<VTYPE>::min() && 
                         "MUI Error [conjugate_gradient.h]: Divide by zero assert for p_dot_Ap");
                 VTYPE alpha = r_norm / p_dot_Ap;
                 for (ITYPE j = 0; j < A_.get_rows(); ++j) {
@@ -145,11 +148,14 @@ class conjugate_gradient {
                 z_.copy(r_);
 
                 if (M_) {
-                    z_ = M_->apply(z_);
+                    sparse_matrix<ITYPE,VTYPE> tempZ(z_.get_rows(), z_.get_cols());
+                    tempZ = M_->apply(z_);
+                    z_.set_zero();
+                    z_.copy(tempZ);
                 }
 
                 VTYPE updated_r_norm = r_.dot_product(z_);
-                assert(r_norm >= cg_solve_tol_ && 
+                assert(r_norm >= std::numeric_limits<VTYPE>::min() && 
                         "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm");
                 VTYPE beta = updated_r_norm / r_norm;
                 r_norm = updated_r_norm;
