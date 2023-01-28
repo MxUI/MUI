@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../linalg/conjugate_gradient.h"
 #include "../linalg/ilu_preconditioner.h"
+#include "../linalg/ic_preconditioner.h"
 
 int main() {
 
@@ -35,7 +36,7 @@ int main() {
     Aas.set_value(1, 0, 0.3719);
 
 
-    mui::linalg::ilu_preconditioner<int,double> M(Css);
+    mui::linalg::incomplete_cholesky_preconditioner<int,double> M(Css);
     mui::linalg::conjugate_gradient<int,double> cg(Css, Aas, cg_solve_tol, cg_max_iter, &M);
     cgReturn = cg.solve();
     H_ = cg.getSolution();
