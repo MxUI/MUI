@@ -5,9 +5,10 @@
 #include "../linalg/ssor_preconditioner.h"
 
 int main() {
-
+    std::cout << "===========================================================================" << std::endl;
     std::cout << "==================== TEST 00: 2-by-2 A_ Matrix ============================" << std::endl;
-    std::cout << "== MUI Conjugate Gradient Solver w/o Preconditioner & w/o Initial Gass ==" << std::endl;
+    std::cout << "====MUI Conjugate Gradient Solver w/o Preconditioner & w/o Initial Gass====" << std::endl;
+    std::cout << "===========================================================================" << std::endl;
 
     std::pair<int, double> cgReturn0;
 
@@ -58,8 +59,10 @@ int main() {
 
     std::cout << std::endl;
 
+    std::cout << "===========================================================================" << std::endl;
     std::cout << "==================== TEST 01: 2-by-2 A_ Matrix ============================" << std::endl;
-    std::cout << "== MUI Conjugate Gradient Solver with ILU Preconditioner & w/o Initial Gass ==" << std::endl;
+    std::cout << "==MUI Conjugate Gradient Solver with ILU Preconditioner & w/o Initial Gass=" << std::endl;
+    std::cout << "===========================================================================" << std::endl;
 
     std::pair<int, double> cgReturn1;
     
@@ -111,8 +114,10 @@ int main() {
 
     std::cout << std::endl;
 
+    std::cout << "===========================================================================" << std::endl;
     std::cout << "==================== TEST 02: 3-by-3 A_ Matrix ============================" << std::endl;
-    std::cout << "== MUI Conjugate Gradient Solver with SSOR Preconditioner & w/o Initial Gass ==" << std::endl;
+    std::cout << "=MUI Conjugate Gradient Solver with SSOR Preconditioner & w/o Initial Gass=" << std::endl;
+    std::cout << "===========================================================================" << std::endl;
 
     std::pair<int, double> cgReturn2;
 
@@ -171,8 +176,10 @@ int main() {
 
     std::cout << std::endl;
 
+    std::cout << "===========================================================================" << std::endl;
     std::cout << "==================== TEST 03: 6-by-6 A_ Matrix ============================" << std::endl;
-    std::cout << "== MUI Conjugate Gradient Solver with IC Preconditioner & with Initial Gass ==" << std::endl;
+    std::cout << "=MUI Conjugate Gradient Solver with IC Preconditioner & with Initial Gass==" << std::endl;
+    std::cout << "===========================================================================" << std::endl;
 
     std::pair<int, double> cgReturn3;
 
