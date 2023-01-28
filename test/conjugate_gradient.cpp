@@ -13,10 +13,17 @@ int main() {
 	mui::linalg::sparse_matrix<int,double> Css; //< Matrix of radial basis function evaluations between prescribed points
 	mui::linalg::sparse_matrix<int,double> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 	mui::linalg::sparse_matrix<int,double> H_; //< Transformation Matrix
+	mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
+	mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
     Css.resize_null(Css_size, Css_size);
     Aas.resize_null(Aas_size, 1);
     H_.resize_null(Aas_size, 1);
+    H_ref.resize_null(Aas_size, 1);
+    H_diff.resize_null(Aas_size, 1);
+
+    H_ref.set_value(0, 0, 0.5488);
+    H_ref.set_value(1, 0, 0.7152);
     
     Css.set_value(0, 0, 2.5409);
     Css.set_value(0, 1, -0.0113);
@@ -32,6 +39,14 @@ int main() {
 
     std::cout << "Matrix H_: " << std::endl;
     H_.print();
+
+    std::cout << "Reference value of Matrix H_: " << std::endl;
+    H_ref.print();
+
+    H_diff = H_ - H_ref;
+
+    std::cout << "Difference between calculated value and reference value: " << std::endl;
+    H_diff.print();
 
     return 0;
 }
