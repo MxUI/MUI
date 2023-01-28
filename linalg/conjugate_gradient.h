@@ -57,6 +57,7 @@
 #include <cmath>
 #include <limits>
 #include "matrix.h"
+#include "preconditioner_base.h"
 
 namespace mui {
 namespace linalg {
@@ -68,20 +69,24 @@ class conjugate_gradient {
         sparse_matrix<ITYPE,VTYPE> x_;
         sparse_matrix<ITYPE,VTYPE> b_;
         sparse_matrix<ITYPE,VTYPE> r_;
+        sparse_matrix<ITYPE,VTYPE> z_;
         sparse_matrix<ITYPE,VTYPE> p_;
+        preconditioner<ITYPE,VTYPE>* M_;
         VTYPE cg_solve_tol_;
         ITYPE cg_max_iter_;
 
     public:
-        conjugate_gradient(sparse_matrix<ITYPE,VTYPE> A, sparse_matrix<ITYPE,VTYPE> b, VTYPE cg_solve_tol= 1e-6, ITYPE cg_max_iter= 0) 
+        conjugate_gradient(sparse_matrix<ITYPE,VTYPE> A, sparse_matrix<ITYPE,VTYPE> b, VTYPE cg_solve_tol= 1e-6, ITYPE cg_max_iter= 0, preconditioner<ITYPE,VTYPE>* M = nullptr) 
             : A_(A), 
               b_(b),
               cg_solve_tol_(cg_solve_tol),
-              cg_max_iter_(cg_max_iter){
+              cg_max_iter_(cg_max_iter),
+			  M_(M){
                 assert(b_.get_cols() == 1 && 
                         "MUI Error [conjugate_gradient.h]: Number of column of b matrix must be 1");
                 x_.resize_null(A_.get_rows(),1);
                 r_.resize_null(A_.get_rows(),1);
+                z_.resize_null(A_.get_rows(),1);
                 p_.resize_null(A_.get_rows(),1);
         }
 
@@ -99,10 +104,17 @@ class conjugate_gradient {
                 r_.copy(b_);
             }
 
-            // Initialise p_ with r_
-            p_.copy(r_);
+            // Initialise z_ with r_
+            z_.copy(r_);
 
-            VTYPE r_norm0 = r_.dot_product(r_);
+            if (M_) {
+                z_ = M_->apply(z_);
+            }
+
+            // Initialise p_ with z_
+            p_.copy(z_);
+
+            VTYPE r_norm0 = r_.dot_product(z_);
             assert(r_norm0 >= cg_solve_tol_ && 
                     "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm0");
             VTYPE r_norm = r_norm0;
@@ -128,13 +140,21 @@ class conjugate_gradient {
                     x_.add_scalar(j, 0, (alpha * (p_.get_value(j,0))));
                     r_.subtract_scalar(j, 0, (alpha * (Ap.get_value(j,0))));
                 }
-                VTYPE updated_r_norm = r_.dot_product(r_);
+
+                z_.set_zero();
+                z_.copy(r_);
+
+                if (M_) {
+                    z_ = M_->apply(z_);
+                }
+
+                VTYPE updated_r_norm = r_.dot_product(z_);
                 assert(r_norm >= cg_solve_tol_ && 
                         "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm");
                 VTYPE beta = updated_r_norm / r_norm;
                 r_norm = updated_r_norm;
                 for (ITYPE j = 0; j < A_.get_rows(); ++j) {
-                    p_.set_value(j, 0, (r_.get_value(j,0)+(beta*p_.get_value(j,0))));
+                    p_.set_value(j, 0, (z_.get_value(j,0)+(beta*p_.get_value(j,0))));
                 }
 
                 r_norm_rel = std::sqrt(r_norm/r_norm0);
