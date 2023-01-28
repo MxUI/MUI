@@ -78,7 +78,7 @@ public:
 					 for (ITYPE k = 0; k < j; ++k) {
 						 sum += L.get_value(i, k) * L.get_value(j, k);
 					 }
-					 assert(L.get_value(j, j) >= std::numeric_limits<VTYPE>::min() &&
+					 assert(std::abs(L.get_value(j, j)) >= std::numeric_limits<VTYPE>::min() &&
 					   "MUI Error [ic_preconditioner.h]: Divide by zero assert for L.get_value(j, j)");
 					 L.set_value(i, j, ((A.get_value(i, j) - sum) / L.get_value(j, j)));
 				 }
@@ -88,7 +88,7 @@ public:
 
     sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
         assert((x.get_cols()==1) &&
-            "MUI Error [ilu_preconditioner.h]: operator() only works for column vectors");
+            "MUI Error [ic_preconditioner.h]: apply only works for column vectors");
     	sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
     	sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
 
@@ -98,7 +98,7 @@ public:
             for (ITYPE j = 0; j < i; ++j) {
                 sum += L.get_value(i, j) * y.get_value(j,0);
             }
-            assert(L.get_value(i, i) >= std::numeric_limits<VTYPE>::min() &&
+            assert(std::abs(L.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
             		"MUI Error [ic_preconditioner.h]: Divide by zero assert for L.get_value(i, i)");
             y.set_value(i, 0, ((x.get_value(i, 0) - sum) / L.get_value(i, i)));
         }
@@ -109,7 +109,7 @@ public:
             for (ITYPE j = i + 1; j < x.get_rows(); ++j) {
                 sum += L.get_value(j, i) * z.get_value(j,0);
             }
-            assert(L.get_value(i, i) >= std::numeric_limits<VTYPE>::min() &&
+            assert(std::abs(L.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
               "MUI Error [ic_preconditioner.h]: Divide by zero assert for L.get_value(i, i)");
             z.set_value(i, 0, ((y.get_value(i, 0) - sum) / L.get_value(i, i)));
         }
