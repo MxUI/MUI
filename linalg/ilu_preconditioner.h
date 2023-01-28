@@ -56,7 +56,7 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 class ilu_preconditioner : public preconditioner<ITYPE,VTYPE> {
 private:
-	sparse_matrix<ITYPE,VTYPE> L, U;
+    sparse_matrix<ITYPE,VTYPE> L, U;
 
 public:
     ilu_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
@@ -73,10 +73,10 @@ public:
             for (ITYPE j = 0; j < A.get_cols(); ++j) {
                 if (j < i) {
                     // Copy the lower triangular elements
-                	L.set_value(i, j, A.get_value(i, j));
+                    L.set_value(i, j, A.get_value(i, j));
                 } else if (j > i) {
-                	// Copy the upper triangular elements
-                	U.set_value(i, j, A.get_value(i, j));
+                    // Copy the upper triangular elements
+                    U.set_value(i, j, A.get_value(i, j));
                 }
             }
 
@@ -94,11 +94,11 @@ public:
             // Perform the backward substitution step
             for (ITYPE j1 = 0; j1 < U.get_cols(); ++j1) {
                 if (j1 > i) {
-                	for (ITYPE j2 = 0; j2 < L.get_cols(); ++j2) {
+                    for (ITYPE j2 = 0; j2 < L.get_cols(); ++j2) {
                         if (j2 < j1) {
-                        	U.set_value(i, j2, (U.get_value(i, j2) / L.get_value(j1, j1)));
+                            U.set_value(i, j2, (U.get_value(i, j2) / L.get_value(j1, j1)));
                         }
-                	}
+                    }
 
                 }
             }
@@ -108,12 +108,12 @@ public:
     sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
         assert((x.get_cols()==1) &&
             "MUI Error [ilu_preconditioner.h]: apply only works for column vectors");
-    	sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
-    	sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
+        sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
+        sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
 
         // Perform the forward substitution step
         for (ITYPE i = 0; i < x.get_rows(); ++i) {
-        	VTYPE sum = 0;
+            VTYPE sum = 0;
             for (ITYPE j = 0; j < L.get_cols(); ++j) {
                 if (j < i) {
                     sum += L.get_value(i, j) * y.get_value(j,0);
@@ -124,7 +124,7 @@ public:
 
         // Perform the backward substitution step
         for (ITYPE i = x.get_rows() - 1; i >= 0; i--) {
-        	VTYPE sum = 0;
+            VTYPE sum = 0;
             for (ITYPE j = 0; j < U.get_cols(); ++j) {
                 if (j > i) {
                     sum += U.get_value(i, j) * z.get_value(j,0);
