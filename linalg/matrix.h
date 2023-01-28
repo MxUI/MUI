@@ -53,6 +53,7 @@
 #include <map>
 #include <vector>
 #include <cassert>
+#include <limits>
 
 namespace mui {
 namespace linalg {
@@ -81,7 +82,7 @@ class sparse_matrix {
               std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
               vec_temp = exist_mat.get_non_zero_elements();
               for (auto elememt : vec_temp) {
-                  if (exist_mat.get_value(elememt.first, elememt.second) != 0)
+                  if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) > std::numeric_limits<VTYPE>::min())
                       matrix[std::make_pair(elememt.first, elememt.second)] = exist_mat.get_value(elememt.first, elememt.second);
               }
           }
@@ -120,14 +121,31 @@ class sparse_matrix {
               std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
               vec_temp = exist_mat.get_non_zero_elements();
               for (auto elememt : vec_temp) {
-                  if (exist_mat.get_value(elememt.first, elememt.second) != 0)
+                  if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) > std::numeric_limits<VTYPE>::min())
                       matrix[std::make_pair(elememt.first, elememt.second)] = exist_mat.get_value(elememt.first, elememt.second);
               }
           }
 
+        // Function to get a segment of a sparse_matrix
+        sparse_matrix<ITYPE,VTYPE> segment(ITYPE r_start, ITYPE r_end, ITYPE c_start, ITYPE c_end) {
+              // get segment data from the existing matrix
+              assert((r_end >= r_start) &&
+                      "MUI Error [matrix.h]: segment function r_end has to be larger or equals to r_start");
+              assert((c_end >= c_start) &&
+                      "MUI Error [matrix.h]: segment function c_end has to be larger or equals to c_start");
+              sparse_matrix<ITYPE,VTYPE> res((r_end-r_start+1), (c_end-c_start+1));
+              for (auto elememt : matrix)
+                  if ((elememt.first.first >=r_start)  &&
+                      (elememt.first.first <=r_end)    &&
+                      (elememt.first.second >=c_start) &&
+                      (elememt.first.second <=c_end))
+                      res.set_value(elememt.first.first, elememt.first.second, elememt.second);
+              return res;
+          }
+
         // Function to insert an element
         void set_value(ITYPE r, ITYPE c, VTYPE val) {
-            if (val != 0)
+            if (std::abs(val) > std::numeric_limits<VTYPE>::min())
                 matrix[std::make_pair(r, c)] = val;
         }
 
