@@ -43,6 +43,9 @@
  * @author W. Liu
  * @date 28 January 2023
  * @brief Class to solve problem A.x = b using the Conjugate Gradient method.
+ *        Based on Baratta, Igor, Chris Richardson, and Garth Wells. "Performance 
+ *        analysis of matrix-free conjugate gradient kernels using SYCL." 
+ *        In International Workshop on OpenCL, pp. 1-10. 2022.
  */
 
 #ifndef MUI_CONJUGATE_GRADIENT_H_
