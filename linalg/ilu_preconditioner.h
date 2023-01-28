@@ -107,7 +107,7 @@ public:
 
     sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
         assert((x.get_cols()==1) &&
-            "MUI Error [ilu_preconditioner.h]: operator() only works for column vectors");
+            "MUI Error [ilu_preconditioner.h]: apply only works for column vectors");
     	sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
     	sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
 
