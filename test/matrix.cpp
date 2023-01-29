@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "../linalg/matrix.h"
 
 int main()
@@ -37,6 +38,19 @@ int main()
     c = a.transpose();
     std::cout << "Transpose of A matrix (A^T): " << std::endl;
     c.print();
+
+    // Outputs matrix to a file in CSV format
+    std::ofstream ofile("matrix.csv");
+    ofile<< "// **************";
+    ofile << "\n";
+	ofile<< "// **** TEST ****";
+	ofile << "\n";
+    ofile<< "// **************";
+	ofile << "\n";
+	ofile << "//  ";
+	ofile << "\n";
+    ofile << a;
+    ofile.close();
 
     return 0;
    }

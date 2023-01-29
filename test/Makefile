@@ -12,4 +12,4 @@ default: $(EXE)
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	rm -f $(EXE)
+	rm -f $(EXE) *.csv

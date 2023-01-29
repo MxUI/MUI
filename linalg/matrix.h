@@ -50,6 +50,7 @@
 #define MUI_SPARSE_MATRIX_H_
 
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <vector>
 #include <cassert>
@@ -87,7 +88,7 @@ class sparse_matrix {
               }
           }
 
-        // Function to print matrix elements
+        // Function to print matrix elements to the console
         void print() {
             for (ITYPE i = 0; i < rows; ++i) {
                 std::cout << "      ";
@@ -101,6 +102,30 @@ class sparse_matrix {
                }
                std::cout << std::endl;
             }
+        }
+
+        // Overloading the operator to output matrix in CSV format
+        friend std::ostream& operator << (std::ostream& ofile, const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+            for (ITYPE i = 0; i < exist_mat.get_rows(); ++i) {
+                for (ITYPE j = 0; j < exist_mat.get_cols(); ++j) {
+                    auto it = exist_mat.matrix.find(std::make_pair(i, j));
+                    if (it != exist_mat.matrix.end()) {
+                        if (j == (exist_mat.get_cols() - 1)) {
+                            ofile << it->second;
+                        } else {
+                            ofile << it->second << ",";
+                        }
+                    } else {
+                        if (j == (exist_mat.get_cols() - 1)) {
+                            ofile << 0;
+                        } else {
+                            ofile << 0 << ",";
+                        }
+                    }
+                }
+                ofile << std::endl;
+            }
+            return ofile;
         }
 
         // Function to resize a null matrix
