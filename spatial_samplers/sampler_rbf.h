@@ -127,13 +127,14 @@ public:
      *       Symmetric Successive Over-Relaxation Preconditioner: precond_=3
      * 14. MPI_Comm local_comm:
      *       The MPI communicator from the local application. Used for ghost cell construction.
+     *       The default value of local_comm is MPI_COMM_NULL, i.e. no MPI communicator.
      */
 
     sampler_rbf(REAL r, const std::vector<point_type> &pts, INT basisFunc = 0,
         bool conservative = false, bool smoothFunc = false,
         bool readMatrix = false, bool writeMatrix = true,
         const std::string &fileAddress = std::string(), REAL cutOff = 1e-9,
-        REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 0, INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
+        REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 50, INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
         r_(r),
         initialised_(false),
         CABrow_(0),
@@ -647,9 +648,9 @@ private:
             }
 
             if ( conservative_ ) // Build matrix for conservative RBF
-                errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_, pouEnabled_);
+                errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
             else // Build matrix for consistent RBF
-                errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_, pouEnabled_);
+                errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
 
             if ( writeMatrix_ ) {
 
@@ -686,424 +687,247 @@ private:
     }
 
     template<template<typename, typename > class CONTAINER>
-    inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing, bool pou) {
+    inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing) {
         REAL errorReturn = 0;
         std::pair<INT, REAL> iterErrorReturn(0,0);
-        if( pou ) { // Using PoU approach
-            for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
-                linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-                linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-                Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-                Aas.resize_null((1 + NP + CONFIG::D), 1);
+		for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
+			linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+			linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-                //set Css
-                for ( INT i = 0; i < NP; i++ ) {
-                    for ( INT j = i; j < NP; j++ ) {
-                        int glob_i = connectivityAB_[row][i];
-                        int glob_j = connectivityAB_[row][j];
+			Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+			Aas.resize_null((1 + NP + CONFIG::D), 1);
 
-                        auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
+			//set Css
+			for ( INT i = 0; i < NP; i++ ) {
+				for ( INT j = i; j < NP; j++ ) {
+					int glob_i = connectivityAB_[row][i];
+					int glob_j = connectivityAB_[row][j];
 
-                        if ( d < r_ ) {
-                            REAL w = rbf(d);
-                            Css.set_value(i, j, w);
-                            if ( i != j )
-                                Css.set_value(j, i, w);
-                        }
-                    }
-                }
+					auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
 
-                for ( INT i = 0; i < NP; i++ ) {
-                    Css.set_value(i, NP, 1);
-                    Css.set_value(NP, i, 1);
+					if ( d < r_ ) {
+						REAL w = rbf(d);
+						Css.set_value(i, j, w);
+						if ( i != j )
+							Css.set_value(j, i, w);
+					}
+				}
+			}
 
-                    int glob_i = connectivityAB_[row][i];
+			for ( INT i = 0; i < NP; i++ ) {
+				Css.set_value(i, NP, 1);
+				Css.set_value(NP, i, 1);
 
-                    for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-                        Css.set_value(i, (NP + dim + 1), data_points[glob_i].first[dim]);
-                        Css.set_value((NP + dim + 1), i, data_points[glob_i].first[dim]);
-                    }
-                }
+				int glob_i = connectivityAB_[row][i];
 
-                //set Aas
-                for ( INT j = 0; j < NP; j++ ) {
-                    int glob_j = connectivityAB_[row][j];
+				for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
+					Css.set_value(i, (NP + dim + 1), data_points[glob_i].first[dim]);
+					Css.set_value((NP + dim + 1), i, data_points[glob_i].first[dim]);
+				}
+			}
 
-                    auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
+			//set Aas
+			for ( INT j = 0; j < NP; j++ ) {
+				int glob_j = connectivityAB_[row][j];
 
-                    if ( d < r_ ) {
-                        Aas.set_value(j, 0, rbf(d));
-                    }
-                }
+				auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
 
-                Aas.set_value(NP, 0, 1);
+				if ( d < r_ ) {
+					Aas.set_value(j, 0, rbf(d));
+				}
+			}
 
-                for (int dim = 0; dim < CONFIG::D; dim++) {
-                    Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
-                }
+			Aas.set_value(NP, 0, 1);
 
-                linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
-                iterErrorReturn = cg.solve();
-                linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
+			for (int dim = 0; dim < CONFIG::D; dim++) {
+				Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
+			}
 
-                if ( DEBUG ) {
-                    std::cout << "#iterations of H_i:     "
-                            << iterErrorReturn.first
-                            << ". Error of H_i: " << iterErrorReturn.second
-                            << std::endl;
-                }
+			linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
+			iterErrorReturn = cg.solve();
+			linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
 
-                errorReturn += iterErrorReturn.second;
+			if ( DEBUG ) {
+				std::cout << "#iterations of H_i:     "
+						<< iterErrorReturn.first
+						<< ". Error of H_i: " << iterErrorReturn.second
+						<< std::endl;
+			}
 
-                if ( smoothing ) {
-                    for ( size_t j = 0; j < NP; j++ ) {
-                        INT glob_j = connectivityAB_[row][j];
-                        H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
-                    }
-                } else {
-                    for ( size_t j = 0; j < NP; j++ ) {
-                        INT glob_j = connectivityAB_[row][j];
-                        H_.set_value(row, glob_j, H_i.get_value(j, 0));
-                    }
-                }
-            }
+			errorReturn += iterErrorReturn.second;
 
-            errorReturn /= static_cast<REAL>(pts_.size());
+			if ( smoothing ) {
+				for ( size_t j = 0; j < NP; j++ ) {
+					INT glob_j = connectivityAB_[row][j];
+					H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
+				}
+			} else {
+				for ( size_t j = 0; j < NP; j++ ) {
+					INT glob_j = connectivityAB_[row][j];
+					H_.set_value(row, glob_j, H_i.get_value(j, 0));
+				}
+			}
+		}
 
-            if ( smoothing ) {
-                for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
-                    for ( size_t j = 0; j < NP; j++ ) {
-                        INT glob_j = connectivityAB_[row][j];
-                        REAL h_j_sum = 0.;
-                        REAL f_sum = 0.;
+		errorReturn /= static_cast<REAL>(pts_.size());
 
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row][k];
-                            if ( row_k == static_cast<INT>(row) ) {
-                                std::cerr << "Invalid row_k value: "
-                                        << row_k << std::endl;
-                            }
-                            else
-                                h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
-                        }
+		if ( smoothing ) {
+			for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
+				for ( size_t j = 0; j < NP; j++ ) {
+					INT glob_j = connectivityAB_[row][j];
+					REAL h_j_sum = 0.;
+					REAL f_sum = 0.;
 
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row][k];
-                            if ( row_k == static_cast<INT>(row) ) {
-                                std::cerr << "Invalid row_k value: "
-                                        << row_k << std::endl;
-                            }
-                            else {
-                                REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-                                f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
-                            }
-                        }
+					for ( size_t k = 0; k < MP; k++ ) {
+						INT row_k = connectivityAA_[row][k];
+						if ( row_k == static_cast<INT>(row) ) {
+							std::cerr << "Invalid row_k value: "
+									<< row_k << std::endl;
+						}
+						else
+							h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+					}
 
-                        H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
-                    }
-                }
-            }
-        } else { // Not using PoU
-            linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-            linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+					for ( size_t k = 0; k < MP; k++ ) {
+						INT row_k = connectivityAA_[row][k];
+						if ( row_k == static_cast<INT>(row) ) {
+							std::cerr << "Invalid row_k value: "
+									<< row_k << std::endl;
+						}
+						else {
+							REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+							f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
+						}
+					}
 
-            Css.resize_null((1 + data_points.size() + CONFIG::D), (1 + data_points.size() + CONFIG::D));
-            Aas.resize_null(ptsExtend_.size(), (1 + data_points.size() + CONFIG::D));
-
-            //set Css
-            for ( size_t i = 0; i < data_points.size(); i++ ) {
-                for ( size_t j = i; j < data_points.size(); j++ ) {
-                    auto d = norm(data_points[i].first - data_points[j].first);
-
-                    if ( d < r_ ) {
-                        REAL w = rbf(d);
-                        Css.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w);
-                        if ( i != j )
-                            Css.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w);
-                    }
-                }
-            }
-
-            //set Aas
-            for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
-                for ( size_t j = 0; j < data_points.size(); j++ ) {
-                    auto d = norm(ptsExtend_[i] - data_points[j].first);
-
-                    if ( d < r_ ) {
-                        Aas.set_value(i, (j + CONFIG::D + 1), rbf(d));
-                    }
-                }
-            }
-
-            linalg::sparse_matrix<INT,REAL> AasTrans = Aas.transpose();
-            linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &AasTrans);
-            iterErrorReturn = cg.solve();
-            linalg::sparse_matrix<INT,REAL> H_more = cg.getSolution();
-
-            if ( DEBUG ) {
-                std::cout << "#iterations of H_i:     "
-                        << iterErrorReturn.first
-                        << ". Error of H_i: " << iterErrorReturn.second
-                        << std::endl;
-            }
-
-            errorReturn = iterErrorReturn.second;
-
-            if ( smoothing ) {
-                for ( size_t i = 0; i < data_points.size(); i++ ) {
-                    for (size_t j = 0; j < ptsExtend_.size(); j++ ) {
-                        H_toSmooth_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
-                    }
-                }
-            } else {
-                for ( size_t i = 0; i < data_points.size(); i++ ) {
-                    for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
-                        H_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
-                    }
-                }
-            }
-
-            if ( smoothing ) {
-                for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
-                    for ( size_t j = 0; j < data_points.size(); j++ ) {
-                        REAL h_j_sum = 0.;
-                        REAL f_sum = 0.;
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row][k];
-                            if ( row_k == static_cast<INT>(row) )
-                                std::cerr << "Invalid row_k value: " << row_k << std::endl;
-                            else
-                                h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
-                        }
-
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row][k];
-                            if ( row_k == static_cast<INT>(row) )
-                                std::cerr << "Invalid row_k value: " << row_k << std::endl;
-                            else {
-                                REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-                                f_sum += w_i * H_toSmooth_.get_value(row_k, j);
-                            }
-                        }
-
-                        H_.set_value(row, j, (0.5 * (f_sum + H_toSmooth_.get_value(row, j))));
-                    }
-                }
-            }
-        }
+					H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
+				}
+			}
+		}
 
         return errorReturn;
     }
 
     template<template<typename, typename > class CONTAINER>
-    inline REAL buildMatrixConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing, bool pou) {
+    inline REAL buildMatrixConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, const size_t MP, bool smoothing) {
         REAL errorReturn = 0;
         std::pair<INT, REAL> iterErrorReturn(0,0);
-        if( pou ) { // Using partitioned approach
-            for ( size_t row = 0; row < data_points.size(); row++ ) {
-                linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-                linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-                Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-                Aas.resize_null((1 + NP + CONFIG::D), 1);
+		for ( size_t row = 0; row < data_points.size(); row++ ) {
+			linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+			linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-                //set Css
-                for ( size_t i = 0; i < NP; i++ ) {
-                    for ( size_t j = i; j < NP; j++ ) {
-                        INT glob_i = connectivityAB_[row][i];
-                        INT glob_j = connectivityAB_[row][j];
+			Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+			Aas.resize_null((1 + NP + CONFIG::D), 1);
 
-                        auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
+			//set Css
+			for ( size_t i = 0; i < NP; i++ ) {
+				for ( size_t j = i; j < NP; j++ ) {
+					INT glob_i = connectivityAB_[row][i];
+					INT glob_j = connectivityAB_[row][j];
 
-                        if ( d < r_ ) {
-                            REAL w = rbf(d);
-                            Css.set_value(i, j, w);
-                            if ( i != j )
-                                Css.set_value(j, i, w);
-                        }
-                    }
-                }
+					auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
 
-                for ( size_t i = 0; i < NP; i++ ) {
-                    Css.set_value(i, NP, 1);
-                    Css.set_value(NP, i, 1);
+					if ( d < r_ ) {
+						REAL w = rbf(d);
+						Css.set_value(i, j, w);
+						if ( i != j )
+							Css.set_value(j, i, w);
+					}
+				}
+			}
 
-                    INT glob_i = connectivityAB_[row][i];
+			for ( size_t i = 0; i < NP; i++ ) {
+				Css.set_value(i, NP, 1);
+				Css.set_value(NP, i, 1);
 
-                    for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-                        Css.set_value(i, (NP + dim + 1), ptsExtend_[glob_i][dim]);
-                        Css.set_value((NP + dim + 1), i, ptsExtend_[glob_i][dim]);
-                    }
-                }
+				INT glob_i = connectivityAB_[row][i];
 
-                //set Aas
-                for ( size_t j = 0; j < NP; j++ ) {
-                    INT glob_j = connectivityAB_[row][j];
+				for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
+					Css.set_value(i, (NP + dim + 1), ptsExtend_[glob_i][dim]);
+					Css.set_value((NP + dim + 1), i, ptsExtend_[glob_i][dim]);
+				}
+			}
 
-                    auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
+			//set Aas
+			for ( size_t j = 0; j < NP; j++ ) {
+				INT glob_j = connectivityAB_[row][j];
 
-                    if ( d < r_ ) {
-                        Aas.set_value(j, 0, rbf(d));
-                    }
-                }
+				auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
 
-                Aas.set_value(NP, 0, 1);
+				if ( d < r_ ) {
+					Aas.set_value(j, 0, rbf(d));
+				}
+			}
 
-                for ( int dim = 0; dim < CONFIG::D; dim++ ) {
-                    Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
-                }
+			Aas.set_value(NP, 0, 1);
 
-                linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
-                iterErrorReturn = cg.solve();
-                linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
+			for ( int dim = 0; dim < CONFIG::D; dim++ ) {
+				Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
+			}
 
-                if ( DEBUG ) {
-                    std::cout << "#iterations of H_i:     "
-                            << iterErrorReturn.first
-                            << ". Error of H_i: " << iterErrorReturn.second
-                            << std::endl;
-                }
+			linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
+			iterErrorReturn = cg.solve();
+			linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
 
-                errorReturn += iterErrorReturn.second;
+			if ( DEBUG ) {
+				std::cout << "#iterations of H_i:     "
+						<< iterErrorReturn.first
+						<< ". Error of H_i: " << iterErrorReturn.second
+						<< std::endl;
+			}
 
-                if ( smoothing ) {
-                    for ( size_t j = 0; j < NP; j++ ) {
-                        INT glob_j = connectivityAB_[row][j];
-                        H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
-                    }
-                } else {
-                    for ( size_t j = 0; j < NP; j++ ) {
-                        INT glob_j = connectivityAB_[row][j];
-                        H_.set_value(glob_j, row, H_i.get_value(j, 0));
-                    }
-                }
-            }
+			errorReturn += iterErrorReturn.second;
 
-            errorReturn /= static_cast<REAL>(data_points.size());
+			if ( smoothing ) {
+				for ( size_t j = 0; j < NP; j++ ) {
+					INT glob_j = connectivityAB_[row][j];
+					H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
+				}
+			} else {
+				for ( size_t j = 0; j < NP; j++ ) {
+					INT glob_j = connectivityAB_[row][j];
+					H_.set_value(glob_j, row, H_i.get_value(j, 0));
+				}
+			}
+		}
 
-            if ( smoothing ) {
-                for ( size_t row = 0; row < data_points.size(); row++ ) {
-                    for ( size_t j = 0; j < NP; j++ ) {
-                        INT row_i = connectivityAB_[row][j];
-                        REAL h_j_sum = 0.;
-                        REAL f_sum = 0.;
+		errorReturn /= static_cast<REAL>(data_points.size());
 
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row_i][k];
-                            if ( row_k == static_cast<INT>(row_i) ) {
-                                std::cerr << "Invalid row_k value: "
-                                        << row_k << std::endl;
-                            }
-                            else
-                                h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
-                        }
+		if ( smoothing ) {
+			for ( size_t row = 0; row < data_points.size(); row++ ) {
+				for ( size_t j = 0; j < NP; j++ ) {
+					INT row_i = connectivityAB_[row][j];
+					REAL h_j_sum = 0.;
+					REAL f_sum = 0.;
 
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row_i][k];
-                            if ( row_k == static_cast<INT>(row_i) ) {
-                                std::cerr << "Invalid row_k value: "
-                                        << row_k << std::endl;
-                            }
-                            else {
-                                REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.)) / (h_j_sum));
-                                f_sum += w_i * H_toSmooth_.get_value(row_k, row);
-                            }
-                        }
+					for ( size_t k = 0; k < MP; k++ ) {
+						INT row_k = connectivityAA_[row_i][k];
+						if ( row_k == static_cast<INT>(row_i) ) {
+							std::cerr << "Invalid row_k value: "
+									<< row_k << std::endl;
+						}
+						else
+							h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
+					}
 
-                        H_.set_value(row_i, row, (0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
-                    }
-                }
-            }
-        } else { // Not using partitioned approach
-            linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-            linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+					for ( size_t k = 0; k < MP; k++ ) {
+						INT row_k = connectivityAA_[row_i][k];
+						if ( row_k == static_cast<INT>(row_i) ) {
+							std::cerr << "Invalid row_k value: "
+									<< row_k << std::endl;
+						}
+						else {
+							REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.)) / (h_j_sum));
+							f_sum += w_i * H_toSmooth_.get_value(row_k, row);
+						}
+					}
 
-            Css.resize_null((1 + ptsExtend_.size() + CONFIG::D), (1 + ptsExtend_.size() + CONFIG::D));
-            Aas.resize_null(data_points.size(), (1 + ptsExtend_.size() + CONFIG::D));
-
-            //set Css
-            for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
-                for ( size_t j = i; j < ptsExtend_.size(); j++ ) {
-                    auto d = norm(ptsExtend_[i] - ptsExtend_[j]);
-
-                    if ( d < r_ ) {
-                        REAL w = rbf(d);
-                        Css.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w);
-
-                        if ( i != j )
-                            Css.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w);
-                    }
-                }
-            }
-
-            //set Aas
-            for ( size_t i = 0; i < data_points.size(); i++ ) {
-                for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
-                    auto d = norm(data_points[i].first - ptsExtend_[j]);
-
-                    if ( d < r_ ) {
-                        Aas.set_value(i, (j + CONFIG::D + 1), rbf(d));
-                    }
-                }
-            }
-
-            linalg::sparse_matrix<INT,REAL> AasTrans = Aas.transpose();
-            linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &AasTrans);
-            iterErrorReturn = cg.solve();
-            linalg::sparse_matrix<INT,REAL> H_more = cg.getSolution();
-
-            if ( DEBUG ) {
-                std::cout << "#iterations of H_i:     "
-                        << iterErrorReturn.first
-                        << ". Error of H_i: " << iterErrorReturn.second
-                        << std::endl;
-            }
-
-            errorReturn = iterErrorReturn.second;
-
-            if ( smoothing ) {
-                for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
-                    for (size_t j = 0; j < data_points.size(); j++ ) {
-                        H_toSmooth_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
-                    }
-                }
-            } else {
-                for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
-                    for ( size_t j = 0; j < data_points.size(); j++ ) {
-                        H_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
-                    }
-                }
-            }
-
-            if ( smoothing ) {
-                for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
-                    for ( size_t j = 0; j < data_points.size(); j++ ) {
-                        REAL h_j_sum = 0.;
-                        REAL f_sum = 0.;
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row][k];
-                            if ( row_k == static_cast<INT>(row) )
-                                std::cerr << "Invalid row_k value: " << row_k << std::endl;
-                            else
-                                h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
-                        }
-
-                        for ( size_t k = 0; k < MP; k++ ) {
-                            INT row_k = connectivityAA_[row][k];
-                            if ( row_k == static_cast<INT>(row) )
-                                std::cerr << "Invalid row_k value: " << row_k << std::endl;
-                            else {
-                                REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-                                f_sum += w_i * H_toSmooth_.get_value(row_k, j);
-                            }
-                        }
-
-                        H_.set_value(row, j, (0.5 * (f_sum + H_toSmooth_.get_value(row, j))));
-                    }
-                }
-            }
-        }
+					H_.set_value(row_i, row, (0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
+				}
+			}
+		}
 
         return errorReturn;
     }
