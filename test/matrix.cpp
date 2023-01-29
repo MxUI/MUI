@@ -43,14 +43,23 @@ int main()
     std::ofstream ofile("matrix.csv");
     ofile<< "// **************";
     ofile << "\n";
-	ofile<< "// **** TEST ****";
-	ofile << "\n";
+    ofile<< "// **** TEST ****";
+    ofile << "\n";
     ofile<< "// **************";
-	ofile << "\n";
-	ofile << "//  ";
-	ofile << "\n";
+    ofile << "\n";
+    ofile << "//  ";
+    ofile << "\n";
     ofile << a;
     ofile.close();
+
+    mui::linalg::sparse_matrix<int,double> d;
+    // Reads matrix from a file
+    std::ifstream ifile("matrix.csv");
+    ifile >> d;
+    ifile.close();
+
+    std::cout << "Matrix File I/O Test in CSV format D = A: " << std::endl;
+    d.print();
 
     return 0;
    }

@@ -55,6 +55,9 @@
 #include <vector>
 #include <cassert>
 #include <limits>
+#include <sstream>
+#include <string>
+#include "matrix_util.h"
 
 namespace mui {
 namespace linalg {
@@ -104,7 +107,7 @@ class sparse_matrix {
             }
         }
 
-        // Overloading the operator to output matrix in CSV format
+        // Overloading << operator to output matrix in CSV format
         friend std::ostream& operator << (std::ostream& ofile, const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
             for (ITYPE i = 0; i < exist_mat.get_rows(); ++i) {
                 for (ITYPE j = 0; j < exist_mat.get_cols(); ++j) {
@@ -123,9 +126,47 @@ class sparse_matrix {
                         }
                     }
                 }
-                ofile << std::endl;
+                if (i != (exist_mat.get_rows() - 1)) {
+                    ofile << std::endl;
+                }
             }
             return ofile;
+        }
+
+        // Overloading >> operator to read matrix from a file in CSV format with lines start with "//" as comment lines
+        friend std::istream& operator >> (std::istream& ifile, sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+            std::string rawLine;
+            ITYPE row = 0;
+            ITYPE col = 0;
+            while (std::getline(ifile, rawLine)) {
+                std::string line = trim(rawLine);
+                // Skips the line if the first two characters are '//'
+                if (( line[0] == '/' && line[1] == '/' ) || (line.empty())) continue;
+                std::stringstream ss(line);
+                std::string value;
+                ITYPE colCount = 0;
+                while (std::getline(ss, value, ',')) {
+                    VTYPE val = static_cast<VTYPE>(std::stod(value));
+                    if (std::abs(val) > std::numeric_limits<VTYPE>::min()) {
+                        exist_mat.matrix[std::make_pair(row, colCount)] = val;
+                    }
+                    ++colCount;
+                }
+                if (col == 0){
+                    col = colCount;
+                } else {
+                    if (col != colCount) {
+                        std::cout << "MUI Warning [matrix.h]: The number of columns of the matrix read in at row " <<
+                                row << " is " << colCount << ", which is different from previous row (i.e. " <<
+                                col << " columns!" << std::endl;
+                        col = colCount;
+                    }
+                }
+                ++row;
+            }
+            exist_mat.rows = row;
+            exist_mat.cols = col;
+            return ifile;
         }
 
         // Function to resize a null matrix
