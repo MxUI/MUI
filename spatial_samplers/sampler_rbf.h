@@ -63,8 +63,7 @@ namespace mui {
 template<typename CONFIG = default_config,
 typename O_TP = typename CONFIG::REAL, typename I_TP = O_TP>
 class sampler_rbf {
-#define MINPOINTSWARN 2
-#define MAXPOINTSWARN 120
+
 public:
     using OTYPE = O_TP;
     using ITYPE = I_TP;
@@ -1140,9 +1139,6 @@ private:
             }
         }
 
-        INT pointsCountGlobalMax = std::numeric_limits<INT>::min();
-        INT pointsCountGlobalMin = std::numeric_limits<INT>::max();
-
         connectivityAB_.resize(ptsExtend_.size());
 
         for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
@@ -1178,18 +1174,6 @@ private:
 
             if ( writeMatrix_ && i < ptsExtend_.size() - 1 )
                 outputFileCAB << '\n';
-            if ( pointsCount < pointsCountGlobalMin )
-                pointsCountGlobalMin = pointsCount;
-            if ( pointsCount > pointsCountGlobalMax )
-                pointsCountGlobalMax = pointsCount;
-        }
-
-        if ( !QUIET &&
-             (pointsCountGlobalMin < MINPOINTSWARN || pointsCountGlobalMax > MAXPOINTSWARN)) {
-            std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius not producing optimal point patches ("
-                    << MINPOINTSWARN << "-" << MAXPOINTSWARN << "), found ("
-                    << pointsCountGlobalMin << "-" << pointsCountGlobalMax
-                    << ")" << std::endl;
         }
 
         if ( writeMatrix_ )
@@ -1227,9 +1211,6 @@ private:
             }
         }
 
-        INT pointsCountGlobalMax = std::numeric_limits<INT>::min();
-        INT pointsCountGlobalMin = std::numeric_limits<INT>::max();
-
         connectivityAB_.resize(data_points.size());
 
         for ( size_t i = 0; i < data_points.size(); i++ ) {
@@ -1265,18 +1246,6 @@ private:
 
             if ( writeMatrix_ && i < ptsExtend_.size() - 1 )
                 outputFileCAB << '\n';
-            if ( pointsCount < pointsCountGlobalMin )
-                pointsCountGlobalMin = pointsCount;
-            if ( pointsCount > pointsCountGlobalMax )
-                pointsCountGlobalMax = pointsCount;
-        }
-
-        if ( !QUIET &&
-             (pointsCountGlobalMin < MINPOINTSWARN || pointsCountGlobalMax > MAXPOINTSWARN)) {
-            std::cout << "MUI Warning [sampler_rbf.h]: RBF search radius not producing optimal point patches ("
-                    << MINPOINTSWARN << "-" << MAXPOINTSWARN << "), found ("
-                    << pointsCountGlobalMin << "-" << pointsCountGlobalMax
-                    << ")" << std::endl;
         }
 
         if ( writeMatrix_ )
