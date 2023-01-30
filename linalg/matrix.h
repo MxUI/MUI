@@ -69,20 +69,24 @@ class sparse_matrix {
         ITYPE rows;
         ITYPE cols;
 
+        // Dummy member variable for invalid or unassigned element in the matrix
+        VTYPE dummy_;
+
     public:
         // Constructor
         sparse_matrix<ITYPE,VTYPE>(ITYPE r, ITYPE c)
-            : rows(r), cols(c) {}
+            : rows(r), cols(c), dummy_(std::numeric_limits<VTYPE>::max()) {}
 
         // Overload constructor - null
         sparse_matrix<ITYPE,VTYPE>()
-            : rows(0), cols(0) {}
+            : rows(0), cols(0), dummy_(std::numeric_limits<VTYPE>::max()) {}
 
         // Overload constructor - taken another sparse_matrix object as an argument
         sparse_matrix<ITYPE,VTYPE>(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
               // Copy the data from the existing matrix
               rows = exist_mat.rows;
               cols = exist_mat.cols;
+              dummy_ = std::numeric_limits<VTYPE>::max();
               std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
               vec_temp = exist_mat.get_non_zero_elements();
               for (auto elememt : vec_temp) {
