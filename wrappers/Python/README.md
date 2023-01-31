@@ -17,6 +17,17 @@
 - `collide()`
 
 # Building
+
+## Installation
+The easiest way to install the python package is just to use:
+```
+pip3 install .
+```
+Alternatively `python3 setup.py install` should work.
+The C++ Python bindings can also be built directly with cmake and make, which is useful for testing.
+
+To install with RBF support, `CXX=g++ CMAKE_ARGS="-DUSE_RBF=ON" pip3 install .`
+
 ### General
 
 - Bindings tested with:
@@ -33,18 +44,7 @@
 
 *Note: Indicated versions in brackets are orientative. It might work for earlier versions as well.* 
 
-### Compiling  just the binary module (option 1)
 
-``` bash
-make COMPILER=[GCC|CLANG] mui4py_mod
-export PYTHONPATH=/pathToMUI/wrappers/Python/mui4py
-```
-
-### Create python package (option 2)
-``` bash
-make COMPILER=[GCC|CLANG] package
-make pip-install # To install with pip the created package
-```
 # Contact
 
 Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com if you find any issue or have any enquiry.

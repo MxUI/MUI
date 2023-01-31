@@ -1,18 +1,21 @@
 from mui4py.types import map_type, UINT
 __default_config = None
 
+
 def set_default_config(config):
     global __default_config
     __default_config = config
+
 
 def get_default_config():
     if __default_config is None:
         raise Exception("Default configuration not defined.")
     return __default_config
 
+
 class Config:
     def __init__(self, dim=None, float_type=float, force_casting=True):
-        #NOTE: int_type is fixed to Python int size at compile time
+        # NOTE: int_type is fixed to Python int size at compile time
         self.int_type = map_type[int]
         self.uint_type = map_type[UINT]
         self.float_type = map_type[float_type]
