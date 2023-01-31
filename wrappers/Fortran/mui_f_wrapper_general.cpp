@@ -47,7 +47,7 @@
  */
 
 // Main MUI header include (contains any other needed includes)
-#include "../../mui.h"
+#include "../../src/mui.h"
 #include "mpi.h"
 
 extern "C" {

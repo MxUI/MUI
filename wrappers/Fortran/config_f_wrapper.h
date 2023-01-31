@@ -49,10 +49,6 @@
 #ifndef CONFIG_F_WRAPPER_H
 #define CONFIG_F_WRAPPER_H
 
-#include "../../util.h"
-#include "../../dim.h"
-#include "../../exception.h"
-
 namespace mui {
 
 struct mui_f_wrapper_1D {
