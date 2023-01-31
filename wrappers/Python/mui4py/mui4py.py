@@ -3,7 +3,7 @@ from mui4py.common import CppClass, get_cpp_name, array2Point
 from mui4py.config import Config
 from mui4py.types import safe_cast, map_type, ALLOWED_IO_TYPES
 from mui4py.geometry import Geometry
-from mui4py.samplers import Sampler, ChronoSampler
+from mui4py.samplers import Sampler, TemporalSampler
 import copy
 
 
@@ -55,7 +55,7 @@ class Uniface(CppClass):
         self.configure(self.config, cpp_obj=cpp_obj)
         self.tags_type = {}
         self._tags_spatial_samplers = {}
-        self._tags_chrono_samplers = {}
+        self._tags_temporal_samplers = {}
         self._tags_fetch = {}
         # self._tags_push = {}
         self._ALLOWED_PROTOCOLS = ["mpi"]
@@ -86,7 +86,7 @@ class Uniface(CppClass):
         except KeyError:
             self.tags_type[tag] = data_type
             self._tags_spatial_samplers[tag] = {}
-            self._tags_chrono_samplers[tag] = {}
+            self._tags_temporal_samplers[tag] = {}
             self._tags_fetch[tag] = {}
         else:
             raise Exception("Type '{}' has already been defined for tag '{}'.".format(data_type_stored.__name__, tag))
@@ -182,9 +182,9 @@ class Uniface(CppClass):
     def announce_send_disable(self):
         self.raw.announce_send_disable()
 
-    def _get_fetch_5args(self, fname_root, tag, data_type, spatial_sampler, chrono_sampler):
+    def _get_fetch_5args(self, fname_root, tag, data_type, spatial_sampler, temporal_sampler):
         assert issubclass(spatial_sampler.__class__, Sampler)
-        assert issubclass(chrono_sampler.__class__, ChronoSampler)
+        assert issubclass(temporal_sampler.__class__, TemporalSampler)
         ss = None
         cs = None
         rehash_fetch = False
@@ -197,11 +197,11 @@ class Uniface(CppClass):
             rehash_fetch = True
 
         try:
-            cs = self._tags_chrono_samplers[tag][chrono_sampler.signature]
+            cs = self._tags_temporal_samplers[tag][temporal_sampler.signature]
         except KeyError:
-            cs = copy.copy(chrono_sampler)
+            cs = copy.copy(temporal_sampler)
             cs.configure(self.config, data_type, onlycheck=True)
-            self._tags_chrono_samplers[tag][cs.signature] = cs
+            self._tags_temporal_samplers[tag][cs.signature] = cs
             rehash_fetch = True
         if rehash_fetch:
             self._tags_fetch[tag][("fetch", cs.signature, ss.signature)] = \
@@ -214,9 +214,9 @@ class Uniface(CppClass):
                                              cs.fetch_signature())
         return self._tags_fetch[tag][(fname_root, cs.signature, ss.signature)], ss, cs
 
-    def _get_fetch_6args(self, fname_root, tag, data_type, spatial_sampler, chrono_sampler):
+    def _get_fetch_6args(self, fname_root, tag, data_type, spatial_sampler, temporal_sampler):
         assert issubclass(spatial_sampler.__class__, Sampler)
-        assert issubclass(chrono_sampler.__class__, ChronoSampler)
+        assert issubclass(temporal_sampler.__class__, TemporalSampler)
         ss = None
         cs = None
         rehash_fetch = False
@@ -229,11 +229,11 @@ class Uniface(CppClass):
             rehash_fetch = True
 
         try:
-            cs = self._tags_chrono_samplers[tag][chrono_sampler.signature]
+            cs = self._tags_temporal_samplers[tag][temporal_sampler.signature]
         except KeyError:
-            cs = copy.copy(chrono_sampler)
+            cs = copy.copy(temporal_sampler)
             cs.configure(self.config, data_type, onlycheck=True)
-            self._tags_chrono_samplers[tag][cs.signature] = cs
+            self._tags_temporal_samplers[tag][cs.signature] = cs
             rehash_fetch = True
         if rehash_fetch:
             self._tags_fetch[tag][("fetch6", cs.signature, ss.signature)] = \
@@ -254,15 +254,15 @@ class Uniface(CppClass):
         fetch_points = getattr(self.raw, "fetch_points_" + ALLOWED_IO_TYPES[data_type])
         return fetch_points(tag, time)
 
-    def fetch_many(self, tag, points, time, spatial_sampler, chrono_sampler):
+    def fetch_many(self, tag, points, time, spatial_sampler, temporal_sampler):
         fetch_fname, ss, cs = self._get_fetch_5args("fetch_many", tag, points.dtype.type,
-                                                    spatial_sampler, chrono_sampler)
+                                                    spatial_sampler, temporal_sampler)
         fetch = getattr(self.raw, fetch_fname)
         return fetch(tag, points, time, ss.raw, cs.raw)
 
-    def fetch_many6(self, tag, points, time1, time2, spatial_sampler, chrono_sampler):
+    def fetch_many6(self, tag, points, time1, time2, spatial_sampler, temporal_sampler):
         fetch_fname, ss, cs = self._get_fetch_6args("fetch_many6", tag, points.dtype.type,
-                                                    spatial_sampler, chrono_sampler)
+                                                    spatial_sampler, temporal_sampler)
         fetch = getattr(self.raw, fetch_fname)
         return fetch(tag, points, time1, time2, ss.raw, cs.raw)
 
@@ -276,8 +276,8 @@ class Uniface(CppClass):
             loc = array2Point(args[1], self.config, self.raw_point)
             time = args[2]
             spatial_sampler = args[3]
-            chrono_sampler = args[4]
-            fetch_fname, ss, cs = self._get_fetch_5args("fetch", tag, data_type, spatial_sampler, chrono_sampler)
+            temporal_sampler = args[4]
+            fetch_fname, ss, cs = self._get_fetch_5args("fetch", tag, data_type, spatial_sampler, temporal_sampler)
             barrier_enabled = True
             if type(time).__name__ == 'float':
                 barrier_time = mui4py_mod.numeric_limits_real
@@ -291,8 +291,8 @@ class Uniface(CppClass):
             time1 = args[2]
             time2 = args[3]
             spatial_sampler = args[4]
-            chrono_sampler = args[5]
-            fetch_fname, ss, cs = self._get_fetch_6args("fetch", tag, data_type, spatial_sampler, chrono_sampler)
+            temporal_sampler = args[5]
+            fetch_fname, ss, cs = self._get_fetch_6args("fetch", tag, data_type, spatial_sampler, temporal_sampler)
             barrier_enabled = True
             if type(time1).__name__ == 'float':
                 barrier_time = mui4py_mod.numeric_limits_real

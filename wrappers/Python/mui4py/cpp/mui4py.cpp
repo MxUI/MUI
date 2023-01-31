@@ -1,6 +1,6 @@
 
 #include <mui.h>
-#include <pybind11/chrono.h>
+#include <pybind11/temporal.h>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
@@ -61,33 +61,33 @@ std::string sampler_name()
   throw std::runtime_error("Invalid sampler type");
 }
 
-template <typename Tconfig, template <typename> class Tchrono>
-std::string chrono_sampler_name()
+template <typename Tconfig, template <typename> class Ttemporal>
+std::string temporal_sampler_name()
 {
-  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_exact<Tconfig>>::value)
-    return "chrono_exact";
-  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_gauss<Tconfig>>::value)
-    return "chrono_gauss";
-  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_sum<Tconfig>>::value)
-    return "chrono_sum";
-  if (std::is_same<Tchrono<Tconfig>, mui::chrono_sampler_mean<Tconfig>>::value)
-    return "chrono_mean";
-  throw std::runtime_error("Invalid chrono sampler type");
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_exact<Tconfig>>::value)
+    return "temporal_exact";
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_gauss<Tconfig>>::value)
+    return "temporal_gauss";
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_sum<Tconfig>>::value)
+    return "temporal_sum";
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_mean<Tconfig>>::value)
+    return "temporal_mean";
+  throw std::runtime_error("Invalid temporal sampler type");
 }
 
-template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Tchrono>
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal>
 void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
 {
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
 
-  std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
+  std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>();
   uniface.def(fetch_name.c_str(),
               (T(Tclass::*)(
                   const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
                   const Tsampler<Tconfig, T, T> &,
-                  const Tchrono<Tconfig> &, bool)) &
+                  const Ttemporal<Tconfig> &, bool)) &
                   Tclass::fetch,
               "")
       .def(fetch_name.c_str(),
@@ -95,41 +95,41 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
                const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
                const Ttime,
                const Tsampler<Tconfig, T, T> &,
-               const Tchrono<Tconfig> &, bool)) &
+               const Ttemporal<Tconfig> &, bool)) &
                Tclass::fetch,
            "");
 }
 
-template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Tchrono>
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal>
 void declare_uniface_fetch_many(py::class_<mui::uniface<Tconfig>> &uniface)
 {
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
 
-  std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + chrono_sampler_name<Tconfig, Tchrono>();
+  std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>();
   uniface.def(fetch_many_name.c_str(),
               (py::array_t<T, py::array::c_style>(Tclass::*)(
                   const std::string &attr,
                   const py::array_t<Treal, py::array::c_style> points, const Ttime t,
                   const Tsampler<Tconfig, T, T> &sampler,
-                  const Tchrono<Tconfig> &t_sampler)) &
+                  const Ttemporal<Tconfig> &t_sampler)) &
                   Tclass::fetch_many,
               "");
 }
 
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
-void declare_uniface_fetch_all_chrono(py::class_<mui::uniface<Tconfig>> &uniface)
+void declare_uniface_fetch_all_temporal(py::class_<mui::uniface<Tconfig>> &uniface)
 {
-  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_exact>(uniface);
-  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
-  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
-  declare_uniface_fetch<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::temporal_sampler_exact>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::temporal_sampler_gauss>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::temporal_sampler_mean>(uniface);
+  declare_uniface_fetch<Tconfig, T, Tsampler, mui::temporal_sampler_sum>(uniface);
 
-  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_exact>(uniface);
-  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_gauss>(uniface);
-  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_mean>(uniface);
-  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::chrono_sampler_sum>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::temporal_sampler_exact>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::temporal_sampler_gauss>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::temporal_sampler_mean>(uniface);
+  declare_uniface_fetch_many<Tconfig, T, Tsampler, mui::temporal_sampler_sum>(uniface);
 }
 
 template <typename Tconfig, typename T>
@@ -157,18 +157,18 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
                                const py::array_t<T> &values)) &
                   Tclass::push_many,
               "");
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_gauss>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_moving_average>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_nearest_neighbor>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_n2_linear>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_pseudo_nearest_neighbor>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_shepard_quintic>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sum_quintic>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_sph_quintic>(uniface);
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_exact>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_gauss>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_moving_average>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_nearest_neighbor>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_pseudo_n2_linear>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_pseudo_nearest_neighbor>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_shepard_quintic>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_sum_quintic>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_sph_quintic>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_exact>(uniface);
 
 #ifdef USE_RBF
-  declare_uniface_fetch_all_chrono<Tconfig, T, mui::sampler_rbf>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_rbf>(uniface);
 #endif
 }
 
@@ -223,7 +223,7 @@ void declare_uniface_class(py::module &m)
            "")
       .def("fetch_string",
            (std::string(Tclass::*)(const std::string &)) & Tclass::fetch, "");
-  declare_uniface_fetch<Tconfig, std::string, mui::sampler_exact, mui::chrono_sampler_exact>(uniface);
+  declare_uniface_fetch<Tconfig, std::string, mui::sampler_exact, mui::temporal_sampler_exact>(uniface);
 
   declare_uniface_funcs<Tconfig, double>(uniface);
   declare_uniface_funcs<Tconfig, float>(uniface);
@@ -232,7 +232,7 @@ void declare_uniface_class(py::module &m)
 }
 
 // Declaration of other files
-void chrono_sampler(py::module &m);
+void temporal_sampler(py::module &m);
 void sampler(py::module &m);
 void geometry(py::module &m);
 
@@ -246,7 +246,7 @@ PYBIND11_MODULE(mui4py_mod, m)
 
   geometry(m);
   sampler(m);
-  chrono_sampler(m);
+  temporal_sampler(m);
 
 #ifdef PYTHON_INT_64
   declare_uniface_class<mui::mui_config_1dx>(m);

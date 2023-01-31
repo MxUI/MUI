@@ -42,7 +42,7 @@ find_package(
 pybind11_add_module(mui4py_mod MODULE
   mui4py/cpp/mui4py.cpp
   mui4py/cpp/sampler.cpp
-  mui4py/cpp/chrono_sampler.cpp
+  mui4py/cpp/temporal_sampler.cpp
   mui4py/cpp/geometry.cpp)
 
 if(USE_RBF)

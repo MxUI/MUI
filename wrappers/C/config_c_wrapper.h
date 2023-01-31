@@ -49,9 +49,9 @@
 #ifndef CONFIG_C_WRAPPER_H
 #define CONFIG_C_WRAPPER_H
 
-#include "../../util.h"
-#include "../../dim.h"
-#include "../../exception.h"
+#include "../../src/general/util.h"
+#include "../../src/general/dim.h"
+#include "../../src/general/exception.h"
 
 namespace mui {
 

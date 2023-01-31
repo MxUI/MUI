@@ -72,9 +72,9 @@ program main
   type(c_ptr), target :: spatial_sampler_exact_1d=c_null_ptr
   type(c_ptr), target :: spatial_sampler_exact_2d=c_null_ptr
   type(c_ptr), target :: spatial_sampler_exact_3d=c_null_ptr
-  type(c_ptr), target :: chrono_sampler_exact_1d=c_null_ptr
-  type(c_ptr), target :: chrono_sampler_exact_2d=c_null_ptr
-  type(c_ptr), target :: chrono_sampler_exact_3d=c_null_ptr
+  type(c_ptr), target :: temporal_sampler_exact_1d=c_null_ptr
+  type(c_ptr), target :: temporal_sampler_exact_2d=c_null_ptr
+  type(c_ptr), target :: temporal_sampler_exact_3d=c_null_ptr
   real(c_double) :: tolerance=1e-37_c_double
   real(c_double) :: push_point_1=0.0_c_double
   real(c_double) :: push_point_2=0.0_c_double
@@ -155,19 +155,19 @@ program main
 
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_1d_f(spatial_sampler_exact_1d, tolerance)
-  call mui_create_chrono_sampler_exact_1d_f(chrono_sampler_exact_1d, tolerance)
+  call mui_create_temporal_sampler_exact_1d_f(temporal_sampler_exact_1d, tolerance)
 
   !Fetch the value for tag "position" at location={fetch_point}={0} at fetch_time=0 for all MUI interfaces
   do i = 1, interface_count
      call mui_fetch_exact_exact_1d_f(uniface_pointers_1d(i)%ptr, "position"//c_null_char, fetch_point_1,  &
-           fetch_time, spatial_sampler_exact_1d, chrono_sampler_exact_1d, fetch_result_1d)
+           fetch_time, spatial_sampler_exact_1d, temporal_sampler_exact_1d, fetch_result_1d)
      print *, "Fetched 1D interface value = ",fetch_result_1d, " at the interface of ", interfaces1d(i),             &
            " domian of ", domain1d
   end do
 
   !Destroy created 1D MUI objects
   call mui_destroy_sampler_exact_1d_f(spatial_sampler_exact_1d)
-  call mui_destroy_chrono_sampler_exact_1d_f(chrono_sampler_exact_1d)
+  call mui_destroy_temporal_sampler_exact_1d_f(temporal_sampler_exact_1d)
 
   ! Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
   do i = 1, interface_count
@@ -224,19 +224,19 @@ program main
 
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_2d_f(spatial_sampler_exact_2d, tolerance)
-  call mui_create_chrono_sampler_exact_2d_f(chrono_sampler_exact_2d, tolerance)
+  call mui_create_temporal_sampler_exact_2d_f(temporal_sampler_exact_2d, tolerance)
 
   !Fetch the value for tag "position" at location={fetch_point}={0,0} at fetch_time=0 for all MUI interfaces
   do i = 1, interface_count
      call mui_fetch_exact_exact_2d_f(uniface_pointers_2d(i)%ptr, "position"//c_null_char, fetch_point_1, fetch_point_2, &
-           fetch_time, spatial_sampler_exact_2d, chrono_sampler_exact_2d, fetch_result_2d)
+           fetch_time, spatial_sampler_exact_2d, temporal_sampler_exact_2d, fetch_result_2d)
      print *, "Fetched 2D interface value = ",fetch_result_2d, " at the interface of ", interfaces2d(i),             &
            " domian of ", domain2d
   end do
 
   !Destroy created 2D MUI objects
   call mui_destroy_sampler_exact_2d_f(spatial_sampler_exact_2d)
-  call mui_destroy_chrono_sampler_exact_2d_f(chrono_sampler_exact_2d)
+  call mui_destroy_temporal_sampler_exact_2d_f(temporal_sampler_exact_2d)
 
   ! Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
   do i = 1, interface_count
@@ -294,19 +294,19 @@ program main
 
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_3d_f(spatial_sampler_exact_3d, tolerance)
-  call mui_create_chrono_sampler_exact_3d_f(chrono_sampler_exact_3d, tolerance)
+  call mui_create_temporal_sampler_exact_3d_f(temporal_sampler_exact_3d, tolerance)
 
   !Fetch the value for tag "position" at location={fetch_point}={0,0,0} at fetch_time=0 for all MUI interfaces
   do i = 1, interface_count
      call mui_fetch_exact_exact_3d_f(uniface_pointers_3d(i)%ptr, "position"//c_null_char, fetch_point_1, fetch_point_2, &
-           fetch_point_3, fetch_time, spatial_sampler_exact_3d, chrono_sampler_exact_3d, fetch_result_3d)
+           fetch_point_3, fetch_time, spatial_sampler_exact_3d, temporal_sampler_exact_3d, fetch_result_3d)
      print *, "Fetched 3D interface value = ",fetch_result_3d, " at the interface of ", interfaces3d(i),             &
            " domian of ", domain3d
   end do
 
   !Destroy created 3D MUI objects
   call mui_destroy_sampler_exact_3d_f(spatial_sampler_exact_3d)
-  call mui_destroy_chrono_sampler_exact_3d_f(chrono_sampler_exact_3d)
+  call mui_destroy_temporal_sampler_exact_3d_f(temporal_sampler_exact_3d)
 
   ! Destroy created MUI interfaces note: calls MPI_Finalize(), so need to do last
   do i = 1, interface_count
