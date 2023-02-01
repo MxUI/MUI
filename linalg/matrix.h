@@ -73,7 +73,7 @@ class sparse_matrix {
         VTYPE dummy_;
 
     public:
-        // Constructor
+        // Constructor - takes in size of row and column to generate an empty matrix
         sparse_matrix<ITYPE,VTYPE>(ITYPE r, ITYPE c)
             : rows(r), cols(c), dummy_(0) {}
 
@@ -81,12 +81,10 @@ class sparse_matrix {
         sparse_matrix<ITYPE,VTYPE>()
             : rows(0), cols(0), dummy_(0) {}
 
-        // Overload constructor - taken another sparse_matrix object as an argument
-        sparse_matrix<ITYPE,VTYPE>(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+        // Overload constructor - takes in another sparse_matrix object as an argument
+        sparse_matrix<ITYPE,VTYPE>(const sparse_matrix<ITYPE,VTYPE> &exist_mat)
+            : rows(exist_mat.rows), cols(exist_mat.cols), dummy_(0) {
               // Copy the data from the existing matrix
-              rows = exist_mat.rows;
-              cols = exist_mat.cols;
-              dummy_ = 0;
               std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
               vec_temp = exist_mat.get_non_zero_elements();
               for (auto elememt : vec_temp) {
@@ -94,6 +92,14 @@ class sparse_matrix {
                       matrix[std::make_pair(elememt.first, elememt.second)] = exist_mat.get_value(elememt.first, elememt.second);
               }
           }
+
+        // Overload constructor - takes in a single argument to generate identity matrix
+        sparse_matrix<ITYPE,VTYPE>(ITYPE n)
+            : rows(n), cols(n), dummy_(0) {
+            for (ITYPE i = 0; i < n; ++i) {
+                matrix[std::make_pair(i, i)] = static_cast<VTYPE>(1);
+            }
+        }
 
         // Function to print matrix elements to the console
         void print() {

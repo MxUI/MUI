@@ -14,40 +14,45 @@ int main()
     b.set_value(0, 1, 5);
     b.set_value(1, 1, 6);
 
+    mui::linalg::sparse_matrix<int,double> c(3);
+
     std::cout << "Matrix A: " << std::endl;
     a.print();
 
     std::cout << "Matrix B: " << std::endl;
     b.print();
 
-    mui::linalg::sparse_matrix<int,double> c = a + b;
+    std::cout << "Identity matrix C: " << std::endl;
+    c.print();
+
+    mui::linalg::sparse_matrix<int,double> d = a + b;
     std::cout << "Addition of matrices (A + B): " << std::endl;
-    c.print();
+    d.print();
 
-    c.set_zero();
-    c = a - b;
+    d.set_zero();
+    d = a - b;
     std::cout << "Subtraction of matrices (A - B): " << std::endl;
-    c.print();
+    d.print();
 
-    c.set_zero();
-    c = a * b;
+    d.set_zero();
+    d = a * b;
     std::cout << "Multiplication of matrices (A * B): " << std::endl;
-    c.print();
+    d.print();
 
-    c.set_zero();
-    c = 8*a;
+    d.set_zero();
+    d = 8*a;
     std::cout << "Scalar multiplication (8 * A): " << std::endl;
-    c.print();
+    d.print();
 
-    c.set_zero();
-    c = a.hadamard_product(b);
+    d.set_zero();
+    d = a.hadamard_product(b);
     std::cout << "Hadamard product (A {*} B): " << std::endl;
-    c.print();
+    d.print();
 
-    c.set_zero();
-    c = a.transpose();
+    d.set_zero();
+    d = a.transpose();
     std::cout << "Transpose of A matrix (A^T): " << std::endl;
-    c.print();
+    d.print();
 
     // Outputs matrix to a file in CSV format
     std::ofstream ofile("matrix.csv");
@@ -62,14 +67,14 @@ int main()
     ofile << a;
     ofile.close();
 
-    mui::linalg::sparse_matrix<int,double> d;
+    mui::linalg::sparse_matrix<int,double> e;
     // Reads matrix from a file
     std::ifstream ifile("matrix.csv");
-    ifile >> d;
+    ifile >> e;
     ifile.close();
 
-    std::cout << "Matrix File I/O Test in CSV format D = A: " << std::endl;
-    d.print();
+    std::cout << "Matrix File I/O Test in CSV format E = A: " << std::endl;
+    e.print();
 
     return 0;
    }
