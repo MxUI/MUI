@@ -61,11 +61,11 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
     }
 
     sparse_matrix<ITYPE,VTYPE> res(rows, cols);
-    for (auto elememt : matrix) {
-        res.set_value(elememt.first.first, elememt.first.second, elememt.second);
+    for (auto element : matrix) {
+        res.set_value(element.first.first, element.first.second, element.second);
     }
-    for (auto elememt : addend.matrix) {
-        res.set_value(elememt.first.first, elememt.first.second, res.get_value(elememt.first.first, elememt.first.second) + elememt.second);
+    for (auto element : addend.matrix) {
+        res.set_value(element.first.first, element.first.second, res.get_value(element.first.first, element.first.second) + element.second);
     }
     return res;
 }
@@ -78,11 +78,11 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
        std::abort();
    }
    sparse_matrix<ITYPE,VTYPE> res(rows, cols);
-   for (auto elememt : matrix) {
-       res.set_value(elememt.first.first, elememt.first.second, elememt.second);
+   for (auto element : matrix) {
+       res.set_value(element.first.first, element.first.second, element.second);
    }
-   for (auto elememt : subtrahend.matrix) {
-       res.set_value(elememt.first.first, elememt.first.second, res.get_value(elememt.first.first, elememt.first.second) - elememt.second);
+   for (auto element : subtrahend.matrix) {
+       res.set_value(element.first.first, element.first.second, res.get_value(element.first.first, element.first.second) - element.second);
    }
    return res;
 }
@@ -95,10 +95,10 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
         std::abort();
     }
     sparse_matrix<ITYPE,VTYPE> res(rows, multiplicand.cols);
-    for (auto elememt1 : matrix) {
-        for (auto elememt2 : multiplicand.matrix) {
-            if (elememt1.first.second == elememt2.first.first) {
-                res.set_value(elememt1.first.first, elememt2.first.second, res.get_value(elememt1.first.first, elememt2.first.second) + elememt1.second * elememt2.second);
+    for (auto element1 : matrix) {
+        for (auto element2 : multiplicand.matrix) {
+            if (element1.first.second == element2.first.first) {
+                res.set_value(element1.first.first, element2.first.second, res.get_value(element1.first.first, element2.first.second) + element1.second * element2.second);
             }
         }
     }
@@ -112,9 +112,9 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(const STYPE &sc
     static_assert(std::is_convertible<STYPE, VTYPE>::value,
             "MUI Error [matrix.h]: scalar type cannot be converted to matrix element type in scalar multiplication");
     sparse_matrix<ITYPE,VTYPE> res(rows,cols);
-    for (const auto elememt : matrix) {
+    for (const auto element : matrix) {
         if (static_cast<VTYPE>(scalar) >= std::numeric_limits<VTYPE>::min())
-            res.set_value(elememt.first.first, elememt.first.second, elememt.second * static_cast<VTYPE>(scalar));
+            res.set_value(element.first.first, element.first.second, element.second * static_cast<VTYPE>(scalar));
    }
    return res;
 }
@@ -160,8 +160,8 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
         std::abort();
     }
     sparse_matrix<ITYPE,VTYPE> res(rows, cols);
-    for (auto elememt : matrix) {
-        res.matrix[std::make_pair(elememt.first.first, elememt.first.second)] = elememt.second  * exist_mat.get_value(elememt.first.first, elememt.first.second);
+    for (auto element : matrix) {
+        res.matrix[std::make_pair(element.first.first, element.first.second)] = element.second  * exist_mat.get_value(element.first.first, element.first.second);
     }
     return res;
 }
@@ -170,8 +170,8 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
 template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() {
     sparse_matrix<ITYPE,VTYPE> res(cols, rows);
-    for (auto elememt : matrix)
-        res.set_value(elememt.first.second, elememt.first.first, elememt.second);
+    for (auto element : matrix)
+        res.set_value(element.first.second, element.first.first, element.second);
     return res;
 }
 

@@ -48,6 +48,8 @@
 #ifndef MUI_MATRIX_CTOR_DTOR_H_
 #define MUI_MATRIX_CTOR_DTOR_H_
 
+#include "matrix_io_info.h"
+
 namespace mui {
 namespace linalg {
 
@@ -70,9 +72,9 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const sparse_matrix<ITYPE,VTYPE> &exis
       // Copy the data from the existing matrix
       std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
       vec_temp = exist_mat.get_non_zero_elements();
-      for (auto elememt : vec_temp) {
-          if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) >= std::numeric_limits<VTYPE>::min())
-              matrix[std::make_pair(elememt.first, elememt.second)] = exist_mat.get_value(elememt.first, elememt.second);
+      for (auto element : vec_temp) {
+          if (std::abs(exist_mat.get_value(element.first, element.second)) >= std::numeric_limits<VTYPE>::min())
+              matrix[std::make_pair(element.first, element.second)] = exist_mat.get_value(element.first, element.second);
       }
 }
 
