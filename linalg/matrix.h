@@ -253,6 +253,19 @@ class sparse_matrix {
             }
         }
 
+        // Function to insert the same value to all elements
+        void set_value(VTYPE val) {
+            if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
+                for (ITYPE i = 0; i < rows; ++i) {
+                    for (ITYPE j = 0; j < cols; ++j) {
+                        matrix[std::make_pair(i, j)] = val;
+                    }
+                }
+            } else {
+                matrix.clear();
+            }
+        }
+
         // Function to get the value at a given position
         VTYPE get_value(ITYPE r, ITYPE c) const {
             assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
