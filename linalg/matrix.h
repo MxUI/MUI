@@ -93,11 +93,22 @@ class sparse_matrix {
               }
           }
 
-        // Overload constructor - takes in a single argument to generate identity matrix
-        sparse_matrix<ITYPE,VTYPE>(ITYPE n)
+        // Overload constructor - generate various square matrix
+        sparse_matrix<ITYPE,VTYPE>(ITYPE n, const std::string &token = {})
             : rows(n), cols(n), dummy_(0) {
-            for (ITYPE i = 0; i < n; ++i) {
-                matrix[std::make_pair(i, i)] = static_cast<VTYPE>(1);
+            if(token.empty()) {
+                // empty (all-zero) square matrix (Do nothing from the code perspective)
+            } else if(trim(token)=="identity") {
+                // identity square matrix
+                for (ITYPE i = 0; i < n; ++i) {
+                    matrix[std::make_pair(i, i)] = static_cast<VTYPE>(1);
+                }
+            } else {
+                std::cerr << "MUI Error [matrix.h]: unidentified token string for square matrix constructor" << std::endl;
+                std::cerr << "    Please set the token string as:" << std::endl;
+                std::cerr << "    empty string (default): Empty (all-zero) square matrix" << std::endl;
+                std::cerr << "    'identity': identity square matrix" << std::endl;
+                std::abort();
             }
         }
 

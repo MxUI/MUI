@@ -16,43 +16,48 @@ int main()
 
     mui::linalg::sparse_matrix<int,double> c(3);
 
+    mui::linalg::sparse_matrix<int,double> d(3,"identity");
+
     std::cout << "Matrix A: " << std::endl;
     a.print();
 
     std::cout << "Matrix B: " << std::endl;
     b.print();
 
-    std::cout << "Identity matrix C: " << std::endl;
+    std::cout << "Empty matrix C: " << std::endl;
     c.print();
 
-    mui::linalg::sparse_matrix<int,double> d = a + b;
+    std::cout << "Identity matrix D: " << std::endl;
+    d.print();
+
+    mui::linalg::sparse_matrix<int,double> e = a + b;
     std::cout << "Addition of matrices (A + B): " << std::endl;
-    d.print();
+    e.print();
 
-    d.set_zero();
-    d = a - b;
+    e.set_zero();
+    e = a - b;
     std::cout << "Subtraction of matrices (A - B): " << std::endl;
-    d.print();
+    e.print();
 
-    d.set_zero();
-    d = a * b;
+    e.set_zero();
+    e = a * b;
     std::cout << "Multiplication of matrices (A * B): " << std::endl;
-    d.print();
+    e.print();
 
-    d.set_zero();
-    d = 8*a;
+    e.set_zero();
+    e = 8*a;
     std::cout << "Scalar multiplication (8 * A): " << std::endl;
-    d.print();
+    e.print();
 
-    d.set_zero();
-    d = a.hadamard_product(b);
+    e.set_zero();
+    e = a.hadamard_product(b);
     std::cout << "Hadamard product (A {*} B): " << std::endl;
-    d.print();
+    e.print();
 
-    d.set_zero();
-    d = a.transpose();
+    e.set_zero();
+    e = a.transpose();
     std::cout << "Transpose of A matrix (A^T): " << std::endl;
-    d.print();
+    e.print();
 
     // Outputs matrix to a file in CSV format
     std::ofstream ofile("matrix.csv");
@@ -67,14 +72,14 @@ int main()
     ofile << a;
     ofile.close();
 
-    mui::linalg::sparse_matrix<int,double> e;
+    mui::linalg::sparse_matrix<int,double> f;
     // Reads matrix from a file
     std::ifstream ifile("matrix.csv");
-    ifile >> e;
+    ifile >> f;
     ifile.close();
 
-    std::cout << "Matrix File I/O Test in CSV format E = A: " << std::endl;
-    e.print();
+    std::cout << "Matrix File I/O Test in CSV format F = A: " << std::endl;
+    f.print();
 
     return 0;
    }
