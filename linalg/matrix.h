@@ -75,22 +75,22 @@ class sparse_matrix {
     public:
         // Constructor
         sparse_matrix<ITYPE,VTYPE>(ITYPE r, ITYPE c)
-            : rows(r), cols(c), dummy_(std::numeric_limits<VTYPE>::max()) {}
+            : rows(r), cols(c), dummy_(0) {}
 
         // Overload constructor - null
         sparse_matrix<ITYPE,VTYPE>()
-            : rows(0), cols(0), dummy_(std::numeric_limits<VTYPE>::max()) {}
+            : rows(0), cols(0), dummy_(0) {}
 
         // Overload constructor - taken another sparse_matrix object as an argument
         sparse_matrix<ITYPE,VTYPE>(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
               // Copy the data from the existing matrix
               rows = exist_mat.rows;
               cols = exist_mat.cols;
-              dummy_ = std::numeric_limits<VTYPE>::max();
+              dummy_ = 0;
               std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
               vec_temp = exist_mat.get_non_zero_elements();
               for (auto elememt : vec_temp) {
-                  if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) > std::numeric_limits<VTYPE>::min())
+                  if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) >= std::numeric_limits<VTYPE>::min())
                       matrix[std::make_pair(elememt.first, elememt.second)] = exist_mat.get_value(elememt.first, elememt.second);
               }
           }
@@ -151,7 +151,7 @@ class sparse_matrix {
                 ITYPE colCount = 0;
                 while (std::getline(ss, value, ',')) {
                     VTYPE val = static_cast<VTYPE>(std::stod(value));
-                    if (std::abs(val) > std::numeric_limits<VTYPE>::min()) {
+                    if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
                         exist_mat.matrix[std::make_pair(row, colCount)] = val;
                     }
                     ++colCount;
@@ -181,6 +181,14 @@ class sparse_matrix {
             cols = c;
         }
 
+        // Function to resize an all-zero matrix
+        void resize(ITYPE r, ITYPE c) {
+            assert(((this->non_zero_elements_count()) == 0) &&
+                    "MUI Error [matrix.h]: resize function only works for all-zero matrix");
+            rows = r;
+            cols = c;
+        }
+
         // Function to copy a sparse_matrix
         void copy(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
               // Copy the data from the existing matrix
@@ -191,7 +199,7 @@ class sparse_matrix {
               std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
               vec_temp = exist_mat.get_non_zero_elements();
               for (auto elememt : vec_temp) {
-                  if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) > std::numeric_limits<VTYPE>::min())
+                  if (std::abs(exist_mat.get_value(elememt.first, elememt.second)) >= std::numeric_limits<VTYPE>::min())
                       matrix[std::make_pair(elememt.first, elememt.second)] = exist_mat.get_value(elememt.first, elememt.second);
               }
           }
@@ -203,6 +211,8 @@ class sparse_matrix {
                       "MUI Error [matrix.h]: segment function r_end has to be larger or equals to r_start");
               assert((c_end >= c_start) &&
                       "MUI Error [matrix.h]: segment function c_end has to be larger or equals to c_start");
+              assert(((r_end < rows) && (r_start >= 0) && (c_end < cols) && (c_start >= 0)) &&
+                  "MUI Error [matrix.h]: Matrix index out of range in segment function");
               sparse_matrix<ITYPE,VTYPE> res((r_end-r_start+1), (c_end-c_start+1));
               for (auto elememt : matrix)
                   if ((elememt.first.first >=r_start)  &&
@@ -215,12 +225,21 @@ class sparse_matrix {
 
         // Function to insert an element
         void set_value(ITYPE r, ITYPE c, VTYPE val) {
-            if (std::abs(val) > std::numeric_limits<VTYPE>::min())
+            assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
+                "MUI Error [matrix.h]: Matrix index out of range in set_value function");
+            if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
                 matrix[std::make_pair(r, c)] = val;
+            } else {
+                if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
+                    matrix.erase(std::make_pair(r, c));
+                }
+            }
         }
 
         // Function to get the value at a given position
         VTYPE get_value(ITYPE r, ITYPE c) const {
+            assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
+                "MUI Error [matrix.h]: Matrix index out of range in get_value function");
             auto it = matrix.find(std::make_pair(r, c));
             if (it != matrix.end()) {
                 return it->second;
@@ -249,6 +268,11 @@ class sparse_matrix {
             return vec_temp;
         }
 
+        // Function to get number of non-zero elements
+        ITYPE non_zero_elements_count() const {
+            return matrix.size();
+        }
+
         // Function to set all elements to zero and empty the sparse matrix
         void set_zero() {
             matrix.clear();
@@ -261,6 +285,8 @@ class sparse_matrix {
 
         // Function to add scalar to a specific elements
         void add_scalar(ITYPE i, ITYPE j, VTYPE value) {
+            assert(((i < rows) && (i >= 0) && (j < cols) && (j >= 0)) &&
+                "MUI Error [matrix.h]: Matrix index out of range in add_scalar function");
             // check if the element exists
             if (matrix.find(std::make_pair(i, j)) != matrix.end()) {
                 matrix[std::make_pair(i, j)] += value;
@@ -271,6 +297,8 @@ class sparse_matrix {
 
         // Function to subtract a scalar from a specific elements
         void subtract_scalar(ITYPE i, ITYPE j, VTYPE value) {
+            assert(((i < rows) && (i >= 0) && (j < cols) && (j >= 0)) &&
+                "MUI Error [matrix.h]: Matrix index out of range in subtract_scalar function");
             // check if the element exists
             if (matrix.find(std::make_pair(i, j)) != matrix.end()) {
                 matrix[std::make_pair(i, j)] -= value;
