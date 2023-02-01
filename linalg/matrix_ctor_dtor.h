@@ -90,7 +90,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token)
             matrix[std::make_pair(i, i)] = static_cast<VTYPE>(1);
         }
     } else {
-        std::cerr << "MUI Error [matrix.h]: unidentified token string for square matrix constructor" << std::endl;
+        std::cerr << "MUI Error [matrix_ctor_dtor.h]: unidentified token string for square matrix constructor" << std::endl;
         std::cerr << "    Please set the token string as:" << std::endl;
         std::cerr << "    empty string (default): Empty (all-zero) square matrix" << std::endl;
         std::cerr << "    'identity': identity square matrix" << std::endl;

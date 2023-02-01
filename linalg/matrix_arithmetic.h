@@ -56,7 +56,7 @@ template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) {
 
     if (rows != addend.rows || cols != addend.cols) {
-        std::cerr << "MUI Error [matrix.h]: matrix size mismatch during matrix addition" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix addition" << std::endl;
         std::abort();
     }
 
@@ -74,7 +74,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) {
    if (rows != subtrahend.rows || cols != subtrahend.cols) {
-       std::cerr << "MUI Error [matrix.h]: matrix size mismatch during matrix subtraction" << std::endl;
+       std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix subtraction" << std::endl;
        std::abort();
    }
    sparse_matrix<ITYPE,VTYPE> res(rows, cols);
@@ -91,7 +91,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) {
     if (cols != multiplicand.rows) {
-        std::cerr << "MUI Error [matrix.h]: matrix size mismatch during matrix multiplication" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix multiplication" << std::endl;
         std::abort();
     }
     sparse_matrix<ITYPE,VTYPE> res(rows, multiplicand.cols);
@@ -110,7 +110,7 @@ template <typename ITYPE, typename VTYPE>
 template <typename STYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(const STYPE &scalar) const {
     static_assert(std::is_convertible<STYPE, VTYPE>::value,
-            "MUI Error [matrix.h]: scalar type cannot be converted to matrix element type in scalar multiplication");
+            "MUI Error [matrix_arithmetic.h]: scalar type cannot be converted to matrix element type in scalar multiplication");
     sparse_matrix<ITYPE,VTYPE> res(rows,cols);
     for (const auto element : matrix) {
         if (static_cast<VTYPE>(scalar) >= std::numeric_limits<VTYPE>::min())
@@ -131,9 +131,9 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
     if (this != &exist_mat) { // check for self-assignment
         // copy the values from the other matrix to this matrix
         assert(matrix.empty() &&
-                  "MUI Error [matrix.h]: assignment operator '=' only works for empty (all zero elements) matrix");
+                  "MUI Error [matrix_arithmetic.h]: assignment operator '=' only works for empty (all zero elements) matrix");
         assert(((rows == exist_mat.rows) && (cols == exist_mat.cols)) &&
-                  "MUI Error [matrix.h]: matrix size mismatch in assignment operator '='");
+                  "MUI Error [matrix_arithmetic.h]: matrix size mismatch in assignment operator '='");
         (*this).copy(exist_mat);
     }
     return *this;
@@ -143,12 +143,12 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
 template <typename ITYPE, typename VTYPE>
 VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
     assert(((cols == 1)&&(exist_mat.cols == 1)) &&
-        "MUI Error [matrix.h]: dot_product function only works for column vectors");
+        "MUI Error [matrix_arithmetic.h]: dot_product function only works for column vectors");
     sparse_matrix<ITYPE,VTYPE> tempThis(*this);
     sparse_matrix<ITYPE,VTYPE> thisT(tempThis.transpose());
     sparse_matrix<ITYPE,VTYPE> tempMat(thisT * exist_mat);
     assert(((tempMat.get_rows() == 1)&&(tempMat.get_cols() == 1)) &&
-                    "MUI Error [matrix.h]: result of dot_product function should be a scalar");
+                    "MUI Error [matrix_arithmetic.h]: result of dot_product function should be a scalar");
     return (tempMat.get_value(0,0));
 }
 
@@ -156,7 +156,7 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_
 template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
     if (rows != exist_mat.rows || cols != exist_mat.cols) {
-        std::cerr << "MUI Error [matrix.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
         std::abort();
     }
     sparse_matrix<ITYPE,VTYPE> res(rows, cols);

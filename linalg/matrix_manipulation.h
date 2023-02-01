@@ -55,7 +55,7 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::resize_null(ITYPE r, ITYPE c) {
     assert(((rows == 0) && (cols == 0)) &&
-            "MUI Error [matrix.h]: resize_null function only works for null matrix");
+            "MUI Error [matrix_manipulation.h]: resize_null function only works for null matrix");
     rows = r;
     cols = c;
 }
@@ -64,7 +64,7 @@ void sparse_matrix<ITYPE,VTYPE>::resize_null(ITYPE r, ITYPE c) {
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::resize(ITYPE r, ITYPE c) {
     assert(((this->non_zero_elements_count()) == 0) &&
-            "MUI Error [matrix.h]: resize function only works for all-zero matrix");
+            "MUI Error [matrix_manipulation.h]: resize function only works for all-zero matrix");
     rows = r;
     cols = c;
 }
@@ -74,9 +74,9 @@ template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
       // Copy the data from the existing matrix
       assert(matrix.empty() &&
-                "MUI Error [matrix.h]: copy function only works for empty (all zero elements) matrix");
+                "MUI Error [matrix_manipulation.h]: copy function only works for empty (all zero elements) matrix");
       assert(((rows == exist_mat.rows) && (cols == exist_mat.cols)) &&
-                "MUI Error [matrix.h]: matrix size mismatch in copy function ");
+                "MUI Error [matrix_manipulation.h]: matrix size mismatch in copy function ");
       std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
       vec_temp = exist_mat.get_non_zero_elements();
       for (auto element : vec_temp) {
@@ -90,11 +90,11 @@ template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, ITYPE r_end, ITYPE c_start, ITYPE c_end) {
       // get segment data from the existing matrix
       assert((r_end >= r_start) &&
-              "MUI Error [matrix.h]: segment function r_end has to be larger or equals to r_start");
+              "MUI Error [matrix_manipulation.h]: segment function r_end has to be larger or equals to r_start");
       assert((c_end >= c_start) &&
-              "MUI Error [matrix.h]: segment function c_end has to be larger or equals to c_start");
+              "MUI Error [matrix_manipulation.h]: segment function c_end has to be larger or equals to c_start");
       assert(((r_end < rows) && (r_start >= 0) && (c_end < cols) && (c_start >= 0)) &&
-          "MUI Error [matrix.h]: Matrix index out of range in segment function");
+          "MUI Error [matrix_manipulation.h]: Matrix index out of range in segment function");
       sparse_matrix<ITYPE,VTYPE> res((r_end-r_start+1), (c_end-c_start+1));
       for (auto element : matrix)
           if ((element.first.first >=r_start)  &&
@@ -109,7 +109,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val) {
     assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
-        "MUI Error [matrix.h]: Matrix index out of range in set_value function");
+        "MUI Error [matrix_manipulation.h]: Matrix index out of range in set_value function");
     if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
         matrix[std::make_pair(r, c)] = val;
     } else {
@@ -143,7 +143,7 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE value) {
     assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
-        "MUI Error [matrix.h]: Matrix index out of range in add_scalar function");
+        "MUI Error [matrix_manipulation.h]: Matrix index out of range in add_scalar function");
     // check if the element exists
     if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
         matrix[std::make_pair(r, c)] += value;
@@ -156,7 +156,7 @@ void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE value) {
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE value) {
     assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
-        "MUI Error [matrix.h]: Matrix index out of range in subtract_scalar function");
+        "MUI Error [matrix_manipulation.h]: Matrix index out of range in subtract_scalar function");
     // check if the element exists
     if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
         matrix[std::make_pair(r, c)] -= value;

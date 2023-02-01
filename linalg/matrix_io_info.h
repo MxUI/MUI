@@ -113,7 +113,7 @@ std::ostream& operator << (std::ostream &ofile, const sparse_matrix<ITYPE,VTYPE>
 template<typename ITYPE, typename VTYPE>
 std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exist_mat) {
     assert((exist_mat.empty()) &&
-      "MUI Error [matrix_io.h]: Overloading >> operator can only takes in null matrix or empty (all-zero) matrix");
+      "MUI Error [matrix_io_info.h]: Overloading >> operator can only takes in null matrix or empty (all-zero) matrix");
     std::string rawLine;
     std::map<std::pair<ITYPE, ITYPE>, VTYPE> tempMatrix;
     ITYPE row = 0;
@@ -136,7 +136,7 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
             col = colCount;
         } else {
             if (col != colCount) {
-                std::cout << "MUI Warning [matrix.h]: The number of columns of the matrix read in at row " <<
+                std::cout << "MUI Warning [matrix_io_info.h]: The number of columns of the matrix read in at row " <<
                         row << " is " << colCount << ", which is different from previous row (i.e. " <<
                         col << " columns!" << std::endl;
                 col = colCount;
@@ -151,7 +151,7 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
         }
     } else {
         assert(((exist_mat.get_rows() == row) && (exist_mat.get_cols() == col)) &&
-          "MUI Error [matrix_io.h]: Matrix size mismatching between existing matrix and read in matrix in overloading >> operator ");
+          "MUI Error [matrix_io_info.h]: Matrix size mismatching between existing matrix and read in matrix in overloading >> operator ");
         for (auto element : tempMatrix) {
             exist_mat.set_value(element.first.first, element.first.second, element.second);
         }
@@ -163,7 +163,7 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
 template<typename ITYPE, typename VTYPE>
 VTYPE sparse_matrix<ITYPE,VTYPE>::get_value(ITYPE r, ITYPE c) const {
     assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
-        "MUI Error [matrix.h]: Matrix index out of range in get_value function");
+        "MUI Error [matrix_io_info.h]: Matrix index out of range in get_value function");
     auto it = matrix.find(std::make_pair(r, c));
     if (it != matrix.end()) {
         return it->second;
