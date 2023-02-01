@@ -261,8 +261,7 @@ class sparse_matrix {
         // Function to get non-zero elements
         std::vector<std::pair<ITYPE, ITYPE>> get_non_zero_elements() const {
             std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
-            for (auto const &nn_element : matrix)
-            {
+            for (auto const &nn_element : matrix) {
                 vec_temp.push_back(std::make_pair(nn_element.first.first, nn_element.first.second));
             }
             return vec_temp;
@@ -284,26 +283,26 @@ class sparse_matrix {
         }
 
         // Function to add scalar to a specific elements
-        void add_scalar(ITYPE i, ITYPE j, VTYPE value) {
-            assert(((i < rows) && (i >= 0) && (j < cols) && (j >= 0)) &&
+        void add_scalar(ITYPE r, ITYPE c, VTYPE value) {
+            assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
                 "MUI Error [matrix.h]: Matrix index out of range in add_scalar function");
             // check if the element exists
-            if (matrix.find(std::make_pair(i, j)) != matrix.end()) {
-                matrix[std::make_pair(i, j)] += value;
+            if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
+                matrix[std::make_pair(r, c)] += value;
             } else {
-                matrix[std::make_pair(i, j)] = value;
+                matrix[std::make_pair(r, c)] = value;
             }
         }
 
         // Function to subtract a scalar from a specific elements
-        void subtract_scalar(ITYPE i, ITYPE j, VTYPE value) {
-            assert(((i < rows) && (i >= 0) && (j < cols) && (j >= 0)) &&
+        void subtract_scalar(ITYPE r, ITYPE c, VTYPE value) {
+            assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
                 "MUI Error [matrix.h]: Matrix index out of range in subtract_scalar function");
             // check if the element exists
-            if (matrix.find(std::make_pair(i, j)) != matrix.end()) {
-                matrix[std::make_pair(i, j)] -= value;
+            if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
+                matrix[std::make_pair(r, c)] -= value;
             } else {
-                matrix[std::make_pair(i, j)] = -value;
+                matrix[std::make_pair(r, c)] = -value;
             }
         }
 
@@ -371,12 +370,12 @@ class sparse_matrix {
         sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &scalar) const {
             static_assert(std::is_convertible<STYPE, VTYPE>::value,
                     "MUI Error [matrix.h]: scalar type cannot be converted to matrix element type in scalar multiplication");
-            sparse_matrix<ITYPE,VTYPE> result(rows,cols);
+            sparse_matrix<ITYPE,VTYPE> res(rows,cols);
             for (const auto elememt : matrix) {
                 if (static_cast<VTYPE>(scalar) >= std::numeric_limits<VTYPE>::min())
-                    result.set_value(elememt.first.first, elememt.first.second, elememt.second * static_cast<VTYPE>(scalar));
+                    res.set_value(elememt.first.first, elememt.first.second, elememt.second * static_cast<VTYPE>(scalar));
            }
-           return result;
+           return res;
          }
 
         // Overloaded assignment operator
@@ -393,15 +392,28 @@ class sparse_matrix {
         }
 
         // Function of dot product
-        VTYPE dot_product(sparse_matrix<ITYPE,VTYPE> &b_) const {
-            assert(((cols == 1)&&(b_.cols == 1)) &&
+        VTYPE dot_product(sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
+            assert(((cols == 1)&&(exist_mat.cols == 1)) &&
                 "MUI Error [matrix.h]: dot_product function only works for column vectors");
             sparse_matrix<ITYPE,VTYPE> tempThis(*this);
             sparse_matrix<ITYPE,VTYPE> thisT(tempThis.transpose());
-            sparse_matrix<ITYPE,VTYPE> tempMat(thisT * b_);
+            sparse_matrix<ITYPE,VTYPE> tempMat(thisT * exist_mat);
             assert(((tempMat.get_rows() == 1)&&(tempMat.get_cols() == 1)) &&
                             "MUI Error [matrix.h]: result of dot_product function should be a scalar");
             return (tempMat.get_value(0,0));
+        }
+
+
+        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+            if (rows != exist_mat.rows || cols != exist_mat.cols) {
+                std::cerr << "MUI Error [matrix.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
+                std::abort();
+            }
+            sparse_matrix<ITYPE,VTYPE> res(rows, cols);
+            for (auto elememt : matrix) {
+                res.matrix[std::make_pair(elememt.first.first, elememt.first.second)] = elememt.second  * exist_mat.get_value(elememt.first.first, elememt.first.second);
+            }
+            return res;
         }
 
 };

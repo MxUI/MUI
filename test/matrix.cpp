@@ -21,22 +21,27 @@ int main()
     b.print();
 
     mui::linalg::sparse_matrix<int,double> c = a + b;
-    std::cout << "Addition of matrices (A+B): " << std::endl;
+    std::cout << "Addition of matrices (A + B): " << std::endl;
     c.print();
 
     c.set_zero();
     c = a - b;
-    std::cout << "Subtraction of matrices (A-B): " << std::endl;
+    std::cout << "Subtraction of matrices (A - B): " << std::endl;
     c.print();
 
     c.set_zero();
     c = a * b;
-    std::cout << "Multiplication of matrices (A*B): " << std::endl;
+    std::cout << "Multiplication of matrices (A * B): " << std::endl;
     c.print();
 
     c.set_zero();
     c = 8*a;
-    std::cout << "Scalar multiplication (8*A): " << std::endl;
+    std::cout << "Scalar multiplication (8 * A): " << std::endl;
+    c.print();
+
+    c.set_zero();
+    c = a.hadamard_product(b);
+    std::cout << "Hadamard product (A {*} B): " << std::endl;
     c.print();
 
     c.set_zero();
