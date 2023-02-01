@@ -51,12 +51,7 @@
 #ifndef MUI_CONJUGATE_GRADIENT_H_
 #define MUI_CONJUGATE_GRADIENT_H_
 
-#include <iostream>
-#include <map>
-#include <vector>
 #include <cmath>
-#include <limits>
-#include "matrix.h"
 #include "preconditioner_base.h"
 
 namespace mui {
