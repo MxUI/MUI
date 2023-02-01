@@ -48,15 +48,13 @@
 #ifndef MUI_PRECONDITIONER_BASE_H_
 #define MUI_PRECONDITIONER_BASE_H_
 
-#include "matrix.h"
-
 namespace mui {
 namespace linalg {
 
 template<typename ITYPE, typename VTYPE>
 class preconditioner {
     public:
-        virtual sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE> &x) = 0;
+        virtual sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE> &) = 0;
 };
 
 } // linalg

@@ -41,7 +41,7 @@
 /**
  * @file matrix_manipulation.h
  * @author W. Liu
- * @date 29 January 2023
+ * @date 01 February 2023
  * @brief Implemantation of sparse matrix manipulation functions.
  */
 
