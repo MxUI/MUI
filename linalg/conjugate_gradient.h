@@ -64,18 +64,9 @@ namespace linalg {
 
 template<typename ITYPE, typename VTYPE>
 class conjugate_gradient {
-    private:
-        sparse_matrix<ITYPE,VTYPE> A_;
-        sparse_matrix<ITYPE,VTYPE> x_;
-        sparse_matrix<ITYPE,VTYPE> b_;
-        sparse_matrix<ITYPE,VTYPE> r_;
-        sparse_matrix<ITYPE,VTYPE> z_;
-        sparse_matrix<ITYPE,VTYPE> p_;
-        preconditioner<ITYPE,VTYPE>* M_;
-        VTYPE cg_solve_tol_;
-        ITYPE cg_max_iter_;
 
     public:
+        // Constructor
         conjugate_gradient(sparse_matrix<ITYPE,VTYPE> A, sparse_matrix<ITYPE,VTYPE> b, VTYPE cg_solve_tol= 1e-6, ITYPE cg_max_iter= 0, preconditioner<ITYPE,VTYPE>* M = nullptr) 
             : A_(A), 
               b_(b),
@@ -90,6 +81,26 @@ class conjugate_gradient {
                 p_.resize_null(A_.get_rows(),1);
         }
 
+        // Destructor
+        ~conjugate_gradient() {
+            // deallocate the memory for matrices
+            A_.set_zero();
+            x_.set_zero();
+            b_.set_zero();
+            r_.set_zero();
+            z_.set_zero();
+            p_.set_zero();
+            // set properties to null
+            cg_solve_tol_ = 0;
+            cg_max_iter_ = 0;
+            // deallocate the memory for preconditioner pointer
+            if(M_!=nullptr) {
+                M_ = nullptr;
+                delete[] M_;
+            }
+        }
+
+        // Member function for solve
         std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> x_init = sparse_matrix<ITYPE,VTYPE>()) {
             if (!x_init.empty()){
                 assert(((x_init.get_rows() == x_.get_rows()) && (x_init.get_cols() == x_.get_cols())) &&
@@ -171,12 +182,30 @@ class conjugate_gradient {
             return std::make_pair(acturalKIterCount,r_norm_rel);
         }
 
+        // Member function to get the solution
         sparse_matrix<ITYPE,VTYPE> getSolution() {
             return x_;
         }
 
     private:
-
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_;
+        // The constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_;
+        // The residual matrix of the CG solver
+        sparse_matrix<ITYPE,VTYPE> r_;
+        // The preconditioned residual matrix of the CG solver
+        sparse_matrix<ITYPE,VTYPE> z_;
+        // The direction matrix of the CG solver
+        sparse_matrix<ITYPE,VTYPE> p_;
+        // Preconditioner pointer
+        preconditioner<ITYPE,VTYPE>* M_;
+        // Tolerance of CG solver
+        VTYPE cg_solve_tol_;
+        // Maximum iteration of CG solver
+        ITYPE cg_max_iter_;
 };
 
 } // linalg
