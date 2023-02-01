@@ -35,6 +35,11 @@ int main()
     c.print();
 
     c.set_zero();
+    c = 8*a;
+    std::cout << "Scalar multiplication (8*A): " << std::endl;
+    c.print();
+
+    c.set_zero();
     c = a.transpose();
     std::cout << "Transpose of A matrix (A^T): " << std::endl;
     c.print();

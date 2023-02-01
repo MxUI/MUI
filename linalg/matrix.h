@@ -366,6 +366,19 @@ class sparse_matrix {
             return res;
         }
 
+        // Overload multiplication operator to perform scalar multiplication
+        template <typename STYPE>
+        sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &scalar) const {
+            static_assert(std::is_convertible<STYPE, VTYPE>::value,
+                    "MUI Error [matrix.h]: scalar type cannot be converted to matrix element type in scalar multiplication");
+            sparse_matrix<ITYPE,VTYPE> result(rows,cols);
+            for (const auto elememt : matrix) {
+                if (static_cast<VTYPE>(scalar) >= std::numeric_limits<VTYPE>::min())
+                    result.set_value(elememt.first.first, elememt.first.second, elememt.second * static_cast<VTYPE>(scalar));
+           }
+           return result;
+         }
+
         // Overloaded assignment operator
         sparse_matrix<ITYPE,VTYPE>& operator=(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
             if (this != &exist_mat) { // check for self-assignment
@@ -392,6 +405,12 @@ class sparse_matrix {
         }
 
 };
+
+template<typename ITYPE, typename VTYPE, typename STYPE>
+sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &scalar, const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+  return exist_mat * scalar;
+}
+
 
 } // linalg
 } // mui
