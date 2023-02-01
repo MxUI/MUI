@@ -48,6 +48,8 @@
 #ifndef MUI_MATRIX_ARITHMETIC_H_
 #define MUI_MATRIX_ARITHMETIC_H_
 
+#include <cassert>
+
 namespace mui {
 namespace linalg {
 

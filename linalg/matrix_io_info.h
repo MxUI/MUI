@@ -48,9 +48,9 @@
 #ifndef MUI_MATRIX_IO_INFO_H_
 #define MUI_MATRIX_IO_INFO_H_
 
-#include <iostream>
 #include <sstream>
-#include <string>
+#include <cassert>
+#include <limits>
 
 namespace mui {
 namespace linalg {

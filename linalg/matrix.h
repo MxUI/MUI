@@ -49,14 +49,8 @@
 #ifndef MUI_SPARSE_MATRIX_H_
 #define MUI_SPARSE_MATRIX_H_
 
-#include <iostream>
-#include <fstream>
 #include <map>
 #include <vector>
-#include <cassert>
-#include <limits>
-#include <sstream>
-#include <string>
 
 namespace mui {
 namespace linalg {
