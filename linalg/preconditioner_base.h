@@ -54,6 +54,7 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 class preconditioner {
     public:
+        // Virtual function on preconditioner apply
         virtual sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE> &) = 0;
 };
 
