@@ -79,7 +79,7 @@ class sparse_matrix {
         // *****************************************
 
         // Member function to print matrix elements to the console
-        void print();
+        void print() const;
         // Member function to get the value at a given position
         VTYPE get_value(ITYPE, ITYPE) const;
         // Member function to get the number of rows
@@ -91,7 +91,7 @@ class sparse_matrix {
         // Member function to get number of non-zero elements
         ITYPE non_zero_elements_count() const;
         // Member function to check whether the matrix contains all zero elements
-        bool empty();
+        bool empty() const;
 
         // *****************************************
         // ********* Matrix manipulations **********
@@ -115,32 +115,32 @@ class sparse_matrix {
         void add_scalar(ITYPE, ITYPE, VTYPE);
         // Member function to subtract a scalar from a specific elements
         void subtract_scalar(ITYPE, ITYPE, VTYPE);
+        // Overloaded assignment operator
+        sparse_matrix<ITYPE,VTYPE>& operator=(const sparse_matrix<ITYPE,VTYPE> &);
 
         // *****************************************
         // ********* Arithmetic operations *********
         // *****************************************
 
         // Overload addition operator to perform sparse matrix addition
-        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &);
+        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &) const;
         // Overload subtraction operator to perform sparse matrix subtraction
-        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &);
+        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &) const;
         // Overload multiplication operator to perform sparse matrix multiplication
-        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &);
+        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &) const;
         // Overload multiplication operator to perform scalar multiplication
         template <typename STYPE>
         sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &) const;
-        // Overloaded assignment operator
-        sparse_matrix<ITYPE,VTYPE>& operator=(const sparse_matrix<ITYPE,VTYPE> &);
         // Member function of dot product
         VTYPE dot_product(sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function of Hadamard product
-        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &);
+        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function to get transpose of matrix
-        sparse_matrix<ITYPE,VTYPE> transpose();
+        sparse_matrix<ITYPE,VTYPE> transpose() const;
         // Member function to perform LU decomposition
-        void lu_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &);
+        void lu_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function to perform QR decomposition
-        void qr_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &);
+        void qr_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function to get the inverse of matrix
         sparse_matrix<ITYPE,VTYPE> inverse() const;
 

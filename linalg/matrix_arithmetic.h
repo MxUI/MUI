@@ -56,7 +56,7 @@ namespace linalg {
 
 // Overload addition operator to perform sparse matrix addition
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) const{
 
     if (rows_ != addend.rows_ || cols_ != addend.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix addition" << std::endl;
@@ -75,7 +75,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 
 // Overload subtraction operator to perform sparse matrix subtraction
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) const {
    if (rows_ != subtrahend.rows_ || cols_ != subtrahend.cols_) {
        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix subtraction" << std::endl;
        std::abort();
@@ -92,7 +92,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 
 // Overload multiplication operator to perform sparse matrix multiplication
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) const {
     if (cols_ != multiplicand.rows_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix multiplication" << std::endl;
         std::abort();
@@ -128,20 +128,6 @@ sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &scalar, const sparse_matrix<IT
   return exist_mat * scalar;
 }
 
-// Overloaded assignment operator
-template <typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
-    if (this != &exist_mat) { // check for self-assignment
-        // copy the values from the other matrix to this matrix
-        assert(matrix_.empty() &&
-                  "MUI Error [matrix_arithmetic.h]: assignment operator '=' only works for empty (all zero elements) matrix");
-        assert(((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) &&
-                  "MUI Error [matrix_arithmetic.h]: matrix size mismatch in assignment operator '='");
-        (*this).copy(exist_mat);
-    }
-    return *this;
-}
-
 // Member function of dot product
 template <typename ITYPE, typename VTYPE>
 VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
@@ -157,7 +143,7 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_
 
 // Member function of Hadamard product
 template <typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
     if (rows_ != exist_mat.rows_ || cols_ != exist_mat.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
         std::abort();
@@ -171,7 +157,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
 
 // Member function to get transpose of matrix
 template <typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() const {
     sparse_matrix<ITYPE,VTYPE> res(cols_, rows_);
     for (auto element : matrix_)
         res.set_value(element.first.second, element.first.first, element.second);
@@ -180,7 +166,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() {
 
 // Member function to perform LU decomposition
 template <typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L, sparse_matrix<ITYPE,VTYPE> &U) {
+void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L, sparse_matrix<ITYPE,VTYPE> &U) const {
     if ((L.get_rows() != 0) || (U.get_rows() != 0) || (L.get_cols() != 0) || (U.get_cols() != 0)) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: L & U Matrices must be null in LU decomposition" << std::endl;
         std::abort();
@@ -190,21 +176,23 @@ void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L,
         std::abort();
     }
 
+    // Resize the lower triangular matrix
     L.resize_null(rows_, cols_);
+    // Resize the upper triangular matrix
     U.resize_null(rows_, cols_);
 
     ITYPE n = rows_;
     for (ITYPE i = 0; i < rows_; ++i) {
-        // calculate the upper triangular matrix
+        // Calculate the upper triangular matrix
         for (ITYPE k = i; k < cols_; ++k) {
             VTYPE sum = 0.0;
             for (ITYPE j = 0; j < i; ++j) {
                 sum += L.get_value(i, j) * U.get_value(j, k);
             }
-            U.set_value(i, k, matrix_[std::make_pair(i, k)] - sum);
+            U.set_value(i, k, (this->get_value(i, k) - sum));
         }
 
-        // calculate the lower triangular matrix
+        // Calculate the lower triangular matrix
         for (ITYPE k = i; k < rows_; k++) {
             if (i == k) {
                 L.set_value(i, i, static_cast<VTYPE>(1.0));
@@ -215,7 +203,7 @@ void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L,
                 }
                 assert(std::abs(U.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
                                   "MUI Error [matrix_arithmetic.h]: Divide by zero assert for U.get_value(i, i)");
-                L.set_value(k, i, (matrix_[std::make_pair(k, i)] - sum) / U.get_value(i, i));
+                L.set_value(k, i, (this->get_value(k, i) - sum) / U.get_value(i, i));
             }
         }
     }
@@ -223,72 +211,78 @@ void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L,
 
 // Member function to perform QR decomposition
 template <typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::qr_decomposition(sparse_matrix<ITYPE,VTYPE> &Q, sparse_matrix<ITYPE,VTYPE> &R) {
+void sparse_matrix<ITYPE,VTYPE>::qr_decomposition(sparse_matrix<ITYPE,VTYPE> &Q, sparse_matrix<ITYPE,VTYPE> &R) const {
     if ((Q.get_rows() != 0) || (R.get_rows() != 0) || (Q.get_cols() != 0) || (R.get_cols() != 0)) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: Q & R Matrices must be null in QR decomposition" << std::endl;
         std::abort();
     }
     assert((rows_ >= cols_) &&
           "MUI Error [matrix_arithmetic.h]: number of rows of matrix should larger or equals to number of columns in QR decomposition");
-
+    // Resize the orthogonal matrix
     Q.resize_null(rows_, cols_);
+    // Resize the upper triangular matrix
     R.resize_null(rows_, cols_);
-
+    // Get a copy of the matrix
+    sparse_matrix<ITYPE,VTYPE> mat_copy (*this);
+    // Diagonal elements
     std::vector<VTYPE> r_diag (cols_);
 
+    // Calculate the diagonal element values
     for (ITYPE c = 0; c <cols_; ++c)  {
         VTYPE  nrm (0.0);
 
        // Compute 2-norm of k-th column without under/overflow.
         for (ITYPE r = c; r < rows_; ++r)
-            nrm = std::sqrt((nrm * nrm) + (matrix_[std::make_pair(r, c)] * matrix_[std::make_pair(r, c)]));
+            nrm = std::sqrt((nrm * nrm) + (mat_copy.matrix_[std::make_pair(r, c)] * mat_copy.matrix_[std::make_pair(r, c)]));
 
         if (nrm != static_cast<VTYPE>(0.0))  {
 
            // Form k-th Householder vector.
-            if (matrix_[std::make_pair(c, c)] < static_cast<VTYPE>(0.0))
+            if (mat_copy.matrix_[std::make_pair(c, c)] < static_cast<VTYPE>(0.0))
                 nrm = -nrm;
 
             for (ITYPE r = c; r < rows_; ++r)
-                matrix_[std::make_pair(r, c)] /= nrm;
+                mat_copy.matrix_[std::make_pair(r, c)] /= nrm;
 
-            matrix_[std::make_pair(c, c)]  += static_cast<VTYPE>(1.0);
+            mat_copy.matrix_[std::make_pair(c, c)]  += static_cast<VTYPE>(1.0);
 
            // Apply transformation to remaining columns.
             for (ITYPE j = c + 1; j < cols_; ++j)  {
                 VTYPE  s = 0.0;
 
                 for (ITYPE r = c; r < rows_; ++r)
-                    s += matrix_[std::make_pair(r, c)]  * matrix_[std::make_pair(r, j)];
+                    s += mat_copy.matrix_[std::make_pair(r, c)]  * mat_copy.matrix_[std::make_pair(r, j)];
 
-                s /= -matrix_[std::make_pair(c, c)];
+                s /= -mat_copy.matrix_[std::make_pair(c, c)];
                 for (ITYPE r = c; r < rows_; ++r)
-                    matrix_[std::make_pair(r, j)]  += s * matrix_[std::make_pair(r, c)];
+                    mat_copy.matrix_[std::make_pair(r, j)]  += s * mat_copy.matrix_[std::make_pair(r, c)];
             }
         }
         r_diag[c] = -nrm;
     }
 
+    // Calculate the orthogonal matrix
     for (ITYPE c = cols_ - 1; c >= 0; --c)  {
         Q.set_value(c, c, static_cast<VTYPE>(1.0));
 
         for (ITYPE cc = c; cc < cols_; ++cc)
-            if (matrix_[std::make_pair(c, c)]  != static_cast<VTYPE>(0.0))  {
+            if (mat_copy.matrix_[std::make_pair(c, c)]  != static_cast<VTYPE>(0.0))  {
                 VTYPE  s=0.0;
 
                 for (ITYPE r = c; r < rows_; ++r)
-                    s += matrix_[std::make_pair(r, c)]  * Q.get_value(r, cc);
+                    s += mat_copy.matrix_[std::make_pair(r, c)]  * Q.get_value(r, cc);
 
-                s /= -matrix_[std::make_pair(c, c)];
+                s /= -mat_copy.matrix_[std::make_pair(c, c)];
                 for (ITYPE r = c; r < rows_; ++r)
-                    Q.set_value(r, cc, (Q.get_value(r, cc) + s * matrix_[std::make_pair(r, c)]));
+                    Q.set_value(r, cc, (Q.get_value(r, cc) + s * mat_copy.matrix_[std::make_pair(r, c)]));
             }
     }
 
+    // Calculate the upper triangular matrix
     for (ITYPE c = 0; c < cols_; ++c)
         for (ITYPE r = 0; r < rows_; ++r)
             if (c < r)
-                R.set_value(c, r, matrix_[std::make_pair(c, r)]);
+                R.set_value(c, r, mat_copy.matrix_[std::make_pair(c, r)]);
             else if (c == r)
                 R.set_value(c, r, r_diag[c]);
 }
@@ -308,8 +302,9 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() const {
 
         ITYPE max_row = r;
         VTYPE max_value= static_cast<VTYPE>(-1.0);
-        ITYPE ppivot;
 
+        // Partial pivoting for Gaussian elimination
+        ITYPE ppivot;
         for (ITYPE rb = r; rb < rows_; ++rb)  {
             const VTYPE tmp = std::abs(mat_copy.matrix_[std::make_pair(rb, r)]);
 
@@ -320,7 +315,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() const {
         }
 
         assert(std::abs(mat_copy.matrix_[std::make_pair(max_row, r)]) >= std::numeric_limits<VTYPE>::min() &&
-                          "MUI Error [matrix_arithmetic.h]: Divide by zero assert for mat_copy.matrix_[std::make_pair(max_row, r)]");
+                          "MUI Error [matrix_arithmetic.h]: Divide by zero assert for mat_copy.matrix_[std::make_pair(max_row, r)]. Cannot perform matrix invert due to singular matrix.");
 
         if (max_row != r)  {
             for (ITYPE c = 0; c < cols_; ++c)
@@ -353,7 +348,6 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() const {
                 }
             }
     }
-
     return inverse_mat;
 }
 

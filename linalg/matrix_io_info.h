@@ -76,7 +76,7 @@ std::string trim(const std::string &s) {
 
 // Member function to print matrix elements to the console
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::print() {
+void sparse_matrix<ITYPE,VTYPE>::print() const {
     for (ITYPE i = 0; i < rows_; ++i) {
         std::cout << "      ";
        for (ITYPE j = 0; j < cols_; ++j){
@@ -202,7 +202,7 @@ ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
 
 // Member function to check whether the matrix contains all zero elements
 template<typename ITYPE, typename VTYPE>
-bool sparse_matrix<ITYPE,VTYPE>::empty() {
+bool sparse_matrix<ITYPE,VTYPE>::empty() const {
     return matrix_.empty();
 }
 

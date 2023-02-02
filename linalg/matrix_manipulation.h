@@ -167,6 +167,20 @@ void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE value) 
     }
 }
 
+// Overloaded assignment operator
+template <typename ITYPE, typename VTYPE>
+sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+    if (this != &exist_mat) { // check for self-assignment
+        // copy the values from the other matrix to this matrix
+        assert(matrix_.empty() &&
+                  "MUI Error [matrix_arithmetic.h]: assignment operator '=' only works for empty (all zero elements) matrix");
+        assert(((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) &&
+                  "MUI Error [matrix_arithmetic.h]: matrix size mismatch in assignment operator '='");
+        (*this).copy(exist_mat);
+    }
+    return *this;
+}
+
 } // linalg
 } // mui
 
