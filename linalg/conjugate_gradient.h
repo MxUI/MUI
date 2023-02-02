@@ -53,7 +53,7 @@
 
 #include <cmath>
 #include "matrix.h"
-#include "preconditioner_base.h"
+#include "preconditioner.h"
 
 namespace mui {
 namespace linalg {

@@ -39,18 +39,18 @@
 *****************************************************************************/
 
 /**
- * @file ssor_preconditioner.h
+ * @file preconditioner_ssor.h
  * @author W. Liu
  * @date 28 January 2023
  * @brief Class of symmetric successive over-relaxation preconditioner.
  */
 
-#ifndef MUI_SSOR_PRECONDITIONER_H_
-#define MUI_SSOR_PRECONDITIONER_H_
+#ifndef MUI_PRECONDITIONER_SSOR_H_
+#define MUI_PRECONDITIONER_SSOR_H_
 
 #include <math.h>
 #include <limits>
-#include "preconditioner_base.h"
+#include "preconditioner.h"
 
 namespace mui {
 namespace linalg {
@@ -68,7 +68,7 @@ public:
 
     sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
         assert((x.get_cols()==1) &&
-            "MUI Error [ssor_preconditioner.h]: apply only works for column vectors");
+            "MUI Error [preconditioner_ssor.h]: apply only works for column vectors");
         sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
         sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
 
@@ -105,4 +105,4 @@ public:
 } // linalg
 } // mui
 
-#endif /* MUI_SSOR_PRECONDITIONER_H_ */
+#endif /* MUI_PRECONDITIONER_SSOR_H_ */

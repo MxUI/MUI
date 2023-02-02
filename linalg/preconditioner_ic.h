@@ -39,18 +39,18 @@
 *****************************************************************************/
 
 /**
- * @file ic_preconditioner.h
+ * @file preconditioner_ic.h
  * @author W. Liu
  * @date 28 January 2023
  * @brief Class of Incomplete Cholesky preconditioner.
  */
 
-#ifndef MUI_IC_PRECONDITIONER_H_
-#define MUI_IC_PRECONDITIONER_H_
+#ifndef MUI_PRECONDITIONER_IC_H_
+#define MUI_PRECONDITIONER_IC_H_
 
 #include <math.h>
 #include <limits>
-#include "preconditioner_base.h"
+#include "preconditioner.h"
 
 namespace mui {
 namespace linalg {
@@ -78,7 +78,7 @@ class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
 						 sum += L_.get_value(i, k) * L_.get_value(j, k);
 						}
 						assert(std::abs(L_.get_value(j, j)) >= std::numeric_limits<VTYPE>::min() &&
-								"MUI Error [ic_preconditioner.h]: Divide by zero assert for L_.get_value(j, j)");
+								"MUI Error [preconditioner_ic.h]: Divide by zero assert for L_.get_value(j, j)");
 						L_.set_value(i, j, ((A.get_value(i, j) - sum) / L_.get_value(j, j)));
 					}
 				}
@@ -94,7 +94,7 @@ class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
         // Member function on preconditioner apply
 		sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
 			assert((x.get_cols()==1) &&
-				"MUI Error [ic_preconditioner.h]: apply only works for column vectors");
+				"MUI Error [preconditioner_ic.h]: apply only works for column vectors");
 			sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
 			sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
 
@@ -105,7 +105,7 @@ class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
 					sum += L_.get_value(i, j) * y.get_value(j,0);
 				}
 				assert(std::abs(L_.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
-						"MUI Error [ic_preconditioner.h]: Divide by zero assert for L_.get_value(i, i)");
+						"MUI Error [preconditioner_ic.h]: Divide by zero assert for L_.get_value(i, i)");
 				y.set_value(i, 0, ((x.get_value(i, 0) - sum) / L_.get_value(i, i)));
 			}
 
@@ -116,7 +116,7 @@ class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
 					sum += L_.get_value(j, i) * z.get_value(j,0);
 				}
 				assert(std::abs(L_.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
-				  "MUI Error [ic_preconditioner.h]: Divide by zero assert for L_.get_value(i, i)");
+				  "MUI Error [preconditioner_ic.h]: Divide by zero assert for L_.get_value(i, i)");
 				z.set_value(i, 0, ((y.get_value(i, 0) - sum) / L_.get_value(i, i)));
 			}
 			return z;
@@ -130,4 +130,4 @@ class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
 } // linalg
 } // mui
 
-#endif /* MUI_IC_PRECONDITIONER_H_ */
+#endif /* MUI_PRECONDITIONER_IC_H_ */

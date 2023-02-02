@@ -1,8 +1,8 @@
 #include <iostream>
 #include "../linalg/conjugate_gradient.h"
-#include "../linalg/ilu_preconditioner.h"
-#include "../linalg/ic_preconditioner.h"
-#include "../linalg/ssor_preconditioner.h"
+#include "../linalg/preconditioner_ilu.h"
+#include "../linalg/preconditioner_ic.h"
+#include "../linalg/preconditioner_ssor.h"
 
 int main() {
     std::cout << "===========================================================================" << std::endl;
@@ -94,7 +94,7 @@ int main() {
     Aas1.set_value(0, 0, 1.3864);
     Aas1.set_value(1, 0, 0.3719);
 
-    mui::linalg::ilu_preconditioner<int,double> M1(Css1);
+    mui::linalg::incomplete_lu_preconditioner<int,double> M1(Css1);
     mui::linalg::conjugate_gradient<int,double> cg1(Css1, Aas1, cg_solve_tol1, cg_max_iter1, &M1);
     cgReturn1 = cg1.solve();
     H_1 = cg1.getSolution();
