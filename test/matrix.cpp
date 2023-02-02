@@ -92,7 +92,7 @@ int main()
     e.print();
 
     e.set_zero();
-    e = 8*a;
+    e = 8 * a;
     std::cout << "Scalar multiplication (8 * A): " << std::endl;
     e.print();
 
@@ -127,6 +127,16 @@ int main()
 
     std::cout << "Matrix File I/O Test in CSV format F = A: " << std::endl;
     f.print();
+
+    mui::linalg::sparse_matrix<int,double> g;
+    g = a.inverse();
+    std::cout << "Inverse of matrix A^(-1): " << std::endl;
+    g.print();
+
+    mui::linalg::sparse_matrix<int,double> h;
+    h = g * a;
+    std::cout << "Proof inverse of matrix by (A * A^(-1)): " << std::endl;
+    h.print();
 
     return 0;
    }

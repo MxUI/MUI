@@ -49,6 +49,7 @@
 #define MUI_MATRIX_ARITHMETIC_H_
 
 #include <cassert>
+#include <math.h>
 
 namespace mui {
 namespace linalg {
@@ -175,6 +176,75 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() {
     for (auto element : matrix_)
         res.set_value(element.first.second, element.first.first, element.second);
     return res;
+}
+
+// Member function to get the inverse of matrix by using Gaussian elimination
+template <typename ITYPE, typename VTYPE>
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() {
+    if (rows_ != cols_) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Matrix must be square to find its inverse" << std::endl;
+        std::abort();
+    }
+
+    ITYPE n = rows_;
+    std::vector<VTYPE> vec_temp(n);
+    sparse_matrix<ITYPE,VTYPE> inverse_mat(n, n);
+    for (ITYPE i = 0; i < n; ++i) {
+        inverse_mat.matrix_[std::make_pair(i,i)] = static_cast<VTYPE>(1.0);
+    }
+
+    for (ITYPE i = 0; i < n; ++i) {
+        VTYPE max_val = 0.0;
+        ITYPE max_index = i;
+        for (ITYPE j = i; j < n; ++j) {
+            if (std::fabs(matrix_[std::make_pair(j,i)]) > max_val) {
+                max_val = std::fabs(matrix_[std::make_pair(j,i)]);
+                max_index = j;
+            }
+        }
+
+        if (max_index != i) {
+            for (ITYPE j = 0; j < n; ++j) {
+                std::swap(matrix_[std::make_pair(i,j)], matrix_[std::make_pair(max_index,j)]);
+                std::swap(inverse_mat.matrix_[std::make_pair(i,j)], inverse_mat.matrix_[std::make_pair(max_index,j)]);
+            }
+        }
+
+        for (ITYPE j = 0; j < n; ++j) {
+            assert(std::abs(matrix_[std::make_pair(i,i)]) >= std::numeric_limits<VTYPE>::min() &&
+                    "MUI Error [matrix_arithmetic.h]: Divide by zero assert for matrix_[std::make_pair(i,i)]");
+            vec_temp[j] = matrix_[std::make_pair(i,j)] / matrix_[std::make_pair(i,i)];
+        }
+
+        for (ITYPE j = i+ 1; j < n; ++j) {
+            assert(std::abs(matrix_[std::make_pair(i,i)]) >= std::numeric_limits<VTYPE>::min() &&
+                   "MUI Error [matrix_arithmetic.h]: Divide by zero assert for matrix_[std::make_pair(i,i)]");
+            VTYPE factor = matrix_[std::make_pair(j,i)] / matrix_[std::make_pair(i,i)];
+            for (ITYPE k = 0; k < n; ++k) {
+                matrix_[std::make_pair(j,k)] -= factor * vec_temp[k];
+                inverse_mat.matrix_[std::make_pair(j,k)] -= factor * vec_temp[k];
+            }
+        }
+    }
+
+    for (ITYPE i = n-1; i >= 0; --i) {
+        for (ITYPE j = i-1; j >= 0; --j) {
+            assert(std::abs(matrix_[std::make_pair(i,i)]) >= std::numeric_limits<VTYPE>::min() &&
+                   "MUI Error [matrix_arithmetic.h]: Divide by zero assert for matrix_[std::make_pair(i,i)]");
+            VTYPE factor = matrix_[std::make_pair(j,i)] / matrix_[std::make_pair(i,i)];
+            for (int k = 0; k < n; k++) {
+                inverse_mat.matrix_[std::make_pair(j,k)] -= factor * inverse_mat.matrix_[std::make_pair(i,k)];
+            }
+        }
+    }
+
+    for (ITYPE i = 0; i < n; ++i) {
+        for (ITYPE j = 0; j < n; ++j) {
+            inverse_mat.matrix_[std::make_pair(i,j)] /= matrix_[std::make_pair(i,i)];
+        }
+    }
+
+    return inverse_mat;
 }
 
 } // linalg
