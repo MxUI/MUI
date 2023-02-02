@@ -154,7 +154,7 @@ int main()
     i.print();
 
     mui::linalg::sparse_matrix<int,double> j = h * i;
-    std::cout << "Proof LU decomposition by L * U matrix: " << std::endl;
+    std::cout << "Proof LU decomposition by L * U (should equals to G matrix): " << std::endl;
     j.print();
 
     mui::linalg::sparse_matrix<int,double> k(3,3);
@@ -180,7 +180,7 @@ int main()
     m.print();
 
     mui::linalg::sparse_matrix<int,double> n = l * m;
-    std::cout << "Proof QR decomposition by Q * R matrix: " << std::endl;
+    std::cout << "Proof QR decomposition by Q * R (should equals to K matrix): " << std::endl;
     n.print();
 
     mui::linalg::sparse_matrix<int,double> o(2,2);
@@ -197,7 +197,7 @@ int main()
     p.print();
 
     mui::linalg::sparse_matrix<int,double> q = o * p;
-    std::cout << "Proof inverse of matrix by (O * O^(-1)): " << std::endl;
+    std::cout << "Proof inverse of matrix by O * O^(-1) (should be an identity matrix): " << std::endl;
     q.print();
 
     return 0;
