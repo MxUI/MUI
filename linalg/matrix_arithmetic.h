@@ -221,6 +221,78 @@ void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L,
     }
 }
 
+// Member function to perform QR decomposition
+template <typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::qr_decomposition(sparse_matrix<ITYPE,VTYPE> &Q, sparse_matrix<ITYPE,VTYPE> &R) {
+    if ((Q.get_rows() != 0) || (R.get_rows() != 0) || (Q.get_cols() != 0) || (R.get_cols() != 0)) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Q & R Matrices must be null in QR decomposition" << std::endl;
+        std::abort();
+    }
+    assert((rows_ >= cols_) &&
+          "MUI Error [matrix_arithmetic.h]: number of rows of matrix should larger or equals to number of columns in QR decomposition");
+
+    Q.resize_null(rows_, cols_);
+    R.resize_null(rows_, cols_);
+
+    std::vector<VTYPE> r_diag (cols_);
+
+    for (ITYPE c = 0; c <cols_; ++c)  {
+        VTYPE  nrm (0.0);
+
+       // Compute 2-norm of k-th column without under/overflow.
+        for (ITYPE r = c; r < rows_; ++r)
+            nrm = std::sqrt((nrm * nrm) + (matrix_[std::make_pair(r, c)] * matrix_[std::make_pair(r, c)]));
+
+        if (nrm != static_cast<VTYPE>(0.0))  {
+
+           // Form k-th Householder vector.
+            if (matrix_[std::make_pair(c, c)] < static_cast<VTYPE>(0.0))
+                nrm = -nrm;
+
+            for (ITYPE r = c; r < rows_; ++r)
+                matrix_[std::make_pair(r, c)] /= nrm;
+
+            matrix_[std::make_pair(c, c)]  += static_cast<VTYPE>(1.0);
+
+           // Apply transformation to remaining columns.
+            for (ITYPE j = c + 1; j < cols_; ++j)  {
+                VTYPE  s = 0.0;
+
+                for (ITYPE r = c; r < rows_; ++r)
+                    s += matrix_[std::make_pair(r, c)]  * matrix_[std::make_pair(r, j)];
+
+                s /= -matrix_[std::make_pair(c, c)];
+                for (ITYPE r = c; r < rows_; ++r)
+                    matrix_[std::make_pair(r, j)]  += s * matrix_[std::make_pair(r, c)];
+            }
+        }
+        r_diag[c] = -nrm;
+    }
+
+    for (ITYPE c = cols_ - 1; c >= 0; --c)  {
+        Q.set_value(c, c, static_cast<VTYPE>(1.0));
+
+        for (ITYPE cc = c; cc < cols_; ++cc)
+            if (matrix_[std::make_pair(c, c)]  != static_cast<VTYPE>(0.0))  {
+                VTYPE  s=0.0;
+
+                for (ITYPE r = c; r < rows_; ++r)
+                    s += matrix_[std::make_pair(r, c)]  * Q.get_value(r, cc);
+
+                s /= -matrix_[std::make_pair(c, c)];
+                for (ITYPE r = c; r < rows_; ++r)
+                    Q.set_value(r, cc, (Q.get_value(r, cc) + s * matrix_[std::make_pair(r, c)]));
+            }
+    }
+
+    for (ITYPE c = 0; c < cols_; ++c)
+        for (ITYPE r = 0; r < rows_; ++r)
+            if (c < r)
+                R.set_value(c, r, matrix_[std::make_pair(c, r)]);
+            else if (c == r)
+                R.set_value(c, r, r_diag[c]);
+}
+
 // Member function to get the inverse of matrix by using Gaussian elimination
 template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() {
@@ -228,62 +300,79 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() {
         std::cerr << "MUI Error [matrix_arithmetic.h]: Matrix must be square to find its inverse" << std::endl;
         std::abort();
     }
-
+    std::cout<< " ********* matrix: " << rows_ << " " << cols_ << std::endl;
     ITYPE n = rows_;
-    std::vector<VTYPE> vec_temp(n);
     sparse_matrix<ITYPE,VTYPE> inverse_mat(n, n);
-    for (ITYPE i = 0; i < n; ++i) {
-        inverse_mat.matrix_[std::make_pair(i,i)] = static_cast<VTYPE>(1.0);
+    sparse_matrix<ITYPE,VTYPE> augmented_mat(n, n);
+    std::cout<< " ********* matrix: " << n << std::endl;
+    // Create a map to store the augmented matrix
+    std::map<std::pair<ITYPE, ITYPE>, VTYPE> augmented_matrix;
+    for (const auto& element : matrix_) {
+      if (element.first.first == element.first.second) {
+        augmented_mat.matrix_[std::make_pair(element.first.first,element.first.second)] = element.second;
+
+      } else {
+        augmented_mat.matrix_[std::make_pair(element.first.first,element.first.second)] = static_cast<VTYPE>(0.0);
+      }
+      augmented_mat.matrix_[std::make_pair(element.first.first,(n+element.first.second))] =
+          (element.first.first == element.first.second) ? static_cast<VTYPE>(1.0) : static_cast<VTYPE>(0.0);
     }
 
+    std::cout<< " ********* augmented_matrix: " << std::endl;
+    for (const auto element : augmented_mat.matrix_) {
+        std::cout<< "       " << element.first.first << " " << element.first.second << " " << element.second << std::endl;
+    }
+    std::cout<< " ********* augmented_matrix finished " << std::endl;
+
+    // Gaussian elimination
     for (ITYPE i = 0; i < n; ++i) {
-        VTYPE max_val = 0.0;
-        ITYPE max_index = i;
-        for (ITYPE j = i; j < n; ++j) {
-            if (std::fabs(matrix_[std::make_pair(j,i)]) > max_val) {
-                max_val = std::fabs(matrix_[std::make_pair(j,i)]);
-                max_index = j;
-            }
+        // Find the maximum value in column i
+        ITYPE max_row = i;
+        VTYPE max_val = std::fabs(augmented_mat.matrix_[std::make_pair(i, i)]);
+      for (ITYPE j = i+1; j < n; ++j) {
+          VTYPE val = std::fabs(augmented_mat.matrix_[std::make_pair(j, i)]);
+        if (val > max_val) {
+          max_val = val;
+          max_row = j;
         }
+      }
 
-        if (max_index != i) {
-            for (ITYPE j = 0; j < n; ++j) {
-                std::swap(matrix_[std::make_pair(i,j)], matrix_[std::make_pair(max_index,j)]);
-                std::swap(inverse_mat.matrix_[std::make_pair(i,j)], inverse_mat.matrix_[std::make_pair(max_index,j)]);
-            }
+      // Swap the current row with the row containing the maximum value
+      if (max_row != i) {
+        for (ITYPE j = i; j <= n; ++j) {
+          std::swap(augmented_mat.matrix_[std::make_pair(i, j)], augmented_mat.matrix_[std::make_pair(max_row, j)]);
         }
+      }
 
+      // Zero out the entries below the pivot
+      VTYPE pivot = augmented_mat.matrix_[std::make_pair(i, i)];
+      for (ITYPE j = i+1; j < n; ++j) {
+          assert(std::abs(pivot) >= std::numeric_limits<VTYPE>::min() &&
+                  "MUI Error [matrix_arithmetic.h]: Divide by zero assert for pivot. Perhaps matrix is singular and inverse of the matrix cannot be computed");
+          VTYPE ratio = augmented_mat.matrix_[std::make_pair(j, i)] / pivot;
+        for (ITYPE k = i; k <= n; ++k) {
+          augmented_mat.matrix_[std::make_pair(j, k)] -= ratio * augmented_mat.matrix_[std::make_pair(i, k)];
+        }
+      }
+    }
+
+    // Back substitution
+    for (ITYPE i = n - 1; i >= 0; --i) {
+        VTYPE pivot = augmented_mat.matrix_[std::make_pair(i, i)];
+      for (ITYPE j = i - 1; j >= 0; --j) {
+          assert(std::abs(pivot) >= std::numeric_limits<VTYPE>::min() &&
+                  "MUI Error [matrix_arithmetic.h]: Divide by zero assert for pivot. Perhaps matrix is singular and inverse of the matrix cannot be computed");
+          VTYPE ratio = augmented_mat.matrix_[std::make_pair(j, i)] / pivot;
+        for (ITYPE k = i; k <= n; ++k) {
+          augmented_mat.matrix_[std::make_pair(j, k)] -= ratio * augmented_mat.matrix_[std::make_pair(i, k)];
+        }
+      }
+    }
+
+    // Store the inverse in the sparse matrix
+    for (ITYPE i = 0; i < n; ++i) {
         for (ITYPE j = 0; j < n; ++j) {
-            assert(std::abs(matrix_[std::make_pair(i,i)]) >= std::numeric_limits<VTYPE>::min() &&
-                    "MUI Error [matrix_arithmetic.h]: Divide by zero assert for matrix_[std::make_pair(i,i)]");
-            vec_temp[j] = matrix_[std::make_pair(i,j)] / matrix_[std::make_pair(i,i)];
-        }
-
-        for (ITYPE j = i+ 1; j < n; ++j) {
-            assert(std::abs(matrix_[std::make_pair(i,i)]) >= std::numeric_limits<VTYPE>::min() &&
-                   "MUI Error [matrix_arithmetic.h]: Divide by zero assert for matrix_[std::make_pair(i,i)]");
-            VTYPE factor = matrix_[std::make_pair(j,i)] / matrix_[std::make_pair(i,i)];
-            for (ITYPE k = 0; k < n; ++k) {
-                matrix_[std::make_pair(j,k)] -= factor * vec_temp[k];
-                inverse_mat.matrix_[std::make_pair(j,k)] -= factor * vec_temp[k];
-            }
-        }
-    }
-
-    for (ITYPE i = n-1; i >= 0; --i) {
-        for (ITYPE j = i-1; j >= 0; --j) {
-            assert(std::abs(matrix_[std::make_pair(i,i)]) >= std::numeric_limits<VTYPE>::min() &&
-                   "MUI Error [matrix_arithmetic.h]: Divide by zero assert for matrix_[std::make_pair(i,i)]");
-            VTYPE factor = matrix_[std::make_pair(j,i)] / matrix_[std::make_pair(i,i)];
-            for (int k = 0; k < n; k++) {
-                inverse_mat.matrix_[std::make_pair(j,k)] -= factor * inverse_mat.matrix_[std::make_pair(i,k)];
-            }
-        }
-    }
-
-    for (ITYPE i = 0; i < n; ++i) {
-        for (ITYPE j = 0; j < n; ++j) {
-            inverse_mat.matrix_[std::make_pair(i,j)] /= matrix_[std::make_pair(i,i)];
+            inverse_mat.set_value(i, j, augmented_mat.matrix_[std::make_pair(i, j)]);
         }
     }
 

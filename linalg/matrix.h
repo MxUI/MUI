@@ -139,6 +139,8 @@ class sparse_matrix {
         sparse_matrix<ITYPE,VTYPE> transpose();
         // Member function to perform LU decomposition
         void lu_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &);
+        // Member function to perform QR decomposition
+        void qr_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &);
         // Member function to get the inverse of matrix
         sparse_matrix<ITYPE,VTYPE> inverse();
 
