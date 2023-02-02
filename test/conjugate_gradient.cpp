@@ -1,8 +1,5 @@
 #include <iostream>
 #include "../linalg/conjugate_gradient.h"
-#include "../linalg/preconditioner_ilu.h"
-#include "../linalg/preconditioner_ic.h"
-#include "../linalg/preconditioner_ssor.h"
 
 int main() {
     std::cout << "===========================================================================" << std::endl;

@@ -42,7 +42,7 @@
  * @file preconditioner.h
  * @author W. Liu
  * @date 28 January 2023
- * @brief Base class of preconditioner.
+ * @brief Preconditioner classes.
  */
 
 #ifndef MUI_PRECONDITIONER_H_
@@ -59,7 +59,68 @@ class preconditioner {
         virtual sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE> &) = 0;
 };
 
+// Class of Incomplete LU preconditioner
+template<typename ITYPE, typename VTYPE>
+class incomplete_lu_preconditioner : public preconditioner<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        incomplete_lu_preconditioner(const sparse_matrix<ITYPE,VTYPE>&);
+        // Destructor
+        ~incomplete_lu_preconditioner();
+        // Member function on preconditioner apply
+        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
+
+    private:
+        // Lower triangular matrix for Incomplete LU preconditioner
+        sparse_matrix<ITYPE,VTYPE> L_;
+        // Upper triangular matrix for Incomplete LU preconditioner
+        sparse_matrix<ITYPE,VTYPE> U_;
+
+};
+
+// Class of Incomplete Cholesky preconditioner
+template<typename ITYPE, typename VTYPE>
+class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        incomplete_cholesky_preconditioner(const sparse_matrix<ITYPE,VTYPE>&);
+        // Destructor
+        ~incomplete_cholesky_preconditioner();
+        // Member function on preconditioner apply
+        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
+
+    private:
+        // Lower triangular matrix for Incomplete Cholesky preconditioner
+        sparse_matrix<ITYPE,VTYPE> L_;
+};
+
+// Class of Symmetric Successive Over-relaxation preconditioner
+template<typename ITYPE, typename VTYPE>
+class symmetric_successive_over_relaxation_preconditioner : public preconditioner<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        symmetric_successive_over_relaxation_preconditioner(const sparse_matrix<ITYPE,VTYPE>&, VTYPE = 1.0);
+        // Destructor
+        ~symmetric_successive_over_relaxation_preconditioner();
+        // Member function on preconditioner apply
+        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
+
+    private:
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The relaxation parameter
+        VTYPE omega_;
+};
+
 } // linalg
 } // mui
+
+// Include implementations
+#include "preconditioner_ilu.h"
+#include "preconditioner_ic.h"
+#include "preconditioner_ssor.h"
 
 #endif /* MUI_PRECONDITIONER_H_ */

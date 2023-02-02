@@ -52,11 +52,7 @@
 #include <iterator>
 #include <ctime>
 #include <mpi.h>
-#include "../linalg/matrix.h"
 #include "../linalg/conjugate_gradient.h"
-#include "../linalg/ilu_preconditioner.h"
-#include "../linalg/ic_preconditioner.h"
-#include "../linalg/ssor_preconditioner.h"
 
 namespace mui {
 
