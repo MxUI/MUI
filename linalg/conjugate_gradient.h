@@ -79,17 +79,17 @@ class conjugate_gradient {
 
         // Destructor
         ~conjugate_gradient() {
-            // deallocate the memory for matrices
+            // Deallocate the memory for matrices
             A_.set_zero();
             x_.set_zero();
             b_.set_zero();
             r_.set_zero();
             z_.set_zero();
             p_.set_zero();
-            // set properties to null
+            // Set properties to null
             cg_solve_tol_ = 0;
             cg_max_iter_ = 0;
-            // deallocate the memory for preconditioner pointer
+            // Deallocate the memory for preconditioner pointer
             if(M_!=nullptr) {
                 M_ = nullptr;
                 delete[] M_;

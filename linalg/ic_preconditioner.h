@@ -42,7 +42,7 @@
  * @file ic_preconditioner.h
  * @author W. Liu
  * @date 28 January 2023
- * @brief Class of ilu preconditioner.
+ * @brief Class of Incomplete Cholesky preconditioner.
  */
 
 #ifndef MUI_IC_PRECONDITIONER_H_
@@ -57,64 +57,74 @@ namespace linalg {
 
 template<typename ITYPE, typename VTYPE>
 class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
-private:
-    sparse_matrix<ITYPE,VTYPE> L;
 
-public:
-    incomplete_cholesky_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
-        // Initialize L matrices
-        L.resize_null(A.get_rows(), A.get_cols());
+	public:
+		// Constructor
+		incomplete_cholesky_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
+			// Initialise the lower triangular matrix
+			L_.resize_null(A.get_rows(), A.get_cols());
+			// Construct the lower triangular matrix
+			for (ITYPE i = 0; i < A.get_rows(); ++i) {
+				for (ITYPE j = 0; j <= i; ++j) {
+					if (i == j) {
+						VTYPE sum = 0;
+						for (ITYPE k = 0; k < j; ++k) {
+						 sum += std::pow(L_.get_value(j, k), 2);
+						}
+						L_.set_value(j, j, (std::sqrt(A.get_value(j, j) - sum)));
+					} else {
+						VTYPE sum = 0;
+						for (ITYPE k = 0; k < j; ++k) {
+						 sum += L_.get_value(i, k) * L_.get_value(j, k);
+						}
+						assert(std::abs(L_.get_value(j, j)) >= std::numeric_limits<VTYPE>::min() &&
+								"MUI Error [ic_preconditioner.h]: Divide by zero assert for L_.get_value(j, j)");
+						L_.set_value(i, j, ((A.get_value(i, j) - sum) / L_.get_value(j, j)));
+					}
+				}
+			}
+		 }
 
-         for (ITYPE i = 0; i < A.get_rows(); ++i) {
-             for (ITYPE j = 0; j <= i; ++j) {
-                 if (i == j) {
-                     VTYPE sum = 0;
-                     for (ITYPE k = 0; k < j; ++k) {
-                         sum += std::pow(L.get_value(j, k), 2);
-                     }
-                     L.set_value(j, j, (std::sqrt(A.get_value(j, j) - sum)));
-                 } else {
-                     VTYPE sum = 0;
-                     for (ITYPE k = 0; k < j; ++k) {
-                         sum += L.get_value(i, k) * L.get_value(j, k);
-                     }
-                     assert(std::abs(L.get_value(j, j)) >= std::numeric_limits<VTYPE>::min() &&
-                       "MUI Error [ic_preconditioner.h]: Divide by zero assert for L.get_value(j, j)");
-                     L.set_value(i, j, ((A.get_value(i, j) - sum) / L.get_value(j, j)));
-                 }
-             }
-         }
-     }
-
-    sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
-        assert((x.get_cols()==1) &&
-            "MUI Error [ic_preconditioner.h]: apply only works for column vectors");
-        sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
-        sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
-
-        // Forward substitution
-        for (ITYPE i = 0; i < x.get_rows(); ++i) {
-            VTYPE sum = 0;
-            for (ITYPE j = 0; j < i; ++j) {
-                sum += L.get_value(i, j) * y.get_value(j,0);
-            }
-            assert(std::abs(L.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
-                    "MUI Error [ic_preconditioner.h]: Divide by zero assert for L.get_value(i, i)");
-            y.set_value(i, 0, ((x.get_value(i, 0) - sum) / L.get_value(i, i)));
+        // Destructor
+        ~incomplete_cholesky_preconditioner() {
+            // Deallocate the memory for the lower triangular matrix
+            L_.set_zero();
         }
 
-        // Backward substitution
-        for (ITYPE i = x.get_rows() - 1; i >= 0; i--) {
-            VTYPE sum = 0;
-            for (ITYPE j = i + 1; j < x.get_rows(); ++j) {
-                sum += L.get_value(j, i) * z.get_value(j,0);
-            }
-            assert(std::abs(L.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
-              "MUI Error [ic_preconditioner.h]: Divide by zero assert for L.get_value(i, i)");
-            z.set_value(i, 0, ((y.get_value(i, 0) - sum) / L.get_value(i, i)));
-        }
-        return z;
-    }
+        // Member function on preconditioner apply
+		sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>& x) {
+			assert((x.get_cols()==1) &&
+				"MUI Error [ic_preconditioner.h]: apply only works for column vectors");
+			sparse_matrix<ITYPE,VTYPE> y(x.get_rows(), x.get_cols());
+			sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
+
+			// Forward substitution
+			for (ITYPE i = 0; i < x.get_rows(); ++i) {
+				VTYPE sum = 0;
+				for (ITYPE j = 0; j < i; ++j) {
+					sum += L_.get_value(i, j) * y.get_value(j,0);
+				}
+				assert(std::abs(L_.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
+						"MUI Error [ic_preconditioner.h]: Divide by zero assert for L_.get_value(i, i)");
+				y.set_value(i, 0, ((x.get_value(i, 0) - sum) / L_.get_value(i, i)));
+			}
+
+			// Backward substitution
+			for (ITYPE i = x.get_rows() - 1; i >= 0; --i) {
+				VTYPE sum = 0;
+				for (ITYPE j = i + 1; j < x.get_rows(); ++j) {
+					sum += L_.get_value(j, i) * z.get_value(j,0);
+				}
+				assert(std::abs(L_.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
+				  "MUI Error [ic_preconditioner.h]: Divide by zero assert for L_.get_value(i, i)");
+				z.set_value(i, 0, ((y.get_value(i, 0) - sum) / L_.get_value(i, i)));
+			}
+			return z;
+		}
+
+    private:
+        // Lower triangular matrix for Incomplete Cholesky preconditioner
+	    sparse_matrix<ITYPE,VTYPE> L_;
 };
 
 } // linalg
