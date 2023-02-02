@@ -1315,7 +1315,7 @@ private:
             linalg::conjugate_gradient<INT,REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_);
             return cg;
         } else if (precond_ == 1) {
-            linalg::ilu_preconditioner<INT,REAL> M(*Css);
+            linalg::incomplete_lu_preconditioner<INT,REAL> M(*Css);
             linalg::conjugate_gradient<INT,REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
             return cg;
         } else if (precond_ == 2) {
