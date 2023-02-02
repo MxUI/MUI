@@ -128,15 +128,30 @@ int main()
     std::cout << "Matrix File I/O Test in CSV format F = A: " << std::endl;
     f.print();
 
-    mui::linalg::sparse_matrix<int,double> g;
-    g = a.inverse();
-    std::cout << "Inverse of matrix A^(-1): " << std::endl;
+    mui::linalg::sparse_matrix<int,double> g(2,2);
+    g.set_value(0, 0, 4);
+    g.set_value(0, 1, 3);
+    g.set_value(1, 0, 6);
+    g.set_value(1, 1, 3);
+
+    std::cout << "Matrix G: " << std::endl;
     g.print();
 
     mui::linalg::sparse_matrix<int,double> h;
-    h = g * a;
-    std::cout << "Proof inverse of matrix by (A * A^(-1)): " << std::endl;
+    mui::linalg::sparse_matrix<int,double> i;
+    g.lu_decomposition(h,i);
+    std::cout << "L matrix of LU decomposition of matrix G: " << std::endl;
     h.print();
+    std::cout << "U matrix of LU decomposition of matrix G: " << std::endl;
+    i.print();
+
+    mui::linalg::sparse_matrix<int,double> j = h * i;
+    std::cout << "Proof LU decomposition by L * U matrix: " << std::endl;
+    j.print();
+
+//    mui::linalg::sparse_matrix<int,double> I = g * h;
+//    std::cout << "Proof inverse of matrix by (G * G^(-1)): " << std::endl;
+//    I.print();
 
     return 0;
    }

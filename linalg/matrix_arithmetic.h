@@ -178,6 +178,49 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() {
     return res;
 }
 
+// Member function to perform LU decomposition
+template <typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L, sparse_matrix<ITYPE,VTYPE> &U) {
+    if ((L.get_rows() != 0) || (U.get_rows() != 0) || (L.get_cols() != 0) || (U.get_cols() != 0)) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: L & U Matrices must be null in LU decomposition" << std::endl;
+        std::abort();
+    }
+    if (rows_ != cols_) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Only square matrix can perform LU decomposition" << std::endl;
+        std::abort();
+    }
+
+    L.resize_null(rows_, cols_);
+    U.resize_null(rows_, cols_);
+
+    ITYPE n = rows_;
+    for (ITYPE i = 0; i < rows_; ++i) {
+        // calculate the upper triangular matrix
+        for (ITYPE k = i; k < cols_; ++k) {
+            VTYPE sum = 0.0;
+            for (ITYPE j = 0; j < i; ++j) {
+                sum += L.get_value(i, j) * U.get_value(j, k);
+            }
+            U.set_value(i, k, matrix_[std::make_pair(i, k)] - sum);
+        }
+
+        // calculate the lower triangular matrix
+        for (ITYPE k = i; k < rows_; k++) {
+            if (i == k) {
+                L.set_value(i, i, static_cast<VTYPE>(1.0));
+            } else {
+                VTYPE sum = 0.0;
+                for (ITYPE j = 0; j < i; ++j) {
+                    sum += L.get_value(k, j) * U.get_value(j, i);
+                }
+                assert(std::abs(U.get_value(i, i)) >= std::numeric_limits<VTYPE>::min() &&
+                                  "MUI Error [matrix_arithmetic.h]: Divide by zero assert for U.get_value(i, i)");
+                L.set_value(k, i, (matrix_[std::make_pair(k, i)] - sum) / U.get_value(i, i));
+            }
+        }
+    }
+}
+
 // Member function to get the inverse of matrix by using Gaussian elimination
 template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() {
