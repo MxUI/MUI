@@ -295,85 +295,63 @@ void sparse_matrix<ITYPE,VTYPE>::qr_decomposition(sparse_matrix<ITYPE,VTYPE> &Q,
 
 // Member function to get the inverse of matrix by using Gaussian elimination
 template <typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::inverse() const {
     if (rows_ != cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: Matrix must be square to find its inverse" << std::endl;
         std::abort();
     }
-    std::cout<< " ********* matrix: " << rows_ << " " << cols_ << std::endl;
-    ITYPE n = rows_;
-    sparse_matrix<ITYPE,VTYPE> inverse_mat(n, n);
-    sparse_matrix<ITYPE,VTYPE> augmented_mat(n, n);
-    std::cout<< " ********* matrix: " << n << std::endl;
-    // Create a map to store the augmented matrix
-    std::map<std::pair<ITYPE, ITYPE>, VTYPE> augmented_matrix;
-    for (const auto& element : matrix_) {
-      if (element.first.first == element.first.second) {
-        augmented_mat.matrix_[std::make_pair(element.first.first,element.first.second)] = element.second;
 
-      } else {
-        augmented_mat.matrix_[std::make_pair(element.first.first,element.first.second)] = static_cast<VTYPE>(0.0);
-      }
-      augmented_mat.matrix_[std::make_pair(element.first.first,(n+element.first.second))] =
-          (element.first.first == element.first.second) ? static_cast<VTYPE>(1.0) : static_cast<VTYPE>(0.0);
-    }
+    sparse_matrix<ITYPE,VTYPE> mat_copy (*this);
+    sparse_matrix<ITYPE,VTYPE> inverse_mat (rows_,"identity");
 
-    std::cout<< " ********* augmented_matrix: " << std::endl;
-    for (const auto element : augmented_mat.matrix_) {
-        std::cout<< "       " << element.first.first << " " << element.first.second << " " << element.second << std::endl;
-    }
-    std::cout<< " ********* augmented_matrix finished " << std::endl;
+    for (ITYPE r = 0; r < rows_; ++r)  {
 
-    // Gaussian elimination
-    for (ITYPE i = 0; i < n; ++i) {
-        // Find the maximum value in column i
-        ITYPE max_row = i;
-        VTYPE max_val = std::fabs(augmented_mat.matrix_[std::make_pair(i, i)]);
-      for (ITYPE j = i+1; j < n; ++j) {
-          VTYPE val = std::fabs(augmented_mat.matrix_[std::make_pair(j, i)]);
-        if (val > max_val) {
-          max_val = val;
-          max_row = j;
+        ITYPE max_row = r;
+        VTYPE max_value= static_cast<VTYPE>(-1.0);
+        ITYPE ppivot;
+
+        for (ITYPE rb = r; rb < rows_; ++rb)  {
+            const VTYPE tmp = std::abs(mat_copy.matrix_[std::make_pair(rb, r)]);
+
+            if ((tmp > max_value) && (std::abs(tmp) >= std::numeric_limits<VTYPE>::min()))  {
+                max_value = tmp;
+                max_row = rb;
+            }
         }
-      }
 
-      // Swap the current row with the row containing the maximum value
-      if (max_row != i) {
-        for (ITYPE j = i; j <= n; ++j) {
-          std::swap(augmented_mat.matrix_[std::make_pair(i, j)], augmented_mat.matrix_[std::make_pair(max_row, j)]);
-        }
-      }
+        assert(std::abs(mat_copy.matrix_[std::make_pair(max_row, r)]) >= std::numeric_limits<VTYPE>::min() &&
+                          "MUI Error [matrix_arithmetic.h]: Divide by zero assert for mat_copy.matrix_[std::make_pair(max_row, r)]");
 
-      // Zero out the entries below the pivot
-      VTYPE pivot = augmented_mat.matrix_[std::make_pair(i, i)];
-      for (ITYPE j = i+1; j < n; ++j) {
-          assert(std::abs(pivot) >= std::numeric_limits<VTYPE>::min() &&
-                  "MUI Error [matrix_arithmetic.h]: Divide by zero assert for pivot. Perhaps matrix is singular and inverse of the matrix cannot be computed");
-          VTYPE ratio = augmented_mat.matrix_[std::make_pair(j, i)] / pivot;
-        for (ITYPE k = i; k <= n; ++k) {
-          augmented_mat.matrix_[std::make_pair(j, k)] -= ratio * augmented_mat.matrix_[std::make_pair(i, k)];
+        if (max_row != r)  {
+            for (ITYPE c = 0; c < cols_; ++c)
+                std::swap (mat_copy.matrix_[std::make_pair(r, c)] , mat_copy.matrix_[std::make_pair(max_row, c)]);
+            ppivot = max_row;
+        } else {
+            ppivot = 0;
         }
-      }
-    }
 
-    // Back substitution
-    for (ITYPE i = n - 1; i >= 0; --i) {
-        VTYPE pivot = augmented_mat.matrix_[std::make_pair(i, i)];
-      for (ITYPE j = i - 1; j >= 0; --j) {
-          assert(std::abs(pivot) >= std::numeric_limits<VTYPE>::min() &&
-                  "MUI Error [matrix_arithmetic.h]: Divide by zero assert for pivot. Perhaps matrix is singular and inverse of the matrix cannot be computed");
-          VTYPE ratio = augmented_mat.matrix_[std::make_pair(j, i)] / pivot;
-        for (ITYPE k = i; k <= n; ++k) {
-          augmented_mat.matrix_[std::make_pair(j, k)] -= ratio * augmented_mat.matrix_[std::make_pair(i, k)];
-        }
-      }
-    }
+        const ITYPE indx = ppivot;
 
-    // Store the inverse in the sparse matrix
-    for (ITYPE i = 0; i < n; ++i) {
-        for (ITYPE j = 0; j < n; ++j) {
-            inverse_mat.set_value(i, j, augmented_mat.matrix_[std::make_pair(i, j)]);
+        if (indx != 0)
+            for (ITYPE c = 0; c < cols_; ++c)
+                std::swap (inverse_mat.matrix_[std::make_pair(r, c)] , inverse_mat.matrix_[std::make_pair(indx, c)]);
+
+        const VTYPE diag = mat_copy.matrix_[std::make_pair(r, r)];
+
+        for (ITYPE c = 0; c < cols_; ++c)  {
+            mat_copy.matrix_[std::make_pair(r, c)]  /= diag;
+            inverse_mat.matrix_[std::make_pair(r, c)] /= diag;
         }
+
+        for (ITYPE rr = 0; rr < rows_; ++rr)
+            if (rr != r)  {
+                const VTYPE off_diag = mat_copy.matrix_[std::make_pair(rr, r)];
+
+                for (ITYPE c = 0; c < cols_; ++c)  {
+                    mat_copy.matrix_[std::make_pair(rr, c)]  -= off_diag * mat_copy.matrix_[std::make_pair(r, c)];
+                    inverse_mat.matrix_[std::make_pair(rr, c)]  -= off_diag * inverse_mat.matrix_[std::make_pair(r, c)];
+                }
+            }
     }
 
     return inverse_mat;

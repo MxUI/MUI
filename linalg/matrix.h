@@ -142,7 +142,7 @@ class sparse_matrix {
         // Member function to perform QR decomposition
         void qr_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &);
         // Member function to get the inverse of matrix
-        sparse_matrix<ITYPE,VTYPE> inverse();
+        sparse_matrix<ITYPE,VTYPE> inverse() const;
 
     private:
         // Non-zero sparse matrix elements in COO format
