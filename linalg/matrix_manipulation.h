@@ -103,7 +103,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
               (element.first.first <=r_end)    &&
               (element.first.second >=c_start) &&
               (element.first.second <=c_end))
-              res.set_value(element.first.first, element.first.second, element.second);
+              res.set_value((element.first.first-r_start), (element.first.second-c_start), element.second);
       return res;
 }
 

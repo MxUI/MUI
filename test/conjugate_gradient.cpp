@@ -329,5 +329,168 @@ int main() {
 
     std::cout << std::endl;
 
+    std::cout << "===========================================================================" << std::endl;
+    std::cout << "======== TEST 04: 6-by-6 A_ Matrix with multidimensional b_ ===============" << std::endl;
+    std::cout << "=MUI Conjugate Gradient Solver with IC Preconditioner & with Initial Guess=" << std::endl;
+    std::cout << "===========================================================================" << std::endl;
+
+    std::pair<int, double> cgReturn4;
+
+    int Css_size4 = 6;
+    int Aas_size4 = 6;
+    double cg_solve_tol4 = 1e-6;
+    int cg_max_iter4 = 1000;
+
+    mui::linalg::sparse_matrix<int,double> Css4; //< Matrix of radial basis function evaluations between prescribed points
+    mui::linalg::sparse_matrix<int,double> Aas4; //< Matrix of RBF evaluations between prescribed and interpolation points
+    mui::linalg::sparse_matrix<int,double> H_init4; //< Initial Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_4; //< Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_ref4; //< Reference value of Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_diff4; //< Difference between reference value and calculated value of Transformation Matrix
+
+    Css4.resize_null(Css_size4, Css_size4);
+    Aas4.resize_null(Aas_size4, 4);
+    H_init4.resize_null(Aas_size4, 4);
+    H_4.resize_null(Aas_size4, 4);
+    H_ref4.resize_null(Aas_size4, 4);
+    H_diff4.resize_null(Aas_size4, 4);
+
+    H_init4.set_value(0, 0, 9);
+    H_init4.set_value(1, 0, 0);
+    H_init4.set_value(2, 0, -2);
+    H_init4.set_value(3, 0, 3);
+    H_init4.set_value(4, 0, -2);
+    H_init4.set_value(5, 0, 5);
+    H_init4.set_value(0, 1, 9);
+    H_init4.set_value(1, 1, 0);
+    H_init4.set_value(2, 1, -2);
+    H_init4.set_value(3, 1, 3);
+    H_init4.set_value(4, 1, -2);
+    H_init4.set_value(5, 1, 5);
+    H_init4.set_value(0, 2, 9);
+    H_init4.set_value(1, 2, 0);
+    H_init4.set_value(2, 2, -2);
+    H_init4.set_value(3, 2, 3);
+    H_init4.set_value(4, 2, -2);
+    H_init4.set_value(5, 2, 5);
+    H_init4.set_value(0, 3, 9);
+    H_init4.set_value(1, 3, 0);
+    H_init4.set_value(2, 3, -2);
+    H_init4.set_value(3, 3, 3);
+    H_init4.set_value(4, 3, -2);
+    H_init4.set_value(5, 3, 5);
+
+    H_ref4.set_value(0, 0, 0.5488);
+    H_ref4.set_value(1, 0, 0.7152);
+    H_ref4.set_value(2, 0, 0.6028);
+    H_ref4.set_value(3, 0, 0.5449);
+    H_ref4.set_value(4, 0, 0.4237);
+    H_ref4.set_value(5, 0, 0.6459);
+    H_ref4.set_value(0, 1, 0.5488);
+    H_ref4.set_value(1, 1, 0.7152);
+    H_ref4.set_value(2, 1, 0.6028);
+    H_ref4.set_value(3, 1, 0.5449);
+    H_ref4.set_value(4, 1, 0.4237);
+    H_ref4.set_value(5, 1, 0.6459);
+    H_ref4.set_value(0, 2, 0.5488);
+    H_ref4.set_value(1, 2, 0.7152);
+    H_ref4.set_value(2, 2, 0.6028);
+    H_ref4.set_value(3, 2, 0.5449);
+    H_ref4.set_value(4, 2, 0.4237);
+    H_ref4.set_value(5, 2, 0.6459);
+    H_ref4.set_value(0, 3, 0.5488);
+    H_ref4.set_value(1, 3, 0.7152);
+    H_ref4.set_value(2, 3, 0.6028);
+    H_ref4.set_value(3, 3, 0.5449);
+    H_ref4.set_value(4, 3, 0.4237);
+    H_ref4.set_value(5, 3, 0.6459);
+
+    Css4.set_value(0, 0, 3.4430);
+    Css4.set_value(0, 1, -0.3963);
+    Css4.set_value(0, 2, 2.5012);
+    Css4.set_value(0, 3, 0.9525);
+    Css4.set_value(0, 4, 0.6084);
+    Css4.set_value(0, 5, -1.2728);
+
+    Css4.set_value(1, 0, -0.3963);
+    Css4.set_value(1, 1, 0.6015);
+    Css4.set_value(1, 2, -0.4108);
+    Css4.set_value(1, 3, -0.1359);
+    Css4.set_value(1, 4, -0.0295);
+    Css4.set_value(1, 5, 0.2630);
+
+    Css4.set_value(2, 0, 2.5012);
+    Css4.set_value(2, 1, -0.4108);
+    Css4.set_value(2, 2, 2.5927);
+    Css4.set_value(2, 3, 0.7072);
+    Css4.set_value(2, 4, 0.5587);
+    Css4.set_value(2, 5, -1.0613);
+
+    Css4.set_value(3, 0, 0.9525);
+    Css4.set_value(3, 1, -0.1359);
+    Css4.set_value(3, 2, 0.7072);
+    Css4.set_value(3, 3, 1.1634);
+    Css4.set_value(3, 4, 0.1920);
+    Css4.set_value(3, 5, -0.4344);
+
+    Css4.set_value(4, 0, 0.6084);
+    Css4.set_value(4, 1, -0.0295);
+    Css4.set_value(4, 2, 0.5587);
+    Css4.set_value(4, 3, 0.1920);
+    Css4.set_value(4, 4, 0.7636);
+    Css4.set_value(4, 5, -0.3261);
+
+    Css4.set_value(5, 0, -1.2728);
+    Css4.set_value(5, 1, 0.2630);
+    Css4.set_value(5, 2, -1.0613);
+    Css4.set_value(5, 3, -0.4344);
+    Css4.set_value(5, 4, -0.3261);
+    Css4.set_value(5, 5, 1.0869);
+
+    Aas4.set_value(0, 0, 3.0685);
+    Aas4.set_value(1, 0, 0.0484);
+    Aas4.set_value(2, 0, 2.5783);
+    Aas4.set_value(3, 0, 1.2865);
+    Aas4.set_value(4, 0, 0.8671);
+    Aas4.set_value(5, 0, -0.8230);
+    Aas4.set_value(0, 1, 3.0685);
+    Aas4.set_value(1, 1, 0.0484);
+    Aas4.set_value(2, 1, 2.5783);
+    Aas4.set_value(3, 1, 1.2865);
+    Aas4.set_value(4, 1, 0.8671);
+    Aas4.set_value(5, 1, -0.8230);
+    Aas4.set_value(0, 2, 3.0685);
+    Aas4.set_value(1, 2, 0.0484);
+    Aas4.set_value(2, 2, 2.5783);
+    Aas4.set_value(3, 2, 1.2865);
+    Aas4.set_value(4, 2, 0.8671);
+    Aas4.set_value(5, 2, -0.8230);
+    Aas4.set_value(0, 3, 3.0685);
+    Aas4.set_value(1, 3, 0.0484);
+    Aas4.set_value(2, 3, 2.5783);
+    Aas4.set_value(3, 3, 1.2865);
+    Aas4.set_value(4, 3, 0.8671);
+    Aas4.set_value(5, 3, -0.8230);
+
+    mui::linalg::incomplete_cholesky_preconditioner<int,double> M4(Css4);
+    mui::linalg::conjugate_gradient<int,double> cg4(Css4, Aas4, cg_solve_tol4, cg_max_iter4, &M4);
+    cgReturn4 = cg4.solve(H_init4);
+    H_4 = cg4.getSolution();
+
+    std::cout << "Matrix H_: " << std::endl;
+    H_4.print();
+
+    std::cout << "Reference value of Matrix H_: " << std::endl;
+    H_ref4.print();
+
+    H_diff4 = H_4 - H_ref4;
+
+    std::cout << "Difference between calculated value and reference value: " << std::endl;
+    H_diff4.print();
+
+    std::cout << "Total CG iteration number: " << cgReturn4.first <<" with final r_norm_rel: " << cgReturn4.second << std::endl;
+
+    std::cout << std::endl;
+
     return 0;
 }

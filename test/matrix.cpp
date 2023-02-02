@@ -77,6 +77,14 @@ int main()
     std::cout << "Identity matrix D: " << std::endl;
     d.print();
 
+    c.resize(a.get_rows(),1);
+    for (int j = 0; j < a.get_cols(); ++j) {
+        c.set_zero();
+        c = a.segment(0,(a.get_rows()-1),j,j);
+        std::cout << "segment of A matrix -- the " << (j+1) << "th column: " << std::endl;
+        c.print();
+    }
+
     mui::linalg::sparse_matrix<int,double> e = a + b;
     std::cout << "Addition of matrices (A + B): " << std::endl;
     e.print();

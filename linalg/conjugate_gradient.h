@@ -59,12 +59,12 @@ namespace mui {
 namespace linalg {
 
 template<typename ITYPE, typename VTYPE>
-class conjugate_gradient {
+class conjugate_gradient_1d {
 
     public:
         // Constructor
-        conjugate_gradient(sparse_matrix<ITYPE,VTYPE> A, sparse_matrix<ITYPE,VTYPE> b, VTYPE cg_solve_tol= 1e-6, ITYPE cg_max_iter= 0, preconditioner<ITYPE,VTYPE>* M = nullptr) 
-            : A_(A), 
+        conjugate_gradient_1d(sparse_matrix<ITYPE,VTYPE> A, sparse_matrix<ITYPE,VTYPE> b, VTYPE cg_solve_tol= 1e-6, ITYPE cg_max_iter= 0, preconditioner<ITYPE,VTYPE>* M = nullptr)
+            : A_(A),
               b_(b),
               cg_solve_tol_(cg_solve_tol),
               cg_max_iter_(cg_max_iter),
@@ -78,7 +78,7 @@ class conjugate_gradient {
         }
 
         // Destructor
-        ~conjugate_gradient() {
+        ~conjugate_gradient_1d() {
             // Deallocate the memory for matrices
             A_.set_zero();
             x_.set_zero();
@@ -138,7 +138,7 @@ class conjugate_gradient {
             }
 
             ITYPE acturalKIterCount = 0;
-            
+
             for (ITYPE k = 0; k < kIter; ++k) {
                 ++acturalKIterCount;
                 sparse_matrix<ITYPE,VTYPE> Ap = A_*p_;
@@ -196,6 +196,97 @@ class conjugate_gradient {
         sparse_matrix<ITYPE,VTYPE> z_;
         // The direction matrix of the CG solver
         sparse_matrix<ITYPE,VTYPE> p_;
+        // Preconditioner pointer
+        preconditioner<ITYPE,VTYPE>* M_;
+        // Tolerance of CG solver
+        VTYPE cg_solve_tol_;
+        // Maximum iteration of CG solver
+        ITYPE cg_max_iter_;
+};
+
+template<typename ITYPE, typename VTYPE>
+class conjugate_gradient {
+
+    public:
+        // Constructor
+    conjugate_gradient(sparse_matrix<ITYPE,VTYPE> A, sparse_matrix<ITYPE,VTYPE> b, VTYPE cg_solve_tol= 1e-6, ITYPE cg_max_iter= 0, preconditioner<ITYPE,VTYPE>* M = nullptr)
+            : A_(A),
+              b_(b),
+              cg_solve_tol_(cg_solve_tol),
+              cg_max_iter_(cg_max_iter),
+              M_(M){
+                assert(A_.get_rows() == b_.get_rows() &&
+                        "MUI Error [conjugate_gradient.h]: Number of rows of A matrix must be the same as the number of rows of b matrix");
+                b_column_.resize_null(b_.get_rows(),1);
+                x_.resize_null(b_.get_rows(),b_.get_cols());
+                x_init_column_.resize_null(b_.get_rows(),1);
+        }
+
+        // Destructor
+        ~conjugate_gradient() {
+            // Deallocate the memory for matrices
+            A_.set_zero();
+            x_.set_zero();
+            b_.set_zero();
+            b_column_.set_zero();
+            x_init_column_.set_zero();
+            // Set properties to null
+            cg_solve_tol_ = 0;
+            cg_max_iter_ = 0;
+            // Deallocate the memory for preconditioner pointer
+            if(M_!=nullptr) {
+                M_ = nullptr;
+                delete[] M_;
+            }
+        }
+
+        // Member function for solve
+        std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> x_init = sparse_matrix<ITYPE,VTYPE>()) {
+            if (!x_init.empty()){
+                assert(((x_init.get_rows() == b_.get_rows()) && (x_init.get_cols() == b_.get_cols())) &&
+                        "MUI Error [conjugate_gradient.h]: Size of x_init matrix mismatch with size of b_ matrix");
+            }
+
+            std::pair<ITYPE, VTYPE> cgReturn;
+            for (ITYPE j = 0; j < b_.get_cols(); ++j) {
+                b_column_.set_zero();
+                b_column_ = b_.segment(0,(b_.get_rows()-1),j,j);
+                conjugate_gradient_1d<ITYPE, VTYPE> cg(A_, b_column_, cg_solve_tol_, cg_max_iter_, M_);
+                if (!x_init.empty()) {
+                    x_init_column_.set_zero();
+                    x_init_column_ = x_init.segment(0,(x_init.get_rows()-1),j,j);
+                }
+                std::pair<ITYPE, VTYPE> cgReturnTemp = cg.solve(x_init_column_);
+                if (cgReturn.first < cgReturnTemp.first)
+                    cgReturn.first = cgReturnTemp.first;
+                cgReturn.second += cgReturnTemp.second;
+                sparse_matrix<ITYPE,VTYPE> x_column(b_.get_rows(),1);
+                x_column = cg.getSolution();
+                for (ITYPE i = 0; i < x_column.get_rows(); ++i) {
+                    x_.set_value(i, j, x_column.get_value(i,0));
+                }
+            }
+            cgReturn.second /= b_.get_cols();
+
+            return cgReturn;
+        }
+
+        // Member function to get the solution
+        sparse_matrix<ITYPE,VTYPE> getSolution() {
+            return x_;
+        }
+
+    private:
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_;
+        // The column segments of the constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_column_;
+        // The column segments of the initial guess of the variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_init_column_;
+        // The variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_;
         // Preconditioner pointer
         preconditioner<ITYPE,VTYPE>* M_;
         // Tolerance of CG solver
