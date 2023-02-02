@@ -140,11 +140,11 @@ class sparse_matrix {
 
     private:
         // Non-zero sparse matrix elements in COO format
-        std::map<std::pair<ITYPE, ITYPE>, VTYPE> matrix;
+        std::map<std::pair<ITYPE, ITYPE>, VTYPE> matrix_;
         // Number of rows of sparse matrix
-        ITYPE rows;
+        ITYPE rows_;
         // Number of columns of sparse matrix
-        ITYPE cols;
+        ITYPE cols_;
         // Dummy member variable for invalid or unassigned elements in sparse matrix
         VTYPE dummy_;
 };

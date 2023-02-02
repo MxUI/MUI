@@ -57,16 +57,16 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) {
 
-    if (rows != addend.rows || cols != addend.cols) {
+    if (rows_ != addend.rows_ || cols_ != addend.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix addition" << std::endl;
         std::abort();
     }
 
-    sparse_matrix<ITYPE,VTYPE> res(rows, cols);
-    for (auto element : matrix) {
+    sparse_matrix<ITYPE,VTYPE> res(rows_, cols_);
+    for (auto element : matrix_) {
         res.set_value(element.first.first, element.first.second, element.second);
     }
-    for (auto element : addend.matrix) {
+    for (auto element : addend.matrix_) {
         res.set_value(element.first.first, element.first.second, res.get_value(element.first.first, element.first.second) + element.second);
     }
     return res;
@@ -75,15 +75,15 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 // Overload subtraction operator to perform sparse matrix subtraction
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) {
-   if (rows != subtrahend.rows || cols != subtrahend.cols) {
+   if (rows_ != subtrahend.rows_ || cols_ != subtrahend.cols_) {
        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix subtraction" << std::endl;
        std::abort();
    }
-   sparse_matrix<ITYPE,VTYPE> res(rows, cols);
-   for (auto element : matrix) {
+   sparse_matrix<ITYPE,VTYPE> res(rows_, cols_);
+   for (auto element : matrix_) {
        res.set_value(element.first.first, element.first.second, element.second);
    }
-   for (auto element : subtrahend.matrix) {
+   for (auto element : subtrahend.matrix_) {
        res.set_value(element.first.first, element.first.second, res.get_value(element.first.first, element.first.second) - element.second);
    }
    return res;
@@ -92,13 +92,13 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 // Overload multiplication operator to perform sparse matrix multiplication
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) {
-    if (cols != multiplicand.rows) {
+    if (cols_ != multiplicand.rows_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix multiplication" << std::endl;
         std::abort();
     }
-    sparse_matrix<ITYPE,VTYPE> res(rows, multiplicand.cols);
-    for (auto element1 : matrix) {
-        for (auto element2 : multiplicand.matrix) {
+    sparse_matrix<ITYPE,VTYPE> res(rows_, multiplicand.cols_);
+    for (auto element1 : matrix_) {
+        for (auto element2 : multiplicand.matrix_) {
             if (element1.first.second == element2.first.first) {
                 res.set_value(element1.first.first, element2.first.second, res.get_value(element1.first.first, element2.first.second) + element1.second * element2.second);
             }
@@ -113,8 +113,8 @@ template <typename STYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(const STYPE &scalar) const {
     static_assert(std::is_convertible<STYPE, VTYPE>::value,
             "MUI Error [matrix_arithmetic.h]: scalar type cannot be converted to matrix element type in scalar multiplication");
-    sparse_matrix<ITYPE,VTYPE> res(rows,cols);
-    for (const auto element : matrix) {
+    sparse_matrix<ITYPE,VTYPE> res(rows_,cols_);
+    for (const auto element : matrix_) {
         if (static_cast<VTYPE>(scalar) >= std::numeric_limits<VTYPE>::min())
             res.set_value(element.first.first, element.first.second, element.second * static_cast<VTYPE>(scalar));
    }
@@ -132,9 +132,9 @@ template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
     if (this != &exist_mat) { // check for self-assignment
         // copy the values from the other matrix to this matrix
-        assert(matrix.empty() &&
+        assert(matrix_.empty() &&
                   "MUI Error [matrix_arithmetic.h]: assignment operator '=' only works for empty (all zero elements) matrix");
-        assert(((rows == exist_mat.rows) && (cols == exist_mat.cols)) &&
+        assert(((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) &&
                   "MUI Error [matrix_arithmetic.h]: matrix size mismatch in assignment operator '='");
         (*this).copy(exist_mat);
     }
@@ -144,7 +144,7 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
 // Member function of dot product
 template <typename ITYPE, typename VTYPE>
 VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
-    assert(((cols == 1)&&(exist_mat.cols == 1)) &&
+    assert(((cols_ == 1)&&(exist_mat.cols_ == 1)) &&
         "MUI Error [matrix_arithmetic.h]: dot_product function only works for column vectors");
     sparse_matrix<ITYPE,VTYPE> tempThis(*this);
     sparse_matrix<ITYPE,VTYPE> thisT(tempThis.transpose());
@@ -157,13 +157,13 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_
 // Member function of Hadamard product
 template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
-    if (rows != exist_mat.rows || cols != exist_mat.cols) {
+    if (rows_ != exist_mat.rows_ || cols_ != exist_mat.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
         std::abort();
     }
-    sparse_matrix<ITYPE,VTYPE> res(rows, cols);
-    for (auto element : matrix) {
-        res.matrix[std::make_pair(element.first.first, element.first.second)] = element.second  * exist_mat.get_value(element.first.first, element.first.second);
+    sparse_matrix<ITYPE,VTYPE> res(rows_, cols_);
+    for (auto element : matrix_) {
+        res.matrix_[std::make_pair(element.first.first, element.first.second)] = element.second  * exist_mat.get_value(element.first.first, element.first.second);
     }
     return res;
 }
@@ -171,8 +171,8 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
 // Member function to get transpose of matrix
 template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose() {
-    sparse_matrix<ITYPE,VTYPE> res(cols, rows);
-    for (auto element : matrix)
+    sparse_matrix<ITYPE,VTYPE> res(cols_, rows_);
+    for (auto element : matrix_)
         res.set_value(element.first.second, element.first.first, element.second);
     return res;
 }

@@ -56,38 +56,38 @@ namespace linalg {
 // Constructor - takes in size of row and column to generate an empty matrix
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE r, ITYPE c)
-    : rows(r), cols(c), dummy_(0) {
+    : rows_(r), cols_(c), dummy_(0) {
 }
 
 // Constructor - null matrix
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>::sparse_matrix()
-    : rows(0), cols(0), dummy_(0) {
+    : rows_(0), cols_(0), dummy_(0) {
 }
 
 // Constructor - takes in another sparse_matrix object as an argument
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const sparse_matrix<ITYPE,VTYPE> &exist_mat)
-    : rows(exist_mat.rows), cols(exist_mat.cols), dummy_(0) {
+    : rows_(exist_mat.rows_), cols_(exist_mat.cols_), dummy_(0) {
       // Copy the data from the existing matrix
       std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
       vec_temp = exist_mat.get_non_zero_elements();
       for (auto element : vec_temp) {
           if (std::abs(exist_mat.get_value(element.first, element.second)) >= std::numeric_limits<VTYPE>::min())
-              matrix[std::make_pair(element.first, element.second)] = exist_mat.get_value(element.first, element.second);
+              matrix_[std::make_pair(element.first, element.second)] = exist_mat.get_value(element.first, element.second);
       }
 }
 
 // Constructor - generate various square matrices
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token)
-    : rows(n), cols(n), dummy_(0) {
+    : rows_(n), cols_(n), dummy_(0) {
     if(token.empty()) {
         // empty (all-zero) square matrix (Do nothing from the code perspective)
     } else if(trim(token)=="identity") {
         // identity square matrix
         for (ITYPE i = 0; i < n; ++i) {
-            matrix[std::make_pair(i, i)] = static_cast<VTYPE>(1);
+            matrix_[std::make_pair(i, i)] = static_cast<VTYPE>(1);
         }
     } else {
         std::cerr << "MUI Error [matrix_ctor_dtor.h]: unidentified token string for square matrix constructor" << std::endl;
@@ -102,10 +102,10 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token)
 template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>::~sparse_matrix<ITYPE,VTYPE>() {
     // deallocate the memory for non-zero elements
-    matrix.clear();
+    matrix_.clear();
     // set matrix properties to null
-    rows = 0;
-    cols = 0;
+    rows_ = 0;
+    cols_ = 0;
     dummy_ = 0;
 }
 

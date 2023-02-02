@@ -56,10 +56,10 @@ namespace linalg {
 // Member function to resize a null matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::resize_null(ITYPE r, ITYPE c) {
-    assert(((rows == 0) && (cols == 0)) &&
+    assert(((rows_ == 0) && (cols_ == 0)) &&
             "MUI Error [matrix_manipulation.h]: resize_null function only works for null matrix");
-    rows = r;
-    cols = c;
+    rows_ = r;
+    cols_ = c;
 }
 
 // Member function to resize an all-zero matrix
@@ -67,23 +67,23 @@ template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::resize(ITYPE r, ITYPE c) {
     assert(((this->non_zero_elements_count()) == 0) &&
             "MUI Error [matrix_manipulation.h]: resize function only works for all-zero matrix");
-    rows = r;
-    cols = c;
+    rows_ = r;
+    cols_ = c;
 }
 
 // Member function to copy a sparse_matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
       // Copy the data from the existing matrix
-      assert(matrix.empty() &&
+      assert(matrix_.empty() &&
                 "MUI Error [matrix_manipulation.h]: copy function only works for empty (all zero elements) matrix");
-      assert(((rows == exist_mat.rows) && (cols == exist_mat.cols)) &&
+      assert(((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) &&
                 "MUI Error [matrix_manipulation.h]: matrix size mismatch in copy function ");
       std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
       vec_temp = exist_mat.get_non_zero_elements();
       for (auto element : vec_temp) {
           if (std::abs(exist_mat.get_value(element.first, element.second)) >= std::numeric_limits<VTYPE>::min())
-              matrix[std::make_pair(element.first, element.second)] = exist_mat.get_value(element.first, element.second);
+              matrix_[std::make_pair(element.first, element.second)] = exist_mat.get_value(element.first, element.second);
       }
 }
 
@@ -95,10 +95,10 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
               "MUI Error [matrix_manipulation.h]: segment function r_end has to be larger or equals to r_start");
       assert((c_end >= c_start) &&
               "MUI Error [matrix_manipulation.h]: segment function c_end has to be larger or equals to c_start");
-      assert(((r_end < rows) && (r_start >= 0) && (c_end < cols) && (c_start >= 0)) &&
+      assert(((r_end < rows_) && (r_start >= 0) && (c_end < cols_) && (c_start >= 0)) &&
           "MUI Error [matrix_manipulation.h]: Matrix index out of range in segment function");
       sparse_matrix<ITYPE,VTYPE> res((r_end-r_start+1), (c_end-c_start+1));
-      for (auto element : matrix)
+      for (auto element : matrix_)
           if ((element.first.first >=r_start)  &&
               (element.first.first <=r_end)    &&
               (element.first.second >=c_start) &&
@@ -110,13 +110,13 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
 // Member function to insert an element
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val) {
-    assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
+    assert(((r < rows_) && (r >= 0) && (c < cols_) && (c >= 0)) &&
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in set_value function");
     if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
-        matrix[std::make_pair(r, c)] = val;
+        matrix_[std::make_pair(r, c)] = val;
     } else {
-        if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
-            matrix.erase(std::make_pair(r, c));
+        if (matrix_.find(std::make_pair(r, c)) != matrix_.end()) {
+            matrix_.erase(std::make_pair(r, c));
         }
     }
 }
@@ -125,45 +125,45 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val) {
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
     if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
-        for (ITYPE i = 0; i < rows; ++i) {
-            for (ITYPE j = 0; j < cols; ++j) {
-                matrix[std::make_pair(i, j)] = val;
+        for (ITYPE i = 0; i < rows_; ++i) {
+            for (ITYPE j = 0; j < cols_; ++j) {
+                matrix_[std::make_pair(i, j)] = val;
             }
         }
     } else {
-        matrix.clear();
+        matrix_.clear();
     }
 }
 
 // Member function to set all elements to zero and empty the sparse matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::set_zero() {
-    matrix.clear();
+    matrix_.clear();
 }
 
 // Member function to add scalar to a specific elements
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE value) {
-    assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
+    assert(((r < rows_) && (r >= 0) && (c < cols_) && (c >= 0)) &&
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in add_scalar function");
     // check if the element exists
-    if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
-        matrix[std::make_pair(r, c)] += value;
+    if (matrix_.find(std::make_pair(r, c)) != matrix_.end()) {
+        matrix_[std::make_pair(r, c)] += value;
     } else {
-        matrix[std::make_pair(r, c)] = value;
+        matrix_[std::make_pair(r, c)] = value;
     }
 }
 
 // Member function to subtract a scalar from a specific elements
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE value) {
-    assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
+    assert(((r < rows_) && (r >= 0) && (c < cols_) && (c >= 0)) &&
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in subtract_scalar function");
     // check if the element exists
-    if (matrix.find(std::make_pair(r, c)) != matrix.end()) {
-        matrix[std::make_pair(r, c)] -= value;
+    if (matrix_.find(std::make_pair(r, c)) != matrix_.end()) {
+        matrix_[std::make_pair(r, c)] -= value;
     } else {
-        matrix[std::make_pair(r, c)] = -value;
+        matrix_[std::make_pair(r, c)] = -value;
     }
 }
 

@@ -77,11 +77,11 @@ std::string trim(const std::string &s) {
 // Member function to print matrix elements to the console
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::print() {
-    for (ITYPE i = 0; i < rows; ++i) {
+    for (ITYPE i = 0; i < rows_; ++i) {
         std::cout << "      ";
-       for (ITYPE j = 0; j < cols; ++j){
-           auto it = matrix.find(std::make_pair(i, j));
-           if (it != matrix.end()) {
+       for (ITYPE j = 0; j < cols_; ++j){
+           auto it = matrix_.find(std::make_pair(i, j));
+           if (it != matrix_.end()) {
                std::cout << it->second << " ";
            } else {
                std::cout << 0 << " ";
@@ -162,10 +162,10 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
 // Member function to get the value at a given position
 template<typename ITYPE, typename VTYPE>
 VTYPE sparse_matrix<ITYPE,VTYPE>::get_value(ITYPE r, ITYPE c) const {
-    assert(((r < rows) && (r >= 0) && (c < cols) && (c >= 0)) &&
+    assert(((r < rows_) && (r >= 0) && (c < cols_) && (c >= 0)) &&
         "MUI Error [matrix_io_info.h]: Matrix index out of range in get_value function");
-    auto it = matrix.find(std::make_pair(r, c));
-    if (it != matrix.end()) {
+    auto it = matrix_.find(std::make_pair(r, c));
+    if (it != matrix_.end()) {
         return it->second;
     } else {
         return 0;
@@ -175,20 +175,20 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::get_value(ITYPE r, ITYPE c) const {
 // Member function to get the number of rows
 template<typename ITYPE, typename VTYPE>
 ITYPE sparse_matrix<ITYPE,VTYPE>::get_rows() const {
-    return rows;
+    return rows_;
 }
 
 // Member function to get the number of cols
 template<typename ITYPE, typename VTYPE>
 ITYPE sparse_matrix<ITYPE,VTYPE>::get_cols() const {
-    return cols;
+    return cols_;
 }
 
 // Member function to get non-zero elements
 template<typename ITYPE, typename VTYPE>
 std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_elements() const {
     std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
-    for (auto const &nn_element : matrix) {
+    for (auto const &nn_element : matrix_) {
         vec_temp.push_back(std::make_pair(nn_element.first.first, nn_element.first.second));
     }
     return vec_temp;
@@ -197,13 +197,13 @@ std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_el
 // Member function to get number of non-zero elements
 template<typename ITYPE, typename VTYPE>
 ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
-    return matrix.size();
+    return matrix_.size();
 }
 
 // Member function to check whether the matrix contains all zero elements
 template<typename ITYPE, typename VTYPE>
 bool sparse_matrix<ITYPE,VTYPE>::empty() {
-    return matrix.empty();
+    return matrix_.empty();
 }
 
 } // linalg
