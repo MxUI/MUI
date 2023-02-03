@@ -49,10 +49,10 @@
 
 #include "../util.h"
 #include "../uniface.h"
+#include "../linalg/solver.h"
 #include <iterator>
 #include <ctime>
 #include <mpi.h>
-#include "../linalg/conjugate_gradient.h"
 
 namespace mui {
 
