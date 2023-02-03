@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(MUI VERSION 1.2.4 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
+project(MUI VERSION 1.2.4 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX Fortran)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,8 +10,7 @@ option(USE_RBF "Include RBF support" OFF)
 # Wrapper options
 option(C_WRAPPER "Compile C wrapper" OFF)
 option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF)
-option(PYTHON_WRAPPER "Compile Python wrapper" OFF)
-option(PIP_INSTALL "Install compiled Python wrapper using pip" OFF)
+option(PYTHON_WRAPPER "Compile and install Python wrapper using pip" OFF)
 
 include(CMakePackageConfigHelpers)
 
@@ -63,29 +62,25 @@ if(C_WRAPPER)
 	enable_language(C)
 
 	add_library(MUI_C_wrapper SHARED
-		./wrappers/C/mui_c_wrapper_general.cpp
-		./wrappers/C/mui_c_wrapper_1d.cpp
-		./wrappers/C/mui_c_wrapper_2d.cpp
-		./wrappers/C/mui_c_wrapper_3d.cpp)
-	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_general.h)
-	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_1d.h)
-	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_2d.h)
-	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_3d.h)
-	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/C/config_c_wrapper.h)
+		"./wrappers/C/mui_c_wrapper_general.cpp"
+		"./wrappers/C/mui_c_wrapper_1d.cpp"
+		"./wrappers/C/mui_c_wrapper_2d.cpp"
+		"./wrappers/C/mui_c_wrapper_3d.cpp")
+	set(MUI_C_wrapper_PUBLIC_HEADERS
+    	"./wrappers/C/mui_c_wrapper_general.h"
+		"./wrappers/C/mui_c_wrapper_1d.h"
+		"./wrappers/C/mui_c_wrapper_2d.h"
+		"./wrappers/C/mui_c_wrapper_3d.h"
+		"./wrappers/C/config_c_wrapper.h")
+	set_target_properties(MUI_C_wrapper PROPERTIES PUBLIC_HEADER "${MUI_C_wrapper_PUBLIC_HEADERS}")
 	target_include_directories(MUI_C_wrapper PRIVATE .)
 
 	add_library(MUI_C_wrapper_static STATIC
-                ./wrappers/C/mui_c_wrapper_general.cpp
-                ./wrappers/C/mui_c_wrapper_1d.cpp
-                ./wrappers/C/mui_c_wrapper_2d.cpp
-                ./wrappers/C/mui_c_wrapper_3d.cpp)
-        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_general.h)
-        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_1d.h)
-        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_2d.h)
-        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/mui_c_wrapper_3d.h)
-        set_target_properties(MUI_C_wrapper_static PROPERTIES PUBLIC_HEADER ./wrappers/C/config_c_wrapper.h)
-        target_include_directories(MUI_C_wrapper PRIVATE .)
-	set_target_properties(MUI_C_wrapper_static PROPERTIES OUTPUT_NAME MUI_C_wrapper)
+    	"./wrappers/C/mui_c_wrapper_general.cpp"
+    	"./wrappers/C/mui_c_wrapper_1d.cpp"
+    	"./wrappers/C/mui_c_wrapper_2d.cpp"
+    	"./wrappers/C/mui_c_wrapper_3d.cpp")
+  	set_target_properties(MUI_C_wrapper_static PROPERTIES OUTPUT_NAME MUI_C_wrapper)
 
 	if(USE_RBF)
     		target_link_libraries(MUI_C_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
@@ -102,38 +97,40 @@ endif(C_WRAPPER)
 if(FORTRAN_WRAPPER)
 	message("-- MUI Fortran wrapper: Selected")
 	
-	enable_language(FORTRAN)
+	#enable_language(FORTRAN)
 
 	set_source_files_properties(
-  		./wrappers/Fortran/mui_f_wrapper_general.f90
-		./wrappers/Fortran/mui_f_wrapper_1d.f90
-		./wrappers/Fortran/mui_f_wrapper_2d.f90
-		./wrappers/Fortran/mui_f_wrapper_3d.f90
+  		"./wrappers/Fortran/mui_f_wrapper_general.f90"
+		"./wrappers/Fortran/mui_f_wrapper_1d.f90"
+		"./wrappers/Fortran/mui_f_wrapper_2d.f90"
+		"./wrappers/Fortran/mui_f_wrapper_3d.f90"
   		PROPERTIES Fortran_PREPROCESS ON
 	)
 
 	add_library(MUI_Fortran_wrapper SHARED
-		./wrappers/Fortran/mui_f_wrapper_general.cpp
-		./wrappers/Fortran/mui_f_wrapper_1d.cpp
-		./wrappers/Fortran/mui_f_wrapper_2d.cpp
-		./wrappers/Fortran/mui_f_wrapper_3d.cpp
-		./wrappers/Fortran/mui_f_wrapper_general.f90
-                ./wrappers/Fortran/mui_f_wrapper_1d.f90
-                ./wrappers/Fortran/mui_f_wrapper_2d.f90
-                ./wrappers/Fortran/mui_f_wrapper_3d.f90)
-	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_general.f90)
-	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_1d.f90)
-	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_2d.f90)
-	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/mui_f_wrapper_3d.f90)
-	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER ./wrappers/Fortran/config_f_wrapper.h)
+		"./wrappers/Fortran/mui_f_wrapper_general.cpp"
+		"./wrappers/Fortran/mui_f_wrapper_1d.cpp"
+		"./wrappers/Fortran/mui_f_wrapper_2d.cpp"
+		"./wrappers/Fortran/mui_f_wrapper_3d.cpp"
+		"./wrappers/Fortran/mui_f_wrapper_general.f90"
+        "./wrappers/Fortran/mui_f_wrapper_1d.f90"
+        "./wrappers/Fortran/mui_f_wrapper_2d.f90"
+        "./wrappers/Fortran/mui_f_wrapper_3d.f90")
+    set(MUI_Fortran_wrapper_PUBLIC_HEADERS
+    	"./wrappers/Fortran/mui_f_wrapper_general.f90"
+		"./wrappers/Fortran/mui_f_wrapper_1d.f90"
+		"./wrappers/Fortran/mui_f_wrapper_2d.f90"
+		"./wrappers/Fortran/mui_f_wrapper_3d.f90"
+		"./wrappers/Fortran/config_f_wrapper.h")
+	set_target_properties(MUI_Fortran_wrapper PROPERTIES PUBLIC_HEADER "${MUI_Fortran_wrapper_PUBLIC_HEADERS}")
 	set_target_properties(MUI_Fortran_wrapper PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib/mod)
 	target_include_directories(MUI_Fortran_wrapper PRIVATE .)
 
 	add_library(MUI_Fortran_wrapper_static STATIC
-                ./wrappers/Fortran/mui_f_wrapper_general.cpp
-                ./wrappers/Fortran/mui_f_wrapper_1d.cpp
-                ./wrappers/Fortran/mui_f_wrapper_2d.cpp
-                ./wrappers/Fortran/mui_f_wrapper_3d.cpp)
+    	"./wrappers/Fortran/mui_f_wrapper_general.cpp"
+        "./wrappers/Fortran/mui_f_wrapper_1d.cpp"
+        "./wrappers/Fortran/mui_f_wrapper_2d.cpp"
+        "./wrappers/Fortran/mui_f_wrapper_3d.cpp")
 	set_target_properties(MUI_Fortran_wrapper_static PROPERTIES OUTPUT_NAME MUI_Fortran_wrapper)
 	target_include_directories(MUI_Fortran_wrapper_static PRIVATE .)
 
@@ -150,22 +147,14 @@ if(FORTRAN_WRAPPER)
 endif(FORTRAN_WRAPPER)
 
 if(PYTHON_WRAPPER)
-	message("-- MUI Python wrapper: Selected (Warning - significant compilation time and memory usage)")
-
-	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-		set(COMPILER_TYPE "CLANG")
-	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-		set(COMPILER_TYPE "GNU")
-	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-		set(COMPILER_TYPE "INTEL")
-	endif()
+	message("-- MUI Python wrapper: Selected (Warning - significant compilation time and memory usage)")	
 
 	if(USE_RBF)
-		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} CXX=${MPI_CXX_COMPILER} USE_RBF=1 INC_EIGEN="${EIGEN3_INCLUDE_DIR}" package
+		add_custom_target(mui4py ALL COMMAND "CMAKE_ARGS=\"-DUSE_RBF=ON\" pip3 install ."
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 	else()
-		add_custom_target(mui4py ALL COMMAND $(MAKE) COMPILER=${COMPILER_TYPE} CXX=${MPI_CXX_COMPILER} package
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
+		add_custom_target(mui4py ALL COMMAND "pip3 install ."
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
 	endif(USE_RBF)
 
 	set_property(TARGET mui4py APPEND PROPERTY
@@ -175,14 +164,6 @@ if(PYTHON_WRAPPER)
 				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/__pycache__
 				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/mui4py.o
 				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/mui4py_mod.so)
-
-	if(PIP_INSTALL)
-		message("-- MUI Python wrapper installation: Selected")
-
-		add_custom_target(mui4py_pip ALL COMMAND pip3 install dist/mui4py*.tar.gz
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
-		add_dependencies(mui4py_pip mui4py)
-	endif(PIP_INSTALL)
 endif(PYTHON_WRAPPER)
 
 set(MUI_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include CACHE STRING "Location of MUI header files")
