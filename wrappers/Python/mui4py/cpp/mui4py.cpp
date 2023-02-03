@@ -1,6 +1,6 @@
 
-#include <mui.h>
-#include <pybind11/temporal.h>
+#include "../../../../src/mui.h"
+#include <pybind11/chrono.h>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
@@ -81,6 +81,7 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
+  using Titer = typename Tconfig::iterator_type;
 
   std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>();
   uniface.def(fetch_name.c_str(),
@@ -93,7 +94,7 @@ void declare_uniface_fetch(py::class_<mui::uniface<Tconfig>> &uniface)
       .def(fetch_name.c_str(),
            (T(Tclass::*)(
                const std::string &, const mui::point<Treal, Tconfig::D> &, const Ttime,
-               const Ttime,
+               const Titer,
                const Tsampler<Tconfig, T, T> &,
                const Ttemporal<Tconfig> &, bool)) &
                Tclass::fetch,
@@ -183,6 +184,7 @@ void declare_uniface_class(py::module &m)
   using Tclass = mui::uniface<Tconfig>;
   using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
+  using Titer = typename Tconfig::iterator_type;
   py::class_<Tclass> uniface(m, name.c_str());
 
   uniface
@@ -190,7 +192,7 @@ void declare_uniface_class(py::module &m)
       .def("forecast", (void(Tclass::*)(Ttime)) & Tclass::forecast, "")
       //.def("is_ready", &Tclass::is_ready, "")
       .def("barrier", (void(Tclass::*)(Ttime)) & Tclass::barrier, "")
-      .def("barrier", (void(Tclass::*)(Ttime, Ttime)) & Tclass::barrier, "")
+      .def("barrier", (void(Tclass::*)(Ttime, Titer)) & Tclass::barrier, "")
       .def("forget", (void(Tclass::*)(Ttime, bool)) & Tclass::forget, "")
       .def("forget", (void(Tclass::*)(Ttime, Ttime, bool)) & Tclass::forget, "")
       .def("set_memory", (void(Tclass::*)(Ttime)) & Tclass::set_memory, "")
