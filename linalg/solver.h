@@ -56,8 +56,20 @@
 namespace mui {
 namespace linalg {
 
+// Base linear equation solver class
 template<typename ITYPE, typename VTYPE>
-class conjugate_gradient_1d {
+class solver {
+
+    public:
+        // Abstract function for solve
+        virtual std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE>) = 0;
+        // Abstract function to get the solution
+        virtual sparse_matrix<ITYPE,VTYPE> getSolution() = 0;
+};
+
+// Class of one-dimensional Conjugate Gradient solver
+template<typename ITYPE, typename VTYPE>
+class conjugate_gradient_1d : public solver<ITYPE,VTYPE> {
 
     public:
         // Constructor
@@ -90,8 +102,9 @@ class conjugate_gradient_1d {
         ITYPE cg_max_iter_;
 };
 
+// Class of multidimensional Conjugate Gradient solver
 template<typename ITYPE, typename VTYPE>
-class conjugate_gradient {
+class conjugate_gradient : public solver<ITYPE,VTYPE> {
 
     public:
         // Constructor

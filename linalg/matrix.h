@@ -55,6 +55,7 @@
 namespace mui {
 namespace linalg {
 
+// Class of sparse matrix
 template<typename ITYPE, typename VTYPE>
 class sparse_matrix {
 
