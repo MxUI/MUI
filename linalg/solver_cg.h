@@ -65,7 +65,7 @@ conjugate_gradient_1d<ITYPE, VTYPE>::conjugate_gradient_1d(sparse_matrix<ITYPE,V
       cg_max_iter_(cg_max_iter),
       M_(M){
         assert(b_.get_cols() == 1 &&
-                "MUI Error [conjugate_gradient.h]: Number of column of b matrix must be 1");
+                "MUI Error [solver_cg.h]: Number of column of b matrix must be 1");
         x_.resize_null(A_.get_rows(),1);
         r_.resize_null(A_.get_rows(),1);
         z_.resize_null(A_.get_rows(),1);
@@ -81,7 +81,7 @@ conjugate_gradient<ITYPE, VTYPE>::conjugate_gradient(sparse_matrix<ITYPE,VTYPE> 
       cg_max_iter_(cg_max_iter),
       M_(M){
         assert(A_.get_rows() == b_.get_rows() &&
-                "MUI Error [conjugate_gradient.h]: Number of rows of A matrix must be the same as the number of rows of b matrix");
+                "MUI Error [solver_cg.h]: Number of rows of A matrix must be the same as the number of rows of b matrix");
         b_column_.resize_null(b_.get_rows(),1);
         x_.resize_null(b_.get_rows(),b_.get_cols());
         x_init_column_.resize_null(b_.get_rows(),1);
@@ -131,7 +131,7 @@ template<typename ITYPE, typename VTYPE>
 std::pair<ITYPE, VTYPE> conjugate_gradient_1d<ITYPE, VTYPE>::solve(sparse_matrix<ITYPE,VTYPE> x_init) {
     if (!x_init.empty()){
         assert(((x_init.get_rows() == x_.get_rows()) && (x_init.get_cols() == x_.get_cols())) &&
-                "MUI Error [conjugate_gradient.h]: Size of x_init matrix mismatch with size of x_ matrix");
+                "MUI Error [solver_cg.h]: Size of x_init matrix mismatch with size of x_ matrix");
         // Initialize x_ with x_init
         x_.copy(x_init);
         // Initialise r_ with b-Ax0
@@ -157,7 +157,7 @@ std::pair<ITYPE, VTYPE> conjugate_gradient_1d<ITYPE, VTYPE>::solve(sparse_matrix
 
     VTYPE r_norm0 = r_.dot_product(z_);
     assert(std::abs(r_norm0) >= std::numeric_limits<VTYPE>::min() &&
-            "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm0");
+            "MUI Error [solver_cg.h]: Divide by zero assert for r_norm0");
     VTYPE r_norm = r_norm0;
     VTYPE r_norm_rel = std::sqrt(r_norm/r_norm0);
 
@@ -175,7 +175,7 @@ std::pair<ITYPE, VTYPE> conjugate_gradient_1d<ITYPE, VTYPE>::solve(sparse_matrix
         sparse_matrix<ITYPE,VTYPE> Ap = A_*p_;
         VTYPE p_dot_Ap = p_.dot_product(Ap);
         assert(std::abs(p_dot_Ap) >= std::numeric_limits<VTYPE>::min() &&
-                "MUI Error [conjugate_gradient.h]: Divide by zero assert for p_dot_Ap");
+                "MUI Error [solver_cg.h]: Divide by zero assert for p_dot_Ap");
         VTYPE alpha = r_norm / p_dot_Ap;
         for (ITYPE j = 0; j < A_.get_rows(); ++j) {
             x_.add_scalar(j, 0, (alpha * (p_.get_value(j,0))));
@@ -194,7 +194,7 @@ std::pair<ITYPE, VTYPE> conjugate_gradient_1d<ITYPE, VTYPE>::solve(sparse_matrix
 
         VTYPE updated_r_norm = r_.dot_product(z_);
         assert(std::abs(r_norm) >= std::numeric_limits<VTYPE>::min() &&
-                "MUI Error [conjugate_gradient.h]: Divide by zero assert for r_norm");
+                "MUI Error [solver_cg.h]: Divide by zero assert for r_norm");
         VTYPE beta = updated_r_norm / r_norm;
         r_norm = updated_r_norm;
         for (ITYPE j = 0; j < A_.get_rows(); ++j) {
@@ -214,7 +214,7 @@ template<typename ITYPE, typename VTYPE>
 std::pair<ITYPE, VTYPE> conjugate_gradient<ITYPE, VTYPE>::solve(sparse_matrix<ITYPE,VTYPE> x_init) {
     if (!x_init.empty()){
         assert(((x_init.get_rows() == b_.get_rows()) && (x_init.get_cols() == b_.get_cols())) &&
-                "MUI Error [conjugate_gradient.h]: Size of x_init matrix mismatch with size of b_ matrix");
+                "MUI Error [solver_cg.h]: Size of x_init matrix mismatch with size of b_ matrix");
     }
 
     std::pair<ITYPE, VTYPE> cgReturn;

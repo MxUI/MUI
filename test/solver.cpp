@@ -530,7 +530,243 @@ void test04 () {
 
 }
 
+void test05 () {
 
+    std::cout << std::endl;
+    std::cout << "============================================================" << std::endl;
+    std::cout << "==================== TEST 05: 6-by-6 Matrix A ==============" << std::endl;
+    std::cout << "================ MUI Gaussian Elimination Solver ===========" << std::endl;
+    std::cout << "============================================================" << std::endl;
+    std::cout << std::endl;
+
+    std::pair<int, double> geReturn;
+
+    int Css_size = 6;
+    int Aas_size = 6;
+
+    mui::linalg::sparse_matrix<int,double> Css; //< Matrix of radial basis function evaluations between prescribed points
+    mui::linalg::sparse_matrix<int,double> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+    mui::linalg::sparse_matrix<int,double> H_; //< Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
+
+    Css.resize_null(Css_size, Css_size);
+    Aas.resize_null(Aas_size, 1);
+    H_.resize_null(Aas_size, 1);
+    H_ref.resize_null(Aas_size, 1);
+    H_diff.resize_null(Aas_size, 1);
+
+    H_ref.set_value(0, 0, 0.5488);
+    H_ref.set_value(1, 0, 0.7152);
+    H_ref.set_value(2, 0, 0.6028);
+    H_ref.set_value(3, 0, 0.5449);
+    H_ref.set_value(4, 0, 0.4237);
+    H_ref.set_value(5, 0, 0.6459);
+
+    Css.set_value(0, 0, 3.4430);
+    Css.set_value(0, 1, -0.3963);
+    Css.set_value(0, 2, 2.5012);
+    Css.set_value(0, 3, 0.9525);
+    Css.set_value(0, 4, 0.6084);
+    Css.set_value(0, 5, -1.2728);
+
+    Css.set_value(1, 0, -0.3963);
+    Css.set_value(1, 1, 0.6015);
+    Css.set_value(1, 2, -0.4108);
+    Css.set_value(1, 3, -0.1359);
+    Css.set_value(1, 4, -0.0295);
+    Css.set_value(1, 5, 0.2630);
+
+    Css.set_value(2, 0, 2.5012);
+    Css.set_value(2, 1, -0.4108);
+    Css.set_value(2, 2, 2.5927);
+    Css.set_value(2, 3, 0.7072);
+    Css.set_value(2, 4, 0.5587);
+    Css.set_value(2, 5, -1.0613);
+
+    Css.set_value(3, 0, 0.9525);
+    Css.set_value(3, 1, -0.1359);
+    Css.set_value(3, 2, 0.7072);
+    Css.set_value(3, 3, 1.1634);
+    Css.set_value(3, 4, 0.1920);
+    Css.set_value(3, 5, -0.4344);
+
+    Css.set_value(4, 0, 0.6084);
+    Css.set_value(4, 1, -0.0295);
+    Css.set_value(4, 2, 0.5587);
+    Css.set_value(4, 3, 0.1920);
+    Css.set_value(4, 4, 0.7636);
+    Css.set_value(4, 5, -0.3261);
+
+    Css.set_value(5, 0, -1.2728);
+    Css.set_value(5, 1, 0.2630);
+    Css.set_value(5, 2, -1.0613);
+    Css.set_value(5, 3, -0.4344);
+    Css.set_value(5, 4, -0.3261);
+    Css.set_value(5, 5, 1.0869);
+
+    Aas.set_value(0, 0, 3.0685);
+    Aas.set_value(1, 0, 0.0484);
+    Aas.set_value(2, 0, 2.5783);
+    Aas.set_value(3, 0, 1.2865);
+    Aas.set_value(4, 0, 0.8671);
+    Aas.set_value(5, 0, -0.8230);
+
+    mui::linalg::gaussian_elimination_1d<int,double> ge(Css, Aas);
+    geReturn = ge.solve();
+    H_ = ge.getSolution();
+
+    std::cout << "Matrix H_: " << std::endl;
+    H_.print();
+
+    std::cout << "Reference value of Matrix H_: " << std::endl;
+    H_ref.print();
+
+    H_diff = H_ - H_ref;
+
+    std::cout << "Difference between calculated value and reference value: " << std::endl;
+    H_diff.print();
+
+    std::cout << std::endl;
+
+}
+
+void test06 () {
+
+    std::cout << std::endl;
+    std::cout << "============================================================" << std::endl;
+    std::cout << "= TEST 06: 6-by-6 Matrix A with multidimensional Matrix b ==" << std::endl;
+    std::cout << "================ MUI Gaussian Elimination Solver ===========" << std::endl;
+    std::cout << "============================================================" << std::endl;
+    std::cout << std::endl;
+
+    std::pair<int, double> geReturn;
+
+    int Css_size = 6;
+    int Aas_size = 6;
+
+    mui::linalg::sparse_matrix<int,double> Css; //< Matrix of radial basis function evaluations between prescribed points
+    mui::linalg::sparse_matrix<int,double> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+    mui::linalg::sparse_matrix<int,double> H_; //< Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
+    mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
+
+    Css.resize_null(Css_size, Css_size);
+    Aas.resize_null(Aas_size, 4);
+    H_.resize_null(Aas_size, 4);
+    H_ref.resize_null(Aas_size, 4);
+    H_diff.resize_null(Aas_size, 4);
+
+    H_ref.set_value(0, 0, 0.5488);
+    H_ref.set_value(1, 0, 0.7152);
+    H_ref.set_value(2, 0, 0.6028);
+    H_ref.set_value(3, 0, 0.5449);
+    H_ref.set_value(4, 0, 0.4237);
+    H_ref.set_value(5, 0, 0.6459);
+    H_ref.set_value(0, 1, 0.5488);
+    H_ref.set_value(1, 1, 0.7152);
+    H_ref.set_value(2, 1, 0.6028);
+    H_ref.set_value(3, 1, 0.5449);
+    H_ref.set_value(4, 1, 0.4237);
+    H_ref.set_value(5, 1, 0.6459);
+    H_ref.set_value(0, 2, 0.5488);
+    H_ref.set_value(1, 2, 0.7152);
+    H_ref.set_value(2, 2, 0.6028);
+    H_ref.set_value(3, 2, 0.5449);
+    H_ref.set_value(4, 2, 0.4237);
+    H_ref.set_value(5, 2, 0.6459);
+    H_ref.set_value(0, 3, 0.5488);
+    H_ref.set_value(1, 3, 0.7152);
+    H_ref.set_value(2, 3, 0.6028);
+    H_ref.set_value(3, 3, 0.5449);
+    H_ref.set_value(4, 3, 0.4237);
+    H_ref.set_value(5, 3, 0.6459);
+
+    Css.set_value(0, 0, 3.4430);
+    Css.set_value(0, 1, -0.3963);
+    Css.set_value(0, 2, 2.5012);
+    Css.set_value(0, 3, 0.9525);
+    Css.set_value(0, 4, 0.6084);
+    Css.set_value(0, 5, -1.2728);
+
+    Css.set_value(1, 0, -0.3963);
+    Css.set_value(1, 1, 0.6015);
+    Css.set_value(1, 2, -0.4108);
+    Css.set_value(1, 3, -0.1359);
+    Css.set_value(1, 4, -0.0295);
+    Css.set_value(1, 5, 0.2630);
+
+    Css.set_value(2, 0, 2.5012);
+    Css.set_value(2, 1, -0.4108);
+    Css.set_value(2, 2, 2.5927);
+    Css.set_value(2, 3, 0.7072);
+    Css.set_value(2, 4, 0.5587);
+    Css.set_value(2, 5, -1.0613);
+
+    Css.set_value(3, 0, 0.9525);
+    Css.set_value(3, 1, -0.1359);
+    Css.set_value(3, 2, 0.7072);
+    Css.set_value(3, 3, 1.1634);
+    Css.set_value(3, 4, 0.1920);
+    Css.set_value(3, 5, -0.4344);
+
+    Css.set_value(4, 0, 0.6084);
+    Css.set_value(4, 1, -0.0295);
+    Css.set_value(4, 2, 0.5587);
+    Css.set_value(4, 3, 0.1920);
+    Css.set_value(4, 4, 0.7636);
+    Css.set_value(4, 5, -0.3261);
+
+    Css.set_value(5, 0, -1.2728);
+    Css.set_value(5, 1, 0.2630);
+    Css.set_value(5, 2, -1.0613);
+    Css.set_value(5, 3, -0.4344);
+    Css.set_value(5, 4, -0.3261);
+    Css.set_value(5, 5, 1.0869);
+
+    Aas.set_value(0, 0, 3.0685);
+    Aas.set_value(1, 0, 0.0484);
+    Aas.set_value(2, 0, 2.5783);
+    Aas.set_value(3, 0, 1.2865);
+    Aas.set_value(4, 0, 0.8671);
+    Aas.set_value(5, 0, -0.8230);
+    Aas.set_value(0, 1, 3.0685);
+    Aas.set_value(1, 1, 0.0484);
+    Aas.set_value(2, 1, 2.5783);
+    Aas.set_value(3, 1, 1.2865);
+    Aas.set_value(4, 1, 0.8671);
+    Aas.set_value(5, 1, -0.8230);
+    Aas.set_value(0, 2, 3.0685);
+    Aas.set_value(1, 2, 0.0484);
+    Aas.set_value(2, 2, 2.5783);
+    Aas.set_value(3, 2, 1.2865);
+    Aas.set_value(4, 2, 0.8671);
+    Aas.set_value(5, 2, -0.8230);
+    Aas.set_value(0, 3, 3.0685);
+    Aas.set_value(1, 3, 0.0484);
+    Aas.set_value(2, 3, 2.5783);
+    Aas.set_value(3, 3, 1.2865);
+    Aas.set_value(4, 3, 0.8671);
+    Aas.set_value(5, 3, -0.8230);
+
+    mui::linalg::gaussian_elimination<int,double> ge(Css, Aas);
+    geReturn = ge.solve();
+    H_ = ge.getSolution();
+
+    std::cout << "Matrix H_: " << std::endl;
+    H_.print();
+
+    std::cout << "Reference value of Matrix H_: " << std::endl;
+    H_ref.print();
+
+    H_diff = H_ - H_ref;
+
+    std::cout << "Difference between calculated value and reference value: " << std::endl;
+    H_diff.print();
+
+    std::cout << std::endl;
+
+}
 
 int main() {
 
@@ -544,6 +780,10 @@ int main() {
     test03();
     // Perform test 04
     test04();
+    // Perform test 05
+    test05();
+    // Perform test 06
+    test06();
 
     return 0;
 }

@@ -43,7 +43,9 @@
  * @author W. Liu
  * @date 03 February 2023
  * @brief Classes to solve problem A.x = b using different methods.
- *
+ * Solver implemented:
+ *        Conjugate Gradient (iterative)
+ *        Gaussian Elimination (direct)
  */
 
 #ifndef MUI_SOLVER_H_
@@ -62,7 +64,7 @@ class solver {
 
     public:
         // Abstract function for solve
-        virtual std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE>) = 0;
+        virtual std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> = sparse_matrix<ITYPE,VTYPE>()) = 0;
         // Abstract function to get the solution
         virtual sparse_matrix<ITYPE,VTYPE> getSolution() = 0;
 };
@@ -135,10 +137,61 @@ class conjugate_gradient : public solver<ITYPE,VTYPE> {
         ITYPE cg_max_iter_;
 };
 
+// Class of one-dimensional Gaussian Elimination solver
+template<typename ITYPE, typename VTYPE>
+class gaussian_elimination_1d : public solver<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        gaussian_elimination_1d(sparse_matrix<ITYPE,VTYPE>, sparse_matrix<ITYPE,VTYPE>);
+        // Destructor
+        ~gaussian_elimination_1d();
+        // Member function for solve
+        std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> = sparse_matrix<ITYPE,VTYPE>());
+        // Member function to get the solution
+        sparse_matrix<ITYPE,VTYPE> getSolution();
+
+    private:
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_;
+        // The variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_;
+
+};
+
+// Class of multidimensional Gaussian Elimination solver
+template<typename ITYPE, typename VTYPE>
+class gaussian_elimination : public solver<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        gaussian_elimination(sparse_matrix<ITYPE,VTYPE>, sparse_matrix<ITYPE,VTYPE>);
+        // Destructor
+        ~gaussian_elimination();
+        // Member function for solve
+        std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> = sparse_matrix<ITYPE,VTYPE>());
+        // Member function to get the solution
+        sparse_matrix<ITYPE,VTYPE> getSolution();
+
+    private:
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_;
+        // The variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_;
+        // The column segments of the constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_column_;
+
+};
+
 } // linalg
 } // mui
 
 // Include implementations
 #include "solver_cg.h"
+#include "solver_ge.h"
 
 #endif /* MUI_SOLVER_H_ */
