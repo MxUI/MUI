@@ -5,6 +5,6 @@
 Debug
 Release
 build
-conjugate_gradient
+solver
 matrix
 *.csv
