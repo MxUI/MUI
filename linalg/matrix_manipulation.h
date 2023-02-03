@@ -135,6 +135,17 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
     }
 }
 
+// Member function to swap two elements in a sparse matrix
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::swap_elements(ITYPE r1, ITYPE c1, ITYPE r2, ITYPE c2) {
+    assert(((r1 < rows_) && (r1 >= 0) && (c1 < cols_) && (c1 >= 0) &&
+            (r2 < rows_) && (r2 >= 0) && (c2 < cols_) && (c2 >= 0)) &&
+        "MUI Error [matrix_manipulation.h]: Matrix index out of range in set_value function");
+    VTYPE temp = (*this).get_value(r1, c1);
+    (*this).set_value(r1, c1, (*this).get_value(r2, c2));
+    (*this).set_value(r2, c2, temp);
+}
+
 // Member function to set all elements to zero and empty the sparse matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::set_zero() {

@@ -110,6 +110,8 @@ class sparse_matrix {
         void set_value(ITYPE, ITYPE, VTYPE);
         // Member function to insert the same value to all elements
         void set_value(VTYPE);
+        // Member function to swap two elements in a sparse matrix
+        void swap_elements(ITYPE, ITYPE, ITYPE, ITYPE);
         // Member function to set all elements to zero and empty the sparse matrix
         void set_zero();
         // Member function to add scalar to a specific elements
