@@ -175,275 +175,8 @@ public:
     inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) {
         if ( !initialised_ ) {
             const clock_t begin_time = clock();
-
-            // Facilitate Ghost cells
-            if ( local_mpi_comm_world_ != MPI_COMM_NULL ) {
-                // Determine bounding box of local points
-                point_type lbbMax,lbbMin,lbbExtendMax,lbbExtendMin;
-                try {
-                    if (CONFIG::D == 1) {
-                        lbbMax = (-std::numeric_limits<double>::max());
-                        lbbMin = (std::numeric_limits<double>::max());
-                    }else if (CONFIG::D == 2) {
-                        lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
-                        lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
-                    }else if (CONFIG::D == 3) {
-                        lbbMax += (-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max());
-                        lbbMin += (std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max());
-                    }else {
-                        throw "Invalid value of CONFIG::D exception";
-                    }
-                } catch (const char* msg) {
-                    std::cerr << msg << std::endl;
-                }
-
-                for (auto xPts : pts_) {
-                    try {
-                        switch(CONFIG::D) {
-                          case 1:
-                            if (xPts[0] >= lbbMax[0])
-                                lbbMax[0] = xPts[0];
-                            if (xPts[0] <= lbbMin[0])
-                                lbbMin[0] = xPts[0];
-                            break;
-                          case 2:
-                            if (xPts[0] >= lbbMax[0])
-                                lbbMax[0] = xPts[0];
-                            if (xPts[0] <= lbbMin[0])
-                                lbbMin[0] = xPts[0];
-                            if (xPts[1] >= lbbMax[1])
-                                lbbMax[1] = xPts[1];
-                            if (xPts[1] <= lbbMin[1])
-                                lbbMin[1] = xPts[1];
-                            break;
-                          case 3:
-                            if (xPts[0] >= lbbMax[0])
-                                lbbMax[0] = xPts[0];
-                            if (xPts[0] <= lbbMin[0])
-                                lbbMin[0] = xPts[0];
-                            if (xPts[1] >= lbbMax[1])
-                                lbbMax[1] = xPts[1];
-                            if (xPts[1] <= lbbMin[1])
-                                lbbMin[1] = xPts[1];
-                            if (xPts[2] >= lbbMax[2])
-                                lbbMax[2] = xPts[2];
-                            if (xPts[2] <= lbbMin[2])
-                                lbbMin[2] = xPts[2];
-                            break;
-                          default:
-                            throw "Invalid value of CONFIG::D exception";
-                        }
-                    } catch (const char* msg) {
-                        std::cerr << msg << std::endl;
-                    }
-                }
-
-                // Determine extended bounding box of local points include ghost area
-                lbbExtendMax = lbbMax;
-                lbbExtendMin = lbbMin;
-                for (INT i = 0; i < CONFIG::D; ++i) {
-                    lbbExtendMax[i] += r_;
-                    lbbExtendMin[i] -= r_;
-                }
-
-                std::pair<INT, std::pair<point_type,point_type>> localBB, globalBB[local_size_];
-
-                // Assign rank ID and extended bounding box of local points to localBB
-                localBB.first = local_rank_;
-                localBB.second.first = lbbExtendMax;
-                localBB.second.second = lbbExtendMin;
-
-                // Gather the bounding boxes from all processes
-                MPI_Allgather(&localBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, globalBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, local_mpi_comm_world_);
-
-                // output for debugging
-                if((!QUIET)&&(DEBUG)) {
-                    for (auto xGlobalBB : globalBB) {
-                        std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
-                    }
-                }
-
-                // Declear vector to gather number of points to send to each processors
-                std::vector<std::pair<INT,INT>> ghostPointsCountToSend;
-                for (auto xGlobalBB : globalBB) {
-                    if (xGlobalBB.first == local_rank_)
-                         continue;
-                    ghostPointsCountToSend.push_back(std::make_pair(xGlobalBB.first,0));
-                }
-
-                // Loop over local points to collect ghost points for other processors
-                std::vector<std::pair<INT,std::vector<point_type>>> ghostPointsToSend;
-                for ( size_t i = 0; i < pts_.size(); ++i ) {
-                    for (auto xGlobalBB : globalBB) {
-                        if (xGlobalBB.first == local_rank_)
-                            continue;
-                        try {
-                            switch(CONFIG::D) {
-                              case 1: {
-                                if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
-                                   (pts_[i][0] >= xGlobalBB.second.second[0])) {
-
-                                    auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
-                                        return b.first == xGlobalBB.first;});
-                                    auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
-                                        return b.first == xGlobalBB.first;});
-
-                                    if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
-                                        std::vector<point_type> vecPointTemp{pts_[i]};
-                                        ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
-                                    } else {
-                                        ghostPointsToSendIter->second.push_back(pts_[i]);
-                                    }
-
-                                    assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
-                                    ++ghostPointsCountToSendIter->second;
-                                }
-                                break;
-                              }
-                              case 2: {
-                                if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
-                                   (pts_[i][0] >= xGlobalBB.second.second[0]) &&
-                                   (pts_[i][1] <= xGlobalBB.second.first[1])  &&
-                                   (pts_[i][1] >= xGlobalBB.second.second[1])) {
-
-                                    auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
-                                        return b.first == xGlobalBB.first;});
-                                    auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
-                                        return b.first == xGlobalBB.first;});
-
-                                    if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
-                                        std::vector<point_type> vecPointTemp{pts_[i]};
-                                        ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
-                                    } else {
-                                        ghostPointsToSendIter->second.push_back(pts_[i]);
-                                    }
-
-                                    assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
-                                    ++ghostPointsCountToSendIter->second;
-                                }
-                                break;
-                              }
-                              case 3: {
-                                if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
-                                   (pts_[i][0] >= xGlobalBB.second.second[0]) &&
-                                   (pts_[i][1] <= xGlobalBB.second.first[1])  &&
-                                   (pts_[i][1] >= xGlobalBB.second.second[1]) &&
-                                   (pts_[i][2] <= xGlobalBB.second.first[2])  &&
-                                   (pts_[i][2] >= xGlobalBB.second.second[2])) {
-
-                                    auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
-                                        return b.first == xGlobalBB.first;});
-                                    auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
-                                        return b.first == xGlobalBB.first;});
-
-                                    if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
-                                        std::vector<point_type> vecPointTemp{pts_[i]};
-                                        ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
-                                    } else {
-                                        ghostPointsToSendIter->second.push_back(pts_[i]);
-                                    }
-
-                                    assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
-                                    ++ghostPointsCountToSendIter->second;
-                                }
-                                break;
-                              }
-                              default:
-                                throw "Invalid value of CONFIG::D exception";
-                            }
-                        } catch (const char* msg) {
-                            std::cerr << msg << std::endl;
-                        }
-                    }
-                }
-
-                // output for debugging
-                if((!QUIET)&&(DEBUG)) {
-                    std::cout << "total size of GhostPointsToSend " << ghostPointsToSend.size() << " at rank " << local_rank_  << std::endl;
-                    for (auto xGhostPointsToSend : ghostPointsToSend) {
-                        std::cout << "xGhostPointsToSend to rank " << xGhostPointsToSend.first << " at rank " << local_rank_  << std::endl;
-                        for (auto xVectPts : xGhostPointsToSend.second) {
-                            std::cout << xVectPts[0] << " " << xVectPts[1] << " at rank " << local_rank_  << std::endl;
-                        }
-                    }
-                    for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
-                        std::cout << "xGhostPointsCountToSend to rank " << xGhostPointsCountToSend.first << " has " << xGhostPointsCountToSend.second << " points to send at rank " << local_rank_  << std::endl;
-                    }
-                }
-
-                // Distribution of ghost points among processors by all to all
-                std::vector<std::pair<INT,INT>> ghostPointsCountToRecv;
-                for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
-                    assert(xGhostPointsCountToSend.first != local_rank_);
-                    assert(xGhostPointsCountToSend.second >= 0);
-                    // Determined of number of points to transfer by pairwise communication
-                    MPI_Send(&xGhostPointsCountToSend.second, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_mpi_comm_world_);
-                    int pointsCountTemp = -1;
-                    MPI_Recv(&pointsCountTemp, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_mpi_comm_world_, MPI_STATUS_IGNORE);
-                    assert(pointsCountTemp >= 0);
-                    ghostPointsCountToRecv.push_back(std::make_pair(xGhostPointsCountToSend.first,pointsCountTemp));
-
-                    // Send ghost points by pairwise communication
-                    if(xGhostPointsCountToSend.second != 0) {
-                        auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGhostPointsCountToSend](std::pair<INT,std::vector<point_type>> b) {
-                            return b.first == xGhostPointsCountToSend.first;});
-                        assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
-                        int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
-                        char* buffer = new char[buffer_size];
-                        int position = 0;
-                        for (auto &pointElement : ghostPointsToSendIter->second) {
-                              MPI_Pack(&pointElement, sizeof(point_type), MPI_BYTE, buffer, buffer_size, &position, local_mpi_comm_world_);
-                        }
-                        MPI_Send(buffer, position, MPI_PACKED, xGhostPointsCountToSend.first, 1, local_mpi_comm_world_);
-                        delete[] buffer;
-                        // output for debugging
-                        if((!QUIET)&&(DEBUG)) {
-                            for (auto xsend : ghostPointsToSendIter->second) {
-                                std::cout << "send ghost point to rank " << xGhostPointsCountToSend.first << " with value of " <<  xsend[0] << " " << xsend[1] << " at rank " << local_rank_  << std::endl;
-                            }
-                        }
-                    }
-
-                    // Receive ghost points by pairwise communication
-                    auto ghostPointsCountToRecvIter = std::find_if(ghostPointsCountToRecv.begin(), ghostPointsCountToRecv.end(), [xGhostPointsCountToSend](std::pair<INT,INT> b) {
-                        return b.first == xGhostPointsCountToSend.first;});
-                    if(ghostPointsCountToRecvIter->second != 0) {
-                        std::vector<point_type> vecPointTemp;
-                        MPI_Status status;
-                        MPI_Probe(ghostPointsCountToRecvIter->first, 1, local_mpi_comm_world_, &status);
-                        int buffer_size;
-                        MPI_Get_count(&status, MPI_PACKED, &buffer_size);
-                        char* buffer = new char[buffer_size];
-                        MPI_Recv(buffer, buffer_size, MPI_PACKED, ghostPointsCountToRecvIter->first, 1, local_mpi_comm_world_, MPI_STATUS_IGNORE);
-                        int position = 0;
-                        int count;
-                        MPI_Get_elements(&status, MPI_BYTE, &count);
-                        vecPointTemp.resize(count / sizeof(point_type));
-                        for (auto &pointElement : vecPointTemp) {
-                            MPI_Unpack(buffer, buffer_size, &position, &pointElement, sizeof(point_type), MPI_BYTE, local_mpi_comm_world_);
-                        }
-                        delete[] buffer;
-                        for (auto xvecPointTemp : vecPointTemp) {
-                            addFetchPointGhost(xvecPointTemp);
-                            // output for debugging
-                            if((!QUIET)&&(DEBUG)) {
-                                std::cout << "receive ghost point from rank " << ghostPointsCountToRecvIter->first << " with value of " <<  xvecPointTemp[0] << " " << xvecPointTemp[1] << " at rank " << local_rank_  << std::endl;
-                            }
-                        }
-                    }
-                }
-
-                // output for debugging
-                if((!QUIET)&&(DEBUG)) {
-                    std::cout << "local bounding box: " << lbbMax[0] << " " << lbbMax[1] << " "<< lbbMin[0] << " "<< lbbMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-                    std::cout << "extended local bounding box: " << lbbExtendMax[0] << " " << lbbExtendMax[1] << " "<< lbbExtendMin[0] << " "<< lbbExtendMin[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-                    std::cout << "localBB: " << localBB.first << " " << localBB.second.first[0] << " " << localBB.second.first[1] << " "<< localBB.second.second[0] << " "<< localBB.second.second[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
-                }
-
-                // Construct the extened local points by combine local points with ghost points
-                ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
-            }
-
+            // Facilitate Ghost points
+            facilitateGhostPoints();
             REAL error = computeRBFtransformationMatrix(data_points);
             if (!QUIET) {
                 std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
@@ -528,6 +261,298 @@ public:
         ptsGhost_.emplace_back(pt);
         initialised_ = false;
     }
+
+    // vvvvvvvvvv Group of functions to facilitate ghost points vvvvvvvvvv
+
+    // Determine bounding box of local points
+    std::pair<point_type, point_type> localBoundingBox (const std::vector<point_type> pt) {
+        point_type lbbMin,lbbMax;
+        try {
+            if (CONFIG::D == 1) {
+                lbbMax = (-std::numeric_limits<REAL>::max());
+                lbbMin = (std::numeric_limits<REAL>::max());
+            }else if (CONFIG::D == 2) {
+                lbbMax += (-std::numeric_limits<REAL>::max(),-std::numeric_limits<REAL>::max());
+                lbbMin += (std::numeric_limits<REAL>::max(),std::numeric_limits<REAL>::max());
+            }else if (CONFIG::D == 3) {
+                lbbMax += (-std::numeric_limits<REAL>::max(),-std::numeric_limits<REAL>::max(),-std::numeric_limits<REAL>::max());
+                lbbMin += (std::numeric_limits<REAL>::max(),std::numeric_limits<REAL>::max(),std::numeric_limits<REAL>::max());
+            }else {
+                throw "Invalid value of CONFIG::D exception";
+            }
+        } catch (const char* msg) {
+            std::cerr << msg << std::endl;
+        }
+
+        for (auto xPts : pt) {
+            try {
+                switch(CONFIG::D) {
+                  case 1:
+                    if (xPts[0] >= lbbMax[0])
+                        lbbMax[0] = xPts[0];
+                    if (xPts[0] <= lbbMin[0])
+                        lbbMin[0] = xPts[0];
+                    break;
+                  case 2:
+                    if (xPts[0] >= lbbMax[0])
+                        lbbMax[0] = xPts[0];
+                    if (xPts[0] <= lbbMin[0])
+                        lbbMin[0] = xPts[0];
+                    if (xPts[1] >= lbbMax[1])
+                        lbbMax[1] = xPts[1];
+                    if (xPts[1] <= lbbMin[1])
+                        lbbMin[1] = xPts[1];
+                    break;
+                  case 3:
+                    if (xPts[0] >= lbbMax[0])
+                        lbbMax[0] = xPts[0];
+                    if (xPts[0] <= lbbMin[0])
+                        lbbMin[0] = xPts[0];
+                    if (xPts[1] >= lbbMax[1])
+                        lbbMax[1] = xPts[1];
+                    if (xPts[1] <= lbbMin[1])
+                        lbbMin[1] = xPts[1];
+                    if (xPts[2] >= lbbMax[2])
+                        lbbMax[2] = xPts[2];
+                    if (xPts[2] <= lbbMin[2])
+                        lbbMin[2] = xPts[2];
+                    break;
+                  default:
+                    throw "Invalid value of CONFIG::D exception";
+                }
+            } catch (const char* msg) {
+                std::cerr << msg << std::endl;
+            }
+        }
+        return std::make_pair(lbbMin,lbbMax);
+    }
+
+    // Determine extended bounding box of local points include ghost area
+    std::pair<point_type,point_type> localExtendBoundingBox(std::pair<point_type, point_type> lbb, REAL r){
+        point_type lbbExtendMin,lbbExtendMax;
+        lbbExtendMin = lbb.first;
+        lbbExtendMax = lbb.second;
+        for (INT i = 0; i < CONFIG::D; ++i) {
+            lbbExtendMax[i] += r;
+            lbbExtendMin[i] -= r;
+        }
+        return std::make_pair(lbbExtendMin,lbbExtendMax);
+    }
+
+    // Collect points that will be sent to other processors as ghost points
+    std::pair<std::vector<std::pair<INT,INT>>,std::vector<std::pair<INT,std::vector<point_type>>>> getGhostPointsToSend (std::pair<point_type,point_type> lbbExtend, MPI_Comm local_world, int local_rank, int local_size) {
+        std::pair<INT, std::pair<point_type,point_type>> localBB, globalBB[local_size];
+
+        // Assign rank ID and extended bounding box of local points to localBB
+        localBB.first = local_rank;
+        localBB.second.first = lbbExtend.second;
+        localBB.second.second = lbbExtend.first;
+
+        // Gather the bounding boxes from all processes
+        MPI_Allgather(&localBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, globalBB, sizeof(std::pair<INT, std::pair<point_type,point_type>>), MPI_BYTE, local_world);
+
+        // output for debugging
+        if((!QUIET)&&(DEBUG)) {
+            for (auto xGlobalBB : globalBB) {
+                std::cout << "globalBBs: " << xGlobalBB.first << " " << xGlobalBB.second.first[0] << " " << xGlobalBB.second.first[1] << " " << xGlobalBB.second.second[0] << " " << xGlobalBB.second.second[1] << " at rank " << local_rank_  << std::endl;
+            }
+        }
+
+        // Declear vector to gather number of points to send to each processors
+        std::vector<std::pair<INT,INT>> ghostPointsCountToSend;
+        for (auto xGlobalBB : globalBB) {
+            if (xGlobalBB.first == local_rank)
+                 continue;
+            ghostPointsCountToSend.push_back(std::make_pair(xGlobalBB.first,0));
+        }
+
+        // Loop over local points to collect ghost points for other processors
+        std::vector<std::pair<INT,std::vector<point_type>>> ghostPointsToSend;
+        for ( size_t i = 0; i < pts_.size(); ++i ) {
+            for (auto xGlobalBB : globalBB) {
+                if (xGlobalBB.first == local_rank)
+                    continue;
+                try {
+                    switch(CONFIG::D) {
+                      case 1: {
+                        if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+                           (pts_[i][0] >= xGlobalBB.second.second[0])) {
+
+                            auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+                                return b.first == xGlobalBB.first;});
+                            auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
+                                return b.first == xGlobalBB.first;});
+
+                            if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+                                std::vector<point_type> vecPointTemp{pts_[i]};
+                                ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+                            } else {
+                                ghostPointsToSendIter->second.push_back(pts_[i]);
+                            }
+
+                            assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+                            ++ghostPointsCountToSendIter->second;
+                        }
+                        break;
+                      }
+                      case 2: {
+                        if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+                           (pts_[i][0] >= xGlobalBB.second.second[0]) &&
+                           (pts_[i][1] <= xGlobalBB.second.first[1])  &&
+                           (pts_[i][1] >= xGlobalBB.second.second[1])) {
+
+                            auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+                                return b.first == xGlobalBB.first;});
+                            auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
+                                return b.first == xGlobalBB.first;});
+
+                            if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+                                std::vector<point_type> vecPointTemp{pts_[i]};
+                                ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+                            } else {
+                                ghostPointsToSendIter->second.push_back(pts_[i]);
+                            }
+
+                            assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+                            ++ghostPointsCountToSendIter->second;
+                        }
+                        break;
+                      }
+                      case 3: {
+                        if ((pts_[i][0] <= xGlobalBB.second.first[0]) &&
+                           (pts_[i][0] >= xGlobalBB.second.second[0]) &&
+                           (pts_[i][1] <= xGlobalBB.second.first[1])  &&
+                           (pts_[i][1] >= xGlobalBB.second.second[1]) &&
+                           (pts_[i][2] <= xGlobalBB.second.first[2])  &&
+                           (pts_[i][2] >= xGlobalBB.second.second[2])) {
+
+                            auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGlobalBB](std::pair<INT,std::vector<point_type>> b) {
+                                return b.first == xGlobalBB.first;});
+                            auto ghostPointsCountToSendIter = std::find_if(ghostPointsCountToSend.begin(), ghostPointsCountToSend.end(), [xGlobalBB](std::pair<INT,INT> b) {
+                                return b.first == xGlobalBB.first;});
+
+                            if ( ghostPointsToSendIter == std::end(ghostPointsToSend) ) {
+                                std::vector<point_type> vecPointTemp{pts_[i]};
+                                ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,vecPointTemp));
+                            } else {
+                                ghostPointsToSendIter->second.push_back(pts_[i]);
+                            }
+
+                            assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+                            ++ghostPointsCountToSendIter->second;
+                        }
+                        break;
+                      }
+                      default:
+                        throw "Invalid value of CONFIG::D exception";
+                    }
+                } catch (const char* msg) {
+                    std::cerr << msg << std::endl;
+                }
+            }
+        }
+
+        // output for debugging
+        if((!QUIET)&&(DEBUG)) {
+            std::cout << "total size of GhostPointsToSend " << ghostPointsToSend.size() << " at rank " << local_rank  << std::endl;
+            for (auto xGhostPointsToSend : ghostPointsToSend) {
+                std::cout << "xGhostPointsToSend to rank " << xGhostPointsToSend.first << " at rank " << local_rank  << std::endl;
+                for (auto xVectPts : xGhostPointsToSend.second) {
+                    std::cout << xVectPts[0] << " " << xVectPts[1] << " at rank " << local_rank  << std::endl;
+                }
+            }
+            for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
+                std::cout << "xGhostPointsCountToSend to rank " << xGhostPointsCountToSend.first << " has " << xGhostPointsCountToSend.second << " points to send at rank " << local_rank_  << std::endl;
+            }
+        }
+        return std::make_pair(ghostPointsCountToSend, ghostPointsToSend);
+    }
+
+    // Distribution of ghost points among processors by all to all
+    std::vector<point_type> distributeGhostPoints (std::vector<std::pair<INT,INT>> ghostPointsCountToSend, std::vector<std::pair<INT,std::vector<point_type>>> ghostPointsToSend, MPI_Comm local_world, int local_rank) {
+        std::vector<point_type> ptsGhost;
+        std::vector<std::pair<INT,INT>> ghostPointsCountToRecv;
+        for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
+            assert(xGhostPointsCountToSend.first != local_rank);
+            assert(xGhostPointsCountToSend.second >= 0);
+            // Determined of number of points to transfer by pairwise communication
+            MPI_Send(&xGhostPointsCountToSend.second, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_world);
+            int pointsCountTemp = -1;
+            MPI_Recv(&pointsCountTemp, 1, MPI_INT, xGhostPointsCountToSend.first, 0, local_world, MPI_STATUS_IGNORE);
+            assert(pointsCountTemp >= 0);
+            ghostPointsCountToRecv.push_back(std::make_pair(xGhostPointsCountToSend.first,pointsCountTemp));
+
+            // Send ghost points by pairwise communication
+            if(xGhostPointsCountToSend.second != 0) {
+                auto ghostPointsToSendIter = std::find_if(ghostPointsToSend.begin(), ghostPointsToSend.end(), [xGhostPointsCountToSend](std::pair<INT,std::vector<point_type>> b) {
+                    return b.first == xGhostPointsCountToSend.first;});
+                assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
+                int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
+                char* buffer = new char[buffer_size];
+                int position = 0;
+                for (auto &pointElement : ghostPointsToSendIter->second) {
+                      MPI_Pack(&pointElement, sizeof(point_type), MPI_BYTE, buffer, buffer_size, &position, local_world);
+                }
+                MPI_Send(buffer, position, MPI_PACKED, xGhostPointsCountToSend.first, 1, local_world);
+                delete[] buffer;
+                // output for debugging
+                if((!QUIET)&&(DEBUG)) {
+                    for (auto xsend : ghostPointsToSendIter->second) {
+                        std::cout << "send ghost point to rank " << xGhostPointsCountToSend.first << " with value of " <<  xsend[0] << " " << xsend[1] << " at rank " << local_rank  << std::endl;
+                    }
+                }
+            }
+
+            // Receive ghost points by pairwise communication
+            auto ghostPointsCountToRecvIter = std::find_if(ghostPointsCountToRecv.begin(), ghostPointsCountToRecv.end(), [xGhostPointsCountToSend](std::pair<INT,INT> b) {
+                return b.first == xGhostPointsCountToSend.first;});
+            if(ghostPointsCountToRecvIter->second != 0) {
+                std::vector<point_type> vecPointTemp;
+                MPI_Status status;
+                MPI_Probe(ghostPointsCountToRecvIter->first, 1, local_world, &status);
+                int buffer_size;
+                MPI_Get_count(&status, MPI_PACKED, &buffer_size);
+                char* buffer = new char[buffer_size];
+                MPI_Recv(buffer, buffer_size, MPI_PACKED, ghostPointsCountToRecvIter->first, 1, local_world, MPI_STATUS_IGNORE);
+                int position = 0;
+                int count;
+                MPI_Get_elements(&status, MPI_BYTE, &count);
+                vecPointTemp.resize(count / sizeof(point_type));
+                for (auto &pointElement : vecPointTemp) {
+                    MPI_Unpack(buffer, buffer_size, &position, &pointElement, sizeof(point_type), MPI_BYTE, local_world);
+                }
+                delete[] buffer;
+                for (auto xvecPointTemp : vecPointTemp) {
+                    ptsGhost.emplace_back(xvecPointTemp);
+                    // output for debugging
+                    if((!QUIET)&&(DEBUG)) {
+                        std::cout << "receive ghost point from rank " << ghostPointsCountToRecvIter->first << " with value of " <<  xvecPointTemp[0] << " " << xvecPointTemp[1] << " at rank " << local_rank  << std::endl;
+                    }
+                }
+            }
+        }
+        return ptsGhost;
+    }
+
+    // Facilitate Ghost points
+    void facilitateGhostPoints() {
+        std::pair<point_type,point_type> lbb = localBoundingBox(pts_);
+        std::pair<point_type,point_type> lbbExtend = localExtendBoundingBox(lbb, r_);
+        if ( local_mpi_comm_world_ != MPI_COMM_NULL ) {
+            std::pair<std::vector<std::pair<INT,INT>>,std::vector<std::pair<INT,std::vector<point_type>>>> ghostPointsToSendPair =
+                    getGhostPointsToSend(lbbExtend, local_mpi_comm_world_, local_rank_, local_size_);
+            ptsGhost_ = distributeGhostPoints(ghostPointsToSendPair.first, ghostPointsToSendPair.second, local_mpi_comm_world_, local_rank_);
+            // output for debugging
+            if((!QUIET)&&(DEBUG)) {
+                std::cout << "local bounding box: " << lbb.second[0] << " " << lbb.second[1] << " "<< lbb.first[0] << " "<< lbb.first[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+                std::cout << "extended local bounding box: " << lbbExtend.second[0] << " " << lbbExtend.second[1] << " "<< lbbExtend.first[0] << " "<< lbbExtend.first[1] << " at rank " << local_rank_ << " out of total ranks " << local_size_ << std::endl;
+            }
+        }
+        // Construct the extened local points by combine local points with ghost points
+        ptsExtend_.insert(ptsExtend_.end(), ptsGhost_.begin(), ptsGhost_.end());
+    }
+
+    // ^^^^^^^^^^ Group of functions to facilitate ghost points ^^^^^^^^^^
 
 private:
     template<template<typename, typename > class CONTAINER>
@@ -687,120 +712,120 @@ private:
         REAL errorReturn = 0;
         std::pair<INT, REAL> iterErrorReturn(0,0);
 
-		for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
-			linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-			linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+        for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
+            linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+            linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-			Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-			Aas.resize_null((1 + NP + CONFIG::D), 1);
+            Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+            Aas.resize_null((1 + NP + CONFIG::D), 1);
 
-			//set Css
-			for ( INT i = 0; i < NP; i++ ) {
-				for ( INT j = i; j < NP; j++ ) {
-					int glob_i = connectivityAB_[row][i];
-					int glob_j = connectivityAB_[row][j];
+            //set Css
+            for ( INT i = 0; i < NP; i++ ) {
+                for ( INT j = i; j < NP; j++ ) {
+                    int glob_i = connectivityAB_[row][i];
+                    int glob_j = connectivityAB_[row][j];
 
-					auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
+                    auto d = norm(data_points[glob_i].first - data_points[glob_j].first);
 
-					if ( d < r_ ) {
-						REAL w = rbf(d);
-						Css.set_value(i, j, w);
-						if ( i != j )
-							Css.set_value(j, i, w);
-					}
-				}
-			}
+                    if ( d < r_ ) {
+                        REAL w = rbf(d);
+                        Css.set_value(i, j, w);
+                        if ( i != j )
+                            Css.set_value(j, i, w);
+                    }
+                }
+            }
 
-			for ( INT i = 0; i < NP; i++ ) {
-				Css.set_value(i, NP, 1);
-				Css.set_value(NP, i, 1);
+            for ( INT i = 0; i < NP; i++ ) {
+                Css.set_value(i, NP, 1);
+                Css.set_value(NP, i, 1);
 
-				int glob_i = connectivityAB_[row][i];
+                int glob_i = connectivityAB_[row][i];
 
-				for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-					Css.set_value(i, (NP + dim + 1), data_points[glob_i].first[dim]);
-					Css.set_value((NP + dim + 1), i, data_points[glob_i].first[dim]);
-				}
-			}
+                for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
+                    Css.set_value(i, (NP + dim + 1), data_points[glob_i].first[dim]);
+                    Css.set_value((NP + dim + 1), i, data_points[glob_i].first[dim]);
+                }
+            }
 
-			//set Aas
-			for ( INT j = 0; j < NP; j++ ) {
-				int glob_j = connectivityAB_[row][j];
+            //set Aas
+            for ( INT j = 0; j < NP; j++ ) {
+                int glob_j = connectivityAB_[row][j];
 
-				auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
+                auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
 
-				if ( d < r_ ) {
-					Aas.set_value(j, 0, rbf(d));
-				}
-			}
+                if ( d < r_ ) {
+                    Aas.set_value(j, 0, rbf(d));
+                }
+            }
 
-			Aas.set_value(NP, 0, 1);
+            Aas.set_value(NP, 0, 1);
 
-			for (int dim = 0; dim < CONFIG::D; dim++) {
-				Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
-			}
+            for (int dim = 0; dim < CONFIG::D; dim++) {
+                Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
+            }
 
-			linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
+            linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
+            iterErrorReturn = cg.solve();
+            linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
 
-			if ( DEBUG ) {
-				std::cout << "#iterations of H_i:     "
-						<< iterErrorReturn.first
-						<< ". Error of H_i: " << iterErrorReturn.second
-						<< std::endl;
-			}
+            if ( DEBUG ) {
+                std::cout << "#iterations of H_i:     "
+                        << iterErrorReturn.first
+                        << ". Error of H_i: " << iterErrorReturn.second
+                        << std::endl;
+            }
 
-			errorReturn += iterErrorReturn.second;
+            errorReturn += iterErrorReturn.second;
 
-			if ( smoothing ) {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
-				}
-			} else {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_.set_value(row, glob_j, H_i.get_value(j, 0));
-				}
-			}
-		}
+            if ( smoothing ) {
+                for ( size_t j = 0; j < NP; j++ ) {
+                    INT glob_j = connectivityAB_[row][j];
+                    H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
+                }
+            } else {
+                for ( size_t j = 0; j < NP; j++ ) {
+                    INT glob_j = connectivityAB_[row][j];
+                    H_.set_value(row, glob_j, H_i.get_value(j, 0));
+                }
+            }
+        }
 
-		errorReturn /= static_cast<REAL>(pts_.size());
+        errorReturn /= static_cast<REAL>(pts_.size());
 
-		if ( smoothing ) {
-			for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					REAL h_j_sum = 0.;
-					REAL f_sum = 0.;
+        if ( smoothing ) {
+            for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
+                for ( size_t j = 0; j < NP; j++ ) {
+                    INT glob_j = connectivityAB_[row][j];
+                    REAL h_j_sum = 0.;
+                    REAL f_sum = 0.;
 
-					for ( size_t k = 0; k < MP; k++ ) {
-						INT row_k = connectivityAA_[row][k];
-						if ( row_k == static_cast<INT>(row) ) {
-							std::cerr << "Invalid row_k value: "
-									<< row_k << std::endl;
-						}
-						else
-							h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
-					}
+                    for ( size_t k = 0; k < MP; k++ ) {
+                        INT row_k = connectivityAA_[row][k];
+                        if ( row_k == static_cast<INT>(row) ) {
+                            std::cerr << "Invalid row_k value: "
+                                    << row_k << std::endl;
+                        }
+                        else
+                            h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+                    }
 
-					for ( size_t k = 0; k < MP; k++ ) {
-						INT row_k = connectivityAA_[row][k];
-						if ( row_k == static_cast<INT>(row) ) {
-							std::cerr << "Invalid row_k value: "
-									<< row_k << std::endl;
-						}
-						else {
-							REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-							f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
-						}
-					}
+                    for ( size_t k = 0; k < MP; k++ ) {
+                        INT row_k = connectivityAA_[row][k];
+                        if ( row_k == static_cast<INT>(row) ) {
+                            std::cerr << "Invalid row_k value: "
+                                    << row_k << std::endl;
+                        }
+                        else {
+                            REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+                            f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
+                        }
+                    }
 
-					H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
-				}
-			}
-		}
+                    H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
+                }
+            }
+        }
 
         return errorReturn;
     }
@@ -810,120 +835,120 @@ private:
         REAL errorReturn = 0;
         std::pair<INT, REAL> iterErrorReturn(0,0);
 
-		for ( size_t row = 0; row < data_points.size(); row++ ) {
-			linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-			linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+        for ( size_t row = 0; row < data_points.size(); row++ ) {
+            linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+            linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-			Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-			Aas.resize_null((1 + NP + CONFIG::D), 1);
+            Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+            Aas.resize_null((1 + NP + CONFIG::D), 1);
 
-			//set Css
-			for ( size_t i = 0; i < NP; i++ ) {
-				for ( size_t j = i; j < NP; j++ ) {
-					INT glob_i = connectivityAB_[row][i];
-					INT glob_j = connectivityAB_[row][j];
+            //set Css
+            for ( size_t i = 0; i < NP; i++ ) {
+                for ( size_t j = i; j < NP; j++ ) {
+                    INT glob_i = connectivityAB_[row][i];
+                    INT glob_j = connectivityAB_[row][j];
 
-					auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
+                    auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
 
-					if ( d < r_ ) {
-						REAL w = rbf(d);
-						Css.set_value(i, j, w);
-						if ( i != j )
-							Css.set_value(j, i, w);
-					}
-				}
-			}
+                    if ( d < r_ ) {
+                        REAL w = rbf(d);
+                        Css.set_value(i, j, w);
+                        if ( i != j )
+                            Css.set_value(j, i, w);
+                    }
+                }
+            }
 
-			for ( size_t i = 0; i < NP; i++ ) {
-				Css.set_value(i, NP, 1);
-				Css.set_value(NP, i, 1);
+            for ( size_t i = 0; i < NP; i++ ) {
+                Css.set_value(i, NP, 1);
+                Css.set_value(NP, i, 1);
 
-				INT glob_i = connectivityAB_[row][i];
+                INT glob_i = connectivityAB_[row][i];
 
-				for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
-					Css.set_value(i, (NP + dim + 1), ptsExtend_[glob_i][dim]);
-					Css.set_value((NP + dim + 1), i, ptsExtend_[glob_i][dim]);
-				}
-			}
+                for ( INT dim = 0; dim < CONFIG::D; dim++ ) {
+                    Css.set_value(i, (NP + dim + 1), ptsExtend_[glob_i][dim]);
+                    Css.set_value((NP + dim + 1), i, ptsExtend_[glob_i][dim]);
+                }
+            }
 
-			//set Aas
-			for ( size_t j = 0; j < NP; j++ ) {
-				INT glob_j = connectivityAB_[row][j];
+            //set Aas
+            for ( size_t j = 0; j < NP; j++ ) {
+                INT glob_j = connectivityAB_[row][j];
 
-				auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
+                auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
 
-				if ( d < r_ ) {
-					Aas.set_value(j, 0, rbf(d));
-				}
-			}
+                if ( d < r_ ) {
+                    Aas.set_value(j, 0, rbf(d));
+                }
+            }
 
-			Aas.set_value(NP, 0, 1);
+            Aas.set_value(NP, 0, 1);
 
-			for ( int dim = 0; dim < CONFIG::D; dim++ ) {
-				Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
-			}
+            for ( int dim = 0; dim < CONFIG::D; dim++ ) {
+                Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
+            }
 
-			linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
+            linalg::conjugate_gradient<INT,REAL> cg = getCGSolver(&Css, &Aas);
+            iterErrorReturn = cg.solve();
+            linalg::sparse_matrix<INT,REAL> H_i = cg.getSolution();
 
-			if ( DEBUG ) {
-				std::cout << "#iterations of H_i:     "
-						<< iterErrorReturn.first
-						<< ". Error of H_i: " << iterErrorReturn.second
-						<< std::endl;
-			}
+            if ( DEBUG ) {
+                std::cout << "#iterations of H_i:     "
+                        << iterErrorReturn.first
+                        << ". Error of H_i: " << iterErrorReturn.second
+                        << std::endl;
+            }
 
-			errorReturn += iterErrorReturn.second;
+            errorReturn += iterErrorReturn.second;
 
-			if ( smoothing ) {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
-				}
-			} else {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT glob_j = connectivityAB_[row][j];
-					H_.set_value(glob_j, row, H_i.get_value(j, 0));
-				}
-			}
-		}
+            if ( smoothing ) {
+                for ( size_t j = 0; j < NP; j++ ) {
+                    INT glob_j = connectivityAB_[row][j];
+                    H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
+                }
+            } else {
+                for ( size_t j = 0; j < NP; j++ ) {
+                    INT glob_j = connectivityAB_[row][j];
+                    H_.set_value(glob_j, row, H_i.get_value(j, 0));
+                }
+            }
+        }
 
-		errorReturn /= static_cast<REAL>(data_points.size());
+        errorReturn /= static_cast<REAL>(data_points.size());
 
-		if ( smoothing ) {
-			for ( size_t row = 0; row < data_points.size(); row++ ) {
-				for ( size_t j = 0; j < NP; j++ ) {
-					INT row_i = connectivityAB_[row][j];
-					REAL h_j_sum = 0.;
-					REAL f_sum = 0.;
+        if ( smoothing ) {
+            for ( size_t row = 0; row < data_points.size(); row++ ) {
+                for ( size_t j = 0; j < NP; j++ ) {
+                    INT row_i = connectivityAB_[row][j];
+                    REAL h_j_sum = 0.;
+                    REAL f_sum = 0.;
 
-					for ( size_t k = 0; k < MP; k++ ) {
-						INT row_k = connectivityAA_[row_i][k];
-						if ( row_k == static_cast<INT>(row_i) ) {
-							std::cerr << "Invalid row_k value: "
-									<< row_k << std::endl;
-						}
-						else
-							h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
-					}
+                    for ( size_t k = 0; k < MP; k++ ) {
+                        INT row_k = connectivityAA_[row_i][k];
+                        if ( row_k == static_cast<INT>(row_i) ) {
+                            std::cerr << "Invalid row_k value: "
+                                    << row_k << std::endl;
+                        }
+                        else
+                            h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
+                    }
 
-					for ( size_t k = 0; k < MP; k++ ) {
-						INT row_k = connectivityAA_[row_i][k];
-						if ( row_k == static_cast<INT>(row_i) ) {
-							std::cerr << "Invalid row_k value: "
-									<< row_k << std::endl;
-						}
-						else {
-							REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.)) / (h_j_sum));
-							f_sum += w_i * H_toSmooth_.get_value(row_k, row);
-						}
-					}
+                    for ( size_t k = 0; k < MP; k++ ) {
+                        INT row_k = connectivityAA_[row_i][k];
+                        if ( row_k == static_cast<INT>(row_i) ) {
+                            std::cerr << "Invalid row_k value: "
+                                    << row_k << std::endl;
+                        }
+                        else {
+                            REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.)) / (h_j_sum));
+                            f_sum += w_i * H_toSmooth_.get_value(row_k, row);
+                        }
+                    }
 
-					H_.set_value(row_i, row, (0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
-				}
-			}
-		}
+                    H_.set_value(row_i, row, (0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
+                }
+            }
+        }
 
         return errorReturn;
     }
