@@ -56,21 +56,21 @@ namespace mui {
 namespace linalg {
 
 // Function to left trim a string - helper function on matrix file I/O
-std::string ltrim(const std::string &s) {
+inline std::string ltrim(const std::string &s) {
     const std::string WHITESPACE = " \n\r\t\f\v";
     size_t start = s.find_first_not_of(WHITESPACE);
     return (start == std::string::npos) ? "" : s.substr(start);
 }
 
 // Function to right trim a string - helper function on matrix file I/O
-std::string rtrim(const std::string &s) {
+inline std::string rtrim(const std::string &s) {
     const std::string WHITESPACE = " \n\r\t\f\v";
     size_t end = s.find_last_not_of(WHITESPACE);
     return (end == std::string::npos) ? "" : s.substr(0, end + 1);
 }
 
 // Function to trim a string on both sides - helper function on matrix file I/O
-std::string trim(const std::string &s) {
+inline std::string trim(const std::string &s) {
     return rtrim(ltrim(s));
 }
 
