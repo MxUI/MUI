@@ -1401,8 +1401,8 @@ protected:
     std::vector<std::vector<INT> > connectivityAA_;
 
     MPI_Comm local_mpi_comm_world_;
-    INT local_size_;
-    INT local_rank_;
+    int local_size_;
+    int local_rank_;
 
 };
 } // mui
