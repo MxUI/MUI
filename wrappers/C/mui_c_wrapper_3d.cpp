@@ -571,8 +571,8 @@ mui_sampler_sum_quintic_3t* mui_create_sampler_sum_quintic_3t(double r) {
 #ifdef USE_RBF
 // Radial Basis Function sampler
 mui_sampler_rbf_3f* mui_create_sampler_rbf_3f(float r, mui_point_3f *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size) {
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm) {
 	std::vector<mui::point3f> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
@@ -580,28 +580,28 @@ mui_sampler_rbf_3f* mui_create_sampler_rbf_3f(float r, mui_point_3f *points, int
 		pts[i][2] = points[i].point_3;
 	}
 
-	return new mui_sampler_rbf_3f(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
+	return new mui_sampler_rbf_3f(r, pts, basis_func, static_cast<bool>(conservative),
 			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
-			cutoff, cg_solve_tol, cg_solve_it, pou_size);
+			cutoff, cg_solve_tol, cg_solve_it, pou_size, precond, local_comm);
 }
 
 mui_sampler_rbf_3fx* mui_create_sampler_rbf_3fx(float r, mui_point_3fx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size) {
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm) {
 	std::vector<mui::point3fx> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
 		pts[i][1] = points[i].point_2;
 		pts[i][2] = points[i].point_3;
 	}
-	return new mui_sampler_rbf_3fx(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
+	return new mui_sampler_rbf_3fx(r, pts, basis_func, static_cast<bool>(conservative),
 			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
-			cutoff, cg_solve_tol, cg_solve_it, pou_size);
+			cutoff, cg_solve_tol, cg_solve_it, pou_size, precond, local_comm);
 }
 
 mui_sampler_rbf_3d* mui_create_sampler_rbf_3d(double r, mui_point_3d *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size) {
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm) {
 	std::vector<mui::point3d> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
@@ -609,14 +609,14 @@ mui_sampler_rbf_3d* mui_create_sampler_rbf_3d(double r, mui_point_3d *points, in
 		pts[i][2] = points[i].point_3;
 	}
 
-	return new mui_sampler_rbf_3d(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
+	return new mui_sampler_rbf_3d(r, pts, basis_func, static_cast<bool>(conservative),
 			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
-			cutoff, cg_solve_tol, cg_solve_it, pou_size);
+			cutoff, cg_solve_tol, cg_solve_it, pou_size, precond, local_comm);
 }
 
 mui_sampler_rbf_3dx* mui_create_sampler_rbf_3dx(double r, mui_point_3dx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size) {
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm) {
 	std::vector<mui::point3dx> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
@@ -624,14 +624,14 @@ mui_sampler_rbf_3dx* mui_create_sampler_rbf_3dx(double r, mui_point_3dx *points,
 		pts[i][2] = points[i].point_3;
 	}
 
-	return new mui_sampler_rbf_3dx(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
+	return new mui_sampler_rbf_3dx(r, pts, basis_func, static_cast<bool>(conservative),
 			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
-			cutoff, cg_solve_tol, cg_solve_it, pou_size);
+			cutoff, cg_solve_tol, cg_solve_it, pou_size, precond, local_comm);
 }
 
 mui_sampler_rbf_3t* mui_create_sampler_rbf_3t(double r, mui_point_3t *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size) {
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm) {
 	std::vector<mui::mui_c_wrapper_3D::point_type> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = static_cast<mui::mui_c_wrapper_3D::REAL>(points[i].point_1);
@@ -640,10 +640,11 @@ mui_sampler_rbf_3t* mui_create_sampler_rbf_3t(double r, mui_point_3t *points, in
 	}
 
 	return new mui_sampler_rbf_3t(static_cast<mui::mui_c_wrapper_3D::REAL>(r), pts, basis_func,
-			static_cast<bool>(conservative), static_cast<bool>(polynomial), static_cast<bool>(smoothFunc),
+			static_cast<bool>(conservative), static_cast<bool>(smoothFunc),
 			static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
 			static_cast<mui::mui_c_wrapper_3D::REAL>(cutoff), static_cast<mui::mui_c_wrapper_1D::REAL>(cg_solve_tol),
-      static_cast<mui::mui_c_wrapper_1D::INT>(cg_solve_it), static_cast<mui::mui_c_wrapper_1D::INT>(pou_size));
+      static_cast<mui::mui_c_wrapper_1D::INT>(cg_solve_it), static_cast<mui::mui_c_wrapper_1D::INT>(pou_size),
+	  static_cast<mui::mui_c_wrapper_1D::INT>(precond), local_comm);
 }
 #endif
 

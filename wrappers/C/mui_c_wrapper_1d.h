@@ -235,20 +235,20 @@ mui_sampler_sum_quintic_1dx* mui_create_sampler_sum_quintic_1dx(double r);
 mui_sampler_sum_quintic_1t* mui_create_sampler_sum_quintic_1t(double r);
 #ifdef USE_RBF
 mui_sampler_rbf_1f* mui_create_sampler_rbf_1f(float r, mui_point_1f *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm);
 mui_sampler_rbf_1fx* mui_create_sampler_rbf_1fx(float r, mui_point_1fx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm);
 mui_sampler_rbf_1d* mui_create_sampler_rbf_1d(double r, mui_point_1d *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm);
 mui_sampler_rbf_1dx* mui_create_sampler_rbf_1dx(double r, mui_point_1dx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm);
 mui_sampler_rbf_1t* mui_create_sampler_rbf_1t(double r, mui_point_1t *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm);
 #endif
 
 // MUI spatial samplers destruction
