@@ -561,16 +561,16 @@ mui_sampler_sum_quintic_1t* mui_create_sampler_sum_quintic_1t(double r) {
 #ifdef USE_RBF
 // Radial Basis Function sampler
 mui_sampler_rbf_1f* mui_create_sampler_rbf_1f(float r, mui_point_1f *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size) {
+		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
+		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm local_comm) {
 	std::vector<mui::point1f> pts(points_count);
 	for (size_t i = 0; i < points_count; i++) {
 		pts[i][0] = points[i].point_1;
 	}
 
-	return new mui_sampler_rbf_1f(r, pts, basis_func, static_cast<bool>(conservative), static_cast<bool>(polynomial),
+	return new mui_sampler_rbf_1f(r, pts, basis_func, static_cast<bool>(conservative),
 			static_cast<bool>(smoothFunc), static_cast<bool>(readMatrix), static_cast<bool>(writeMatrix), std::string(file_address),
-			cutoff, cg_solve_tol, cg_solve_it, pou_size);
+			cutoff, cg_solve_tol, cg_solve_it, pou_size, precond, local_comm);
 }
 
 mui_sampler_rbf_1fx* mui_create_sampler_rbf_1fx(float r, mui_point_1fx *points, int points_count, int basis_func,
