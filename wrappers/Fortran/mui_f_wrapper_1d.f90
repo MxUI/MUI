@@ -505,11 +505,12 @@ module mui_1d_f
     subroutine mui_create_sampler_rbf_1f_f(sampler,r,points_1,points_count, &
                basis_func,conservative,smoothFunc,readMatrix,writeMatrix,&
                file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
-      import :: c_ptr,c_int,c_float
+      import :: c_ptr,c_int,c_float,c_char,
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_float), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count
+      real(kind=c_float), intent(in), dimension(points_count), target :: points_1
+      integer(kind=c_int), intent(in), target :: basis_func,conservative,smoothFunc,readMatrix,writeMatrix,pouSize
       integer(kind=c_int), intent(in), target :: precond
       type(c_ptr), intent(out), target :: communicator(*)
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol,cgSolveIt
@@ -518,11 +519,12 @@ module mui_1d_f
     subroutine mui_create_sampler_rbf_1fx_f(sampler,r,points_1,points_count, &
                basis_func,conservative,smoothFunc,readMatrix,writeMatrix,&
                file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
-      import :: c_ptr,c_int,c_float
+      import :: c_ptr,c_int,c_float,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_float), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count
+      real(c_float), intent(in), dimension(points_count), target :: points_1
+      integer(kind=c_int), intent(in), target :: basis_func,conservative,smoothFunc,readMatrix,writeMatrix,pouSize
       integer(kind=c_int), intent(in), target :: precond
       type(c_ptr), intent(out), target :: communicator(*)
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol,cgSolveIt
@@ -531,11 +533,12 @@ module mui_1d_f
     subroutine mui_create_sampler_rbf_1d_f(sampler,r,points_1,points_count, &
                basis_func,conservative,smoothFunc,readMatrix,writeMatrix,&
                file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
-      import :: c_ptr,c_int,c_double
+      import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count
+      real(c_double), intent(in), dimension(points_count), target :: points_1
+      integer(kind=c_int), intent(in), target :: basis_func,conservative,smoothFunc,readMatrix,writeMatrix,pouSize
       integer(kind=c_int), intent(in), target :: precond
       type(c_ptr), intent(out), target :: communicator(*)
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol,cgSolveIt
@@ -544,11 +547,12 @@ module mui_1d_f
     subroutine mui_create_sampler_rbf_1dx_f(sampler,r,points_1,points_count, &
                basis_func,conservative,smoothFunc,readMatrix,writeMatrix,&
                file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
-      import :: c_ptr,c_int,c_double
+      import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count
+      real(c_double), intent(in), dimension(points_count), target :: points_1
+      integer(kind=c_int), intent(in), target :: basis_func,conservative,smoothFunc,readMatrix,writeMatrix,pouSize
       integer(kind=c_int), intent(in), target :: precond
       type(c_ptr), intent(out), target :: communicator(*)
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol,cgSolveIt
@@ -557,11 +561,12 @@ module mui_1d_f
     subroutine mui_create_sampler_rbf_1t_f(sampler,r,points_1,points_count, &
                basis_func,conservative,smoothFunc,readMatrix,writeMatrix,&
                file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
-      import :: c_ptr,c_int,c_double
+      import :: c_ptr,c_int,c_double,c_char
       type(c_ptr), intent(out), target :: sampler(*)
       character(kind=c_char), intent(in) :: file_address(*)
-      type(c_double), intent(in), dimension(points_count), target :: points_1
-      integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,polynomial,smoothFunc,readMatrix,writeMatrix,cgSolve,pouSize
+      integer(kind=c_int), intent(in), target :: points_count
+      real(c_double), intent(in), dimension(points_count), target :: points_1
+      integer(kind=c_int), intent(in), target :: basis_func,conservative,smoothFunc,readMatrix,writeMatrix,pouSize
       integer(kind=c_int), intent(in), target :: precond
       type(c_ptr), intent(out), target :: communicator(*)
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol,cgSolveIt
