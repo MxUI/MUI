@@ -2,12 +2,14 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
-[19 January 2023, ongoing]
+[10 February 2023, ongoing]
   - Refactor code base into new directory structure
   - Add new coupling algorithms
   - Rename "chrono" filters to "temporal" to avoid conflation with STL and other projects
   - Change API so functions that take two time_type values take a new iterator_type value instead
   - Update C and Fortran wrappers
+  - Refactor Python wrapper for smaller footprint and CMake based build
+  - Update top-level CMake for refactored Python wrapper and directory structure
 
 [05 October 2022, 1.2.4]
   - Refactor RBF filter

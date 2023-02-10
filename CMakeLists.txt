@@ -167,23 +167,28 @@ if(FORTRAN_WRAPPER)
 endif(FORTRAN_WRAPPER)
 
 if(PYTHON_WRAPPER)
-	message("-- MUI Python wrapper: Selected (Warning - high compilation time and memory use)")	
+	message("-- MUI Python wrapper: Selected (Warning - high compilation time and memory use)")
+	
+	find_package(Python COMPONENTS Interpreter REQUIRED)
+
+	if(DEFINED ENV{VIRTUAL_ENV} OR DEFINED ENV{CONDA_PREFIX})	   
+	    set(_pip_args)  
+	else()
+	    set(_pip_args "--user")	
+	endif()
+	
+	set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python")
 
 	if(USE_RBF)
-		add_custom_target(mui4py ALL COMMAND CMAKE_ARGS=\"-DUSE_RBF=ON -DEIGEN3_INCLUDE_DIR=$EIGEN3_INCLUDE_DIR\" pip3 install .
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
+	    add_custom_target(mui4py ALL COMMAND bash -c "CMAKE_ARGS=\"-DUSE_RBF=ON -DEigen3_DIR=${Eigen3_DIR}\" ${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}/")
 	else()
-		add_custom_target(mui4py ALL COMMAND pip3 install .
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python)
+	    add_custom_target(mui4py ALL COMMAND bash -c ${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}/)
 	endif(USE_RBF)
 
-	set_property(TARGET mui4py APPEND PROPERTY
-		ADDITIONAL_CLEAN_FILES ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py.egg-info/
-				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/dist/
-				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/build/
-				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/__pycache__
-				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/mui4py.o
-				${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/mui4py/mui4py_mod.so)
+	set_property(TARGET mui4py APPEND PROPERTY ADDITIONAL_CLEAN_FILES
+	             ${_pkg_mui4py}/mui4py.egg-info/
+				 ${_pkg_mui4py}/dist/
+				 ${_pkg_mui4py}/build/)
 endif(PYTHON_WRAPPER)
 
 set(MUI_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include CACHE STRING "Location of MUI header files")
