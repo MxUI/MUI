@@ -52,8 +52,8 @@
 
 #include <cmath>
 
-#include "../linear_algebra/matrix.h"
-#include "../linear_algebra/preconditioner.h"
+#include "matrix.h"
+#include "preconditioner.h"
 
 namespace mui {
 namespace linalg {

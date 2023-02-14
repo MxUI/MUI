@@ -201,7 +201,6 @@ void declare_sampler_sum_quintic(py::module &m)
     declare_sampler_sum_quintic_t<Tconfig, std::int64_t>(m);
 }
 
-#ifdef USE_RBF
 // SPATIAL_SAMPLER_RBF CLASS//
 template <typename Tconfig, typename T>
 void declare_sampler_rbf_t(py::module &m)
@@ -224,7 +223,6 @@ void declare_sampler_rbf(py::module &m)
     declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
     declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
 }
-#endif
 
 template <typename Tconfig>
 void declare_samplers(py::module &m)
@@ -240,9 +238,7 @@ void declare_samplers(py::module &m)
     declare_sampler_shepard_quintic<Tconfig>(m);
     declare_sampler_sph_quintic<Tconfig>(m);
     declare_sampler_sum_quintic<Tconfig>(m);
-#ifdef USE_RBF
     declare_sampler_rbf<Tconfig>(m);
-#endif
 }
 
 void sampler(py::module &m)

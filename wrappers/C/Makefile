@@ -9,15 +9,6 @@ CFLAGS = -O3 -std=c11
 # C++ compilation flags
 CXXFLAGS = -O3 -std=c++11 -fpic
 
-ifdef USE_RBF
-    # Path to Eigen library
-    EIGEN_PATH = /usr/include/eigen3
-    # C compilation flags
-    CFLAGS += -DUSE_RBF
-    # C++ compilation flags
-    CXXFLAGS += -DUSE_RBF -I${EIGEN_PATH}
-endif
-
 default: mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o
 	 @echo "Compiling and linking MUI C wrapper..."
 	 ${CCX} ${CFLAGS} -shared -o libmui_c_wrapper.so mui_c_wrapper_general.o mui_c_wrapper_1d.o mui_c_wrapper_2d.o mui_c_wrapper_3d.o

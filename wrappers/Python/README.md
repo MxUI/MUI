@@ -20,8 +20,6 @@ pip3 install .
 Alternatively `python3 setup.py install` may work.
 The C++ Python bindings can also be built directly with cmake and make, which is useful for testing.
 
-To install with RBF support, `CMAKE_ARGS="-DUSE_RBF=ON -DEigen3_DIR=${Eigen3_install_location}" pip3 install .`
-
 ### General
 
 - Bindings tested with:

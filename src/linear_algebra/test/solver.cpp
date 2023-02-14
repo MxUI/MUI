@@ -45,7 +45,7 @@
  */
 
 #include <iostream>
-#include "../linalg/solver.h"
+#include "../solver.h"
 
 void test00 () {
 

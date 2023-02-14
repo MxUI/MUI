@@ -500,7 +500,6 @@ module mui_2d_f
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_2t_f
 
-#ifdef USE_RBF
     !Radial Basis Function sampler
     subroutine mui_create_sampler_rbf_2f_f(sampler,r,points_1,points_2,points_count,basis_func,conservative,smoothFunc, &
                readMatrix,writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
@@ -556,7 +555,6 @@ module mui_2d_f
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_double), intent(in), dimension(points_count), target :: points_1,points_2
     end subroutine mui_create_sampler_rbf_2t_f
-#endif
 
     !******************************************
     !* Destroy 2D spatial samplers            *
@@ -796,7 +794,6 @@ module mui_2d_f
       type(c_ptr), intent(in), value :: sampler
     end subroutine mui_destroy_sampler_sum_quintic_2t_f
 
-#ifdef USE_RBF
     !Radial Basis Function sampler
     subroutine mui_destroy_sampler_rbf_2f_f(sampler) bind(C)
       import :: c_ptr
@@ -822,7 +819,6 @@ module mui_2d_f
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
     end subroutine mui_destroy_sampler_rbf_2t_f
-#endif
 
     !******************************************
     !* Create temporal samplers               *
@@ -2704,7 +2700,6 @@ module mui_2d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_2t_f
 
-#ifdef USE_RBF
     !Spatial sampler: radial basis function; temporal sampler: exact
     subroutine mui_fetch_rbf_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
       return_value) bind(C)
@@ -2888,7 +2883,6 @@ module mui_2d_f
       real(kind=c_double), intent(in) :: point_1,point_2,t
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_2t_f
-#endif
 
     !*********************************************************
     !* MUI functions for 2D data fetch using two time values *
@@ -4366,7 +4360,6 @@ module mui_2d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_2t_pair_f
 
-#ifdef USE_RBF
     !Spatial sampler: radial basis function; temporal sampler: exact
     subroutine mui_fetch_rbf_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
@@ -4550,7 +4543,6 @@ module mui_2d_f
       real(kind=c_double), intent(in) :: point_1,point_2,t,it
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_2t_pair_f
-#endif
 
     !*******************************************************************
     !* MUI functions for 2D data point only fetch using one time value *

@@ -9,15 +9,6 @@ FFLAGS = -O3 -cpp -std=f2003 -fcheck=all -Wall
 # C++ compilation flags
 CXXFLAGS = -O3 -std=c++11 -fpic -shared
 
-ifdef USE_RBF
-    # Path to Eigen library
-    EIGEN_PATH = /usr/include/eigen3
-    # C compilation flags
-    FFLAGS += -DUSE_RBF
-    # C++ compilation flags
-    CXXFLAGS += -DUSE_RBF -I${EIGEN_PATH}
-endif
-
 default: mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o mui_f_wrapper_general.mod mui_f_wrapper_1d.mod mui_f_wrapper_2d.mod mui_f_wrapper_3d.mod
 	 @echo "Compiling and linking MUI Fortran wrapper..."
 	 ${CCX} ${CXXFLAGS} -o libmui_f_wrapper.so mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o

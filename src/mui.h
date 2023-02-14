@@ -58,9 +58,7 @@
 #include "samplers/spatial/sampler_sum_quintic.h"
 #include "samplers/spatial/sampler_sph_quintic.h"
 #include "samplers/spatial/sampler_shepard_quintic.h"
-#ifdef USE_RBF
 #include "samplers/spatial/sampler_rbf.h"
-#endif
 
 //Include temporal samplers
 #include "samplers/temporal/temporal_sampler_exact.h"
@@ -91,7 +89,6 @@ namespace mui {
 #define DECLARE_SAMPLER_0ARG(SAMPLER,SUFFIX,CONFIG)	\
 	using SAMPLER ## SUFFIX = SAMPLER<CONFIG>;
 
-#ifdef USE_RBF
 #define SPECIALIZE(SUFFIX,REALTYPE,INTTYPE,DIM) \
 		typedef struct config_##SUFFIX {\
   	  	  	using EXCEPTION = exception_segv;\
@@ -145,59 +142,6 @@ SPECIALIZE(2fx,float,int64_t,2);
 SPECIALIZE(3fx,float,int64_t,3);
 
 #undef SPECIALIZE
-#else
-#define SPECIALIZE(SUFFIX,REALTYPE,INTTYPE,DIM) \
-		typedef struct config_##SUFFIX {\
-	  		using EXCEPTION = exception_segv;\
-	  		static const bool DEBUG = false;\
-	  		static const int D = DIM;\
-	  		static const bool FIXEDPOINTS = false;\
-	  		static const bool QUIET = false;\
-	  		using REAL = REALTYPE;\
-	  		using INT  = INTTYPE;\
-	  		using point_type = point<REAL,D>;\
-	  		using time_type  = REAL;\
-	  		using iterator_type = INT;\
-	  		using data_types = type_list<uint32_t,uint64_t,int32_t,int64_t,double,float,std::string>;\
-		} mui_config_##SUFFIX;\
-		using uniface##SUFFIX = uniface<config_##SUFFIX>;\
-		using point##SUFFIX = point<config_##SUFFIX::REAL,config_##SUFFIX::D>;\
-		DECLARE_SAMPLER_1ARG(sampler_sum_quintic,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_sph_quintic,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_shepard_quintic,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_nearest_neighbor,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_nearest_neighbor,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_pseudo_n2_linear,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_moving_average,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_exact,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_1ARG(sampler_gauss,SUFFIX,config_##SUFFIX)\
-		DECLARE_SAMPLER_0ARG(temporal_sampler_exact,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(temporal_sampler_gauss,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(temporal_sampler_sum,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(temporal_sampler_mean,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(algo_fixed_relaxation,SUFFIX,config_##SUFFIX);\
-		DECLARE_SAMPLER_0ARG(algo_aitken,SUFFIX,config_##SUFFIX);\
-		namespace geometry {\
-			using point##SUFFIX = point<config_##SUFFIX>;\
-			using sphere##SUFFIX = sphere<config_##SUFFIX>;\
-			using box##SUFFIX = box<config_##SUFFIX>;\
-			using or_set##SUFFIX = or_set<config_##SUFFIX>;\
-		}
-
-SPECIALIZE(1d,double,int32_t,1);
-SPECIALIZE(2d,double,int32_t,2);
-SPECIALIZE(3d,double,int32_t,3);
-SPECIALIZE(1dx,double,int64_t,1);
-SPECIALIZE(2dx,double,int64_t,2);
-SPECIALIZE(3dx,double,int64_t,3);
-SPECIALIZE(1f,float,int32_t,1);
-SPECIALIZE(2f,float,int32_t,2);
-SPECIALIZE(3f,float,int32_t,3);
-SPECIALIZE(1fx,float,int64_t,1);
-SPECIALIZE(2fx,float,int64_t,2);
-SPECIALIZE(3fx,float,int64_t,3);
-#undef SPECIALIZE
-#endif
 
 // usage: SPECIALIZE( _your_custom_suffix, your_custom_config_structure )
 //        uniface_your_custom_suffix interface; ...

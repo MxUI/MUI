@@ -45,15 +45,6 @@ pybind11_add_module(mui4py_mod MODULE
   mui4py/cpp/temporal_sampler.cpp
   mui4py/cpp/geometry.cpp)
 
-if(USE_RBF)
-  # Note that -fpermissive is required to compile using the rbf sampler
-  # and that it is not supported by clang++
-  find_package(Eigen3 REQUIRED NO_MODULE)
-  target_include_directories(mui4py_mod PRIVATE ${EIGEN3_INCLUDE_DIR})
-  target_compile_definitions(mui4py_mod PRIVATE USE_RBF)
-  target_compile_options(mui4py_mod PRIVATE -fpermissive)
-endif()
-
 target_include_directories(mui4py_mod PRIVATE ${MPI_INCLUDE_PATH} ../..)
 target_compile_definitions(mui4py_mod PRIVATE PYTHON_BINDINGS PYTHON_INT_${NUMPY_INT_SIZE})
 target_compile_options(mui4py_mod PRIVATE -Wall)

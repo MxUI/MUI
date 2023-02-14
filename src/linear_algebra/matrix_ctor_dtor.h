@@ -47,7 +47,7 @@
 #ifndef MUI_MATRIX_CTOR_DTOR_H_
 #define MUI_MATRIX_CTOR_DTOR_H_
 
-#include "../linear_algebra/matrix_io_info.h"
+#include "matrix_io_info.h"
 
 namespace mui {
 namespace linalg {

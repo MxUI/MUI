@@ -500,7 +500,6 @@ module mui_3d_f
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_3t_f
 
-#ifdef USE_RBF
     !Radial Basis Function sampler
     subroutine mui_create_sampler_rbf_3f_f(sampler,r,points_1,points_2,points_3,points_count,basis_func,conservative,smoothFunc, &
                readMatrix,writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize) bind(C)
@@ -556,7 +555,6 @@ module mui_3d_f
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
     end subroutine mui_create_sampler_rbf_3t_f
-#endif
 
     !******************************************
     !* Destroy 3D spatial samplers            *
@@ -796,7 +794,6 @@ module mui_3d_f
       type(c_ptr), intent(in), value :: sampler
     end subroutine mui_destroy_sampler_sum_quintic_3t_f
 
-#ifdef USE_RBF
     !Radial Basis Function sampler
     subroutine mui_destroy_sampler_rbf_3f_f(sampler) bind(C)
       import :: c_ptr
@@ -822,7 +819,6 @@ module mui_3d_f
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
     end subroutine mui_destroy_sampler_rbf_3t_f
-#endif
 
     !******************************************
     !* Create temporal samplers               *
@@ -2844,7 +2840,6 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_3t_f
 
-#ifdef USE_RBF
     !Spatial sampler: radial basis function; temporal sampler: exact
     subroutine mui_fetch_rbf_exact_3f_f(uniface,attr,point_1,point_2,point_3,t, &
       spatial_sampler,temporal_sampler, &
@@ -3048,7 +3043,6 @@ module mui_3d_f
       real(kind=c_double), intent(in) :: point_1,point_2,point_3,t
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_3t_f
-#endif
 
     !*********************************************************
     !* MUI functions for 3D data fetch using two time values *
@@ -4526,7 +4520,6 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_sum_quintic_sum_3t_pair_f
 
-#ifdef USE_RBF
     !Spatial sampler: radial basis function; temporal sampler: exact
     subroutine mui_fetch_rbf_exact_3f_pair_f(uniface,attr,point_1,point_2,point_3,t_1,t_2,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
@@ -4710,7 +4703,6 @@ module mui_3d_f
       real(kind=c_double), intent(in) :: point_1,point_2,point_3,t_1,t_2
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_rbf_sum_3t_pair_f
-#endif
 
     !*******************************************************************
     !* MUI functions for 3D data point only fetch using one time value *

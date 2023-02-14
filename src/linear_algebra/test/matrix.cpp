@@ -46,7 +46,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "../linalg/matrix.h"
+#include "../matrix.h"
 
 void test00 (mui::linalg::sparse_matrix<int,double> A,
             mui::linalg::sparse_matrix<int,double> B,

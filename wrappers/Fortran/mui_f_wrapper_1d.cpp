@@ -148,7 +148,6 @@ typedef mui::sampler_sum_quintic1dx<double> mui_sampler_sum_quintic_1dx;
 // Summation with quintic kernel spatial sampler typedef for template creation (recommended)
 typedef mui::sampler_sum_quintic<mui::mui_f_wrapper_1D> mui_sampler_sum_quintic_1t;
 
-#ifdef USE_RBF
 // Radial Basis Function (RBF) spatial sampler typedefs for specialism creation
 typedef mui::sampler_rbf1f<float> mui_sampler_rbf_1f;
 typedef mui::sampler_rbf1fx<float> mui_sampler_rbf_1fx;
@@ -157,7 +156,6 @@ typedef mui::sampler_rbf1dx<double> mui_sampler_rbf_1dx;
 
 // Radial Basis Function (RBF) spatial sampler typedef for template creation (recommended)
 typedef mui::sampler_rbf<mui::mui_f_wrapper_1D> mui_sampler_rbf_1t;
-#endif
 
 // Exact temporal sampler typedefs for specialism creation
 typedef mui::temporal_sampler_exact1f mui_temporal_sampler_exact_1f;
@@ -681,7 +679,6 @@ void mui_create_sampler_sum_quintic_1t_f(mui_sampler_sum_quintic_1t** ret, doubl
     *ret = new mui_sampler_sum_quintic_1t(static_cast<mui::mui_f_wrapper_1D::REAL>(*r));
 }
 
-#ifdef USE_RBF
 // Radial Basis Function sampler
 void mui_create_sampler_rbf_1f_f(mui_sampler_rbf_1f **ret, float* r, float* points_1, int* points_count, int* basis_func,
         int* conservative, int* smoothFunc, int* readMatrix, int* writeMatrix, const char* file_address,
@@ -749,7 +746,6 @@ void mui_create_sampler_rbf_1t_f(mui_sampler_rbf_1t** ret, double* r, double* po
             static_cast<mui::mui_f_wrapper_1D::REAL>(*cutoff), static_cast<mui::mui_f_wrapper_1D::REAL>(*cg_solve_tol),
       static_cast<mui::mui_f_wrapper_1D::INT>(*cg_solve_it), static_cast<mui::mui_f_wrapper_1D::INT>(*pou_size));
 }
-#endif
 
 /*******************************************
  * Destroy 1D spatial samplers              *
@@ -944,7 +940,6 @@ void mui_destroy_sampler_sum_quintic_1t_f(mui_sampler_sum_quintic_1t* sampler) {
     delete sampler;
 }
 
-#ifdef USE_RBF
 void mui_destroy_sampler_rbf_1f_f(mui_sampler_rbf_1f* sampler) {
     delete sampler;
 }
@@ -964,7 +959,6 @@ void mui_destroy_sampler_rbf_1dx_f(mui_sampler_rbf_1dx* sampler) {
 void mui_destroy_sampler_rbf_1t_f(mui_sampler_rbf_1t* sampler) {
     delete sampler;
 }
-#endif
 
 /*******************************************
  * Create temporal samplers                 *
@@ -2232,7 +2226,6 @@ void mui_fetch_sum_quintic_sum_1t_f(mui_uniface_1t *uniface, const char *attr, d
 
 }
 
-#ifdef USE_RBF
 // Spatial sampler: radial basis function; temporal sampler: exact
 void mui_fetch_rbf_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler, float *return_value) {
@@ -2348,7 +2341,6 @@ void mui_fetch_rbf_sum_1t_f(mui_uniface_1t *uniface, const char *attr, double* p
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
 
 }
-#endif
 
 /********************************************************
  * MUI functions for 1D data fetch using two time values *
@@ -3366,7 +3358,6 @@ void mui_fetch_sum_quintic_sum_1t_pair_f(mui_uniface_1t *uniface, const char *at
             *spatial_sampler, *temporal_sampler));
 }
 
-#ifdef USE_RBF
 // Spatial sampler: radial basis function; temporal sampler: exact
 void mui_fetch_rbf_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
         mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler, float *return_value) {
@@ -3490,7 +3481,6 @@ void mui_fetch_rbf_sum_1t_pair_f(mui_uniface_1t *uniface, const char *attr, doub
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
             *spatial_sampler, *temporal_sampler));
 }
-#endif
 
 /*******************************************************************
  * MUI functions for 1D data point only fetch using one time value  *

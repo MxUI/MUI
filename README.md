@@ -13,7 +13,7 @@ The source code is dual-licensed under either the GNU General Purpose License v3
 
 ## Installation
 
-MUI is a C++ header-only library with two dependencies - an MPI implementation that supports the MPMD paradigm and the linear algebra library <a href="https://gitlab.com/libeigen/eigen.git" target="_blank">Eigen</a><sup>1</sup>. 
+MUI is a C++ header-only library with one dependency - an MPI implementation that supports the MPMD paradigm.
 
 Wrappers are provided for C, Fortran and Python, these require compilation and therefore when using MUI with any of thee languages the library can no longer be considered header-only.
 
@@ -23,13 +23,10 @@ As a header-only library using MUI in your own source code is straight forward, 
 2. (preferred) Utilise the provided CMake build files to create a local or system-wide installation of the library. In this case there are a number of CMake parameters you should consider:
 	1. CMAKE_INSTALL_PREFIX=[path] - Set the path to install the library, otherwise the system default will be used
 	2. CMAKE_BUILD_TYPE=Release/Debug/.. - Set the compilation type (only changes options for compiled wrappers)
-	3. USE_RBF=ON/OFF - If set to ON then a dependency on Eigen is created
-	4. C_WRAPPER=ON/OFF - Specifies whether to compile the C wrapper during installation
-	5. FORTRAN_WRAPPER=ON/OFF - Specifies whether to compile the Fortran wrapper during installation
-	6. PYTHON_WRAPPER=ON/OFF - Specifies whether to compile the Python wrapper during installation, relies on a working Python3 toolchain
-	7. PIP_INSTALL=ON/OFF - Only applies if PYTHON_WRAPPER=ON, uses system default pip3 command
-
-<sup>1</sup> Only true if the Radial Basis Function (RBF) spatial interpolation scheme is included at compile-time.
+	3. C_WRAPPER=ON/OFF - Specifies whether to compile the C wrapper during installation
+	4. FORTRAN_WRAPPER=ON/OFF - Specifies whether to compile the Fortran wrapper during installation
+	5. PYTHON_WRAPPER=ON/OFF - Specifies whether to compile the Python wrapper during installation, relies on a working Python3 toolchain
+	6. PIP_INSTALL=ON/OFF - Only applies if PYTHON_WRAPPER=ON, uses system default pip3 command
 
 ## Publication
 

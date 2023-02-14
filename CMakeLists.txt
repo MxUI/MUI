@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Library options
-option(USE_RBF "Include RBF support" OFF)
 # Wrapper options
 option(C_WRAPPER "Compile C wrapper" OFF)
 option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF)
@@ -22,24 +20,11 @@ elseif(NOT MPI_FOUND)
 	message(SEND_ERROR "MPI not found")
 endif(MPI_FOUND)
 
-if(USE_RBF)
-	find_package(Eigen3 REQUIRED)
-	if( NOT EIGEN3_INCLUDE_DIR )
-    		message(FATAL_ERROR "Please set the environment variable EIGEN3_INCLUDE_DIR to a valid Eigen3 installation")
-	endif()
-endif(USE_RBF)
-
 add_library(MUI INTERFACE)
 
 target_include_directories (MUI INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 	$<INSTALL_INTERFACE:include>)
-
-if(USE_RBF)
-	target_link_libraries(MUI INTERFACE Eigen3::Eigen)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_RBF")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_RBF")
-endif(USE_RBF)
 
 target_compile_definitions(MUI INTERFACE LIBRARY_HEADER_ONLY)
 
@@ -89,14 +74,10 @@ if(C_WRAPPER)
  
         set_target_properties(MUI_C_wrapper_static PROPERTIES OUTPUT_NAME MUI_C_wrapper)
 
-        if(USE_RBF)
-            target_link_libraries(MUI_C_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
-            target_link_libraries(MUI_C_wrapper_static Eigen3::Eigen ${MPI_CXX_LIBRARIES})
-        else()
-            target_link_libraries(MUI_C_wrapper ${MPI_CXX_LIBRARIES})
-            target_link_libraries(MUI_C_wrapper_static ${MPI_CXX_LIBRARIES})
-        endif(USE_RBF)
-
+        
+        target_link_libraries(MUI_C_wrapper ${MPI_CXX_LIBRARIES})
+        target_link_libraries(MUI_C_wrapper_static ${MPI_CXX_LIBRARIES})
+        
         install(TARGETS MUI_C_wrapper MUI_C_wrapper_static DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib
                 PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/C)
 	else()
@@ -151,14 +132,9 @@ if(FORTRAN_WRAPPER)
 	
 	    target_include_directories(MUI_Fortran_wrapper_static PRIVATE .)
 
-	    if(USE_RBF)
-            target_link_libraries(MUI_Fortran_wrapper Eigen3::Eigen ${MPI_CXX_LIBRARIES})
-            target_link_libraries(MUI_Fortran_wrapper_static Eigen3::Eigen ${MPI_CXX_LIBRARIES})
-	    else()
-            target_link_libraries(MUI_Fortran_wrapper ${MPI_CXX_LIBRARIES})
-            target_link_libraries(MUI_Fortran_wrapper_static ${MPI_CXX_LIBRARIES})
-        endif(USE_RBF)
-
+	    target_link_libraries(MUI_Fortran_wrapper ${MPI_CXX_LIBRARIES})
+        target_link_libraries(MUI_Fortran_wrapper_static ${MPI_CXX_LIBRARIES})
+       
         install(TARGETS MUI_Fortran_wrapper MUI_Fortran_wrapper_static DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib
                 PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/Fortran)
     else()
@@ -179,11 +155,7 @@ if(PYTHON_WRAPPER)
 	
 	set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python")
 
-	if(USE_RBF)
-	    add_custom_target(mui4py ALL COMMAND bash -c "CMAKE_ARGS=\"-DUSE_RBF=ON -DEigen3_DIR=${Eigen3_DIR}\" ${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}/")
-	else()
-	    add_custom_target(mui4py ALL COMMAND bash -c ${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}/)
-	endif(USE_RBF)
+	add_custom_target(mui4py ALL COMMAND bash -c ${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}/)	
 
 	set_property(TARGET mui4py APPEND PROPERTY ADDITIONAL_CLEAN_FILES
 	             ${_pkg_mui4py}/mui4py.egg-info/

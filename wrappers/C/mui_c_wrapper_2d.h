@@ -139,13 +139,11 @@ typedef struct mui_sampler_sum_quintic_2d mui_sampler_sum_quintic_2d;
 typedef struct mui_sampler_sum_quintic_2dx mui_sampler_sum_quintic_2dx;
 typedef struct mui_sampler_sum_quintic_2t mui_sampler_sum_quintic_2t;
 
-#ifdef USE_RBF
 typedef struct mui_sampler_rbf_2f mui_sampler_rbf_2f;
 typedef struct mui_sampler_rbf_2fx mui_sampler_rbf_2fx;
 typedef struct mui_sampler_rbf_2d mui_sampler_rbf_2d;
 typedef struct mui_sampler_rbf_2dx mui_sampler_rbf_2dx;
 typedef struct mui_sampler_rbf_2t mui_sampler_rbf_2t;
-#endif
 
 typedef struct mui_temporal_sampler_exact_2f mui_temporal_sampler_exact_2f;
 typedef struct mui_temporal_sampler_exact_2fx mui_temporal_sampler_exact_2fx;
@@ -238,7 +236,6 @@ mui_sampler_sum_quintic_2fx* mui_create_sampler_sum_quintic_2fx(float r);
 mui_sampler_sum_quintic_2d* mui_create_sampler_sum_quintic_2d(double r);
 mui_sampler_sum_quintic_2dx* mui_create_sampler_sum_quintic_2dx(double r);
 mui_sampler_sum_quintic_2t* mui_create_sampler_sum_quintic_2t(double r);
-#ifdef USE_RBF
 mui_sampler_rbf_2f* mui_create_sampler_rbf_2f(float r, mui_point_2f *points, int points_count, int basis_func,
 		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
@@ -254,7 +251,6 @@ mui_sampler_rbf_2dx* mui_create_sampler_rbf_2dx(double r, mui_point_2dx *points,
 mui_sampler_rbf_2t* mui_create_sampler_rbf_2t(double r, mui_point_2t *points, int points_count, int basis_func,
 		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
 		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
-#endif
 
 // MUI spatial samplers destruction
 void mui_destroy_sampler_exact_2f(mui_sampler_exact_2f *sampler);
@@ -302,13 +298,11 @@ void mui_destroy_sampler_sum_quintic_2fx(mui_sampler_sum_quintic_2fx *sampler);
 void mui_destroy_sampler_sum_quintic_2d(mui_sampler_sum_quintic_2d *sampler);
 void mui_destroy_sampler_sum_quintic_2dx(mui_sampler_sum_quintic_2dx *sampler);
 void mui_destroy_sampler_sum_quintic_2t(mui_sampler_sum_quintic_2t *sampler);
-#ifdef USE_RBF
 void mui_destroy_sampler_rbf_2f(mui_sampler_rbf_2f *sampler);
 void mui_destroy_sampler_rbf_2fx(mui_sampler_rbf_2fx *sampler);
 void mui_destroy_sampler_rbf_2d(mui_sampler_rbf_2d *sampler);
 void mui_destroy_sampler_rbf_2dx(mui_sampler_rbf_2dx *sampler);
 void mui_destroy_sampler_rbf_2t(mui_sampler_rbf_2t *sampler);
-#endif
 
 // MUI temporal samplers creation
 mui_temporal_sampler_exact_2f* mui_create_temporal_sampler_exact_2f(float tolerance);
@@ -715,7 +709,6 @@ double mui_fetch_sum_quintic_sum_2dx(mui_uniface_2dx *uniface, const char *attr,
 		mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
 		mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
-#ifdef USE_RBF
 float mui_fetch_rbf_exact_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t,
 		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_rbf_exact_2fx(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
@@ -756,7 +749,6 @@ double mui_fetch_rbf_sum_2dx(mui_uniface_2dx *uniface, const char *attr, mui_poi
 		mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_rbf_sum_2t(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
 		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
-#endif
 
 /********************************************************
  * MUI functions for 2D data fetch using two time values *
@@ -1123,7 +1115,6 @@ double mui_fetch_sum_quintic_sum_2dx_pair(mui_uniface_2dx *uniface, const char *
 		double it, mui_sampler_sum_quintic_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_sum_quintic_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t,
 		double it, mui_sampler_sum_quintic_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
-#ifdef USE_RBF
 float mui_fetch_rbf_exact_2f_pair(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float t, float it,
 		mui_sampler_rbf_2f *spatial_sampler, mui_temporal_sampler_exact_2f *temporal_sampler);
 float mui_fetch_rbf_exact_2fx_pair(mui_uniface_2fx *uniface, const char *attr, mui_point_2fx point, float t,
@@ -1164,7 +1155,6 @@ double mui_fetch_rbf_sum_2dx_pair(mui_uniface_2dx *uniface, const char *attr, mu
 		double it, mui_sampler_rbf_2dx *spatial_sampler, mui_temporal_sampler_sum_2dx *temporal_sampler);
 double mui_fetch_rbf_sum_2t_pair(mui_uniface_2t *uniface, const char *attr, mui_point_2t point, double t, double it,
 		mui_sampler_rbf_2t *spatial_sampler, mui_temporal_sampler_sum_2t *temporal_sampler);
-#endif
 
 // MUI functions for 2D data point only fetch using single time value
 void mui_fetch_points_exact_2f(mui_uniface_2f *uniface, const char *attr, float t,
