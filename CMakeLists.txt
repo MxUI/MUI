@@ -38,7 +38,8 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/
 	PATTERN "build" EXCLUDE
 	PATTERN "wrappers/Python" EXCLUDE
 	PATTERN "cmake" EXCLUDE
-	PATTERN "doc" EXCLUDE)
+	PATTERN "doc" EXCLUDE
+	PATTERN "src/linear_algebra/test" EXCLUDE)
 
 install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib)
 
@@ -153,14 +154,14 @@ if(PYTHON_WRAPPER)
 	    set(_pip_args "--user")	
 	endif()
 	
-	set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python")
+	set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/")
 
-	add_custom_target(mui4py ALL COMMAND bash -c ${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}/)	
+	add_custom_target(mui4py ALL COMMAND bash -c "${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}")	
 
 	set_property(TARGET mui4py APPEND PROPERTY ADDITIONAL_CLEAN_FILES
-	             ${_pkg_mui4py}/mui4py.egg-info/
-				 ${_pkg_mui4py}/dist/
-				 ${_pkg_mui4py}/build/)
+	             ${_pkg_mui4py}mui4py.egg-info/
+				 ${_pkg_mui4py}dist/
+				 ${_pkg_mui4py}build/)
 endif(PYTHON_WRAPPER)
 
 set(MUI_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include CACHE STRING "Location of MUI header files")

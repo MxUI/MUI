@@ -47,9 +47,9 @@
 #ifndef MUI_SAMPLER_RBF_H_
 #define MUI_SAMPLER_RBF_H_
 
-#include "../../../general/util.h"
-#include "../../../uniface.h"
-#include "../../../linear_algebra/solver.h"
+#include "../../general/util.h"
+#include "../../uniface.h"
+#include "../../linear_algebra/solver.h"
 #include <iterator>
 #include <ctime>
 #include <mpi.h>
