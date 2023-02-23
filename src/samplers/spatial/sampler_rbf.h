@@ -158,8 +158,7 @@ public:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline OTYPE filter(point_type focus,
-			const CONTAINER<ITYPE, CONFIG> &data_points) {
+	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
 		if (!initialised_) {
 			const clock_t begin_time = clock();
 			facilitateGhostPoints();

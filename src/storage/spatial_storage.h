@@ -117,14 +117,16 @@ public:
 	typename SAMPLER::OTYPE
 	query(const REGION& reg, const FOCUS& f, SAMPLER& s, ADDITIONAL && ... additional) const {
 		using vec = std::vector<std::pair<point_type,typename SAMPLER::ITYPE> >;
+
 		if( data_.empty() )
 			return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(vec(),std::vector<bool>()), additional... );
 		if( !is_built() ) EXCEPTION(std::logic_error("MUI Error [spatial_storage.h]: Query error. "
 				                                     "Bin not built yet. Internal data corrupted."));
 
 		const vec& st = storage_cast<const vec&>(data_);
+		const virtual_container<typename SAMPLER::ITYPE,CONFIG>& vc = virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg));
 
-		return s.filter( f, virtual_container<typename SAMPLER::ITYPE,CONFIG>(st,bin_.query(reg)), additional...);
+		return s.filter( f, vc, additional...);
 	}
 
 	void build() {
