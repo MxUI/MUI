@@ -267,22 +267,25 @@ public:
 	// Determine bounding box of local points
 	std::pair<point_type, point_type> localBoundingBox(const std::vector<point_type> pt) {
 		point_type lbbMin, lbbMax;
+		REAL maxVal = std::numeric_limits<REAL>::max();
 		try {
 			if (CONFIG::D == 1) {
-				lbbMax = (-std::numeric_limits<REAL>::max());
-				lbbMin = (std::numeric_limits<REAL>::max());
+				lbbMax[0] = -maxVal;
+				lbbMin[0] = maxVal;
 			}
 			else if (CONFIG::D == 2) {
-				lbbMax += (-std::numeric_limits<REAL>::max(), -std::numeric_limits<
-								REAL>::max());
-				lbbMin += (std::numeric_limits<REAL>::max(), std::numeric_limits<
-								REAL>::max());
+				lbbMax[0] = -maxVal;
+				lbbMax[1] = -maxVal;
+				lbbMin[0] = maxVal;
+				lbbMin[1] = maxVal;
 			}
 			else if (CONFIG::D == 3) {
-				lbbMax += (-std::numeric_limits<REAL>::max(), -std::numeric_limits<
-								REAL>::max(), -std::numeric_limits<REAL>::max());
-				lbbMin += (std::numeric_limits<REAL>::max(), std::numeric_limits<
-								REAL>::max(), std::numeric_limits<REAL>::max());
+				lbbMax[0] = -maxVal;
+				lbbMax[1] = -maxVal;
+				lbbMax[2] = -maxVal;
+				lbbMin[0] = maxVal;
+				lbbMin[1] = maxVal;
+				lbbMin[2] = maxVal;
 			}
 			else {
 				throw "Invalid value of CONFIG::D exception";
@@ -296,33 +299,33 @@ public:
 			try {
 				switch (CONFIG::D) {
 				case 1:
-					if (xPts[0] >= lbbMax[0])
+					if (xPts[0] > lbbMax[0])
 						lbbMax[0] = xPts[0];
-					if (xPts[0] <= lbbMin[0])
+					if (xPts[0] < lbbMin[0])
 						lbbMin[0] = xPts[0];
 					break;
 				case 2:
-					if (xPts[0] >= lbbMax[0])
+					if (xPts[0] > lbbMax[0])
 						lbbMax[0] = xPts[0];
-					if (xPts[0] <= lbbMin[0])
+					if (xPts[0] < lbbMin[0])
 						lbbMin[0] = xPts[0];
-					if (xPts[1] >= lbbMax[1])
+					if (xPts[1] > lbbMax[1])
 						lbbMax[1] = xPts[1];
-					if (xPts[1] <= lbbMin[1])
+					if (xPts[1] < lbbMin[1])
 						lbbMin[1] = xPts[1];
 					break;
 				case 3:
-					if (xPts[0] >= lbbMax[0])
+					if (xPts[0] > lbbMax[0])
 						lbbMax[0] = xPts[0];
-					if (xPts[0] <= lbbMin[0])
+					if (xPts[0] < lbbMin[0])
 						lbbMin[0] = xPts[0];
-					if (xPts[1] >= lbbMax[1])
+					if (xPts[1] > lbbMax[1])
 						lbbMax[1] = xPts[1];
-					if (xPts[1] <= lbbMin[1])
+					if (xPts[1] < lbbMin[1])
 						lbbMin[1] = xPts[1];
-					if (xPts[2] >= lbbMax[2])
+					if (xPts[2] > lbbMax[2])
 						lbbMax[2] = xPts[2];
-					if (xPts[2] <= lbbMin[2])
+					if (xPts[2] < lbbMin[2])
 						lbbMin[2] = xPts[2];
 					break;
 				default:
