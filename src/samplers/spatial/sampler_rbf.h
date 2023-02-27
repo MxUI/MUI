@@ -159,76 +159,65 @@ public:
 
 	template<template<typename, typename > class CONTAINER>
 	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
-		if (!initialised_) {
-			const clock_t begin_time = clock();
-			facilitateGhostPoints();
-			REAL error = computeRBFtransformationMatrix(data_points);
-			if (!QUIET) {
-				std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
-						<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
-				if (!readMatrix_)
-					std::cout << std::endl
-							<< "                     Average CG error: "
-							<< error;
-				std::cout << std::endl;
+		OTYPE sum = 0;
+		if (!initialised_)
+			std::cout << "MUI Warning [sampler_rbf.h]: No RBF matrix created, call createRBFMatrix() first" << std::endl;
+		else {
+			//Output for debugging
+			if ((!QUIET) && (DEBUG)) {
+				std::cout << "MUI [sampler_rbf.h]: Number of remote points: " << data_points.size()
+						<< " at rank " << local_rank_ << " out of total ranks "
+						<< local_size_ << std::endl;
+				std::cout << "MUI [sampler_rbf.h]: Number of local points: " << pts_.size()
+						<< " at rank " << local_rank_ << " out of total ranks "
+						<< local_size_ << std::endl;
+				std::cout << "MUI [sampler_rbf.h]: Number of ghost local points: " << ptsGhost_.size()
+						<< " at rank " << local_rank_ << " out of total ranks "
+						<< local_size_ << std::endl;
+				std::cout << "MUI [sampler_rbf.h]: Number of extended local points: "
+						<< ptsExtend_.size() << " at rank " << local_rank_
+						<< " out of total ranks " << local_size_ << std::endl;
+
+				for (auto xPtsExtend : ptsExtend_) {
+					std::cout << "          ";
+					int xPtsExtendSize;
+					try {
+						if (sizeof(xPtsExtend) == 0) {
+							throw "MUI Error [sampler_rbf.h]: Error zero xPtsExtend element exception";
+						}
+						else if (sizeof(xPtsExtend) < 0) {
+							throw "MUI Error [sampler_rbf.h]: Error invalid xPtsExtend element exception";
+						}
+						else if (sizeof(xPtsExtend[0]) == 0) {
+							throw "MUI Error [sampler_rbf.h]: Division by zero value of xPtsExtend[0] exception";
+						}
+						else if (sizeof(xPtsExtend[0]) < 0) {
+							throw "MUI Error [sampler_rbf.h]: Division by invalid value of xPtsExtend[0] exception";
+						}
+						xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
+					}
+					catch (const char *msg) {
+						std::cerr << msg << std::endl;
+					}
+					for (int i = 0; i < xPtsExtendSize; ++i) {
+						std::cout << xPtsExtend[i] << " ";
+					}
+					std::cout << std::endl;
+				}
 			}
-		}
 
-		//Output for debugging
-		if ((!QUIET) && (DEBUG)) {
-			std::cout << "Number of remote points: " << data_points.size()
-					<< " at rank " << local_rank_ << " out of total ranks "
-					<< local_size_ << std::endl;
-			std::cout << "Number of local points: " << pts_.size()
-					<< " at rank " << local_rank_ << " out of total ranks "
-					<< local_size_ << std::endl;
-			std::cout << "Number of ghost local points: " << ptsGhost_.size()
-					<< " at rank " << local_rank_ << " out of total ranks "
-					<< local_size_ << std::endl;
-			std::cout << "Number of extended local points: "
-					<< ptsExtend_.size() << " at rank " << local_rank_
-					<< " out of total ranks " << local_size_ << std::endl;
+			auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
+						return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
+					});
 
-			for (auto xPtsExtend : ptsExtend_) {
-				std::cout << "          ";
-				int xPtsExtendSize;
-				try {
-					if (sizeof(xPtsExtend) == 0) {
-						throw "Error zero xPtsExtend element exception";
-					}
-					else if (sizeof(xPtsExtend) < 0) {
-						throw "Error invalid xPtsExtend element exception";
-					}
-					else if (sizeof(xPtsExtend[0]) == 0) {
-						throw "Division by zero value of xPtsExtend[0] exception";
-					}
-					else if (sizeof(xPtsExtend[0]) < 0) {
-						throw "Division by invalid value of xPtsExtend[0] exception";
-					}
-					xPtsExtendSize = sizeof(xPtsExtend) / sizeof(xPtsExtend[0]);
-				}
-				catch (const char *msg) {
-					std::cerr << msg << std::endl;
-				}
-				for (int i = 0; i < xPtsExtendSize; ++i) {
-					std::cout << xPtsExtend[i] << " ";
-				}
-				std::cout << std::endl;
+			if (p == std::end(ptsExtend_))
+				EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Point not found. Must pre-set points for RBF interpolation"));
+
+			auto i = std::distance(ptsExtend_.begin(), p);
+
+			for (size_t j = 0; j < data_points.size(); j++) {
+				sum += H_.get_value(i, j) * data_points[j].second;
 			}
-		}
-
-		auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
-					return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
-				});
-
-		if (p == std::end(ptsExtend_))
-			EXCEPTION(std::runtime_error("Point not found. Must pre-set points for RBF interpolation"));
-
-		auto i = std::distance(ptsExtend_.begin(), p);
-
-		OTYPE sum = 0.;
-		for (size_t j = 0; j < data_points.size(); j++) {
-			sum += H_.get_value(i, j) * data_points[j].second;
 		}
 
 		return sum;
@@ -238,28 +227,44 @@ public:
 		return geometry::any_shape<CONFIG>();
 	}
 
-	void preSetFetchPoints(std::vector<point_type> &pts) {
+	inline void preSetFetchPoints(std::vector<point_type> &pts) {
 		pts_ = pts;
 		initialised_ = false;
 	}
 
-	void preSetFetchPointsExtend(std::vector<point_type> &pts) {
+	inline void preSetFetchPointsExtend(std::vector<point_type> &pts) {
 		ptsExtend_ = pts;
 		initialised_ = false;
 	}
 
-	void addFetchPoint(point_type pt) {
+	inline void addFetchPoint(point_type pt) {
 		pts_.emplace_back(pt);
 		initialised_ = false;
 	}
 
-	void addFetchPointExtend(point_type pt) {
+	inline void addFetchPointExtend(point_type pt) {
 		ptsExtend_.emplace_back(pt);
 		initialised_ = false;
 	}
-	void addFetchPointGhost(point_type pt) {
+
+	inline void addFetchPointGhost(point_type pt) {
 		ptsGhost_.emplace_back(pt);
 		initialised_ = false;
+	}
+
+	inline void createRBFMatrix(const std::vector<point_type> &data_points) {
+		const clock_t begin_time = clock();
+		facilitateGhostPoints();
+		REAL error = computeRBFtransformationMatrix(data_points);
+		if (!QUIET) {
+			std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
+					<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
+			if (!readMatrix_)
+				std::cout << std::endl
+						<< "                     Average CG error: "
+						<< error;
+			std::cout << std::endl;
+		}
 	}
 
 	// Functions to facilitate ghost points
@@ -288,7 +293,7 @@ public:
 				lbbMin[2] = maxVal;
 			}
 			else {
-				throw "Invalid value of CONFIG::D exception";
+				throw "MUI Error [sampler_rbf.h]: Invalid value of CONFIG::D exception";
 			}
 		}
 		catch (const char *msg) {
@@ -329,7 +334,7 @@ public:
 						lbbMin[2] = xPts[2];
 					break;
 				default:
-					throw "Invalid value of CONFIG::D exception";
+					throw "MUI Error [sampler_rbf.h]: Invalid value of CONFIG::D exception";
 				}
 			}
 			catch (const char *msg) {
@@ -372,7 +377,7 @@ public:
 		// output for debugging
 		if ((!QUIET) && (DEBUG)) {
 			for (auto xGlobalBB : globalBB) {
-				std::cout << "globalBBs: " << xGlobalBB.first << " "
+				std::cout << "MUI [sampler_rbf.h]: globalBBs: " << xGlobalBB.first << " "
 						<< xGlobalBB.second.first[0] << " "
 						<< xGlobalBB.second.first[1] << " "
 						<< xGlobalBB.second.second[0] << " "
@@ -381,13 +386,12 @@ public:
 			}
 		}
 
-		// Declear vector to gather number of points to send to each processors
+		// Declare vector to gather number of points to send to each processors
 		std::vector<std::pair<INT, INT>> ghostPointsCountToSend;
 		for (auto xGlobalBB : globalBB) {
 			if (xGlobalBB.first == local_rank)
 				continue;
-			ghostPointsCountToSend.push_back(
-					std::make_pair(xGlobalBB.first, 0));
+			ghostPointsCountToSend.push_back(std::make_pair(xGlobalBB.first, 0));
 		}
 
 		// Loop over local points to collect ghost points for other processors
@@ -405,13 +409,10 @@ public:
 							auto ghostPointsToSendIter =
 									std::find_if(ghostPointsToSend.begin(),
 											ghostPointsToSend.end(),
-											[xGlobalBB](
-													std::pair<INT,
-															std::vector<
-																	point_type>> b) {
-												return b.first
-														== xGlobalBB.first;
+											[xGlobalBB](std::pair<INT, std::vector<point_type>> b) {
+												return b.first == xGlobalBB.first;
 											});
+
 							auto ghostPointsCountToSendIter = std::find_if(
 									ghostPointsCountToSend.begin(),
 									ghostPointsCountToSend.end(),
@@ -422,18 +423,13 @@ public:
 							if (ghostPointsToSendIter
 									== std::end(ghostPointsToSend)) {
 								std::vector<point_type> vecPointTemp { pts_[i] };
-								ghostPointsToSend.push_back(
-										std::make_pair(xGlobalBB.first,
-												vecPointTemp));
-							} else {
-								ghostPointsToSendIter->second.push_back(
-										pts_[i]);
+								ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,	vecPointTemp));
 							}
+							else
+								ghostPointsToSendIter->second.push_back(pts_[i]);
 
-							assert(
-									ghostPointsCountToSendIter
-											!= std::end(
-													ghostPointsCountToSend));
+							assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+
 							++ghostPointsCountToSendIter->second;
 						}
 						break;
@@ -447,13 +443,10 @@ public:
 							auto ghostPointsToSendIter =
 									std::find_if(ghostPointsToSend.begin(),
 											ghostPointsToSend.end(),
-											[xGlobalBB](
-													std::pair<INT,
-															std::vector<
-																	point_type>> b) {
-												return b.first
-														== xGlobalBB.first;
+											[xGlobalBB](std::pair<INT, std::vector<point_type>> b) {
+												return b.first == xGlobalBB.first;
 											});
+
 							auto ghostPointsCountToSendIter = std::find_if(
 									ghostPointsCountToSend.begin(),
 									ghostPointsCountToSend.end(),
@@ -464,18 +457,13 @@ public:
 							if (ghostPointsToSendIter
 									== std::end(ghostPointsToSend)) {
 								std::vector<point_type> vecPointTemp { pts_[i] };
-								ghostPointsToSend.push_back(
-										std::make_pair(xGlobalBB.first,
-												vecPointTemp));
-							} else {
-								ghostPointsToSendIter->second.push_back(
-										pts_[i]);
+								ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first,	vecPointTemp));
 							}
+							else
+								ghostPointsToSendIter->second.push_back(pts_[i]);
 
-							assert(
-									ghostPointsCountToSendIter
-											!= std::end(
-													ghostPointsCountToSend));
+							assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+
 							++ghostPointsCountToSendIter->second;
 						}
 						break;
@@ -491,13 +479,10 @@ public:
 							auto ghostPointsToSendIter =
 									std::find_if(ghostPointsToSend.begin(),
 											ghostPointsToSend.end(),
-											[xGlobalBB](
-													std::pair<INT,
-															std::vector<
-																	point_type>> b) {
-												return b.first
-														== xGlobalBB.first;
+											[xGlobalBB](std::pair<INT, std::vector<point_type>> b) {
+												return b.first == xGlobalBB.first;
 											});
+
 							auto ghostPointsCountToSendIter = std::find_if(
 									ghostPointsCountToSend.begin(),
 									ghostPointsCountToSend.end(),
@@ -508,24 +493,19 @@ public:
 							if (ghostPointsToSendIter
 									== std::end(ghostPointsToSend)) {
 								std::vector<point_type> vecPointTemp { pts_[i] };
-								ghostPointsToSend.push_back(
-										std::make_pair(xGlobalBB.first,
-												vecPointTemp));
-							} else {
-								ghostPointsToSendIter->second.push_back(
-										pts_[i]);
+								ghostPointsToSend.push_back(std::make_pair(xGlobalBB.first, vecPointTemp));
 							}
+							else
+								ghostPointsToSendIter->second.push_back(pts_[i]);
 
-							assert(
-									ghostPointsCountToSendIter
-											!= std::end(
-													ghostPointsCountToSend));
+							assert(ghostPointsCountToSendIter != std::end(ghostPointsCountToSend));
+
 							++ghostPointsCountToSendIter->second;
 						}
 						break;
 					}
 					default:
-						throw "Invalid value of CONFIG::D exception";
+						throw "MUI Error [sampler_rbf.h]: Invalid value of CONFIG::D exception";
 					}
 				}
 				catch (const char *msg) {
@@ -536,20 +516,20 @@ public:
 
 		// output for debugging
 		if ((!QUIET) && (DEBUG)) {
-			std::cout << "total size of GhostPointsToSend "
+			std::cout << "MUI [sampler_rbf.h]: Total size of GhostPointsToSend "
 					<< ghostPointsToSend.size() << " at rank " << local_rank
 					<< std::endl;
 			for (auto xGhostPointsToSend : ghostPointsToSend) {
-				std::cout << "xGhostPointsToSend to rank "
+				std::cout << "MUI [sampler_rbf.h]: xGhostPointsToSend to rank "
 						<< xGhostPointsToSend.first << " at rank " << local_rank
 						<< std::endl;
 				for (auto xVectPts : xGhostPointsToSend.second) {
-					std::cout << xVectPts[0] << " " << xVectPts[1]
+					std::cout << "MUI [sampler_rbf.h]: " << xVectPts[0] << " " << xVectPts[1]
 							<< " at rank " << local_rank << std::endl;
 				}
 			}
 			for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
-				std::cout << "xGhostPointsCountToSend to rank "
+				std::cout << "MUI [sampler_rbf.h]: xGhostPointsCountToSend to rank "
 						<< xGhostPointsCountToSend.first << " has "
 						<< xGhostPointsCountToSend.second
 						<< " points to send at rank " << local_rank_
@@ -569,6 +549,7 @@ public:
 		for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
 			assert(xGhostPointsCountToSend.first != local_rank);
 			assert(xGhostPointsCountToSend.second >= 0);
+
 			// Determined of number of points to transfer by pairwise communication
 			MPI_Send(&xGhostPointsCountToSend.second, 1, MPI_INT,
 					xGhostPointsCountToSend.first, 0, local_world);
@@ -589,24 +570,23 @@ public:
 								std::pair<INT, std::vector<point_type>> b) {
 							return b.first == xGhostPointsCountToSend.first;
 						});
-				assert(
-						ghostPointsToSendIter->second.size()
-								== xGhostPointsCountToSend.second);
-				int buffer_size = ghostPointsToSendIter->second.size()
-						* sizeof(point_type);
+
+				assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
+
+				int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
 				char *buffer = new char[buffer_size];
 				int position = 0;
 				for (auto &pointElement : ghostPointsToSendIter->second) {
 					MPI_Pack(&pointElement, sizeof(point_type), MPI_BYTE,
 							buffer, buffer_size, &position, local_world);
 				}
-				MPI_Send(buffer, position, MPI_PACKED,
-						xGhostPointsCountToSend.first, 1, local_world);
+				MPI_Send(buffer, position, MPI_PACKED, xGhostPointsCountToSend.first, 1, local_world);
 				delete[] buffer;
+
 				// output for debugging
 				if ((!QUIET) && (DEBUG)) {
 					for (auto xsend : ghostPointsToSendIter->second) {
-						std::cout << "send ghost point to rank "
+						std::cout << "MUI [sampler_rbf.h]: Send ghost point to rank "
 								<< xGhostPointsCountToSend.first
 								<< " with value of " << xsend[0] << " "
 								<< xsend[1] << " at rank " << local_rank
@@ -622,6 +602,7 @@ public:
 					[xGhostPointsCountToSend](std::pair<INT, INT> b) {
 						return b.first == xGhostPointsCountToSend.first;
 					});
+
 			if (ghostPointsCountToRecvIter->second != 0) {
 				std::vector<point_type> vecPointTemp;
 				MPI_Status status;
@@ -646,7 +627,7 @@ public:
 					ptsGhost.emplace_back(xvecPointTemp);
 					// output for debugging
 					if ((!QUIET) && (DEBUG)) {
-						std::cout << "receive ghost point from rank "
+						std::cout << "MUI [sampler_rbf.h]: Receive ghost point from rank "
 								<< ghostPointsCountToRecvIter->first
 								<< " with value of " << xvecPointTemp[0] << " "
 								<< xvecPointTemp[1] << " at rank " << local_rank
@@ -661,22 +642,19 @@ public:
 	// Facilitate Ghost points
 	void facilitateGhostPoints() {
 		std::pair<point_type, point_type> lbb = localBoundingBox(pts_);
-		std::pair<point_type, point_type> lbbExtend = localExtendBoundingBox(
-				lbb, r_);
+		std::pair<point_type, point_type> lbbExtend = localExtendBoundingBox(lbb, r_);
 		if (local_mpi_comm_world_ != MPI_COMM_NULL) {
-			std::pair<std::vector<std::pair<INT, INT>>,
-			std::vector<std::pair<INT, std::vector<point_type>>>> ghostPointsToSendPair =
-				getGhostPointsToSend(lbbExtend, local_mpi_comm_world_, local_rank_, local_size_);
+			std::pair<std::vector<std::pair<INT, INT>>, std::vector<std::pair<INT, std::vector<point_type>>>>
+			ghostPointsToSendPair = getGhostPointsToSend(lbbExtend, local_mpi_comm_world_, local_rank_, local_size_);
 			ptsGhost_ = distributeGhostPoints(ghostPointsToSendPair.first,
-					ghostPointsToSendPair.second, local_mpi_comm_world_,
-					local_rank_);
+					                          ghostPointsToSendPair.second, local_mpi_comm_world_, local_rank_);
 			// output for debugging
 			if ((!QUIET) && (DEBUG)) {
-				std::cout << "local bounding box: " << lbb.second[0] << " "
+				std::cout << "MUI [sampler_rbf.h]: Local bounding box: " << lbb.second[0] << " "
 						<< lbb.second[1] << " " << lbb.first[0] << " "
 						<< lbb.first[1] << " at rank " << local_rank_
 						<< " out of total ranks " << local_size_ << std::endl;
-				std::cout << "extended local bounding box: "
+				std::cout << "MUI [sampler_rbf.h]: Extended local bounding box: "
 						<< lbbExtend.second[0] << " " << lbbExtend.second[1]
 						<< " " << lbbExtend.first[0] << " "
 						<< lbbExtend.first[1] << " at rank " << local_rank_
@@ -689,8 +667,7 @@ public:
 
 private:
 	template<template<typename, typename > class CONTAINER>
-	REAL computeRBFtransformationMatrix(
-			const CONTAINER<ITYPE, CONFIG> &data_points) {
+	REAL computeRBFtransformationMatrix(const std::vector<point_type> &data_points) {
 		// Refine partition size depending on if PoU enabled, whether conservative or consistent
 		// and if problem size smaller than defined patch size
 		if (conservative_) { // Conservative RBF, using local point set for size
@@ -742,7 +719,7 @@ private:
 
 				if (!outputFileMatrixSize) {
 					std::cerr
-							<< "Could not locate the file address of matrixSize.dat!"
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
 							<< std::endl;
 				}
 				else {
@@ -805,22 +782,19 @@ private:
 			}
 
 			if (conservative_) { // Build matrix for conservative RBF
-				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_,
-						smoothFunc_);
+				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
 			}
 			else {
 				// Build matrix for consistent RBF
-				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_,
-						smoothFunc_);
+				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
 			}
 
 			if (writeMatrix_) {
-
 				std::ofstream outputFileHMatrix(fileAddress_ + "/Hmatrix.dat");
 
 				if (!outputFileHMatrix) {
 					std::cerr
-							<< "Could not locate the file address of Hmatrix.dat!"
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
 							<< std::endl;
 				}
 				else {
@@ -852,9 +826,8 @@ private:
 	}
 
 	template<template<typename, typename > class CONTAINER>
-	inline REAL buildMatrixConsistent(
-			const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
-			const size_t MP, bool smoothing) {
+	inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
+				const size_t MP, bool smoothing) {
 		REAL errorReturn = 0;
 		std::pair<INT, REAL> iterErrorReturn(0, 0);
 
@@ -920,7 +893,7 @@ private:
 			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
 
 			if (DEBUG) {
-				std::cout << "#iterations of H_i:     " << iterErrorReturn.first
+				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
 						<< ". Error of H_i: " << iterErrorReturn.second
 						<< std::endl;
 			}
@@ -953,7 +926,7 @@ private:
 					for (size_t k = 0; k < MP; k++) {
 						INT row_k = connectivityAA_[row][k];
 						if (row_k == static_cast<INT>(row)) {
-							std::cerr << "Invalid row_k value: " << row_k
+							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
 									<< std::endl;
 						}
 						else
@@ -963,18 +936,16 @@ private:
 					for (size_t k = 0; k < MP; k++) {
 						INT row_k = connectivityAA_[row][k];
 						if (row_k == static_cast<INT>(row)) {
-							std::cerr << "Invalid row_k value: " << row_k
+							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
 									<< std::endl;
 						}
 						else {
-							REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.))
-									/ (h_j_sum));
+							REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
 							f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
 						}
 					}
 
-					H_.set_value(row, glob_j,
-							(0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
+					H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
 				}
 			}
 		}
@@ -1047,7 +1018,7 @@ private:
 			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
 
 			if (DEBUG) {
-				std::cout << "#iterations of H_i:     " << iterErrorReturn.first
+				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
 						<< ". Error of H_i: " << iterErrorReturn.second
 						<< std::endl;
 			}
@@ -1080,7 +1051,7 @@ private:
 					for (size_t k = 0; k < MP; k++) {
 						INT row_k = connectivityAA_[row_i][k];
 						if (row_k == static_cast<INT>(row_i)) {
-							std::cerr << "Invalid row_k value: " << row_k
+							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
 									<< std::endl;
 						}
 						else
@@ -1090,7 +1061,7 @@ private:
 					for (size_t k = 0; k < MP; k++) {
 						INT row_k = connectivityAA_[row_i][k];
 						if (row_k == static_cast<INT>(row_i)) {
-							std::cerr << "Invalid row_k value: " << row_k
+							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
 									<< std::endl;
 						}
 						else {
@@ -1118,7 +1089,7 @@ private:
 
 			if (!outputFileCAB) {
 				std::cerr
-						<< "Could not locate the file address on the connectivityAB.dat"
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAB.dat"
 						<< std::endl;
 			}
 			else {
@@ -1193,7 +1164,7 @@ private:
 
 			if (!outputFileCAB) {
 				std::cerr
-						<< "Could not locate the file address on the connectivityAB.dat"
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAB.dat"
 						<< std::endl;
 			}
 			else {
@@ -1267,7 +1238,7 @@ private:
 
 			if (!outputFileCAA) {
 				std::cerr
-						<< "Could not locate the file address on the connectivityAA.dat!"
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAA.dat!"
 						<< std::endl;
 			}
 			else {
@@ -1375,31 +1346,22 @@ private:
 	inline REAL dist_h_i(INT ptsExtend_i, INT ptsExtend_j) {
 		switch (CONFIG::D) {
 		case 1:
-			return std::sqrt(
-					(std::pow(
-							(ptsExtend_[ptsExtend_i][0]
-									- ptsExtend_[ptsExtend_j][0]), 2.)));
+			return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0]
+						     - ptsExtend_[ptsExtend_j][0]), 2.)));
 		case 2:
-			return std::sqrt(
-					(std::pow(
-							(ptsExtend_[ptsExtend_i][0]
-									- ptsExtend_[ptsExtend_j][0]), 2.))
-							+ (std::pow(
-									(ptsExtend_[ptsExtend_i][1]
-											- ptsExtend_[ptsExtend_j][1]), 2.)));
+			return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0]
+							 - ptsExtend_[ptsExtend_j][0]), 2.))
+							 + (std::pow((ptsExtend_[ptsExtend_i][1]
+										  - ptsExtend_[ptsExtend_j][1]), 2.)));
 		case 3:
-			return std::sqrt(
-					(std::pow(
-							(ptsExtend_[ptsExtend_i][0]
-									- ptsExtend_[ptsExtend_j][0]), 2.))
-							+ (std::pow(
-									(ptsExtend_[ptsExtend_i][1]
-											- ptsExtend_[ptsExtend_j][1]), 2.))
-							+ (std::pow(
-									(ptsExtend_[ptsExtend_i][2]
-											- ptsExtend_[ptsExtend_j][2]), 2.)));
+			return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0]
+							 - ptsExtend_[ptsExtend_j][0]), 2.))
+							 + (std::pow((ptsExtend_[ptsExtend_i][1]
+							 - ptsExtend_[ptsExtend_j][1]), 2.))
+							 + (std::pow((ptsExtend_[ptsExtend_i][2]
+							  - ptsExtend_[ptsExtend_j][2]), 2.)));
 		default:
-			std::cerr << "CONFIG::D must equal 1-3" << std::endl;
+			std::cerr << "MUI Error [sampler_rbf.h]: CONFIG::D must equal 1-3" << std::endl;
 			return 0.;
 		}
 	}
@@ -1408,7 +1370,7 @@ private:
 		std::ifstream inputFileMatrixSize(fileAddress_ + "/matrixSize.dat");
 
 		if (!inputFileMatrixSize) {
-			std::cerr << "Could not locate the file address of matrixSize.dat"
+			std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat"
 					<< std::endl;
 		}
 		else {
@@ -1436,7 +1398,7 @@ private:
 
 		if (!inputFileCAB) {
 			std::cerr
-					<< "Could not locate the file address on the connectivityAB.dat"
+					<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAB.dat"
 					<< std::endl;
 		}
 		else {
@@ -1464,13 +1426,13 @@ private:
 
 			if (!inputFileCAA) {
 				std::cerr
-						<< "Could not locate the file address on the connectivityAA.dat"
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAA.dat"
 						<< std::endl;
 			}
 			else {
 				if ((CAArow_ == 0) || (CAAcol_ == 0)) {
 					std::cerr
-							<< "Error on the size of connectivityAA matrix in matrixSize.dat. Number of rows: "
+							<< "MUI Error [sampler_rbf.h]: Error on the size of connectivityAA matrix in matrixSize.dat. Number of rows: "
 							<< CAArow_ << " number of columns: " << CAAcol_
 							<< ". Make sure matrices were generated with the smoothing function switched on."
 							<< std::endl;
@@ -1504,7 +1466,7 @@ private:
 		std::ifstream inputFileHMatrix(fileAddress_ + "/Hmatrix.dat");
 
 		if (!inputFileHMatrix) {
-			std::cerr << "Could not locate the file address on the Hmatrix.dat"
+			std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
 					<< std::endl;
 		}
 		else {
@@ -1524,27 +1486,22 @@ private:
 			const linalg::sparse_matrix<INT, REAL> *Css,
 			const linalg::sparse_matrix<INT, REAL> *Aas) {
 		if (precond_ == 0) {
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_,
-					cgMaxIter_);
+			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_);
 			return cg;
 		}
 		else if (precond_ == 1) {
 			linalg::incomplete_lu_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_,
-					cgMaxIter_, &M);
+			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
 			return cg;
 		}
 		else if (precond_ == 2) {
 			linalg::incomplete_cholesky_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_,
-					cgMaxIter_, &M);
+			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
 			return cg;
 		}
 		else if (precond_ == 3) {
-			linalg::symmetric_successive_over_relaxation_preconditioner<INT,
-					REAL> M(*Css, 1.0);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_,
-					cgMaxIter_, &M);
+			linalg::symmetric_successive_over_relaxation_preconditioner<INT, REAL> M(*Css, 1.0);
+			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
 			return cg;
 		}
 		else {
@@ -1590,7 +1547,7 @@ protected:
 
 	const std::vector<point_type> pts_; //< Local points
 	std::vector<point_type> ptsGhost_; //< Local ghost points
-	std::vector<point_type> ptsExtend_; //< Extened local points, i.e. local points and ghost local points
+	std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
 	linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
 	linalg::sparse_matrix<INT, REAL> H_toSmooth_;
 

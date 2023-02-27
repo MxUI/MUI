@@ -86,6 +86,7 @@ public:
 
 		return OTYPE();
 	}
+
 	inline geometry::any_shape<CONFIG> support( point_type focus, REAL domain_mag ) const {
 		return geometry::sphere<CONFIG>( focus, tolerance*domain_mag*real_precision );
 	}
