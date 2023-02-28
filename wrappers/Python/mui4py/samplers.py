@@ -76,18 +76,12 @@ class SamplerSumQuintic(Sampler):
 
 class SamplerRbf(Sampler, CppClass):
     def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
-                 smoothFunc, cutoff, cgSolveTol, cgMaxIter, pouSize, precond):
+                 smoothFunc, cutoff, cgSolveTol, cgMaxIter, pouSize, precond, 
+                 mpiComm):
         super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
                                          conservative, polynomial, smoothFunc,
-                                         cutoff, cgSolveTol, cgMaxIter, pouSize, precond))
-        self._ALLOWED_IO_TYPES = [INT32, INT64, FLOAT32, FLOAT64]
-
-class SamplerRbf(Sampler, CppClass):
-    def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
-                 smoothFunc, cutoff, cgSolveTol, cgMaxIter, pouSize, precond, mpiComm):
-        super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
-                                         conservative, polynomial, smoothFunc,
-                                         cutoff, cgSolveTol, cgMaxIter, pouSize, precond, mpiComm))
+                                         cutoff, cgSolveTol, cgMaxIter, pouSize, precond, 
+                                         mpiComm))
         self._ALLOWED_IO_TYPES = [INT32, INT64, FLOAT32, FLOAT64]
 
 # Temporal samplers
