@@ -210,9 +210,20 @@ void declare_sampler_rbf_t(py::module &m)
     using Tint = typename Tconfig::INT;
     using Tpoint = typename Tconfig::point_type;
     using Tclass = mui::sampler_rbf<Tconfig, T, T>;
-    py::class_<Tclass>(m, name.c_str())
-        .def(py::init<Treal, std::vector<Tpoint> &, int, bool, bool, bool,
-                      bool, const std::string &, Treal, Treal, int, int>());
+    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, int,
+    		bool, bool, Treal, Treal, int, int, int>());
+}
+
+template <typename Tconfig, typename T>
+void declare_sampler_rbf_t_mpi(py::module &m)
+{
+    std::string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
+    using Treal = typename Tconfig::REAL;
+    using Tint = typename Tconfig::INT;
+    using Tpoint = typename Tconfig::point_type;
+    using Tclass = mui::sampler_rbf<Tconfig, T, T>;
+    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, int,
+    		bool, bool, Treal, Treal, int, int, int, mpi4py.MPI.Intracomm>());
 }
 
 template <typename Tconfig>
@@ -222,6 +233,10 @@ void declare_sampler_rbf(py::module &m)
     declare_sampler_rbf_t<Tconfig, float>(m);
     declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
     declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
+    declare_sampler_rbf_t_mpi<Tconfig, double>(m);
+	declare_sampler_rbf_t_mpi<Tconfig, float>(m);
+	declare_sampler_rbf_t_mpi<Tconfig, std::int32_t>(m);
+	declare_sampler_rbf_t_mpi<Tconfig, std::int64_t>(m);
 }
 
 template <typename Tconfig>
