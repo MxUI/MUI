@@ -120,23 +120,23 @@ public:
 			REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 50,
 			INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
 			r_(r),
+			pts_(pts),
+			basisFunc_(basisFunc),
+			conservative_(conservative),
+			consistent_(!conservative),
+			smoothFunc_(smoothFunc),
+			precond_(precond),
 			initialised_(false),
+			local_mpi_comm_world_(local_comm),
 			CABrow_(0),
 			CABcol_(0),
 			Hrow_(0),
 			Hcol_(0),
-			conservative_(conservative),
-			consistent_(!conservative),
 			pouEnabled_(pouSize == 0 ? false : true),
-			smoothFunc_(smoothFunc),
 			cgSolveTol_(cgSolveTol),
 			cgMaxIter_(cgMaxIter),
-			precond_(precond),
 			N_sp_(pouSize),
 			M_ap_(pouSize),
-			basisFunc_(basisFunc),
-			pts_(pts),
-			local_mpi_comm_world_(local_comm),
 			local_rank_(0),
 			local_size_(0) {
 		//set s to give rbf(r)=cutOff (default 1e-9)
@@ -1514,42 +1514,36 @@ private:
 
 protected:
 	REAL r_;
-	REAL twor_;
-	REAL s_;
-
-	bool initialised_;
-	bool pouEnabled_;
-	INT CABrow_;
-	INT CABcol_;
-	INT CAArow_;
-	INT CAAcol_;
-	INT Hrow_;
-	INT Hcol_;
+	const std::vector<point_type> pts_; //< Local points
+	const INT basisFunc_;
 	const bool conservative_;
 	const bool consistent_;
 	const bool smoothFunc_;
-	const INT basisFunc_;
-
+	INT precond_;
+	bool initialised_;
+	MPI_Comm local_mpi_comm_world_;
+	INT CABrow_;
+	INT CABcol_;
+	INT Hrow_;
+	INT Hcol_;
+	bool pouEnabled_;
+	REAL cgSolveTol_;
+	INT cgMaxIter_;
 	size_t N_sp_;
 	size_t M_ap_;
+	int local_rank_;
+	int local_size_;
 
-	INT precond_;
-	INT cgMaxIter_;
-	REAL cgSolveTol_;
-
-	const std::vector<point_type> pts_; //< Local points
+	REAL twor_;
+	REAL s_;
+	INT CAArow_;
+	INT CAAcol_;
 	std::vector<point_type> ptsGhost_; //< Local ghost points
 	std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
-	linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
-	linalg::sparse_matrix<INT, REAL> H_toSmooth_;
-
 	std::vector<std::vector<INT> > connectivityAB_;
 	std::vector<std::vector<INT> > connectivityAA_;
-
-	MPI_Comm local_mpi_comm_world_;
-	int local_size_;
-	int local_rank_;
-
+	linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
+	linalg::sparse_matrix<INT, REAL> H_toSmooth_;
 };
 } // mui
 

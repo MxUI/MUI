@@ -3,6 +3,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <mpi4py/mpi4py.h>
 #include <string>
 #include "config_name.h"
 
@@ -210,8 +211,8 @@ void declare_sampler_rbf_t(py::module &m)
     using Tint = typename Tconfig::INT;
     using Tpoint = typename Tconfig::point_type;
     using Tclass = mui::sampler_rbf<Tconfig, T, T>;
-    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, int,
-    		bool, bool, Treal, Treal, int, int, int>());
+    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, Tint,
+    		bool, bool, Treal, Treal, Tint, Tint, Tint>());
 }
 
 template <typename Tconfig, typename T>
@@ -222,8 +223,8 @@ void declare_sampler_rbf_t_mpi(py::module &m)
     using Tint = typename Tconfig::INT;
     using Tpoint = typename Tconfig::point_type;
     using Tclass = mui::sampler_rbf<Tconfig, T, T>;
-    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, int,
-    		bool, bool, Treal, Treal, int, int, int, mpi4py.MPI.Intracomm>());
+    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, Tint,
+    		bool, bool, Treal, Treal, Tint, Tint, Tint, mpi4py.MPI.Intracomm>());
 }
 
 template <typename Tconfig>
