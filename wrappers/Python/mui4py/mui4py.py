@@ -17,8 +17,7 @@ def create_unifaces(domain, ifaces_names, config):
                                 config.float_type, config.int_type)
     ifaceraw = getattr(mui4py_mod, cpp_obj_name)(domain, ifaces_names)
     for i, obj in enumerate(ifaceraw):
-        ifaces_out[ifaces_names[i]] = Uniface(config=config,
-                                              cpp_obj=obj)
+        ifaces_out[ifaces_names[i]] = Uniface(config=config, cpp_obj=obj)
     return ifaces_out
 
 

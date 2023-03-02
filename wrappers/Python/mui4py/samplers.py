@@ -2,7 +2,6 @@ from mui4py.common import CppClass
 from mui4py.config import Config
 from mui4py.types import INT, FLOAT, FLOAT32, FLOAT64, INT32, INT64, STRING
 
-
 # Inteface for Sampler and TemporalSampler
 def sampler_fetch_signature(self):
     sig = self._split_class_name(title=False)
