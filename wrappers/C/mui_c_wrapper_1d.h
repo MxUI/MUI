@@ -52,6 +52,8 @@
 #ifndef MUI_C_WRAPPER_1D_H_
 #define MUI_C_WRAPPER_1D_H_
 
+#include "mpi.h"
+
 // C-defined simple struct versions of MUI point types
 typedef struct mui_point_1f {
 	float point_1;
@@ -232,20 +234,20 @@ mui_sampler_sum_quintic_1d* mui_create_sampler_sum_quintic_1d(double r);
 mui_sampler_sum_quintic_1dx* mui_create_sampler_sum_quintic_1dx(double r);
 mui_sampler_sum_quintic_1t* mui_create_sampler_sum_quintic_1t(double r);
 mui_sampler_rbf_1f* mui_create_sampler_rbf_1f(float r, mui_point_1f *points, int points_count, int basis_func,
-		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size,
+		int precond, MPI_Comm communicator);
 mui_sampler_rbf_1fx* mui_create_sampler_rbf_1fx(float r, mui_point_1fx *points, int points_count, int basis_func,
-		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size,
+		int precond, MPI_Comm communicator);
 mui_sampler_rbf_1d* mui_create_sampler_rbf_1d(double r, mui_point_1d *points, int points_count, int basis_func,
-		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size,
+		int precond, MPI_Comm communicator);
 mui_sampler_rbf_1dx* mui_create_sampler_rbf_1dx(double r, mui_point_1dx *points, int points_count, int basis_func,
-		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size,
+		int precond, MPI_Comm communicator);
 mui_sampler_rbf_1t* mui_create_sampler_rbf_1t(double r, mui_point_1t *points, int points_count, int basis_func,
-		int conservative, int smoothFunc, int readMatrix, int writeMatrix, const char *file_address,
-		double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size);
+		int conservative, int smoothFunc, double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size,
+		int precond, MPI_Comm communicator);
 
 // MUI spatial samplers destruction
 void mui_destroy_sampler_exact_1f(mui_sampler_exact_1f *sampler);
