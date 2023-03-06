@@ -6,6 +6,7 @@ project(mui4py)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_INCLUDE_DIRECTORIES})
 
 # Development component which includes both Development.Module and
 # Development.Embed is not required for building a Python module.  Correct
