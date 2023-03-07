@@ -14,11 +14,21 @@
 
 ## Installation
 The easiest way to install the python package is to use:
+
 ```
 pip3 install .
 ```
+
 Alternatively `python3 setup.py install` may work.
-The C++ Python bindings can also be built directly with cmake and make, which is useful for testing.
+
+
+The C++ Python bindings can also be built directly with cmake and make, which is useful for testing:
+
+```
+cmake -DPython3_EXECUTABLE=/path/to/python3 -DCMAKE_PREFIX_PATH=/path/to/pybind11 -DCMAKE_INCLUDE_DIRECTORIES=/path/to/MUI/src .
+make
+export PYTHONPATH=/path/to/MUI/wrappers/Python
+```
 
 ### General
 
