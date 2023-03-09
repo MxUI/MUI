@@ -7,15 +7,17 @@ from mui4py.samplers import Sampler, TemporalSampler
 import copy
 
 
-# TODO: Add communicator parameter
-def create_unifaces(domain, ifaces_names, config):
+def create_unifaces(domain, ifaces_names, config, world=None):
     assert type(ifaces_names) == list
     assert type(domain) == str
     assert issubclass(config.__class__, Config)
     ifaces_out = {}
     cpp_obj_name = get_cpp_name("create_uniface", config.dim,
                                 config.float_type, config.int_type)
-    ifaceraw = getattr(mui4py_mod, cpp_obj_name)(domain, ifaces_names)
+    if world is not None:
+        ifaceraw = getattr(mui4py_mod, cpp_obj_name)(domain, ifaces_names, world)
+    else:
+        ifaceraw = getattr(mui4py_mod, cpp_obj_name)(domain, ifaces_names)
     for i, obj in enumerate(ifaceraw):
         ifaces_out[ifaces_names[i]] = Uniface(config=config, cpp_obj=obj)
     return ifaces_out

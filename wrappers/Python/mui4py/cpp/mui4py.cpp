@@ -219,8 +219,24 @@ template <typename Tconfig>
 void declare_uniface_class(py::module &m)
 {
   std::string name = "_create_uniface" + config_name<Tconfig>();
-  m.def(name.c_str(), [](std::string domain, std::vector<std::string> interfaces, py::handle world)
-        { return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD); });
+  m.def(name.c_str(), [](std::string domain, std::vector<std::string> interfaces, pybind11::handle const& world)
+        {
+			MPI_Comm comm;
+			MPI_Comm ric_mpiComm;
+			if (world.is_none()) {
+				comm = MPI_COMM_WORLD;
+				ric_mpiComm = reinterpret_cast<MPI_Comm>(comm);
+			} else {
+				PyObject *py_src = world.ptr();
+				MPI_Comm *comm_p = PyMPIComm_Get(py_src);
+				ric_mpiComm = reinterpret_cast<MPI_Comm>(*comm_p);
+			}
+            return mui::create_uniface<Tconfig>(domain, interfaces, ric_mpiComm);
+        });
+  m.def(name.c_str(), [](std::string domain, std::vector<std::string> interfaces)
+        {
+            return mui::create_uniface<Tconfig>(domain, interfaces, MPI_COMM_WORLD);
+        });
 
   name = "_Uniface" + config_name<Tconfig>();
   using Tclass = mui::uniface<Tconfig>;
