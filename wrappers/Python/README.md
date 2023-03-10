@@ -13,21 +13,42 @@
 # Building
 
 ## Installation
-The easiest way to install the python package is to use:
+- The easiest way to install the Python package is to use:
 
 ```
 pip3 install .
 ```
-
-Alternatively `python3 setup.py install` may work.
-
-
-The C++ Python bindings can also be built directly with cmake and make, which is useful for testing:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In the event that CMake encounter an error related to `mui.h` not being found during compilation, you can resolve this by adding the following flag to the CMAKE_ARGS:
 
 ```
-cmake -DPython3_EXECUTABLE=/path/to/python3 -DCMAKE_PREFIX_PATH=/path/to/pybind11 -DCMAKE_INCLUDE_DIRECTORIES=/path/to/MUI/src .
+-DCMAKE_INCLUDE_DIRECTORIES=/path/to/MUI/src
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In the event that CMake is unable to locate Python3 or is unable to find the correct version of Python3, you can use the following flag to the CMAKE_ARGS to specify the path to the correct Python3 executable:
+
+```
+-DPython3_EXECUTABLE=/path/to/python3
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If CMake is unable to locate pybind11 during the compilation process, you can use the following flag to the CMAKE_ARGS to specify the path to the pybind11 directory:
+
+```
+-DCMAKE_PREFIX_PATH=/path/to/pybind11
+```
+
+- Alternatively `python3 setup.py install` may work.
+
+
+- The C++ Python bindings can also be built directly with cmake and make, which is useful for testing. An example of built with cmake and make:
+
+```
+mkdir build && cd build
+cmake ..
 make
-export PYTHONPATH=/path/to/MUI/wrappers/Python
+cd .. && cp build/*.so mui4py/
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note that if built with cmake and make, the path to the MUI Python wrapper should be added to the PYTHONPATH before use:
+
+```
+export PYTHONPATH=$PYTHONPATH:/path/to/MUI/wrappers/Python
 ```
 
 ### General
