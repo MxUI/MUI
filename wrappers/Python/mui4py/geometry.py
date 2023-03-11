@@ -1,3 +1,4 @@
+"""
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
@@ -42,6 +43,7 @@
 # @date 25 January 2019
 # @brief Geometry functions for MUI Python wrapper.
 #
+"""
 
 from mui4py.common import CppClass, _Point
 from mui4py.config import Config

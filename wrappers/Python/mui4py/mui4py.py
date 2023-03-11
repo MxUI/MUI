@@ -1,3 +1,4 @@
+"""
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
@@ -42,6 +43,7 @@
 # @date 25 January 2019
 # @brief main file for the MUI Python wrapper.
 #
+"""
 
 import mui4py.mui4py_mod as mui4py_mod
 from mui4py.common import CppClass, get_cpp_name, array2Point

@@ -1,3 +1,4 @@
+"""
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
@@ -42,6 +43,7 @@
 # @date 25 January 2019
 # @brief Data type functions for the MUI Python wrapper.
 #
+"""
 
 import numpy as np
 

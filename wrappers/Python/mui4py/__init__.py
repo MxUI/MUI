@@ -1,3 +1,4 @@
+"""
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
@@ -42,6 +43,7 @@
 # @date 25 January 2019
 # @brief Marker file denotes the directory containing the file as the MUI Python wrapper package.
 #
+"""
 
 # flake8: noqa
 from mui4py.mui4py import Uniface, mpi_split_by_app, set_quiet,\

@@ -1,3 +1,4 @@
+"""
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
@@ -42,6 +43,7 @@
 # @date 20 January 2023
 # @brief Setup file for MUI Python wrapper.
 #
+"""
 
 import sys
 import os

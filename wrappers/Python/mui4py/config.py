@@ -1,3 +1,4 @@
+"""
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
@@ -42,6 +43,7 @@
 # @date 25 January 2019
 # @brief Configure functions for MUI Python wrapper.
 #
+"""
 
 from mui4py.types import map_type, UINT
 __default_config = None
