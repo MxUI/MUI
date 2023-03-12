@@ -45,13 +45,8 @@
  */
 
 #include <mui.h>
-#include <pybind11/chrono.h>
-#include <pybind11/functional.h>
-#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 #include <mpi4py/mpi4py.h>
-#include <string>
 
 #include "config_name.h"
 #include "sampler_name.h"
@@ -165,7 +160,7 @@ void declare_uniface_class(py::module &m)
 				if (import_mpi4py() < 0)
 				{
 					throw std::runtime_error(
-						"MUI Error [uniface.cpp]: mpi4py not loaded correctly\n");
+						"MUI Error [wrappers/Python/mui4py/cpp/uniface.cpp]: mpi4py not loaded correctly\n");
 				}
 			}
 
@@ -218,7 +213,6 @@ void declare_uniface_class(py::module &m)
            (void(Tclass::*)()) & Tclass::announce_send_disable, "")
       .def("announce_recv_disable",
            (void(Tclass::*)()) & Tclass::announce_recv_disable, "")
-      //    DEFINE_MUI_UNIFACE_FETCH_5ARGS() DEFINE_MUI_UNIFACE_FETCH_6ARGS()
 
       .def(py::init<const std::string &>());
 
@@ -237,27 +231,27 @@ void declare_uniface_class(py::module &m)
 
   declare_uniface_funcs<Tconfig, double>(uniface);
   declare_uniface_funcs<Tconfig, float>(uniface);
-  //declare_uniface_funcs<Tconfig, std::int32_t>(uniface);
-  //declare_uniface_funcs<Tconfig, std::int64_t>(uniface);
+  declare_uniface_funcs<Tconfig, std::int32_t>(uniface);
+  declare_uniface_funcs<Tconfig, std::int64_t>(uniface);
 }
 
 void uniface(py::module &m)
 {
 #ifdef PYTHON_INT_64
   declare_uniface_class<mui::mui_config_1dx>(m);
- // declare_uniface_class<mui::mui_config_2dx>(m);
+  declare_uniface_class<mui::mui_config_2dx>(m);
   declare_uniface_class<mui::mui_config_3dx>(m);
-//  declare_uniface_class<mui::mui_config_1fx>(m);
+  declare_uniface_class<mui::mui_config_1fx>(m);
   declare_uniface_class<mui::mui_config_2fx>(m);
- // declare_uniface_class<mui::mui_config_3fx>(m);
+  declare_uniface_class<mui::mui_config_3fx>(m);
 
 #elif defined PYTHON_INT_32
   declare_uniface_class<mui::mui_config_1d>(m);
-  //declare_uniface_class<mui::mui_config_2d>(m);
+  declare_uniface_class<mui::mui_config_2d>(m);
   declare_uniface_class<mui::mui_config_3d>(m);
-  //declare_uniface_class<mui::mui_config_1f>(m);
+  declare_uniface_class<mui::mui_config_1f>(m);
   declare_uniface_class<mui::mui_config_2f>(m);
-  //declare_uniface_class<mui::mui_config_3f>(m);
+  declare_uniface_class<mui::mui_config_3f>(m);
 
 #else
 #error PYTHON_INT_[32|64] not defined.

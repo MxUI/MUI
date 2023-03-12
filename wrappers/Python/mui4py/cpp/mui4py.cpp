@@ -53,10 +53,7 @@
 #include <mpi4py/mpi4py.h>
 #include <string>
 
-#include "config_name.h"
 #include "compiler_info.h"
-#include "sampler_name.h"
-#include "temporal_name.h"
 
 // Declaration of other files
 void temporal_sampler(py::module &m);
