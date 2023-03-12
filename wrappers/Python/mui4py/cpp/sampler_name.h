@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson, E. R. Fernandez                          *
+* Copyright (C) 2023 C. Richardson, E. R. Fernandez, W. Liu                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,54 +38,32 @@
 *****************************************************************************/
 
 /**
- * @file mui4py.cpp
- * @author C. Richardson, E. R. Fernandez
- * @date 20 January 2023
- * @brief Main c++ file for MUI Python wrapper.
+ * @file sampler_name.h
+ * @author C. Richardson, E. R. Fernandez, W. Liu
+ * @date 11 March 2023
+ * @brief Spacial sampler names for MUI Python wrapper.
  */
 
-#include <mui.h>
-#include <pybind11/chrono.h>
-#include <pybind11/functional.h>
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <mpi4py/mpi4py.h>
-#include <string>
-
-#include "config_name.h"
-#include "compiler_info.h"
-#include "sampler_name.h"
-#include "temporal_name.h"
-
-// Declaration of other files
-void temporal_sampler(py::module &m);
-void sampler(py::module &m);
-void geometry(py::module &m);
-void uniface(py::module &m);
-
-PYBIND11_MODULE(mui4py_mod, m)
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
+std::string sampler_name()
 {
-  m.doc() = "MUI bindings for Python.";
-
-  // Expose numerical limits from C++
-  m.attr("numeric_limits_real") = std::numeric_limits<double>::min();
-  m.attr("numeric_limits_int") = std::numeric_limits<int>::min();
-
-  geometry(m);
-  sampler(m);
-  temporal_sampler(m);
-  uniface(m);
-
-  m.def("set_quiet", &mui::set_quiet, "");
-  m.def(
-      "mpi_split_by_app", []() -> py::handle
-      {
-    if (import_mpi4py() < 0)
-      Py_RETURN_NONE;
-    return PyMPIComm_New(mui::mpi_split_by_app()); },
-      "");
-  m.def("get_mpi_version", &get_mpi_version, "");
-  m.def("get_compiler_config", &get_compiler_config, "");
-  m.def("get_compiler_version", &get_compiler_version, "");
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_exact<Tconfig, T, T>>::value)
+    return "exact";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_gauss<Tconfig, T, T>>::value)
+    return "gauss";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_moving_average<Tconfig, T, T>>::value)
+    return "moving_average";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_nearest_neighbor<Tconfig, T, T>>::value)
+    return "nearest_neighbor";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_pseudo_n2_linear<Tconfig, T, T>>::value)
+    return "pseudo_n2_linear";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_pseudo_nearest_neighbor<Tconfig, T, T>>::value)
+    return "pseudo_nearest_neighbor";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_shepard_quintic<Tconfig, T, T>>::value)
+    return "shepard_quintic";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_sph_quintic<Tconfig, T, T>>::value)
+    return "sph_quintic";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_sum_quintic<Tconfig, T, T>>::value)
+    return "sum_quintic";
+  throw std::runtime_error("Invalid sampler type");
 }

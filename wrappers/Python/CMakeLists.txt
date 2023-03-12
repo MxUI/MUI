@@ -44,7 +44,8 @@ pybind11_add_module(mui4py_mod MODULE
   mui4py/cpp/mui4py.cpp
   mui4py/cpp/sampler.cpp
   mui4py/cpp/temporal_sampler.cpp
-  mui4py/cpp/geometry.cpp)
+  mui4py/cpp/geometry.cpp
+  mui4py/cpp/uniface.cpp)
 
 target_include_directories(mui4py_mod PRIVATE ${MPI_INCLUDE_PATH} ../..)
 target_compile_definitions(mui4py_mod PRIVATE PYTHON_BINDINGS PYTHON_INT_${NUMPY_INT_SIZE})
