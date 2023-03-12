@@ -38,10 +38,10 @@
 *****************************************************************************/
 
 /**
- * @file uniface.cpp
+ * @file uniface_base.h
  * @author C. Richardson, E. R. Fernandez, W. Liu
  * @date 11 March 2023
- * @brief Uniface calss for MUI Python wrapper.
+ * @brief Uniface base calss for MUI Python wrapper.
  */
 
 #include <mui.h>
@@ -148,7 +148,28 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
 }
 
 template <typename Tconfig>
-void declare_uniface_class(py::module &m)
+void declare_uniface_string(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+
+  // Special cases for string
+  uniface.def("push_string",
+              (void(Tclass::*)(const std::string &, const mui::point<Treal, Tconfig::D> &,
+                               const std::string &)) &
+                  Tclass::push,
+              "")
+      .def("push_string",
+           (void(Tclass::*)(const std::string &, const std::string &)) & Tclass::push,
+           "")
+      .def("fetch_string",
+           (std::string(Tclass::*)(const std::string &)) & Tclass::fetch, "");
+  declare_uniface_fetch<Tconfig, std::string, mui::sampler_exact, mui::temporal_sampler_exact>(uniface);
+
+}
+
+template <typename Tconfig>
+void declare_uniface_class (py::module &m)
 {
   std::string name = "_create_uniface" + config_name<Tconfig>();
 
@@ -185,7 +206,6 @@ void declare_uniface_class(py::module &m)
 
   name = "_Uniface" + config_name<Tconfig>();
   using Tclass = mui::uniface<Tconfig>;
-  using Treal = typename Tconfig::REAL;
   using Ttime = typename Tconfig::time_type;
   using Titer = typename Tconfig::iterator_type;
   py::class_<Tclass> uniface(m, name.c_str());
@@ -216,44 +236,9 @@ void declare_uniface_class(py::module &m)
 
       .def(py::init<const std::string &>());
 
-  // Special cases for string
-  uniface.def("push_string",
-              (void(Tclass::*)(const std::string &, const mui::point<Treal, Tconfig::D> &,
-                               const std::string &)) &
-                  Tclass::push,
-              "")
-      .def("push_string",
-           (void(Tclass::*)(const std::string &, const std::string &)) & Tclass::push,
-           "")
-      .def("fetch_string",
-           (std::string(Tclass::*)(const std::string &)) & Tclass::fetch, "");
-  declare_uniface_fetch<Tconfig, std::string, mui::sampler_exact, mui::temporal_sampler_exact>(uniface);
-
+  declare_uniface_string<Tconfig> (uniface);
   declare_uniface_funcs<Tconfig, double>(uniface);
   declare_uniface_funcs<Tconfig, float>(uniface);
   declare_uniface_funcs<Tconfig, std::int32_t>(uniface);
   declare_uniface_funcs<Tconfig, std::int64_t>(uniface);
-}
-
-void uniface(py::module &m)
-{
-#ifdef PYTHON_INT_64
-  declare_uniface_class<mui::mui_config_1dx>(m);
-  declare_uniface_class<mui::mui_config_2dx>(m);
-  declare_uniface_class<mui::mui_config_3dx>(m);
-  declare_uniface_class<mui::mui_config_1fx>(m);
-  declare_uniface_class<mui::mui_config_2fx>(m);
-  declare_uniface_class<mui::mui_config_3fx>(m);
-
-#elif defined PYTHON_INT_32
-  declare_uniface_class<mui::mui_config_1d>(m);
-  declare_uniface_class<mui::mui_config_2d>(m);
-  declare_uniface_class<mui::mui_config_3d>(m);
-  declare_uniface_class<mui::mui_config_1f>(m);
-  declare_uniface_class<mui::mui_config_2f>(m);
-  declare_uniface_class<mui::mui_config_3f>(m);
-
-#else
-#error PYTHON_INT_[32|64] not defined.
-#endif
 }

@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson, E. R. Fernandez                          *
+* Copyright (C) 2023 C. Richardson, E. R. Fernandez, W. Liu                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,61 +38,23 @@
 *****************************************************************************/
 
 /**
- * @file mui4py.cpp
- * @author C. Richardson, E. R. Fernandez
- * @date 20 January 2023
- * @brief Main c++ file for MUI Python wrapper.
+ * @file uniface1d.cpp
+ * @author C. Richardson, E. R. Fernandez, W. Liu
+ * @date 11 March 2023
+ * @brief Uniface 1-D double for MUI Python wrapper.
  */
 
-#include <mui.h>
-#include <pybind11/chrono.h>
-#include <pybind11/functional.h>
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <mpi4py/mpi4py.h>
-#include <string>
+#include "uniface_base.h"
 
-#include "compiler_info.h"
-
-// Declaration of other files
-void temporal_sampler(py::module &m);
-void sampler(py::module &m);
-void geometry(py::module &m);
-void uniface1d(py::module &m);
-void uniface2d(py::module &m);
-void uniface3d(py::module &m);
-void uniface1f(py::module &m);
-void uniface2f(py::module &m);
-void uniface3f(py::module &m);
-
-PYBIND11_MODULE(mui4py_mod, m)
+void uniface1d(py::module &m)
 {
-  m.doc() = "MUI bindings for Python.";
+#ifdef PYTHON_INT_64
+  declare_uniface_class<mui::mui_config_1dx>(m);
 
-  // Expose numerical limits from C++
-  m.attr("numeric_limits_real") = std::numeric_limits<double>::min();
-  m.attr("numeric_limits_int") = std::numeric_limits<int>::min();
+#elif defined PYTHON_INT_32
+  declare_uniface_class<mui::mui_config_1d>(m);
 
-  geometry(m);
-  sampler(m);
-  temporal_sampler(m);
-  uniface1d(m);
-  uniface2d(m);
-  uniface3d(m);
-  uniface1f(m);
-  uniface2f(m);
-  uniface3f(m);
-
-  m.def("set_quiet", &mui::set_quiet, "");
-  m.def(
-      "mpi_split_by_app", []() -> py::handle
-      {
-    if (import_mpi4py() < 0)
-      Py_RETURN_NONE;
-    return PyMPIComm_New(mui::mpi_split_by_app()); },
-      "");
-  m.def("get_mpi_version", &get_mpi_version, "");
-  m.def("get_compiler_config", &get_compiler_config, "");
-  m.def("get_compiler_version", &get_compiler_version, "");
+#else
+#error PYTHON_INT_[32|64] not defined.
+#endif
 }
