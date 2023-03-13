@@ -2,7 +2,7 @@
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
-# Copyright (C) 2023 E. R. Fernandez                                         #
+# Copyright (C) 2023 E. R. Fernandez, W. Liu                                 #
 #                                                                            #
 # This software is jointly licensed under the Apache License, Version 2.0    #
 # and the GNU General Public License version 3, you may use it according     #
@@ -39,7 +39,7 @@
 ##############################################################################
 #
 # @file types.py
-# @author E. R. Fernandez
+# @author E. R. Fernandez, W. Liu
 # @date 25 January 2019
 # @brief Data type functions for the MUI Python wrapper.
 #

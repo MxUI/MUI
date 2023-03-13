@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson, E. R. Fernandez                          *
+* Copyright (C) 2023 C. Richardson                                           *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -39,7 +39,7 @@
 
 /**
  * @file geometry.cpp
- * @author C. Richardson, E. R. Fernandez
+ * @author C. Richardson
  * @date 20 January 2023
  * @brief Geometries for MUI Python wrapper.
  */

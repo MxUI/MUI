@@ -2,7 +2,7 @@
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
-# Copyright (C) 2023 E. R. Fernandez                                         #
+# Copyright (C) 2023 E. R. Fernandez, W. Liu                                 #
 #                                                                            #
 # This software is jointly licensed under the Apache License, Version 2.0    #
 # and the GNU General Public License version 3, you may use it according     #
@@ -39,7 +39,7 @@
 ##############################################################################
 #
 # @file mui4py.py
-# @author E. R. Fernandez
+# @author E. R. Fernandez, W. Liu
 # @date 25 January 2019
 # @brief main file for the MUI Python wrapper.
 #
@@ -105,13 +105,7 @@ class Uniface(CppClass):
         self._tags_spatial_samplers = {}
         self._tags_temporal_samplers = {}
         self._tags_fetch = {}
-        # self._tags_push = {}
         self._ALLOWED_PROTOCOLS = ["mpi"]
-
-    def _check_uri(self):
-        # protocol://domain/interface
-        # if not re.match("[mpi]+//[
-        pass
 
     def _get_tag_type(self, tag):
         try:
@@ -155,7 +149,6 @@ class Uniface(CppClass):
         return (fname_root + ALLOWED_IO_TYPES[data_type], data_type)
 
     def push(self, *args, **kwargs):
-
         if len(args) == 1:
             loc = array2Point(args[0], self.config, self.raw_point)
             push_fname = "push_"
@@ -185,8 +178,23 @@ class Uniface(CppClass):
         push_fname, data_type = self._get_pushfname("push_many_", tag, type_in=values.dtype.type)
         getattr(self.raw, push_fname)(tag, points, values)
 
-    def commit(self, tstamp):
-        return self.raw.commit(tstamp)
+    def commit(self, t1, t2=None):
+        if t2 is not None:
+            return self.raw.commit(t1, t2)
+        else:
+            return self.raw.commit(t1, mui4py_mod.numeric_limits_uint)
+
+    def forecast(self, t1, t2=None):
+        if t2 is not None:
+            self.raw.forecast(t1, t2)
+        else:
+            self.raw.forecast(t1, mui4py_mod.numeric_limits_uint)
+
+    def is_ready(self, attr, t1, t2=None):
+        if t2 is not None:
+            return self.raw.is_ready(attr, t1, t2)
+        else:
+            return self.raw.is_ready(attr, t1)
 
     def barrier(self, t1, t2=None):
         if t2 is not None:
@@ -194,41 +202,58 @@ class Uniface(CppClass):
         else:
             self.raw.barrier(t1)
 
-    def forget(self, tend, tbegin=0.0):
-        self.raw.forget(tend, True)
-
-    def forecast(self, timestamp):
-        self.raw.forecast(timestamp)
-
-    def is_ready(self, attr, t1, t2=None):
+    # In case to pass (std::pair<Ttime,Titer>, bool) as args for `forget()` function:
+    #    ```
+    #    t1 = (2.5, 5)
+    #    forget(t1, True)
+    #    ```
+    def forget(self, t1, t2=None, reset_log=True):
         if t2 is not None:
-            self.raw.is_ready(attr, t1, t2)
+            self.raw.forget(t1, t2, reset_log)
         else:
-            self.raw.is_ready(attr, t1)
+            self.raw.forget(t1, reset_log)
 
     def set_memory(self, t):
-        self.raw.set_memmory(t)
+        self.raw.set_memory(t)
 
-    def assign(self, tag, val):
-        data_type = map_type[self._get_tag_type(tag)]
-        assign = getattr(self.raw, "assign_" + ALLOWED_IO_TYPES[data_type])
-        assign(tag, safe_cast(data_type, val))
+    def uri_host(self):
+        return self.raw.uri_host()
 
-    def announce_recv_span(self, tinit, timeout, geometry, synchronised):
-        assert issubclass(geometry.__class__, Geometry)
-        geometry.configure(self.config)
-        self.raw.announce_recv_span(tinit, timeout, geometry.raw, synchronised)
+    def uri_path(self):
+        return self.raw.uri_path()
+
+    def uri_protocol(self):
+        return self.raw.uri_protocol()
 
     def announce_send_span(self, tinit, timeout, geometry, synchronised):
         assert issubclass(geometry.__class__, Geometry)
         geometry.configure(self.config)
         self.raw.announce_send_span(tinit, timeout, geometry.raw, synchronised)
 
-    def announce_recv_disable(self):
-        self.raw.announce_recv_disable()
+    def announce_recv_span(self, tinit, timeout, geometry, synchronised):
+        assert issubclass(geometry.__class__, Geometry)
+        geometry.configure(self.config)
+        self.raw.announce_recv_span(tinit, timeout, geometry.raw, synchronised)
 
-    def announce_send_disable(self):
-        self.raw.announce_send_disable()
+    def announce_send_disable(self, synchronised=False):
+        self.raw.announce_send_disable(synchronised)
+
+    def announce_recv_disable(self, synchronised=False):
+        self.raw.announce_recv_disable(synchronised)
+
+    def update_smart_send(self, t1):
+        self.raw.update_smart_send(t1)
+
+    def barrier_ss_send(self):
+        self.raw.barrier_ss_send()
+
+    def barrier_ss_recv(self):
+        self.raw.barrier_ss_recv()
+
+    def assign(self, tag, val):
+        data_type = map_type[self._get_tag_type(tag)]
+        assign = getattr(self.raw, "assign_" + ALLOWED_IO_TYPES[data_type])
+        assign(tag, safe_cast(data_type, val))
 
     def _get_fetch_5args(self, fname_root, tag, data_type, spatial_sampler, temporal_sampler):
         assert issubclass(spatial_sampler.__class__, Sampler)

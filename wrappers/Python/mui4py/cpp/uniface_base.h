@@ -211,29 +211,36 @@ void declare_uniface_class (py::module &m)
   py::class_<Tclass> uniface(m, name.c_str());
 
   uniface
-      .def("commit", (int(Tclass::*)(Ttime)) & Tclass::commit, "")
-      .def("forecast", (void(Tclass::*)(Ttime)) & Tclass::forecast, "")
-      //.def("is_ready", &Tclass::is_ready, "")
+      .def("commit", (int(Tclass::*)(Ttime, Titer)) & Tclass::commit, "")
+      .def("forecast", (void(Tclass::*)(Ttime, Titer)) & Tclass::forecast, "")
+      .def("is_ready", (bool(Tclass::*)(const std::string &, Ttime) const) &Tclass::is_ready, "")
+      .def("is_ready", (bool(Tclass::*)(const std::string &, Ttime, Titer) const) &Tclass::is_ready, "")
       .def("barrier", (void(Tclass::*)(Ttime)) & Tclass::barrier, "")
       .def("barrier", (void(Tclass::*)(Ttime, Titer)) & Tclass::barrier, "")
       .def("forget", (void(Tclass::*)(Ttime, bool)) & Tclass::forget, "")
+      .def("forget", (void(Tclass::*)(std::pair<Ttime,Titer>, bool)) & Tclass::forget, "")
       .def("forget", (void(Tclass::*)(Ttime, Ttime, bool)) & Tclass::forget, "")
+      .def("forget", (void(Tclass::*)(std::pair<Ttime,Titer>, std::pair<Ttime,Titer>, bool)) & Tclass::forget, "")
       .def("set_memory", (void(Tclass::*)(Ttime)) & Tclass::set_memory, "")
+      .def("uri_host", (std::string(Tclass::*)()) & Tclass::uri_host, "")
+      .def("uri_path", (std::string(Tclass::*)()) & Tclass::uri_path, "")
+      .def("uri_protocol", (std::string(Tclass::*)()) & Tclass::uri_protocol, "")
       .def("announce_send_span",
            (void(Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>,
-                            bool synchronised)) &
-               Tclass::announce_send_span,
-           "")
+                            bool)) & Tclass::announce_send_span, "")
       .def("announce_recv_span",
            (void(Tclass::*)(Ttime, Ttime, mui::geometry::any_shape<Tconfig>,
-                            bool synchronised)) &
-               Tclass::announce_recv_span,
-           "")
+                            bool)) & Tclass::announce_recv_span, "")
       .def("announce_send_disable",
-           (void(Tclass::*)()) & Tclass::announce_send_disable, "")
+           (void(Tclass::*)(bool)) & Tclass::announce_send_disable, "")
       .def("announce_recv_disable",
-           (void(Tclass::*)()) & Tclass::announce_recv_disable, "")
-
+           (void(Tclass::*)(bool)) & Tclass::announce_recv_disable, "")
+      .def("update_smart_send",
+           (void(Tclass::*)(Ttime)) & Tclass::update_smart_send, "")
+      .def("barrier_ss_send",
+           (void(Tclass::*)()) & Tclass::barrier_ss_send, "")
+      .def("barrier_ss_recv",
+           (void(Tclass::*)()) & Tclass::barrier_ss_recv, "")
       .def(py::init<const std::string &>());
 
   declare_uniface_string<Tconfig> (uniface);

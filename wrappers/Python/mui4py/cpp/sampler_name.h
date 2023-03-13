@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson, E. R. Fernandez, W. Liu                  *
+* Copyright (C) 2023 C. Richardson, W. Liu                                   *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -39,7 +39,7 @@
 
 /**
  * @file sampler_name.h
- * @author C. Richardson, E. R. Fernandez, W. Liu
+ * @author C. Richardson, W. Liu
  * @date 11 March 2023
  * @brief Spacial sampler names for MUI Python wrapper.
  */

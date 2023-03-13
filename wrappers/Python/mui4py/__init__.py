@@ -2,7 +2,7 @@
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
-# Copyright (C) 2023 E. R. Fernandez                                         #
+# Copyright (C) 2023 E. R. Fernandez, W. Liu                                 #
 #                                                                            #
 # This software is jointly licensed under the Apache License, Version 2.0    #
 # and the GNU General Public License version 3, you may use it according     #
@@ -39,7 +39,7 @@
 ##############################################################################
 #
 # @file __init__.py
-# @author E. R. Fernandez
+# @author E. R. Fernandez, W. Liu
 # @date 25 January 2019
 # @brief Marker file denotes the directory containing the file as the MUI Python wrapper package.
 #
@@ -55,6 +55,6 @@ from mui4py.samplers import SamplerExact, SamplerGauss, SamplerMovingAverage,\
                             SamplerSphQuintic, SamplerSumQuintic, SamplerRbf,\
                             TemporalSamplerExact, TemporalSamplerGauss,\
                             TemporalSamplerMean, TemporalSamplerSum
-from mui4py.types import STRING, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT
+from mui4py.types import STRING, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT, BOOL
 from mui4py.config import Config, set_default_config, get_default_config
 import mui4py.geometry

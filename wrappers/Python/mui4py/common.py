@@ -59,10 +59,10 @@ class CppClass(object):
         self.raw_point = None
         self.raw = None
         self.io_data_type = None
-        # Convertir args en Args()
+        # Convert args to Args()
         self.args = tuple([Arg(a) if not issubclass(a.__class__, Arg) else a for a in args])
         self.namespace = ""
-        # Filter None-valued entries to gake C++ default values.
+        # Filter None-valued entries to take C++ default values.
         self.kwargs = {k: v for k, v in kwargs.items() if v is not None}
         self.configured = False
         self._ALLOWED_IO_TYPES = None
