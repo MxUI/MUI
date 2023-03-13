@@ -349,10 +349,40 @@ public:
         return values;
     }
 
-    template<typename TYPE>
+    template<class SAMPLER, class TIME_SAMPLER>
+    py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
+    fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
+        const iterator_type it, SAMPLER& sampler, const TIME_SAMPLER &t_sampler) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        py::array_t<typename SAMPLER::OTYPE,py::array::c_style> values(points_arr.shape(0));
+        auto values_arr = values.template mutable_unchecked<1>();
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            values_arr(i)  = fetch(attr, p, t, it, sampler, t_sampler);
+        }
+        return values;
+    }
+
+    template<typename TYPE, class TIME_SAMPLER>
     py::array_t<REAL, py::array::c_style>
-    fetch_points_np( const std::string& attr, const time_type t ) {
-        std::vector<point_type> points = fetch_points<TYPE>(attr, t);
+    fetch_points_np(const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true) {
+        std::vector<point_type> points = fetch_points<TYPE>(attr, t, t_sampler, barrier_enabled);
+        size_t n = points.size();
+        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        auto points_np_arr = points_np.template mutable_unchecked<2>();
+        for (std::size_t i = 0; i < n; i++)
+            for (std::size_t j = 0; j < D; j++)
+                points_np_arr(i,j) = (points[i].data())[j];
+        return points_np;
+    }
+
+    template<typename TYPE, class TIME_SAMPLER>
+    py::array_t<REAL, py::array::c_style>
+    fetch_points_np(const std::string& attr, const time_type t, const iterator_type it, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true) {
+        std::vector<point_type> points = fetch_points<TYPE>(attr, t, it, t_sampler, barrier_enabled);
         size_t n = points.size();
         py::array_t<REAL, py::array::c_style> points_np({n, n});
         auto points_np_arr = points_np.template mutable_unchecked<2>();
