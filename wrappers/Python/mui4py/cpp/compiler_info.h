@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson                                           *
+* Copyright (C) 2023 C. Richardson, E. R. Fernandez, W. Liu                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,57 +38,35 @@
 *****************************************************************************/
 
 /**
- * @file config_name.h
- * @author C. Richardson
- * @date 20 January 2023
- * @brief Config names for MUI Python wrapper.
+ * @file compiler_info.h
+ * @author C. Richardson, E. R. Fernandez, W. Liu
+ * @date 11 March 2023
+ * @brief Compiler info and MUI version for MUI Python wrapper.
  */
 
-#include <mui.h>
-#include <string>
-
-template <typename CONFIG>
-std::string config_name()
+std::string get_mpi_version()
 {
-    if (std::is_same<CONFIG, mui::mui_config_1d>())
-        return "1d_f64_i32";
-    if (std::is_same<CONFIG, mui::mui_config_2d>())
-        return "2d_f64_i32";
-    if (std::is_same<CONFIG, mui::mui_config_3d>())
-        return "3d_f64_i32";
-    if (std::is_same<CONFIG, mui::mui_config_1dx>())
-        return "1d_f64_i64";
-    if (std::is_same<CONFIG, mui::mui_config_2dx>())
-        return "2d_f64_i64";
-    if (std::is_same<CONFIG, mui::mui_config_3dx>())
-        return "3d_f64_i64";
-    if (std::is_same<CONFIG, mui::mui_config_1f>())
-        return "1d_f32_i32";
-    if (std::is_same<CONFIG, mui::mui_config_2f>())
-        return "2d_f32_i32";
-    if (std::is_same<CONFIG, mui::mui_config_3f>())
-        return "3d_f32_i32";
-    if (std::is_same<CONFIG, mui::mui_config_1fx>())
-        return "1d_f32_i64";
-    if (std::is_same<CONFIG, mui::mui_config_2fx>())
-        return "2d_f32_i64";
-    if (std::is_same<CONFIG, mui::mui_config_3fx>())
-        return "3d_f32_i64";
-    throw std::runtime_error("Invalid config type");
+#ifdef MPI_VERSION_STR
+  return MPI_VERSION_STR;
+#else
+  return "";
+#endif
 }
 
-template <typename T>
-std::string type_name()
+std::string get_compiler_version()
 {
-    if (std::is_same<T, double>::value)
-        return "double";
-    if (std::is_same<T, float>::value)
-        return "float";
-    if (std::is_same<T, std::int32_t>::value)
-        return "int32_t";
-    if (std::is_same<T, std::int64_t>::value)
-        return "int64_t";
-    if (std::is_same<T, std::string>::value)
-        return "string";
-    throw std::runtime_error("Invalid type");
+#ifdef COMPILER_VERSION_STR
+  return COMPILER_VERSION_STR;
+#else
+  return "";
+#endif
+}
+
+std::string get_compiler_config()
+{
+#ifdef COMPILER_CONFIG_STR
+  return COMPILER_CONFIG_STR;
+#else
+  return "";
+#endif
 }

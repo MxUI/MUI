@@ -1,5 +1,50 @@
+/*****************************************************************************
+* Multiscale Universal Interface Code Coupling Library                       *
+*                                                                            *
+* Copyright (C) 2023 C. Richardson, E. R. Fernandez                          *
+*                                                                            *
+* This software is jointly licensed under the Apache License, Version 2.0    *
+* and the GNU General Public License version 3, you may use it according     *
+* to either.                                                                 *
+*                                                                            *
+* ** Apache License, version 2.0 **                                          *
+*                                                                            *
+* Licensed under the Apache License, Version 2.0 (the "License");            *
+* you may not use this file except in compliance with the License.           *
+* You may obtain a copy of the License at                                    *
+*                                                                            *
+* http://www.apache.org/licenses/LICENSE-2.0                                 *
+*                                                                            *
+* Unless required by applicable law or agreed to in writing, software        *
+* distributed under the License is distributed on an "AS IS" BASIS,          *
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+* See the License for the specific language governing permissions and        *
+* limitations under the License.                                             *
+*                                                                            *
+* ** GNU General Public License, version 3 **                                *
+*                                                                            *
+* This program is free software: you can redistribute it and/or modify       *
+* it under the terms of the GNU General Public License as published by       *
+* the Free Software Foundation, either version 3 of the License, or          *
+* (at your option) any later version.                                        *
+*                                                                            *
+* This program is distributed in the hope that it will be useful,            *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+* GNU General Public License for more details.                               *
+*                                                                            *
+* You should have received a copy of the GNU General Public License          *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+*****************************************************************************/
 
-#include "../../../../src/mui.h"
+/**
+ * @file sampler.cpp
+ * @author C. Richardson, E. R. Fernandez
+ * @date 20 January 2023
+ * @brief Samplers for MUI Python wrapper.
+ */
+
+#include <mui.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
@@ -203,26 +248,26 @@ void declare_sampler_sum_quintic(py::module &m)
 }
 
 // SPATIAL_SAMPLER_RBF CLASS//
-template <typename Tconfig, typename T>
-void declare_sampler_rbf_t(py::module &m)
-{
-    std::string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
-    using Treal = typename Tconfig::REAL;
-    using Tint = typename Tconfig::INT;
-    using Tpoint = typename Tconfig::point_type;
-    using Tclass = mui::sampler_rbf<Tconfig, T, T>;
-    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, Tint,
-    		bool, bool, Treal, Treal, Tint, Tint, Tint, PyMPIComm_New(MPI_Comm)>());
-}
-
-template <typename Tconfig>
-void declare_sampler_rbf(py::module &m)
-{
-    declare_sampler_rbf_t<Tconfig, double>(m);
-    declare_sampler_rbf_t<Tconfig, float>(m);
-    declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
-    declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
-}
+//template <typename Tconfig, typename T>
+//void declare_sampler_rbf_t(py::module &m)
+//{
+//    std::string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
+//    using Treal = typename Tconfig::REAL;
+//    using Tint = typename Tconfig::INT;
+//    using Tpoint = typename Tconfig::point_type;
+//    using Tclass = mui::sampler_rbf<Tconfig, T, T>;
+//    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, Tint,
+//    		bool, bool, Treal, Treal, Tint, Tint, Tint, PyMPIComm_New(MPI_Comm)>());
+//}
+//
+//template <typename Tconfig>
+//void declare_sampler_rbf(py::module &m)
+//{
+//    declare_sampler_rbf_t<Tconfig, double>(m);
+//    declare_sampler_rbf_t<Tconfig, float>(m);
+//    declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
+//    declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
+//}
 
 template <typename Tconfig>
 void declare_samplers(py::module &m)
@@ -238,7 +283,7 @@ void declare_samplers(py::module &m)
     declare_sampler_shepard_quintic<Tconfig>(m);
     declare_sampler_sph_quintic<Tconfig>(m);
     declare_sampler_sum_quintic<Tconfig>(m);
-    declare_sampler_rbf<Tconfig>(m);
+    //declare_sampler_rbf<Tconfig>(m);
 }
 
 void sampler(py::module &m)

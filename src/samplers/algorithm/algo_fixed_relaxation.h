@@ -271,13 +271,13 @@ public:
                     return calculate_relaxed_value(filtered_value,filtered_old_value);
 
             }
-
+            return calculate_relaxed_value(filtered_value,filtered_old_value);
         }
     }
 
 private:
     template<typename OTYPE>
-    OTYPE calculate_relaxed_value(OTYPE filtered_value, OTYPE filtered_old_value) {
+    OTYPE calculate_relaxed_value(OTYPE filtered_value, OTYPE filtered_old_value) const {
 
         return (under_relaxation_factor_ * filtered_value) + ((1 - under_relaxation_factor_) * filtered_old_value);
 

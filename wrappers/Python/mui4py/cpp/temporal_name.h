@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson                                           *
+* Copyright (C) 2023 C. Richardson, W. Liu                                   *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,57 +38,22 @@
 *****************************************************************************/
 
 /**
- * @file config_name.h
- * @author C. Richardson
- * @date 20 January 2023
- * @brief Config names for MUI Python wrapper.
+ * @file temporal_name.h
+ * @author C. Richardson, W. Liu
+ * @date 11 March 2023
+ * @brief Temporal sampler names for MUI Python wrapper.
  */
 
-#include <mui.h>
-#include <string>
-
-template <typename CONFIG>
-std::string config_name()
+template <typename Tconfig, template <typename> class Ttemporal>
+std::string temporal_sampler_name()
 {
-    if (std::is_same<CONFIG, mui::mui_config_1d>())
-        return "1d_f64_i32";
-    if (std::is_same<CONFIG, mui::mui_config_2d>())
-        return "2d_f64_i32";
-    if (std::is_same<CONFIG, mui::mui_config_3d>())
-        return "3d_f64_i32";
-    if (std::is_same<CONFIG, mui::mui_config_1dx>())
-        return "1d_f64_i64";
-    if (std::is_same<CONFIG, mui::mui_config_2dx>())
-        return "2d_f64_i64";
-    if (std::is_same<CONFIG, mui::mui_config_3dx>())
-        return "3d_f64_i64";
-    if (std::is_same<CONFIG, mui::mui_config_1f>())
-        return "1d_f32_i32";
-    if (std::is_same<CONFIG, mui::mui_config_2f>())
-        return "2d_f32_i32";
-    if (std::is_same<CONFIG, mui::mui_config_3f>())
-        return "3d_f32_i32";
-    if (std::is_same<CONFIG, mui::mui_config_1fx>())
-        return "1d_f32_i64";
-    if (std::is_same<CONFIG, mui::mui_config_2fx>())
-        return "2d_f32_i64";
-    if (std::is_same<CONFIG, mui::mui_config_3fx>())
-        return "3d_f32_i64";
-    throw std::runtime_error("Invalid config type");
-}
-
-template <typename T>
-std::string type_name()
-{
-    if (std::is_same<T, double>::value)
-        return "double";
-    if (std::is_same<T, float>::value)
-        return "float";
-    if (std::is_same<T, std::int32_t>::value)
-        return "int32_t";
-    if (std::is_same<T, std::int64_t>::value)
-        return "int64_t";
-    if (std::is_same<T, std::string>::value)
-        return "string";
-    throw std::runtime_error("Invalid type");
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_exact<Tconfig>>::value)
+    return "temporal_exact";
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_gauss<Tconfig>>::value)
+    return "temporal_gauss";
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_sum<Tconfig>>::value)
+    return "temporal_sum";
+  if (std::is_same<Ttemporal<Tconfig>, mui::temporal_sampler_mean<Tconfig>>::value)
+    return "temporal_mean";
+  throw std::runtime_error("Invalid temporal sampler type");
 }
