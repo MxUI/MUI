@@ -48,7 +48,7 @@
 import mui4py.mui4py_mod as mui4py_mod
 from mui4py.common import CppClass, get_cpp_name, array2Point
 from mui4py.config import Config
-from mui4py.types import safe_cast, map_type, ALLOWED_IO_TYPES
+from mui4py.types import safe_cast, map_type, ALLOWED_IO_TYPES, STRING, BOOL, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT
 from mui4py.geometry import Geometry
 from mui4py.samplers import Sampler, TemporalSampler
 import copy
@@ -105,6 +105,7 @@ class Uniface(CppClass):
         self._tags_spatial_samplers = {}
         self._tags_temporal_samplers = {}
         self._tags_fetch = {}
+        self._tags_fetch_points = {}
         self._ALLOWED_PROTOCOLS = ["mpi"]
 
     def _get_tag_type(self, tag):
@@ -130,6 +131,7 @@ class Uniface(CppClass):
             self._tags_spatial_samplers[tag] = {}
             self._tags_temporal_samplers[tag] = {}
             self._tags_fetch[tag] = {}
+            self._tags_fetch_points[tag] = {}
         else:
             raise Exception("Type '{}' has already been defined for tag '{}'.".format(data_type_stored.__name__, tag))
 
@@ -168,7 +170,7 @@ class Uniface(CppClass):
             except ValueError:
                 raise Exception("Forced type casting failed in push.")
         else:
-            raise Exception("Push function accept 1, 2 or 3 parameters.")
+            raise Exception("MUI Error [mui4py.py]: Push function accept 1, 2 or 3 parameters.")
 
         push = getattr(self.raw, push_fname)
         push(*pargs)
@@ -255,7 +257,7 @@ class Uniface(CppClass):
         assign = getattr(self.raw, "assign_" + ALLOWED_IO_TYPES[data_type])
         assign(tag, safe_cast(data_type, val))
 
-    def _get_fetch_5args(self, fname_root, tag, data_type, spatial_sampler, temporal_sampler):
+    def _get_fetch_args(self, fname_root, tag, data_type, spatial_sampler, temporal_sampler):
         assert issubclass(spatial_sampler.__class__, Sampler)
         assert issubclass(temporal_sampler.__class__, TemporalSampler)
         ss = None
@@ -285,30 +287,6 @@ class Uniface(CppClass):
                 "fetch_many_{}_{}_{}".format(ALLOWED_IO_TYPES[data_type],
                                              ss.fetch_signature(),
                                              cs.fetch_signature())
-        return self._tags_fetch[tag][(fname_root, cs.signature, ss.signature)], ss, cs
-
-    def _get_fetch_6args_dual(self, fname_root, tag, data_type, spatial_sampler, temporal_sampler):
-        assert issubclass(spatial_sampler.__class__, Sampler)
-        assert issubclass(temporal_sampler.__class__, TemporalSampler)
-        ss = None
-        cs = None
-        rehash_fetch = False
-        try:
-            ss = self._tags_spatial_samplers[tag][spatial_sampler.signature]
-        except KeyError:
-            ss = copy.copy(spatial_sampler)
-            ss.configure(self.config, data_type)
-            self._tags_spatial_samplers[tag][ss.signature] = ss
-            rehash_fetch = True
-
-        try:
-            cs = self._tags_temporal_samplers[tag][temporal_sampler.signature]
-        except KeyError:
-            cs = copy.copy(temporal_sampler)
-            cs.configure(self.config, data_type, onlycheck=True)
-            self._tags_temporal_samplers[tag][cs.signature] = cs
-            rehash_fetch = True
-        if rehash_fetch:
             self._tags_fetch[tag][("fetch_dual", cs.signature, ss.signature)] = \
                     "{}_{}_{}_{}".format("fetch_dual",
                                          ALLOWED_IO_TYPES[data_type],
@@ -319,13 +297,76 @@ class Uniface(CppClass):
                                      ALLOWED_IO_TYPES[data_type],
                                      ss.fetch_signature(),
                                      cs.fetch_signature())
-
         return self._tags_fetch[tag][(fname_root, cs.signature, ss.signature)], ss, cs
 
-    def fetch_points(self, tag, time):
-        data_type = map_type[self._get_tag_type(tag)]
-        fetch_points = getattr(self.raw, "fetch_points_" + ALLOWED_IO_TYPES[data_type])
-        return fetch_points(tag, time)
+    def _get_fetch_points_values_args(self, fname_root, tag, data_type, temporal_sampler):
+        assert issubclass(temporal_sampler.__class__, TemporalSampler)
+        cs = None
+        rehash_fetch = False
+
+        try:
+            cs = self._tags_temporal_samplers[tag][temporal_sampler.signature]
+        except KeyError:
+            cs = copy.copy(temporal_sampler)
+            cs.configure(self.config, data_type, onlycheck=True)
+            self._tags_temporal_samplers[tag][cs.signature] = cs
+            rehash_fetch = True
+        if rehash_fetch:
+            self._tags_fetch_points[tag][("fetch_points", cs.signature)] = \
+                "fetch_points_{}_{}".format(ALLOWED_IO_TYPES[data_type],
+                                        cs.fetch_signature())
+            self._tags_fetch_points[tag][("fetch_points_dual", cs.signature)] = \
+                "fetch_points_dual_{}_{}".format(ALLOWED_IO_TYPES[data_type],
+                                        cs.fetch_signature())
+            self._tags_fetch_points[tag][("fetch_values", cs.signature)] = \
+                "fetch_values_{}_{}".format(ALLOWED_IO_TYPES[data_type],
+                                        cs.fetch_signature())
+            self._tags_fetch_points[tag][("fetch_values_dual", cs.signature)] = \
+                "fetch_values_dual_{}_{}".format(ALLOWED_IO_TYPES[data_type],
+                                        cs.fetch_signature())
+        return self._tags_fetch_points[tag][(fname_root, cs.signature)], cs
+
+    def fetch_points(self, *args, **kwargs):
+        tag = args[0]
+        time = args[1]
+        if len(args) == 5:
+            temporal_sampler = args[2]
+            barrier_enabled = args[3]
+            test_value = args[4]
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_points", tag, test_value.dtype.type, temporal_sampler)
+            fetch_points = getattr(self.raw, fetch_Pname)
+            return fetch_points(tag, time, cs.raw, barrier_enabled, test_value)
+        elif len(args) == 6:
+            iterator = args[2]
+            temporal_sampler = args[3]
+            barrier_enabled = args[4]
+            test_value = args[5]
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_points_dual", tag, test_value.dtype.type, temporal_sampler)
+            fetch_points = getattr(self.raw, fetch_Pname)
+            return fetch_points(tag, time, iterator, cs.raw, barrier_enabled, test_value)
+        else:
+            raise Exception("MUI Error [mui4py.py]: fetch_points() can only take 5 or 6 args")
+
+    def fetch_values(self, *args, **kwargs):
+        tag = args[0]
+        time = args[1]
+        if len(args) == 5:
+            temporal_sampler = args[2]
+            barrier_enabled = args[3]
+            test_value = args[4]
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_values", tag, test_value.dtype.type, temporal_sampler)
+            fetch_values = getattr(self.raw, fetch_Pname)
+            return fetch_values(tag, time, cs.raw, barrier_enabled)
+        elif len(args) == 6:
+            iterator = args[2]
+            temporal_sampler = args[3]
+            barrier_enabled = args[4]
+            test_value = args[5]
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_values_dual", tag, test_value.dtype.type, temporal_sampler)
+            fetch_values = getattr(self.raw, fetch_Pname)
+            return fetch_values(tag, time, iterator, cs.raw, barrier_enabled)
+        else:
+            raise Exception("MUI Error [mui4py.py]: fetch_values() can only take 5 or 6 args")
 
     def fetch_many(self, *args, **kwargs):
         tag = args[0]
@@ -334,22 +375,24 @@ class Uniface(CppClass):
         if len(args) == 5:
             spatial_sampler = args[3]
             temporal_sampler = args[4]
-            fetch_fname, ss, cs = self._get_fetch_5args("fetch_many", tag, points.dtype.type,
+            fetch_fname, ss, cs = self._get_fetch_args("fetch_many", tag, points.dtype.type,
                                                         spatial_sampler, temporal_sampler)
             fetch = getattr(self.raw, fetch_fname)
             return fetch(tag, points, time, ss.raw, cs.raw)
-        if len(args) == 6:
+        elif len(args) == 6:
             if isinstance(args[3], (FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64)):
               time2 = args[3]
               spatial_sampler = args[4]
               temporal_sampler = args[5]
-              fetch_fname, ss, cs = self._get_fetch_6args_dual("fetch_many_dual", tag, points.dtype.type,
+              fetch_fname, ss, cs = self._get_fetch_args("fetch_many_dual", tag, points.dtype.type,
                                                     spatial_sampler, temporal_sampler)
               fetch = getattr(self.raw, fetch_fname)
               return fetch(tag, points, time, time2, ss.raw, cs.raw)
             else:
                 # 6 args, but args[3] is not time type, which means the last arg is coupling algo. To be implemented.
                 pass
+        else:
+            raise Exception("MUI Error [mui4py.py]: fetch_many() can only take 5 or 6 args")
 
     def fetch(self, *args, **kwargs):
         tag = args[0]
@@ -357,12 +400,12 @@ class Uniface(CppClass):
         if len(args) == 1:
             fetch_fname = "fetch_single_" + ALLOWED_IO_TYPES[data_type]
             fargs = (tag)
-        if len(args) == 5:
+        elif len(args) == 5:
             loc = array2Point(args[1], self.config, self.raw_point)
             time = args[2]
             spatial_sampler = args[3]
             temporal_sampler = args[4]
-            fetch_fname, ss, cs = self._get_fetch_5args("fetch", tag, data_type, spatial_sampler, temporal_sampler)
+            fetch_fname, ss, cs = self._get_fetch_args("fetch", tag, data_type, spatial_sampler, temporal_sampler)
             barrier_enabled = True
             if type(time).__name__ == 'float':
                 barrier_time = mui4py_mod.numeric_limits_real
@@ -371,14 +414,14 @@ class Uniface(CppClass):
             else:
                 raise Exception("Unrecognized time type '{}'.".format(type(time).__name__))
             fargs = (tag, loc, time, ss.raw, cs.raw, barrier_enabled)
-        if len(args) == 6:
+        elif len(args) == 6:
             if isinstance(args[3], (FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64)):
                 loc = array2Point(args[1], self.config, self.raw_point)
                 time1 = args[2]
                 time2 = args[3]
                 spatial_sampler = args[4]
                 temporal_sampler = args[5]
-                fetch_fname, ss, cs = self._get_fetch_6args_dual("fetch_dual", tag, data_type, spatial_sampler, temporal_sampler)
+                fetch_fname, ss, cs = self._get_fetch_args("fetch_dual", tag, data_type, spatial_sampler, temporal_sampler)
                 barrier_enabled = True
                 if type(time1).__name__ == 'float':
                     barrier_time = mui4py_mod.numeric_limits_real
@@ -390,6 +433,8 @@ class Uniface(CppClass):
             else:
                 # 6 args, but args[3] is not time type, which means the last arg is coupling algo. To be implemented.
                 pass
+        else:
+            raise Exception("MUI Error [mui4py.py]: fetch() can only take 1, 5 or 6 args")
         fetch = getattr(self.raw, fetch_fname)
         return safe_cast(self._get_tag_type(tag), fetch(*fargs))
 
