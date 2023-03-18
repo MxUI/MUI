@@ -399,7 +399,7 @@ class Uniface(CppClass):
         data_type = map_type[self._get_tag_type(tag)]
         if len(args) == 1:
             fetch_fname = "fetch_single_" + ALLOWED_IO_TYPES[data_type]
-            fargs = (tag)
+            fargs = (tag,)
         elif len(args) == 5:
             loc = array2Point(args[1], self.config, self.raw_point)
             time = args[2]
