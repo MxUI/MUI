@@ -373,7 +373,7 @@ public:
         std::vector<point_type> points = fetch_points<TYPE>(attr, t, t_sampler, barrier_enabled);
         size_t n = points.size();
         test_value += 1;
-        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        py::array_t<REAL, py::array::c_style> points_np({n, static_cast<size_t>(D)});
         auto points_np_arr = points_np.template mutable_unchecked<2>();
         for (std::size_t i = 0; i < n; i++)
             for (std::size_t j = 0; j < D; j++)
@@ -387,7 +387,7 @@ public:
         std::vector<point_type> points = fetch_points<TYPE>(attr, t, it, t_sampler, barrier_enabled);
         size_t n = points.size();
         test_value += 1;
-        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        py::array_t<REAL, py::array::c_style> points_np({n, static_cast<size_t>(D)});
         auto points_np_arr = points_np.template mutable_unchecked<2>();
         for (std::size_t i = 0; i < n; i++)
             for (std::size_t j = 0; j < D; j++)
