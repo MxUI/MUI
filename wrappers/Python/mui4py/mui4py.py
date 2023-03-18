@@ -333,7 +333,7 @@ class Uniface(CppClass):
             temporal_sampler = args[2]
             barrier_enabled = args[3]
             test_value = args[4]
-            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_points", tag, test_value.dtype.type, temporal_sampler)
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_points", tag, type(test_value), temporal_sampler)
             fetch_points = getattr(self.raw, fetch_Pname)
             return fetch_points(tag, time, cs.raw, barrier_enabled, test_value)
         elif len(args) == 6:
@@ -341,7 +341,7 @@ class Uniface(CppClass):
             temporal_sampler = args[3]
             barrier_enabled = args[4]
             test_value = args[5]
-            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_points_dual", tag, test_value.dtype.type, temporal_sampler)
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_points_dual", tag, type(test_value), temporal_sampler)
             fetch_points = getattr(self.raw, fetch_Pname)
             return fetch_points(tag, time, iterator, cs.raw, barrier_enabled, test_value)
         else:
@@ -354,7 +354,7 @@ class Uniface(CppClass):
             temporal_sampler = args[2]
             barrier_enabled = args[3]
             test_value = args[4]
-            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_values", tag, test_value.dtype.type, temporal_sampler)
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_values", tag, type(test_value), temporal_sampler)
             fetch_values = getattr(self.raw, fetch_Pname)
             return fetch_values(tag, time, cs.raw, barrier_enabled)
         elif len(args) == 6:
@@ -362,7 +362,7 @@ class Uniface(CppClass):
             temporal_sampler = args[3]
             barrier_enabled = args[4]
             test_value = args[5]
-            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_values_dual", tag, test_value.dtype.type, temporal_sampler)
+            fetch_Pname, cs = self._get_fetch_points_values_args("fetch_values_dual", tag, type(test_value), temporal_sampler)
             fetch_values = getattr(self.raw, fetch_Pname)
             return fetch_values(tag, time, iterator, cs.raw, barrier_enabled)
         else:
