@@ -64,12 +64,33 @@ Algorithm.fetch_signature = algorithm_signature
 
 class AlgorithmFixedRelaxation(Algorithm):
     def __init__(self, under_relaxation_factor=None, pts_value_init=None):
-        super(AlgorithmFixedRelaxation, self).__init__(kwargs={"under_relaxation_factor": under_relaxation_factor, "pts_value_init": pts_value_init})
+        if pts_value_init is not None:
+            super(AlgorithmFixedRelaxation, self).__init__(args=(under_relaxation_factor, pts_value_init))
+        else:
+            if under_relaxation_factor is not None:
+                super(AlgorithmFixedRelaxation, self).__init__(args=(under_relaxation_factor,))
+            else:
+                super(AlgorithmFixedRelaxation, self).__init__()
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64]
 
 class AlgorithmAitken(Algorithm):
     def __init__(self, under_relaxation_factor=None, under_relaxation_factor_max=None, local_comm=None, pts_vlu_init=None, res_l2_norm_nm1=None):
-        super(AlgorithmFixedRelaxation, self).__init__(kwargs={"under_relaxation_factor": under_relaxation_factor, "under_relaxation_factor_max": under_relaxation_factor_max, "local_comm": local_comm, "pts_vlu_init": pts_vlu_init, "res_l2_norm_nm1": res_l2_norm_nm1})
+        if res_l2_norm_nm1 is not None:
+            super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, pts_vlu_init, res_l2_norm_nm1))
+        else:
+            if pts_vlu_init is not None:
+                super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, pts_vlu_init))
+            else:
+                if local_comm is not None:
+                    super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm))
+                else:
+                    if under_relaxation_factor_max is not None:
+                        super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max))
+                    else:
+                        if under_relaxation_factor is not None:
+                            super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor,))
+                        else:
+                            super(AlgorithmAitken, self).__init__()
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64]
 
     def get_under_relaxation_factor(self, t1, t2=None):
