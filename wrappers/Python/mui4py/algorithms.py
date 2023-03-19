@@ -2,7 +2,7 @@
 ##############################################################################
 # Multiscale Universal Interface Code Coupling Library                       #
 #                                                                            #
-# Copyright (C) 2023 E. R. Fernandez, W. Liu                                 #
+# Copyright (C) 2023 W. Liu                                                  #
 #                                                                            #
 # This software is jointly licensed under the Apache License, Version 2.0    #
 # and the GNU General Public License version 3, you may use it according     #
@@ -38,10 +38,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.      #
 ##############################################################################
 #
-# @file samplers.py
-# @author E. R. Fernandez, W. Liu
-# @date 25 January 2019
-# @brief Sampler functions for the MUI Python wrapper.
+# @file algorithms.py
+# @author W. Liu
+# @date 18 March 2019
+# @brief Coupling algorithms for the MUI Python wrapper.
 #
 """
 
@@ -49,83 +49,37 @@ from mui4py.common import CppClass
 from mui4py.config import Config
 from mui4py.types import UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64, INT, INT32, INT64, STRING, BOOL
 
-# Inteface for Sampler
-def sampler_fetch_signature(self):
+# Inteface for TemporalSampler
+def algorithm_signature(self):
     sig = self._split_class_name(title=False)
-    sig = sig.replace("_sampler", "")
-    return sig.replace("sampler_", "")
+    return sig
 
-
-# Spatial samplers
-class Sampler(CppClass):
+# Algorithms
+class Algorithm(CppClass):
     def __init__(self, args=(), kwargs={}):
         # Empty config to not trigger error in default config.
-        super(Sampler, self).__init__(Config(), args=args, kwargs=kwargs)
+        super(Algorithm, self).__init__(Config(), args, kwargs)
 
+Algorithm.fetch_signature = algorithm_signature
 
-Sampler.fetch_signature = sampler_fetch_signature
+class AlgorithmFixedRelaxation(Algorithm):
+    def __init__(self, under_relaxation_factor=None, pts_value_init=None):
+        super(AlgorithmFixedRelaxation, self).__init__(kwargs={"under_relaxation_factor": under_relaxation_factor, "pts_value_init": pts_value_init})
+        self._ALLOWED_IO_TYPES = [INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64]
 
+class AlgorithmAitken(Algorithm):
+    def __init__(self, under_relaxation_factor=None, under_relaxation_factor_max=None, local_comm=None, pts_vlu_init=None, res_l2_norm_nm1=None):
+        super(AlgorithmFixedRelaxation, self).__init__(kwargs={"under_relaxation_factor": under_relaxation_factor, "under_relaxation_factor_max": under_relaxation_factor_max, "local_comm": local_comm, "pts_vlu_init": pts_vlu_init, "res_l2_norm_nm1": res_l2_norm_nm1})
+        self._ALLOWED_IO_TYPES = [INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64]
 
-class SamplerExact(Sampler):
-    def __init__(self, tol=None):
-        super(SamplerExact, self).__init__(kwargs={"tol": tol})
-        self._ALLOWED_IO_TYPES = [FLOAT, INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT32, FLOAT64, STRING, BOOL]
+    def get_under_relaxation_factor(self, t1, t2=None):
+        if t2 is not None:
+            self.raw.get_under_relaxation_factor(t1, t2)
+        else:
+            self.raw.get_under_relaxation_factor(t1)
 
-
-class SamplerGauss(Sampler):
-    def __init__(self, r, h):
-        super(SamplerGauss, self).__init__(args=(r, h))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerMovingAverage(Sampler):
-    def __init__(self, bbox):
-        super(SamplerMovingAverage, self).__init__(args=(_Point(bbox), ))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerNearestNeighbor(Sampler):
-    def __init__(self, r, h):
-        super(SamplerNearestNeighbor, self).__init__(args=(r, h))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerPseudoNearest2Linear(Sampler):
-    def __init__(self, h):
-        super(SamplerPseudoNearest2Linear, self).__init__(args=(h, ))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerPseudoNearestNeighbor(Sampler):
-    def __init__(self, h):
-        super(SamplerPseudoNearestNeighbor, self).__init__(args=(h,))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerSherpardQuintic(Sampler):
-    def __init__(self, r):
-        super(SamplerSherpardQuintic, self).__init__(args=(r,))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerSphQuintic(Sampler):
-    def __init__(self, r):
-        super(SamplerSphQuintic, self).__init__(args=(r,))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerSumQuintic(Sampler):
-    def __init__(self, r):
-        super(SamplerSumQuintic, self).__init__(args=(r,))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
-
-
-class SamplerRbf(Sampler, CppClass):
-    def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
-                 smoothFunc, cutoff, cgSolveTol, cgMaxIter, pouSize, precond,
-                 mpiComm):
-        super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
-                                         conservative, polynomial, smoothFunc,
-                                         cutoff, cgSolveTol, cgMaxIter, pouSize, precond,
-                                         mpiComm))
-        self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]
+    def get_residual_L2_Norm(self, t1, t2=None):
+        if t2 is not None:
+            self.raw.get_residual_L2_Norm(t1, t2)
+        else:
+            self.raw.get_residual_L2_Norm(t1)

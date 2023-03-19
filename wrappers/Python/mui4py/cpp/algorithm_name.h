@@ -1,7 +1,7 @@
 /*****************************************************************************
 * Multiscale Universal Interface Code Coupling Library                       *
 *                                                                            *
-* Copyright (C) 2023 C. Richardson, E. R. Fernandez, W. Liu                  *
+* Copyright (C) 2023 W. Liu                                                  *
 *                                                                            *
 * This software is jointly licensed under the Apache License, Version 2.0    *
 * and the GNU General Public License version 3, you may use it according     *
@@ -38,64 +38,18 @@
 *****************************************************************************/
 
 /**
- * @file mui4py.cpp
- * @author C. Richardson, E. R. Fernandez, W. Liu
- * @date 20 January 2023
- * @brief Main c++ file for MUI Python wrapper.
+ * @file algorithm_name.h
+ * @author W. Liu
+ * @date 18 March 2023
+ * @brief Algorithm names for MUI Python wrapper.
  */
 
-#include <mui.h>
-#include <pybind11/chrono.h>
-#include <pybind11/functional.h>
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <mpi4py/mpi4py.h>
-#include <string>
-
-#include "compiler_info.h"
-
-// Declaration of other files
-void geometry(py::module &m);
-void sampler(py::module &m);
-void temporal_sampler(py::module &m);
-void algorithm(py::module &m);
-void uniface1d(py::module &m);
-void uniface2d(py::module &m);
-void uniface3d(py::module &m);
-void uniface1f(py::module &m);
-void uniface2f(py::module &m);
-void uniface3f(py::module &m);
-
-PYBIND11_MODULE(mui4py_mod, m)
+template <typename Tconfig, template <typename> class Talgorithm>
+std::string algorithm_name()
 {
-  m.doc() = "MUI bindings for Python.";
-
-  // Expose numerical limits from C++
-  m.attr("numeric_limits_real") = std::numeric_limits<double>::min();
-  m.attr("numeric_limits_int") = std::numeric_limits<int>::min();
-  m.attr("numeric_limits_uint") = std::numeric_limits<unsigned int>::lowest();
-
-  geometry(m);
-  sampler(m);
-  temporal_sampler(m);
-  algorithm(m);
-  uniface1d(m);
-  uniface2d(m);
-  uniface3d(m);
-  uniface1f(m);
-  uniface2f(m);
-  uniface3f(m);
-
-  m.def("set_quiet", &mui::set_quiet, "");
-  m.def(
-      "mpi_split_by_app", []() -> py::handle
-      {
-    if (import_mpi4py() < 0)
-      Py_RETURN_NONE;
-    return PyMPIComm_New(mui::mpi_split_by_app()); },
-      "");
-  m.def("get_mpi_version", &get_mpi_version, "");
-  m.def("get_compiler_config", &get_compiler_config, "");
-  m.def("get_compiler_version", &get_compiler_version, "");
+  if (std::is_same<Talgorithm<Tconfig>, mui::algo_fixed_relaxation<Tconfig>>::value)
+    return "algorithm_fixed_relaxation";
+  if (std::is_same<Talgorithm<Tconfig>, mui::algo_aitken<Tconfig>>::value)
+    return "algorithm_aitken";
+  throw std::runtime_error("Invalid temporal sampler type");
 }
