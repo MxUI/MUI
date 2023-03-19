@@ -413,7 +413,7 @@ void declare_uniface_funcs(py::class_<mui::uniface<Tconfig>> &uniface)
   declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_sum_quintic>(uniface);
   declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_sph_quintic>(uniface);
   declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_exact>(uniface);
-  //declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_rbf>(uniface);
+  declare_uniface_fetch_all_temporal<Tconfig, T, mui::sampler_rbf>(uniface);
 }
 
 template <typename Tconfig>
