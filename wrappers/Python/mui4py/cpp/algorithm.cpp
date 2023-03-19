@@ -53,7 +53,7 @@
 template <typename Tconfig>
 void declare_algorithms(py::module &m)
 {
-	std::string name = "_Algorithm_fr" + config_name<Tconfig>();
+	std::string name = "_Algorithm_fixed_relaxation" + config_name<Tconfig>();
     using TclassFR = mui::algo_fixed_relaxation<Tconfig>;
     using Treal = typename Tconfig::REAL;
     using Tpoint = typename Tconfig::point_type;

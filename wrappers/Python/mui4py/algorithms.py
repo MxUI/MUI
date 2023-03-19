@@ -49,7 +49,7 @@ from mui4py.common import CppClass
 from mui4py.config import Config
 from mui4py.types import UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64, INT, INT32, INT64, STRING, BOOL
 
-# Inteface for TemporalSampler
+# Interface for TemporalSampler
 def algorithm_signature(self):
     sig = self._split_class_name(title=False)
     return sig
