@@ -86,7 +86,7 @@ void declare_algorithms(py::module &m)
 				MPI_Comm ric_mpiComm;
 
 				if (local_comm.is_none()) {
-					MPI_Comm comm = MPI_COMM_WORLD;
+					MPI_Comm comm = MPI_COMM_NULL;
 					ric_mpiComm = reinterpret_cast<MPI_Comm>(comm);
 				} else {
 					PyObject *py_src = local_comm.ptr();

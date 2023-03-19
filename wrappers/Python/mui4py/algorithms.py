@@ -79,18 +79,18 @@ class AlgorithmAitken(Algorithm):
             super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, pts_vlu_init, res_l2_norm_nm1))
         else:
             if pts_vlu_init is not None:
-                super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, pts_vlu_init))
+                super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, pts_vlu_init, 0.0))
             else:
                 if local_comm is not None:
-                    super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm))
+                    super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, [], 0.0))
                 else:
                     if under_relaxation_factor_max is not None:
-                        super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max))
+                        super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, under_relaxation_factor_max, None, [], 0.0))
                     else:
                         if under_relaxation_factor is not None:
-                            super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor,))
+                            super(AlgorithmAitken, self).__init__(args=(under_relaxation_factor, 1.0, None, [], 0.0))
                         else:
-                            super(AlgorithmAitken, self).__init__()
+                            super(AlgorithmAitken, self).__init__(args=(1.0, 1.0, None, [], 0.0))
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64]
 
     def get_under_relaxation_factor(self, t1, t2=None):
