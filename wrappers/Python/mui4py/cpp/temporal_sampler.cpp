@@ -57,7 +57,7 @@ void declare_temporal_samplers(py::module &m)
     std::string name = "_Temporal_sampler_exact" + config_name<Tconfig>();
     using Ttime = typename Tconfig::time_type;
     py::class_<mui::temporal_sampler_exact<Tconfig>>(m, name.c_str())
-        .def(py::init<Ttime>(), py::arg("tol") = Ttime(0.0));
+        .def(py::init<Ttime>(), py::arg("tol") = std::numeric_limits<Ttime>::epsilon());
 
     name = "_Temporal_sampler_gauss" + config_name<Tconfig>();
     using Treal = typename Tconfig::REAL;
