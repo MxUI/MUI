@@ -153,7 +153,9 @@ void declare_uniface_fetch_points(py::class_<mui::uniface<Tconfig>> &uniface)
               (py::array_t<Treal, py::array::c_style>(Tclass::*)(
                   const std::string &,
 				  const Ttime,
-                  const Ttemporal<Tconfig> &, bool)) &
+                  const Ttemporal<Tconfig> &,
+				  bool,
+				  T)) &
                   Tclass::fetch_points_np,
               "");
 }
@@ -172,7 +174,9 @@ void declare_uniface_fetch_points_dual(py::class_<mui::uniface<Tconfig>> &unifac
                   const std::string &,
 				  const Ttime,
 				  const Titer,
-                  const Ttemporal<Tconfig> &, bool)) &
+                  const Ttemporal<Tconfig> &,
+				  bool,
+				  T)) &
                   Tclass::fetch_points_np,
               "");
 }
@@ -185,10 +189,11 @@ void declare_uniface_fetch_values(py::class_<mui::uniface<Tconfig>> &uniface)
 
   std::string fetch_name = "fetch_values_" + type_name<T>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>();
   uniface.def(fetch_name.c_str(),
-              (py::array_t<T, py::array::c_style>(Tclass::*)(
+              (std::vector<T>(Tclass::*)(
                   const std::string &,
 				  const Ttime,
-                  const Ttemporal<Tconfig> &, bool)) &
+                  const Ttemporal<Tconfig> &,
+				  bool)) &
                   Tclass::fetch_values,
               "");
 }
@@ -202,11 +207,12 @@ void declare_uniface_fetch_values_dual(py::class_<mui::uniface<Tconfig>> &unifac
 
   std::string fetch_name = "fetch_values_dual_" + type_name<T>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>();
   uniface.def(fetch_name.c_str(),
-              (py::array_t<T, py::array::c_style>(Tclass::*)(
+              (std::vector<T>(Tclass::*)(
                   const std::string &,
 				  const Ttime,
 				  const Titer,
-                  const Ttemporal<Tconfig> &, bool)) &
+                  const Ttemporal<Tconfig> &,
+				  bool)) &
                   Tclass::fetch_values,
               "");
 }

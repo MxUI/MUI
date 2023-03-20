@@ -366,12 +366,14 @@ public:
         return values;
     }
 
+
     template<typename TYPE, class TIME_SAMPLER>
     py::array_t<REAL, py::array::c_style>
-    fetch_points_np(const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true) {
+    fetch_points_np(const std::string& attr, const time_type t, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, TYPE test_value = static_cast<TYPE>(0)) {
         std::vector<point_type> points = fetch_points<TYPE>(attr, t, t_sampler, barrier_enabled);
         size_t n = points.size();
-        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        test_value += 1;
+        py::array_t<REAL, py::array::c_style> points_np({n, static_cast<size_t>(D)});
         auto points_np_arr = points_np.template mutable_unchecked<2>();
         for (std::size_t i = 0; i < n; i++)
             for (std::size_t j = 0; j < D; j++)
@@ -381,10 +383,11 @@ public:
 
     template<typename TYPE, class TIME_SAMPLER>
     py::array_t<REAL, py::array::c_style>
-    fetch_points_np(const std::string& attr, const time_type t, const iterator_type it, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true) {
+    fetch_points_np(const std::string& attr, const time_type t, const iterator_type it, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true, TYPE test_value = static_cast<TYPE>(0)) {
         std::vector<point_type> points = fetch_points<TYPE>(attr, t, it, t_sampler, barrier_enabled);
         size_t n = points.size();
-        py::array_t<REAL, py::array::c_style> points_np({n, n});
+        test_value += 1;
+        py::array_t<REAL, py::array::c_style> points_np({n, static_cast<size_t>(D)});
         auto points_np_arr = points_np.template mutable_unchecked<2>();
         for (std::size_t i = 0; i < n; i++)
             for (std::size_t j = 0; j < D; j++)
