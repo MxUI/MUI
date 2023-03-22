@@ -193,6 +193,24 @@ typedef mui::temporal_sampler_sum1dx mui_temporal_sampler_sum_1dx;
 // Summation temporal sampler typedefs for template creation (recommended)
 typedef mui::temporal_sampler_sum<mui::mui_f_wrapper_1D> mui_temporal_sampler_sum_1t;
 
+// Fixed relaxation algorithm typedefs for specialism creation
+typedef mui::algo_fixed_relaxation1f mui_algorithm_fixed_relaxation_1f;
+typedef mui::algo_fixed_relaxation1fx mui_algorithm_fixed_relaxation_1fx;
+typedef mui::algo_fixed_relaxation1d mui_algorithm_fixed_relaxation_1d;
+typedef mui::algo_fixed_relaxation1dx mui_algorithm_fixed_relaxation_1dx;
+
+// Fixed relaxation algorithm typedefs for template creation (recommended)
+typedef mui::algo_fixed_relaxation<mui::mui_f_wrapper_1D> mui_algorithm_fixed_relaxation_1t;
+
+// Aitken's algorithm typedefs for specialism creation
+typedef mui::algo_aitken1f mui_algorithm_aitken_1f;
+typedef mui::algo_aitken1fx mui_algorithm_aitken_1fx;
+typedef mui::algo_aitken1d mui_algorithm_aitken_1d;
+typedef mui::algo_aitken1dx mui_algorithm_aitken_1dx;
+
+// Aitken's algorithm typedefs for template creation (recommended)
+typedef mui::algo_aitken<mui::mui_f_wrapper_1D> mui_algorithm_aitken_1t;
+
 // MUI set of specialism interface on multi-domain coupling
 mui_uniface_1f** mui_uniface_multi_1f;
 mui_uniface_1fx** mui_uniface_multi_1fx;
@@ -1137,6 +1155,325 @@ void mui_destroy_temporal_sampler_sum_1dx_f(mui_temporal_sampler_sum_1dx* sample
 
 void mui_destroy_temporal_sampler_sum_1t_f(mui_temporal_sampler_sum_1t* sampler) {
     delete sampler;
+}
+
+/*******************************************
+ * Create algorithms                       *
+ *******************************************/
+
+// Fixed relaxation algorithm
+void mui_create_algorithm_fixed_relaxation_1f_f(mui_algorithm_fixed_relaxation_1f **ret float* under_relaxation_factor, float* points, float* value_init, int* pair_count) {
+
+	std::vector<std::pair<mui::point1f, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1f, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1f pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_fixed_relaxation_1f(*under_relaxation_factor, pts_value_init);
+}
+
+void mui_create_algorithm_fixed_relaxation_1fx_f(mui_algorithm_fixed_relaxation_1fx **ret, float* under_relaxation_factor, float* points, float* value_init, int* pair_count) {
+
+	std::vector<std::pair<mui::point1fx, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1fx, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1fx pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_fixed_relaxation_1fx(*under_relaxation_factor, pts_value_init);
+}
+
+void mui_create_algorithm_fixed_relaxation_1d_f(mui_algorithm_fixed_relaxation_1d **ret, double* under_relaxation_factor, double* points, double* value_init, int* pair_count) {
+
+	std::vector<std::pair<mui::point1d, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1d, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1d pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_fixed_relaxation_1d(*under_relaxation_factor, pts_value_init);
+}
+
+void mui_create_algorithm_fixed_relaxation_1dx_f(mui_algorithm_fixed_relaxation_1dx** ret, double* under_relaxation_factor, double* points, double* value_init, int* pair_count) {
+
+	std::vector<std::pair<mui::point1dx, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1dx, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1dx pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_fixed_relaxation_1dx(*under_relaxation_factor, pts_value_init);
+}
+
+void mui_create_algorithm_fixed_relaxation_1t_f(mui_algorithm_fixed_relaxation_1t** ret, double* under_relaxation_factor, double* points, double* value_init, int* pair_count) {
+
+	std::vector<std::pair<mui::point1t, mui::mui_f_wrapper_1D::REAL>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1t, mui::mui_f_wrapper_1D::REAL>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1t pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_fixed_relaxation_1t(static_cast<mui::mui_f_wrapper_1D::REAL>(*under_relaxation_factor), pts_value_init);
+}
+
+// Aitken's algorithm
+void mui_create_algorithm_aitken_1f_f(mui_algorithm_aitken_1f **ret float* under_relaxation_factor, float* under_relaxation_factor_max, MPI_Comm* communicator, float* points, float* value_init, int* pair_count, float* res_l2_norm_nm1) {
+
+	std::vector<std::pair<mui::point1f, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1f, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1f pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_aitken_1f(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm*>(communicator), pts_value_init, *res_l2_norm_nm1);
+}
+
+void mui_create_algorithm_aitken_1fx_f(mui_algorithm_aitken_1fx **ret, float* under_relaxation_factor, float* under_relaxation_factor_max, MPI_Comm* communicator, float* points, float* value_init, int* pair_count, float* res_l2_norm_nm1) {
+
+	std::vector<std::pair<mui::point1fx, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1fx, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1fx pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_aitken_1fx(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm*>(communicator), pts_value_init, *res_l2_norm_nm1);
+}
+
+void mui_create_algorithm_aitken_1d_f(mui_algorithm_aitken_1d **ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Comm* communicator, double* points, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
+
+	std::vector<std::pair<mui::point1d, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1d, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1d pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_aitken_1d(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm*>(communicator), pts_value_init, *res_l2_norm_nm1);
+}
+
+void mui_create_algorithm_aitken_1dx_f(mui_algorithm_aitken_1dx** ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Comm* communicator, double* points, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
+
+	std::vector<std::pair<mui::point1dx, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1dx, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1dx pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_aitken_1dx(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm*>(communicator), pts_value_init, *res_l2_norm_nm1);
+}
+
+void mui_create_algorithm_aitken_1t_f(mui_algorithm_aitken_1t** ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Comm* communicator, double* points, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
+
+	std::vector<std::pair<mui::point1t, mui::mui_f_wrapper_1D::REAL>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point1t, mui::mui_f_wrapper_1D::REAL>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point1t pts;
+			pts[0] = points[i].point_1;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+    *ret = new mui_algorithm_aitken_1t(static_cast<mui::mui_f_wrapper_1D::REAL>(*under_relaxation_factor), static_cast<mui::mui_f_wrapper_1D::REAL>(*under_relaxation_factor_max), reinterpret_cast<MPI_Comm*>(communicator), pts_value_init, static_cast<mui::mui_f_wrapper_1D::REAL>(*res_l2_norm_nm1));
+}
+
+/*******************************************
+ * Aitken's functions for get info         *
+ *******************************************/
+
+// Aitken's get under relaxation factor functions
+void mui_aitken_get_under_relaxation_factor_1f_f(mui_algorithm_aitken_1f *aitken, float* t, float *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t);
+}
+
+
+void mui_aitken_get_under_relaxation_factor_1fx_f(mui_algorithm_aitken_1fx *aitken, float* t, float *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t);
+}
+
+void mui_aitken_get_under_relaxation_factor_1d_f(mui_algorithm_aitken_1d *aitken, double* t, double *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t);
+}
+
+void mui_aitken_get_under_relaxation_factor_1dx_f(mui_algorithm_aitken_1dx *aitken, double* t, double *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t);
+}
+
+void mui_aitken_get_under_relaxation_factor_1t_f(mui_algorithm_aitken_1t *aitken, double* t, double *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
+}
+
+void mui_aitken_get_under_relaxation_factor_1f_pair_f(mui_algorithm_aitken_1f *aitken, float* t, float* it, float *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_aitken_get_under_relaxation_factor_1fx_pair_f(mui_algorithm_aitken_1fx *aitken, float* t, float* it, float *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_aitken_get_under_relaxation_factor_1d_pair_f(mui_algorithm_aitken_1d *aitken, double* t, double* it, double *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_aitken_get_under_relaxation_factor_1dx_pair_f(mui_algorithm_aitken_1dx *aitken, double* t, double* it, double *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_aitken_get_under_relaxation_factor_1t_pair_f(mui_algorithm_aitken_1t *aitken, double* t, double* it, double *return_value) {
+	*return_value = aitken->get_under_relaxation_factor(static_cast<mui::mui_f_wrapper_1D::time_type>(*t),
+			static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it));
+}
+
+// Aitken's get under relaxation factor functions
+void mui_aitken_get_residual_L2_Norm_1f_f(mui_algorithm_aitken_1f *aitken, float* t, float *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t);
+}
+
+void mui_aitken_get_residual_L2_Norm_1fx_f(mui_algorithm_aitken_1fx *aitken, float* t, float *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t);
+}
+
+void mui_aitken_get_residual_L2_Norm_1d_f(mui_algorithm_aitken_1d *aitken, double* t, double *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t);
+}
+
+void mui_aitken_get_residual_L2_Norm_1dx_f(mui_algorithm_aitken_1dx *aitken, double* t, double *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t);
+}
+
+void mui_aitken_get_residual_L2_Norm_1t_f(mui_algorithm_aitken_1t *aitken, double* t, double *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
+}
+
+void mui_aitken_get_residual_L2_Norm_1f_pair_f(mui_algorithm_aitken_1f *aitken, float* t, float* it, float *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_aitken_get_residual_L2_Norm_1fx_pair_f(mui_algorithm_aitken_1fx *aitken, float* t, float* it, float *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_aitken_get_residual_L2_Norm_1d_pair_f(mui_algorithm_aitken_1d *aitken, double* t, double* it, double *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_aitken_get_residual_L2_Norm_1dx_pair_f(mui_algorithm_aitken_1dx *aitken, double* t, double* it, double *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_aitken_get_residual_L2_Norm_1t_pair_f(mui_algorithm_aitken_1t *aitken, double* t, double* it, double *return_value) {
+	*return_value = aitken->get_residual_L2_Norm(static_cast<mui::mui_f_wrapper_1D::time_type>(*t),
+			static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it));
+}
+
+/*******************************************
+ * Destroy algorithms                      *
+ *******************************************/
+
+void mui_destroy_algorithm_fixed_relaxation_1f_f(mui_algorithm_fixed_relaxation_1f *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_1fx_f(mui_algorithm_fixed_relaxation_1fx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_1d_f(mui_algorithm_fixed_relaxation_1d *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_1dx_f(mui_algorithm_fixed_relaxation_1dx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_1t_f(mui_algorithm_fixed_relaxation_1t *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_1f_f(mui_algorithm_aitken_1f *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_1fx_f(mui_algorithm_aitken_1fx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_1d_f(mui_algorithm_aitken_1d *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_1dx_f(mui_algorithm_aitken_1dx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_1t_f(mui_algorithm_aitken_1t *algorithm) {
+	delete algorithm;
 }
 
 /******************************************
