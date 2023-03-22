@@ -44,7 +44,7 @@
  * @brief Config names for MUI Python wrapper.
  */
 
-#include <mui.h>
+#include "../../../../src/mui.h"
 #include <string>
 
 template <typename CONFIG>
