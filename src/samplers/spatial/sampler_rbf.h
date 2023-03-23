@@ -93,17 +93,17 @@ public:
 	 *       without smoothing function(default): smoothFunc=false
 	 *       with smoothing function:             smoothFunc=true
 	 * 6. bool writeMatrix:
-   *       Switch for whether to write the constructed transformation matrix to file:
-   *       Write the constructed matrix to file:       writeMatrix=false
-   *       Don't write the constructed matrix to file: writeMatrix=true
-   * 7. const std::string& writeFileAddress:
-   *       The address that the transformation matrix I/O uses.
-   *       The default value of fileAddress is an empty string.
+	 *       Switch for whether to write the constructed transformation matrix to file:
+	 *       Write the constructed matrix to file:       writeMatrix=false
+	 *       Don't write the constructed matrix to file: writeMatrix=true
+	 * 7. const std::string& writeFileAddress:
+	 *       The address that the transformation matrix I/O uses.
+	 *       The default value of fileAddress is an empty string.
 	 * 8. REAL cutOff:
 	 *       Parameter to set the cut-off of the Gaussian basis function (only valid for basisFunc_=0).
 	 *       The default value of cutoff is 1e-9
 	 * 9. REAL cgSolveTol:
-	 *       The tolerance used to determine convergence for the Eigen ConjugateGradient solver
+	 *       The tolerance used to determine convergence for the ConjugateGradient solver
 	 *       The default value of cgSolveTol is 1e-6
 	 * 10. INT cgMaxIter:
 	 *       The maximum number of iterations each Eigen ConjugateGradient solve can take
@@ -134,6 +134,7 @@ public:
 			consistent_(!conservative),
 			smoothFunc_(smoothFunc),
 			writeMatrix_(writeMatrix),
+			writeFileAddress_(writeFileAddress),
 			precond_(precond),
 			initialised_(false),
 			local_mpi_comm_world_(local_comm),
@@ -167,19 +168,19 @@ public:
 
 	template<template<typename, typename > class CONTAINER>
 	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
-		OTYPE sum = 0;
-		if (!initialised_) {
-		  const clock_t begin_time = clock();
-      facilitateGhostPoints();
-      REAL error = computeRBFtransformationMatrix(data_points, writeMatrix_, writeFileAddress_);
-      if (!QUIET) {
-        std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
-              << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
-        std::cout << std::endl
-              << "                     Average CG error: " << error;
-        std::cout << std::endl;
-      }
-		}
+      OTYPE sum = 0;
+      if (!initialised_) {
+    	  const clock_t begin_time = clock();
+    	  facilitateGhostPoints();
+    	  REAL error = computeRBFtransformationMatrix(data_points, writeMatrix_, writeFileAddress_);
+    	  if (!QUIET) {
+    		  std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
+    				  	<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
+    		  std::cout << std::endl
+                        << "                     Average CG error: " << error;
+    		  std::cout << std::endl;
+    	  }
+	  }
 		else {
 			//Output for debugging
 			if ((!QUIET) && (DEBUG)) {
@@ -242,7 +243,10 @@ public:
 	}
 
 	inline geometry::any_shape<CONFIG> support(point_type focus, REAL domain_mag) const {
-		return geometry::any_shape<CONFIG>();
+		if( !initialised_ )
+			return geometry::any_shape<CONFIG>();
+		else
+			return geometry::sphere<CONFIG>( focus, twor_ );
 	}
 
 	inline void preSetFetchPoints(std::vector<point_type> &pts) {
