@@ -124,7 +124,7 @@ public:
 
 	sampler_rbf(REAL r, const std::vector<point_type> &pts, INT basisFunc = 0,
 			bool conservative = false, bool smoothFunc = false, bool writeMatrix = true,
-	    const std::string &writeFileAddress = std::string(), REAL cutOff = 1e-9,
+			const std::string &writeFileAddress = std::string(), REAL cutOff = 1e-9,
 			REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 50,
 			INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
 			r_(r),
@@ -1302,13 +1302,13 @@ private:
 	}
 
 	//Radial basis function for two points
-	inline REAL rbf(point_type x1, point_type x2) {
+	inline REAL rbf(point_type x1, point_type x2) const {
 		auto d = norm(x1 - x2);
 		return rbf(d);
 	}
 
 	//Radial basis function for calculated distance
-	inline REAL rbf(REAL d) {
+	inline REAL rbf(REAL d) const {
 		switch (basisFunc_) {
 		case 0:
 			//Gaussian
@@ -1341,7 +1341,7 @@ private:
 	}
 
 	///Distances function
-	inline REAL dist_h_i(INT ptsExtend_i, INT ptsExtend_j) {
+	inline REAL dist_h_i(INT ptsExtend_i, INT ptsExtend_j) const {
 		switch (CONFIG::D) {
 		case 1:
 			return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0]
@@ -1506,7 +1506,7 @@ private:
 		}
 		else {
 			std::cerr
-					<< "MUI Error [sampler_rbf.h]: invalid CG Preconditioner function number ("
+					<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
 					<< precond_ << ")" << std::endl
 					<< "Please set the CG Preconditioner function number (precond_) as: "
 					<< std::endl << "precond_=0 (No Preconditioner); "
@@ -1547,8 +1547,8 @@ protected:
 	INT CAAcol_;
 	mutable std::vector<point_type> ptsGhost_; //< Local ghost points
 	mutable std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
-	std::vector<std::vector<INT> > connectivityAB_;
-	std::vector<std::vector<INT> > connectivityAA_;
+	mutable std::vector<std::vector<INT> > connectivityAB_;
+	mutable std::vector<std::vector<INT> > connectivityAA_;
 	mutable linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
 	mutable linalg::sparse_matrix<INT, REAL> H_toSmooth_;
 };
