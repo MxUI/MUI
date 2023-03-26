@@ -4143,40 +4143,41 @@ double mui_fetch_nearest_neighbor_sum_1t(mui_uniface_1t *uniface, const char *at
 			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *spatial_sampler, *temporal_sampler));
 	return result;
 }
-
+*/
 // Spatial sampler: nearest neighbor; temporal sampler: exact
-float mui_fetch_pseudo_nearest_neighbor_exact_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
-		mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point1f(point.point_1), t, *spatial_sampler, *temporal_sampler);
+float mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
+		mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm) {
+	return uniface->fetch(std::string(attr), mui::point1f(point.point_1), t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
-float mui_fetch_pseudo_nearest_neighbor_exact_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point,
+float mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point,
 		float t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
-		mui_temporal_sampler_exact_1fx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point1fx(point.point_1), t, *spatial_sampler, *temporal_sampler);
+		mui_temporal_sampler_exact_1fx *temporal_sampler, mui_algorithm_fixed_relaxation_1fx *algorithm) {
+	return uniface->fetch(std::string(attr), mui::point1fx(point.point_1), t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
-double mui_fetch_pseudo_nearest_neighbor_exact_1d(mui_uniface_1d *uniface, const char *attr, mui_point_1d point,
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1d(mui_uniface_1d *uniface, const char *attr, mui_point_1d point,
 		double t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
-		mui_temporal_sampler_exact_1d *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point1d(point.point_1), t, *spatial_sampler, *temporal_sampler);
+		mui_temporal_sampler_exact_1d *temporal_sampler, mui_algorithm_fixed_relaxation_1d *algorithm) {
+	return uniface->fetch(std::string(attr), mui::point1d(point.point_1), t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
-double mui_fetch_pseudo_nearest_neighbor_exact_1dx(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1dx(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
 		double t, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
-		mui_temporal_sampler_exact_1dx *temporal_sampler) {
-	return uniface->fetch(std::string(attr), mui::point1dx(point.point_1), t, *spatial_sampler, *temporal_sampler);
+		mui_temporal_sampler_exact_1dx *temporal_sampler, mui_algorithm_fixed_relaxation_1dx *algorithm) {
+	return uniface->fetch(std::string(attr), mui::point1dx(point.point_1), t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
-double mui_fetch_pseudo_nearest_neighbor_exact_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point,
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point,
 		double t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
-		mui_temporal_sampler_exact_1t *temporal_sampler) {
+		mui_temporal_sampler_exact_1t *temporal_sampler, mui_algorithm_fixed_relaxation_1t *algorithm) {
 	mui::mui_c_wrapper_1D::point_type point_fetch(static_cast<mui::mui_c_wrapper_1D::REAL>(point.point_1));
 	double result = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
-			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *spatial_sampler, *temporal_sampler));
+			static_cast<mui::mui_c_wrapper_1D::time_type>(t), *spatial_sampler, *temporal_sampler, *algorithm));
 	return result;
 }
-
+/*
 // Spatial sampler: nearest neighbor; temporal sampler: gauss
 float mui_fetch_pseudo_nearest_neighbor_gauss_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
 		mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_gauss_1f *temporal_sampler) {

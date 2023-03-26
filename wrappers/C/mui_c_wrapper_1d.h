@@ -1239,6 +1239,31 @@ double mui_fetch_exact_exact_fixed_relaxation_1t(mui_uniface_1t *uniface, const 
 
 
 
+float mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
+		mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm);
+float mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point,
+		float t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+		mui_temporal_sampler_exact_1fx *temporal_sampler, mui_algorithm_fixed_relaxation_1fx *algorithm);
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1d(mui_uniface_1d *uniface, const char *attr, mui_point_1d point,
+		double t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+		mui_temporal_sampler_exact_1d *temporal_sampler, mui_algorithm_fixed_relaxation_1d *algorithm);
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1dx(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+		double t, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
+		mui_temporal_sampler_exact_1dx *temporal_sampler, mui_algorithm_fixed_relaxation_1dx *algorithm);
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point,
+		double t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+		mui_temporal_sampler_exact_1t *temporal_sampler, mui_algorithm_fixed_relaxation_1t *algorithm);
+
+
+
+
+
+
+
+
+
+
 // MUI functions for 1D data fetch with aitken algorithm using one time value
 float mui_fetch_exact_exact_aitken_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
 		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
