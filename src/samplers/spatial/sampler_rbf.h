@@ -176,8 +176,9 @@ public:
     	  if (!QUIET) {
     		  std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
     				  	<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
-    		  std::cout << std::endl
-                        << "                     Average CG error: " << error;
+    		  if (writeMatrix_)
+				  std::cout << std::endl
+							<< "                     Average CG error: " << error;
     		  std::cout << std::endl;
     	  }
 	  }
@@ -243,10 +244,7 @@ public:
 	}
 
 	inline geometry::any_shape<CONFIG> support(point_type focus, REAL domain_mag) const {
-		if( !initialised_ )
-			return geometry::any_shape<CONFIG>();
-		else
-			return geometry::sphere<CONFIG>( focus, twor_ );
+		return geometry::any_shape<CONFIG>();
 	}
 
 	inline void preSetFetchPoints(std::vector<point_type> &pts) {
@@ -703,122 +701,127 @@ private:
 
 		REAL errorReturn = 0;
 
-		if (conservative_)
-			buildConnectivityConservative(data_points, N_sp_, writeMatrix, fileAddress);
-		else
-			buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
+		// Reading matrix
+		if (!writeMatrix_)
+			readRBFMatrix(fileAddress);
+		else { // Generating matrix
+			if (conservative_)
+				buildConnectivityConservative(data_points, N_sp_, writeMatrix, fileAddress);
+			else
+				buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
 
-		H_.resize_null(ptsExtend_.size(), data_points.size());
-		H_.set_zero();
+			H_.resize_null(ptsExtend_.size(), data_points.size());
+			H_.set_zero();
 
-		if (smoothFunc_) {
-			buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
-			H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
-			H_toSmooth_.set_zero();
-		}
-
-		if (writeMatrix) {
-			std::ofstream outputFileMatrixSize(fileAddress + "/matrixSize.dat");
-
-			if (!outputFileMatrixSize) {
-				std::cerr
-						<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
-						<< std::endl;
+			if (smoothFunc_) {
+				buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
+				H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
+				H_toSmooth_.set_zero();
 			}
-			else {
-				outputFileMatrixSize
-						<< "// *********************************************************************************************************************************************";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** This is the 'matrixSize.dat' file of the RBF spatial sampler of the MUI library";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** This file contains the size (number of rows and number of columns) of the Point Connectivity Matrix (N) and the Coupling Matrix (H).";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** The file uses the Comma-Separated Values (CSV) format and the ASCII format with the meanings as follows: ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Point Connectivity Matrix (N), ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Point Connectivity Matrix (N),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Coupling Matrix (H),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Coupling Matrix (H)";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// *********************************************************************************************************************************************";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize << "//  ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize << connectivityAB_.size();
-				outputFileMatrixSize << ",";
-				outputFileMatrixSize << connectivityAB_[0].size();
-				outputFileMatrixSize << ",";
-				if (smoothFunc_) {
-					outputFileMatrixSize << connectivityAA_.size();
-					outputFileMatrixSize << ",";
-					outputFileMatrixSize << connectivityAA_[0].size();
-					outputFileMatrixSize << ",";
+
+			if (writeMatrix) {
+				std::ofstream outputFileMatrixSize(fileAddress + "/matrixSize.dat");
+
+				if (!outputFileMatrixSize) {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
+							<< std::endl;
 				}
 				else {
-					outputFileMatrixSize << "0";
+					outputFileMatrixSize
+							<< "// *********************************************************************************************************************************************";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** This is the 'matrixSize.dat' file of the RBF spatial sampler of the MUI library";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** This file contains the size (number of rows and number of columns) of the Point Connectivity Matrix (N) and the Coupling Matrix (H).";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** The file uses the Comma-Separated Values (CSV) format and the ASCII format with the meanings as follows: ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Point Connectivity Matrix (N), ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Point Connectivity Matrix (N),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Coupling Matrix (H),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Coupling Matrix (H)";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// *********************************************************************************************************************************************";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize << "//  ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize << connectivityAB_.size();
 					outputFileMatrixSize << ",";
-					outputFileMatrixSize << "0";
+					outputFileMatrixSize << connectivityAB_[0].size();
 					outputFileMatrixSize << ",";
+					if (smoothFunc_) {
+						outputFileMatrixSize << connectivityAA_.size();
+						outputFileMatrixSize << ",";
+						outputFileMatrixSize << connectivityAA_[0].size();
+						outputFileMatrixSize << ",";
+					}
+					else {
+						outputFileMatrixSize << "0";
+						outputFileMatrixSize << ",";
+						outputFileMatrixSize << "0";
+						outputFileMatrixSize << ",";
+					}
+					outputFileMatrixSize << H_.get_rows();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << H_.get_cols();
+					outputFileMatrixSize << "\n";
 				}
-				outputFileMatrixSize << H_.get_rows();
-				outputFileMatrixSize << ",";
-				outputFileMatrixSize << H_.get_cols();
-				outputFileMatrixSize << "\n";
 			}
-		}
 
-		if (conservative_) { // Build matrix for conservative RBF
-			errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
-		}
-		else {
-			// Build matrix for consistent RBF
-			errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
-		}
-
-		if (writeMatrix) {
-			std::ofstream outputFileHMatrix(fileAddress + "/Hmatrix.dat");
-
-			if (!outputFileHMatrix) {
-				std::cerr
-						<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
-						<< std::endl;
+			if (conservative_) { // Build matrix for conservative RBF
+				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
 			}
 			else {
-				outputFileHMatrix
-						<< "// ************************************************************************************************";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** This is the 'Hmatrix.dat' file of the RBF spatial sampler of the MUI library";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** This file contains the entire matrix of the Coupling Matrix (H).";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire H matrix";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// ************************************************************************************************";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix << "// ";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix << H_;
+				// Build matrix for consistent RBF
+				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
+			}
+
+			if (writeMatrix) {
+				std::ofstream outputFileHMatrix(fileAddress + "/Hmatrix.dat");
+
+				if (!outputFileHMatrix) {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
+							<< std::endl;
+				}
+				else {
+					outputFileHMatrix
+							<< "// ************************************************************************************************";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** This is the 'Hmatrix.dat' file of the RBF spatial sampler of the MUI library";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** This file contains the entire matrix of the Coupling Matrix (H).";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire H matrix";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// ************************************************************************************************";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix << "// ";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix << H_;
+				}
 			}
 		}
 
@@ -1368,7 +1371,7 @@ private:
 		}
 	}
 
-	inline void readRBFMatrix(const std::string& readFileAddress) {
+	inline void readRBFMatrix(const std::string& readFileAddress) const {
 		std::ifstream inputFileMatrixSize(readFileAddress + "/matrixSize.dat");
 
 		if (!inputFileMatrixSize) {
@@ -1533,10 +1536,10 @@ protected:
 	const std::string writeFileAddress_;
 	mutable bool initialised_;
 	MPI_Comm local_mpi_comm_world_;
-	INT CABrow_;
-	INT CABcol_;
-	INT Hrow_;
-	INT Hcol_;
+	mutable INT CABrow_;
+	mutable INT CABcol_;
+	mutable INT Hrow_;
+	mutable INT Hcol_;
 	bool pouEnabled_;
 	REAL cgSolveTol_;
 	INT cgMaxIter_;
@@ -1547,8 +1550,8 @@ protected:
 
 	REAL twor_;
 	REAL s_;
-	INT CAArow_;
-	INT CAAcol_;
+	mutable INT CAArow_;
+	mutable INT CAAcol_;
 	mutable std::vector<point_type> ptsGhost_; //< Local ghost points
 	mutable std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
 	mutable std::vector<std::vector<INT> > connectivityAB_;
