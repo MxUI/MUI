@@ -574,7 +574,7 @@ public:
 							return b.first == xGhostPointsCountToSend.first;
 						});
 
-				assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
+				assert(ghostPointsToSendIter->second.size() == static_cast<size_t>(xGhostPointsCountToSend.second));
 
 				int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
 				char *buffer = new char[buffer_size];
@@ -842,8 +842,8 @@ private:
 			Aas.resize_null((1 + NP + CONFIG::D), 1);
 
 			//set Css
-			for (INT i = 0; i < NP; i++) {
-				for (INT j = i; j < NP; j++) {
+			for (size_t i = 0; i < NP; i++) {
+				for (size_t j = i; j < NP; j++) {
 					int glob_i = connectivityAB_[row][i];
 					int glob_j = connectivityAB_[row][j];
 
@@ -860,7 +860,7 @@ private:
 				}
 			}
 
-			for (INT i = 0; i < NP; i++) {
+			for (size_t i = 0; i < NP; i++) {
 				Css.set_value(i, NP, 1);
 				Css.set_value(NP, i, 1);
 
@@ -875,7 +875,7 @@ private:
 			}
 
 			//set Aas
-			for (INT j = 0; j < NP; j++) {
+			for (size_t j = 0; j < NP; j++) {
 				int glob_j = connectivityAB_[row][j];
 
 				auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
@@ -1170,7 +1170,7 @@ private:
 
 		for (size_t i = 0; i < ptsExtend_.size(); i++) {
 			INT pointsCount = 0;
-			for (INT n = 0; n < NP; n++) {
+			for (size_t n = 0; n < NP; n++) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < data_points.size(); j++) {
@@ -1318,7 +1318,7 @@ private:
 		connectivityAA_.resize(ptsExtend_.size());
 
 		for (size_t i = 0; i < ptsExtend_.size(); i++) {
-			for (INT n = 0; n < MP; n++) {
+			for (size_t n = 0; n < MP; n++) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < ptsExtend_.size(); j++) {
@@ -1544,9 +1544,9 @@ protected:
 	const bool conservative_;
 	const bool consistent_;
 	const bool smoothFunc_;
-	INT precond_;
 	const bool writeMatrix_;
 	const std::string writeFileAddress_;
+	INT precond_;
 	mutable bool initialised_;
 	MPI_Comm local_mpi_comm_world_;
 	mutable INT CABrow_;
@@ -1556,6 +1556,7 @@ protected:
 	bool pouEnabled_;
 	REAL cgSolveTol_;
 	INT cgMaxIter_;
+
 	mutable size_t N_sp_;
 	mutable size_t M_ap_;
 	int local_rank_;

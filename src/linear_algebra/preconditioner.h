@@ -128,7 +128,7 @@ class diagonal_preconditioner : public preconditioner<ITYPE,VTYPE> {
         sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
 
     private:
-        // The coefficient matrix of the matrix equation
+        // The inverse diagonal matrix
         sparse_matrix<ITYPE,VTYPE> inv_diag_;
 
 };

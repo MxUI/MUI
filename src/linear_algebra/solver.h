@@ -96,12 +96,13 @@ class conjugate_gradient_1d : public solver<ITYPE,VTYPE> {
         sparse_matrix<ITYPE,VTYPE> z_;
         // The direction matrix of the CG solver
         sparse_matrix<ITYPE,VTYPE> p_;
-        // Preconditioner pointer
-        preconditioner<ITYPE,VTYPE>* M_;
         // Tolerance of CG solver
         VTYPE cg_solve_tol_;
         // Maximum iteration of CG solver
         ITYPE cg_max_iter_;
+        // Preconditioner pointer
+        preconditioner<ITYPE,VTYPE>* M_;
+
 };
 
 // Class of multidimensional Conjugate Gradient solver
@@ -129,12 +130,13 @@ class conjugate_gradient : public solver<ITYPE,VTYPE> {
         sparse_matrix<ITYPE,VTYPE> x_init_column_;
         // The variable matrix of the matrix equation
         sparse_matrix<ITYPE,VTYPE> x_;
-        // Preconditioner pointer
-        preconditioner<ITYPE,VTYPE>* M_;
         // Tolerance of CG solver
         VTYPE cg_solve_tol_;
         // Maximum iteration of CG solver
         ITYPE cg_max_iter_;
+        // Preconditioner pointer
+        preconditioner<ITYPE,VTYPE>* M_;
+
 };
 
 // Class of one-dimensional Gaussian Elimination solver
