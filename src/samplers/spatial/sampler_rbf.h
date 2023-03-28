@@ -73,58 +73,66 @@ public:
 
 	/**
 	 * Input parameters:
-	 * 1.  REAL r:
+	 * 1. REAL r:
 	 *       The search radius used to construct each RBF
-	 * 2.  std::vector<point_type>& pts:
+	 * 2. std::vector<point_type>& pts:
 	 *       Vector of points that pre-set for RBF interpolation
-	 * 3.  INT basisFunc:
+	 * 3. INT basisFunc:
 	 *       Parameter for basis function selection. Implemented functions are as follows:
 	 *       Gaussian(default): basisFunc_=0
 	 *       Wendland's C0:     basisFunc_=1
 	 *       Wendland's C2:     basisFunc_=2
 	 *       Wendland's C4:     basisFunc_=3
 	 *       Wendland's C6:     basisFunc_=4
-	 * 4.  bool conservative:
+	 * 4. bool conservative:
 	 *       Switch for the mode of RBF interpolation:
 	 *       consistent mode(default): conservative=false
 	 *       conservative mode:        conservative=true
-	 * 5.  bool smoothFunc:
+	 * 5. bool smoothFunc:
 	 *       Switch for the smoothing function of the transformation matrix:
 	 *       without smoothing function(default): smoothFunc=false
 	 *       with smoothing function:             smoothFunc=true
-	 * 6. REAL cutOff:
+	 * 6. bool writeMatrix:
+	 *       Switch for whether to write the constructed transformation matrix to file:
+	 *       Write the constructed matrix to file:       writeMatrix=false
+	 *       Don't write the constructed matrix to file: writeMatrix=true
+	 * 7. const std::string& writeFileAddress:
+	 *       The address that the transformation matrix I/O uses.
+	 *       The default value of fileAddress is an empty string.
+	 * 8. REAL cutOff:
 	 *       Parameter to set the cut-off of the Gaussian basis function (only valid for basisFunc_=0).
 	 *       The default value of cutoff is 1e-9
-	 * 7. REAL cgSolveTol:
-	 *       The tolerance used to determine convergence for the Eigen ConjugateGradient solver
+	 * 9. REAL cgSolveTol:
+	 *       The tolerance used to determine convergence for the ConjugateGradient solver
 	 *       The default value of cgSolveTol is 1e-6
-	 * 8. INT cgMaxIter:
+	 * 10. INT cgMaxIter:
 	 *       The maximum number of iterations each Eigen ConjugateGradient solve can take
 	 *       The default value of cgMaxIter is 0, which means the solver decides
-	 * 9. INT pouSize:
+	 * 11. INT pouSize:
 	 *       The size of each partition used within the RBF-POU approach
 	 *       The default value of pouSize is 50, setting to 0 disables the partitioned approach
-	 * 10. INT precond:
+	 * 12. INT precond:
 	 *       The Preconditioner of the Conjugate Gradient solver. Implemented as follows:
-	 *       No Preconditioner (default):                         precond_=0
-	 *       Incomplete LU Preconditioner:                        precond_=1
-	 *       Incomplete Cholesky Preconditioner:                  precond_=2
-	 *       Symmetric Successive Over-Relaxation Preconditioner: precond_=3
-	 * 11. MPI_Comm local_comm:
+	 *       No Preconditioner:                         precond_=0
+	 *       Diagonal Preconditioner (default):         precond_=1
+	 * 13. MPI_Comm local_comm:
 	 *       The MPI communicator from the local application. Used for ghost cell construction.
 	 *       The default value of local_comm is MPI_COMM_NULL, i.e. no MPI communicator.
 	 */
 
 	sampler_rbf(REAL r, const std::vector<point_type> &pts, INT basisFunc = 0,
-			bool conservative = false, bool smoothFunc = false, REAL cutOff = 1e-9,
+			bool conservative = false, bool smoothFunc = false, bool writeMatrix = true,
+			const std::string &writeFileAddress = std::string(), REAL cutOff = 1e-9,
 			REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 50,
-			INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
+			INT precond = 1, MPI_Comm local_comm = MPI_COMM_NULL) :
 			r_(r),
 			pts_(pts),
 			basisFunc_(basisFunc),
 			conservative_(conservative),
 			consistent_(!conservative),
 			smoothFunc_(smoothFunc),
+			writeMatrix_(writeMatrix),
+			writeFileAddress_(writeFileAddress),
 			precond_(precond),
 			initialised_(false),
 			local_mpi_comm_world_(local_comm),
@@ -158,9 +166,20 @@ public:
 
 	template<template<typename, typename > class CONTAINER>
 	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
-		OTYPE sum = 0;
-		if (!initialised_)
-			std::cout << "MUI Warning [sampler_rbf.h]: No RBF matrix loaded, call createRBFMatrix() or readRBFMatrix() first" << std::endl;
+      OTYPE sum = 0;
+      if (!initialised_) {
+    	  const clock_t begin_time = clock();
+    	  facilitateGhostPoints();
+    	  REAL error = computeRBFtransformationMatrix(data_points, writeMatrix_, writeFileAddress_);
+    	  if (!QUIET) {
+    		  std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
+    				  	<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
+    		  if (writeMatrix_)
+				  std::cout << std::endl
+							<< "                     Average CG error: " << error;
+    		  std::cout << std::endl;
+    	  }
+	  }
 		else {
 			//Output for debugging
 			if ((!QUIET) && (DEBUG)) {
@@ -251,24 +270,10 @@ public:
 		initialised_ = false;
 	}
 
-	inline void createRBFMatrix(const std::vector<point_type> &data_points, bool writeMatrix = false,
-			const std::string &fileAddress = std::string()) {
-		const clock_t begin_time = clock();
-		facilitateGhostPoints();
-		REAL error = computeRBFtransformationMatrix(data_points, writeMatrix, fileAddress);
-		if (!QUIET) {
-			std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
-					  << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
-			std::cout << std::endl
-					  << "                     Average CG error: " << error;
-			std::cout << std::endl;
-		}
-	}
-
 	// Functions to facilitate ghost points
 
 	// Determine bounding box of local points
-	std::pair<point_type, point_type> localBoundingBox(const std::vector<point_type> pt) {
+	std::pair<point_type, point_type> localBoundingBox(const std::vector<point_type> pt) const {
 		point_type lbbMin, lbbMax;
 		REAL maxVal = std::numeric_limits<REAL>::max();
 		try {
@@ -343,7 +348,7 @@ public:
 	}
 
 	// Determine extended bounding box of local points include ghost area
-	std::pair<point_type, point_type> localExtendBoundingBox(std::pair<point_type, point_type> lbb, REAL r) {
+	std::pair<point_type, point_type> localExtendBoundingBox(std::pair<point_type, point_type> lbb, REAL r) const {
 		point_type lbbExtendMin, lbbExtendMax;
 		lbbExtendMin = lbb.first;
 		lbbExtendMax = lbb.second;
@@ -357,7 +362,7 @@ public:
 	// Collect points that will be sent to other processors as ghost points
 	std::pair<std::vector<std::pair<INT, INT>>, std::vector<std::pair<INT, std::vector<point_type>>>> getGhostPointsToSend(
 			std::pair<point_type, point_type> lbbExtend, MPI_Comm local_world,
-			int local_rank, int local_size) {
+			int local_rank, int local_size) const {
 		std::pair<INT, std::pair<point_type, point_type>> localBB, globalBB[local_size];
 
 		// Assign rank ID and extended bounding box of local points to localBB
@@ -541,7 +546,7 @@ public:
 	std::vector<point_type> distributeGhostPoints(
 			std::vector<std::pair<INT, INT>> ghostPointsCountToSend,
 			std::vector<std::pair<INT, std::vector<point_type>>> ghostPointsToSend,
-			MPI_Comm local_world, int local_rank) {
+			MPI_Comm local_world, int local_rank) const {
 		std::vector<point_type> ptsGhost;
 		std::vector<std::pair<INT, INT>> ghostPointsCountToRecv;
 		for (auto xGhostPointsCountToSend : ghostPointsCountToSend) {
@@ -569,7 +574,7 @@ public:
 							return b.first == xGhostPointsCountToSend.first;
 						});
 
-				assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
+				assert(ghostPointsToSendIter->second.size() == static_cast<size_t>(xGhostPointsCountToSend.second));
 
 				int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
 				char *buffer = new char[buffer_size];
@@ -638,7 +643,7 @@ public:
 	}
 
 	// Facilitate Ghost points
-	void facilitateGhostPoints() {
+	void facilitateGhostPoints() const {
 		std::pair<point_type, point_type> lbb = localBoundingBox(pts_);
 		std::pair<point_type, point_type> lbbExtend = localExtendBoundingBox(lbb, r_);
 		if (local_mpi_comm_world_ != MPI_COMM_NULL) {
@@ -665,8 +670,8 @@ public:
 
 private:
 	template<template<typename, typename > class CONTAINER>
-	REAL computeRBFtransformationMatrix(const std::vector<point_type> &data_points, bool writeMatrix,
-			const std::string &fileAddress) {
+	REAL computeRBFtransformationMatrix(const CONTAINER<ITYPE, CONFIG> &data_points, bool writeMatrix,
+			const std::string &fileAddress) const {
 		// Refine partition size depending on if PoU enabled, whether conservative or consistent
 		// and if problem size smaller than defined patch size
 		if (conservative_) { // Conservative RBF, using local point set for size
@@ -694,122 +699,127 @@ private:
 
 		REAL errorReturn = 0;
 
-		if (conservative_)
-			buildConnectivityConservative(data_points, N_sp_, writeMatrix, fileAddress);
-		else
-			buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
+		// Reading matrix
+		if (!writeMatrix_)
+			readRBFMatrix(fileAddress);
+		else { // Generating matrix
+			if (conservative_)
+				buildConnectivityConservative(data_points, N_sp_, writeMatrix, fileAddress);
+			else
+				buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
 
-		H_.resize_null(ptsExtend_.size(), data_points.size());
-		H_.set_zero();
+			H_.resize_null(ptsExtend_.size(), data_points.size());
+			H_.set_zero();
 
-		if (smoothFunc_) {
-			buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
-			H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
-			H_toSmooth_.set_zero();
-		}
-
-		if (writeMatrix) {
-			std::ofstream outputFileMatrixSize(fileAddress + "/matrixSize.dat");
-
-			if (!outputFileMatrixSize) {
-				std::cerr
-						<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
-						<< std::endl;
+			if (smoothFunc_) {
+				buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
+				H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
+				H_toSmooth_.set_zero();
 			}
-			else {
-				outputFileMatrixSize
-						<< "// *********************************************************************************************************************************************";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** This is the 'matrixSize.dat' file of the RBF spatial sampler of the MUI library";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** This file contains the size (number of rows and number of columns) of the Point Connectivity Matrix (N) and the Coupling Matrix (H).";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** The file uses the Comma-Separated Values (CSV) format and the ASCII format with the meanings as follows: ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Point Connectivity Matrix (N), ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Point Connectivity Matrix (N),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Coupling Matrix (H),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Coupling Matrix (H)";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// *********************************************************************************************************************************************";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize << "//  ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize << connectivityAB_.size();
-				outputFileMatrixSize << ",";
-				outputFileMatrixSize << connectivityAB_[0].size();
-				outputFileMatrixSize << ",";
-				if (smoothFunc_) {
-					outputFileMatrixSize << connectivityAA_.size();
-					outputFileMatrixSize << ",";
-					outputFileMatrixSize << connectivityAA_[0].size();
-					outputFileMatrixSize << ",";
+
+			if (writeMatrix) {
+				std::ofstream outputFileMatrixSize(fileAddress + "/matrixSize.dat");
+
+				if (!outputFileMatrixSize) {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
+							<< std::endl;
 				}
 				else {
-					outputFileMatrixSize << "0";
+					outputFileMatrixSize
+							<< "// *********************************************************************************************************************************************";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** This is the 'matrixSize.dat' file of the RBF spatial sampler of the MUI library";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** This file contains the size (number of rows and number of columns) of the Point Connectivity Matrix (N) and the Coupling Matrix (H).";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** The file uses the Comma-Separated Values (CSV) format and the ASCII format with the meanings as follows: ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Point Connectivity Matrix (N), ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Point Connectivity Matrix (N),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Coupling Matrix (H),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Coupling Matrix (H)";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// *********************************************************************************************************************************************";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize << "//  ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize << connectivityAB_.size();
 					outputFileMatrixSize << ",";
-					outputFileMatrixSize << "0";
+					outputFileMatrixSize << connectivityAB_[0].size();
 					outputFileMatrixSize << ",";
+					if (smoothFunc_) {
+						outputFileMatrixSize << connectivityAA_.size();
+						outputFileMatrixSize << ",";
+						outputFileMatrixSize << connectivityAA_[0].size();
+						outputFileMatrixSize << ",";
+					}
+					else {
+						outputFileMatrixSize << "0";
+						outputFileMatrixSize << ",";
+						outputFileMatrixSize << "0";
+						outputFileMatrixSize << ",";
+					}
+					outputFileMatrixSize << H_.get_rows();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << H_.get_cols();
+					outputFileMatrixSize << "\n";
 				}
-				outputFileMatrixSize << H_.get_rows();
-				outputFileMatrixSize << ",";
-				outputFileMatrixSize << H_.get_cols();
-				outputFileMatrixSize << "\n";
 			}
-		}
 
-		if (conservative_) { // Build matrix for conservative RBF
-			errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
-		}
-		else {
-			// Build matrix for consistent RBF
-			errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
-		}
-
-		if (writeMatrix) {
-			std::ofstream outputFileHMatrix(fileAddress + "/Hmatrix.dat");
-
-			if (!outputFileHMatrix) {
-				std::cerr
-						<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
-						<< std::endl;
+			if (conservative_) { // Build matrix for conservative RBF
+				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
 			}
 			else {
-				outputFileHMatrix
-						<< "// ************************************************************************************************";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** This is the 'Hmatrix.dat' file of the RBF spatial sampler of the MUI library";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** This file contains the entire matrix of the Coupling Matrix (H).";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire H matrix";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// ************************************************************************************************";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix << "// ";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix << H_;
+				// Build matrix for consistent RBF
+				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
+			}
+
+			if (writeMatrix) {
+				std::ofstream outputFileHMatrix(fileAddress + "/Hmatrix.dat");
+
+				if (!outputFileHMatrix) {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
+							<< std::endl;
+				}
+				else {
+					outputFileHMatrix
+							<< "// ************************************************************************************************";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** This is the 'Hmatrix.dat' file of the RBF spatial sampler of the MUI library";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** This file contains the entire matrix of the Coupling Matrix (H).";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire H matrix";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// ************************************************************************************************";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix << "// ";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix << H_;
+				}
 			}
 		}
 
@@ -820,7 +830,7 @@ private:
 
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
-				const size_t MP, bool smoothing) {
+				const size_t MP, bool smoothing) const {
 		REAL errorReturn = 0;
 		std::pair<INT, REAL> iterErrorReturn(0, 0);
 
@@ -832,8 +842,8 @@ private:
 			Aas.resize_null((1 + NP + CONFIG::D), 1);
 
 			//set Css
-			for (INT i = 0; i < NP; i++) {
-				for (INT j = i; j < NP; j++) {
+			for (size_t i = 0; i < NP; i++) {
+				for (size_t j = i; j < NP; j++) {
 					int glob_i = connectivityAB_[row][i];
 					int glob_j = connectivityAB_[row][j];
 
@@ -850,7 +860,7 @@ private:
 				}
 			}
 
-			for (INT i = 0; i < NP; i++) {
+			for (size_t i = 0; i < NP; i++) {
 				Css.set_value(i, NP, 1);
 				Css.set_value(NP, i, 1);
 
@@ -865,7 +875,7 @@ private:
 			}
 
 			//set Aas
-			for (INT j = 0; j < NP; j++) {
+			for (size_t j = 0; j < NP; j++) {
 				int glob_j = connectivityAB_[row][j];
 
 				auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
@@ -881,9 +891,34 @@ private:
 				Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
 			}
 
-			linalg::conjugate_gradient<INT, REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
+			linalg::sparse_matrix<INT, REAL> H_i;
+
+			if (precond_ == 0) {
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else if (precond_ == 1) {
+				linalg::diagonal_preconditioner<INT, REAL> M(Css);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+						<< precond_ << ")" << std::endl
+						<< "Please set the CG Preconditioner function number (precond_) as: "
+						<< std::endl << "precond_=0 (No Preconditioner); "
+						<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+				std::abort();
+			}
 
 			if (DEBUG) {
 				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
@@ -949,7 +984,7 @@ private:
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConservative(
 			const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
-			const size_t MP, bool smoothing) {
+			const size_t MP, bool smoothing) const {
 		REAL errorReturn = 0;
 		std::pair<INT, REAL> iterErrorReturn(0, 0);
 
@@ -1006,9 +1041,34 @@ private:
 				Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
 			}
 
-			linalg::conjugate_gradient<INT, REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
+			linalg::sparse_matrix<INT, REAL> H_i;
+
+			if (precond_ == 0) {
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else if (precond_ == 1) {
+				linalg::diagonal_preconditioner<INT, REAL> M(Css);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+						<< precond_ << ")" << std::endl
+						<< "Please set the CG Preconditioner function number (precond_) as: "
+						<< std::endl << "precond_=0 (No Preconditioner); "
+						<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+				std::abort();
+			}
 
 			if (DEBUG) {
 				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
@@ -1075,7 +1135,7 @@ private:
 
 	template<template<typename, typename > class CONTAINER>
 	inline void buildConnectivityConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, bool writeMatrix,
-			const std::string& fileAddress) {
+			const std::string& fileAddress) const {
 		std::ofstream outputFileCAB;
 		if (writeMatrix) {
 			outputFileCAB.open(fileAddress + "/connectivityAB.dat");
@@ -1110,7 +1170,7 @@ private:
 
 		for (size_t i = 0; i < ptsExtend_.size(); i++) {
 			INT pointsCount = 0;
-			for (INT n = 0; n < NP; n++) {
+			for (size_t n = 0; n < NP; n++) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < data_points.size(); j++) {
@@ -1150,7 +1210,7 @@ private:
 
 	template<template<typename, typename > class CONTAINER>
 	inline void buildConnectivityConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, bool writeMatrix,
-			const std::string& fileAddress) {
+			const std::string& fileAddress) const {
 		std::ofstream outputFileCAB;
 		if (writeMatrix) {
 			outputFileCAB.open(fileAddress + "/connectivityAB.dat");
@@ -1223,7 +1283,7 @@ private:
 			outputFileCAB.close();
 	}
 
-	void buildConnectivitySmooth(const size_t MP, bool writeMatrix, const std::string& fileAddress) {
+	void buildConnectivitySmooth(const size_t MP, bool writeMatrix, const std::string& fileAddress) const {
 		std::ofstream outputFileCAA;
 
 		if (writeMatrix) {
@@ -1258,7 +1318,7 @@ private:
 		connectivityAA_.resize(ptsExtend_.size());
 
 		for (size_t i = 0; i < ptsExtend_.size(); i++) {
-			for (INT n = 0; n < MP; n++) {
+			for (size_t n = 0; n < MP; n++) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < ptsExtend_.size(); j++) {
@@ -1297,13 +1357,13 @@ private:
 	}
 
 	//Radial basis function for two points
-	inline REAL rbf(point_type x1, point_type x2) {
+	inline REAL rbf(point_type x1, point_type x2) const {
 		auto d = norm(x1 - x2);
 		return rbf(d);
 	}
 
 	//Radial basis function for calculated distance
-	inline REAL rbf(REAL d) {
+	inline REAL rbf(REAL d) const {
 		switch (basisFunc_) {
 		case 0:
 			//Gaussian
@@ -1336,7 +1396,7 @@ private:
 	}
 
 	///Distances function
-	inline REAL dist_h_i(INT ptsExtend_i, INT ptsExtend_j) {
+	inline REAL dist_h_i(INT ptsExtend_i, INT ptsExtend_j) const {
 		switch (CONFIG::D) {
 		case 1:
 			return std::sqrt((std::pow((ptsExtend_[ptsExtend_i][0]
@@ -1359,8 +1419,8 @@ private:
 		}
 	}
 
-	inline void readRBFMatrix(const std::string& fileAddress) {
-		std::ifstream inputFileMatrixSize(fileAddress + "/matrixSize.dat");
+	inline void readRBFMatrix(const std::string& readFileAddress) const {
+		std::ifstream inputFileMatrixSize(readFileAddress + "/matrixSize.dat");
 
 		if (!inputFileMatrixSize) {
 			std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat"
@@ -1387,7 +1447,7 @@ private:
 			Hcol_ = tempV[5];
 		}
 
-		std::ifstream inputFileCAB(fileAddress + "/connectivityAB.dat");
+		std::ifstream inputFileCAB(readFileAddress + "/connectivityAB.dat");
 
 		if (!inputFileCAB) {
 			std::cerr
@@ -1415,7 +1475,7 @@ private:
 		}
 
 		if (smoothFunc_) {
-			std::ifstream inputFileCAA(fileAddress + "/connectivityAA.dat");
+			std::ifstream inputFileCAA(readFileAddress + "/connectivityAA.dat");
 
 			if (!inputFileCAA) {
 				std::cerr
@@ -1456,7 +1516,7 @@ private:
 		H_.resize_null(Hrow_, Hcol_);
 		H_.set_zero();
 
-		std::ifstream inputFileHMatrix(fileAddress + "/Hmatrix.dat");
+		std::ifstream inputFileHMatrix(readFileAddress + "/Hmatrix.dat");
 
 		if (!inputFileHMatrix) {
 			std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
@@ -1477,41 +1537,6 @@ private:
 		initialised_ = true;
 	}
 
-	inline linalg::conjugate_gradient<INT, REAL> getCGSolver(
-			const linalg::sparse_matrix<INT, REAL> *Css,
-			const linalg::sparse_matrix<INT, REAL> *Aas) {
-		if (precond_ == 0) {
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_);
-			return cg;
-		}
-		else if (precond_ == 1) {
-			linalg::incomplete_lu_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else if (precond_ == 2) {
-			linalg::incomplete_cholesky_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else if (precond_ == 3) {
-			linalg::symmetric_successive_over_relaxation_preconditioner<INT, REAL> M(*Css, 1.0);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else {
-			std::cerr
-					<< "MUI Error [sampler_rbf.h]: invalid CG Preconditioner function number ("
-					<< precond_ << ")" << std::endl
-					<< "Please set the CG Preconditioner function number (precond_) as: "
-					<< std::endl << "precond_=0 (No Preconditioner); "
-					<< std::endl << "precond_=1 (ILU); " << std::endl
-					<< "precond_=2 (IC); " << std::endl << "precond_=3 (SSOR); "
-					<< std::endl;
-			std::abort();
-		}
-	}
-
 protected:
 	REAL r_;
 	const std::vector<point_type> pts_; //< Local points
@@ -1519,31 +1544,34 @@ protected:
 	const bool conservative_;
 	const bool consistent_;
 	const bool smoothFunc_;
+	const bool writeMatrix_;
+	const std::string writeFileAddress_;
 	INT precond_;
-	bool initialised_;
+	mutable bool initialised_;
 	MPI_Comm local_mpi_comm_world_;
-	INT CABrow_;
-	INT CABcol_;
-	INT Hrow_;
-	INT Hcol_;
+	mutable INT CABrow_;
+	mutable INT CABcol_;
+	mutable INT Hrow_;
+	mutable INT Hcol_;
 	bool pouEnabled_;
 	REAL cgSolveTol_;
 	INT cgMaxIter_;
-	size_t N_sp_;
-	size_t M_ap_;
+
+	mutable size_t N_sp_;
+	mutable size_t M_ap_;
 	int local_rank_;
 	int local_size_;
 
 	REAL twor_;
 	REAL s_;
-	INT CAArow_;
-	INT CAAcol_;
-	std::vector<point_type> ptsGhost_; //< Local ghost points
-	std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
-	std::vector<std::vector<INT> > connectivityAB_;
-	std::vector<std::vector<INT> > connectivityAA_;
-	linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
-	linalg::sparse_matrix<INT, REAL> H_toSmooth_;
+	mutable INT CAArow_;
+	mutable INT CAAcol_;
+	mutable std::vector<point_type> ptsGhost_; //< Local ghost points
+	mutable std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
+	mutable std::vector<std::vector<INT> > connectivityAB_;
+	mutable std::vector<std::vector<INT> > connectivityAA_;
+	mutable linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
+	mutable linalg::sparse_matrix<INT, REAL> H_toSmooth_;
 };
 } // mui
 

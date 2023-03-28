@@ -121,11 +121,10 @@ class SamplerSumQuintic(Sampler):
 
 
 class SamplerRbf(Sampler, CppClass):
-    def __init__(self, r, pointvect, basisFunc, conservative, polynomial,
-                 smoothFunc, cutoff, cgSolveTol, cgMaxIter, pouSize, precond,
-                 mpiComm):
+    def __init__(self, r, pointvect, basisFunc, conservative, smoothFunc,
+                 writeMatrix, writeFileAddress, cutoff, cgSolveTol, cgMaxIter,
+                 pouSize, precond, mpiComm):
         super(SamplerRbf, self).__init__(args=(r, pointvect, basisFunc,
-                                         conservative, polynomial, smoothFunc,
-                                         cutoff, cgSolveTol, cgMaxIter, pouSize, precond,
-                                         mpiComm))
+                                         conservative, smoothFunc, writeMatrix, writeFileAddress,
+                                         cutoff, cgSolveTol, cgMaxIter, pouSize, precond, mpiComm))
         self._ALLOWED_IO_TYPES = [FLOAT, UINT, UINT32, UINT64, INT, INT32, INT64, FLOAT32, FLOAT64]

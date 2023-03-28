@@ -44,7 +44,7 @@
  * @brief Samplers for MUI Python wrapper.
  */
 
-#include <mui.h>
+#include "../../../../src/mui.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
@@ -248,26 +248,50 @@ void declare_sampler_sum_quintic(py::module &m)
 }
 
 // SPATIAL_SAMPLER_RBF CLASS//
-//template <typename Tconfig, typename T>
-//void declare_sampler_rbf_t(py::module &m)
-//{
-//    std::string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
-//    using Treal = typename Tconfig::REAL;
-//    using Tint = typename Tconfig::INT;
-//    using Tpoint = typename Tconfig::point_type;
-//    using Tclass = mui::sampler_rbf<Tconfig, T, T>;
-//    py::class_<Tclass>(m, name.c_str()).def(py::init<Treal, std::vector<Tpoint> &, Tint,
-//    		bool, bool, Treal, Treal, Tint, Tint, Tint, PyMPIComm_New(MPI_Comm)>());
-//}
-//
-//template <typename Tconfig>
-//void declare_sampler_rbf(py::module &m)
-//{
-//    declare_sampler_rbf_t<Tconfig, double>(m);
-//    declare_sampler_rbf_t<Tconfig, float>(m);
-//    declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
-//    declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
-//}
+template <typename Tconfig, typename T = void>
+void declare_sampler_rbf_t(py::module &m)
+{
+    std::string name = "_Sampler_rbf" + config_name<Tconfig>() + "_" + type_name<T>();
+    using Treal = typename Tconfig::REAL;
+    using Tint = typename Tconfig::INT;
+    using Tpoint = typename Tconfig::point_type;
+    using Tclass = mui::sampler_rbf<Tconfig, T, T>;
+    py::class_<Tclass>(m, name.c_str())
+            .def(py::init([](Treal r, const std::vector<Tpoint>& pointvect, Tint basisFunc, bool conservative, bool smoothFunc, bool writeMatrix, const std::string& writeFileAddress, Treal cutoff, Treal cgSolveTol, Tint cgMaxIter, Tint pouSize, Tint precond, pybind11::handle const& world) {
+                // Import mpi4py if it does not exist.
+                if (!PyMPIComm_Get)
+                {
+                    if (import_mpi4py() < 0)
+                    {
+                        throw std::runtime_error(
+                            "MUI Error [wrappers/Python/mui4py/cpp/sampler.cpp]: mpi4py not loaded correctly\n");
+                    }
+                }
+
+                MPI_Comm comm;
+                MPI_Comm ric_mpiComm;
+
+                if (world.is_none()) {
+                    comm = MPI_COMM_NULL;
+                    ric_mpiComm = reinterpret_cast<MPI_Comm>(comm);
+                } else {
+                    PyObject *py_src = world.ptr();
+                    MPI_Comm *comm_p = PyMPIComm_Get(py_src);
+                    ric_mpiComm = reinterpret_cast<MPI_Comm>(*comm_p);
+                }
+
+                return new Tclass(r, pointvect, basisFunc, conservative, smoothFunc, writeMatrix, writeFileAddress, cutoff, cgSolveTol, cgMaxIter, pouSize, precond, ric_mpiComm);
+        }));
+}
+
+template <typename Tconfig>
+void declare_sampler_rbf(py::module &m)
+{
+    declare_sampler_rbf_t<Tconfig, double>(m);
+    declare_sampler_rbf_t<Tconfig, float>(m);
+    declare_sampler_rbf_t<Tconfig, std::int32_t>(m);
+    declare_sampler_rbf_t<Tconfig, std::int64_t>(m);
+}
 
 template <typename Tconfig>
 void declare_samplers(py::module &m)
@@ -283,7 +307,7 @@ void declare_samplers(py::module &m)
     declare_sampler_shepard_quintic<Tconfig>(m);
     declare_sampler_sph_quintic<Tconfig>(m);
     declare_sampler_sum_quintic<Tconfig>(m);
-    //declare_sampler_rbf<Tconfig>(m);
+    declare_sampler_rbf<Tconfig>(m);
 }
 
 void sampler(py::module &m)

@@ -54,8 +54,7 @@
 #include "../storage/virtual_container.h"
 
 namespace mui {
-
-#if 0
+/*
 class sampler {
 public:
     sampler() {
@@ -81,8 +80,7 @@ public:
 protected:
     double r;
 };
-
-#endif
+*/
 }
 
 #endif /* MUI_SAMPLER_H_ */

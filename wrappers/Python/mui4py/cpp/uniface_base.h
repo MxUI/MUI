@@ -44,7 +44,7 @@
  * @brief Uniface base calss for MUI Python wrapper.
  */
 
-#include <mui.h>
+#include "../../../../src/mui.h"
 #include <pybind11/pybind11.h>
 #include <mpi4py/mpi4py.h>
 

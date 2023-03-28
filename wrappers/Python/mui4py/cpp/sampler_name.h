@@ -65,5 +65,7 @@ std::string sampler_name()
     return "sph_quintic";
   if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_sum_quintic<Tconfig, T, T>>::value)
     return "sum_quintic";
+  if (std::is_same<Tsampler<Tconfig, T, T>, mui::sampler_rbf<Tconfig, T, T>>::value)
+    return "rbf";
   throw std::runtime_error("Invalid sampler type");
 }
