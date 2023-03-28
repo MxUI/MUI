@@ -374,7 +374,7 @@ public:
 
                                 assert(pts_time_res_iter != std::end(pts_time_res_) );
 
-                                if(pts_time_res_iter->second.size() != pts_residual_l2_norm_iter->second.first) {
+                                if(pts_time_res_iter->second.size() != static_cast<size_t>(pts_residual_l2_norm_iter->second.first)) {
 
                                     REAL local_residual_mag_sq_sum_temp = 0.0;
                                     REAL residual_mag_sq_sum_temp = 0.0;
@@ -688,7 +688,7 @@ private:
 
 						assert(pts_time_res_nm2_iter != std::end(pts_time_res_) );
 
-						if(pts_time_res_nm2_iter->second.size() != res_l2_norm_nm2_iter->second.first) {
+						if(pts_time_res_nm2_iter->second.size() != static_cast<size_t>(res_l2_norm_nm2_iter->second.first)) {
 
 							REAL local_residual_mag_sq_sum_temp = 0.0;
 							REAL residual_mag_sq_sum_temp = 0.0;
@@ -715,7 +715,7 @@ private:
 
 						assert(pts_time_res_nm1_iter != std::end(pts_time_res_) );
 
-						if(pts_time_res_nm1_iter->second.size() != res_l2_norm_nm1_iter->second.first) {
+						if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
 
 							REAL local_residual_mag_sq_sum_temp = 0.0;
 							REAL residual_mag_sq_sum_temp = 0.0;
@@ -826,7 +826,7 @@ private:
 
 						assert(pts_time_res_nm2_iter != std::end(pts_time_res_) );
 
-						if(pts_time_res_nm2_iter->second.size() != res_l2_norm_nm2_iter->second.first) {
+						if(pts_time_res_nm2_iter->second.size() != static_cast<size_t>(res_l2_norm_nm2_iter->second.first)) {
 
 							REAL local_residual_mag_sq_sum_temp = 0.0;
 							REAL residual_mag_sq_sum_temp = 0.0;
@@ -852,7 +852,7 @@ private:
 
 						assert(pts_time_res_nm1_iter != std::end(pts_time_res_) );
 
-						if(pts_time_res_nm1_iter->second.size() != res_l2_norm_nm1_iter->second.first) {
+						if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
 
 							REAL local_residual_mag_sq_sum_temp = 0.0;
 							REAL residual_mag_sq_sum_temp = 0.0;
@@ -934,11 +934,11 @@ private:
     }
 
 protected:
-    MPI_Comm local_mpi_comm_world_;
-
     const REAL init_under_relaxation_factor_;
 
     const REAL under_relaxation_factor_max_;
+
+    MPI_Comm local_mpi_comm_world_;
 
     iterator_type minimum_iterator_;
 

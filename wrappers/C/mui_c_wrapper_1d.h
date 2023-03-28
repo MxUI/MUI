@@ -75,7 +75,7 @@ typedef struct mui_point_1t {
 	double point_1;
 } mui_point_1t;
 
-// C access typedefs for uniface and sampler types
+// C access typedefs for uniface, sampler types and algorithms
 typedef struct mui_uniface_1f mui_uniface_1f;
 typedef struct mui_uniface_1fx mui_uniface_1fx;
 typedef struct mui_uniface_1d mui_uniface_1d;
@@ -165,6 +165,18 @@ typedef struct mui_temporal_sampler_sum_1fx mui_temporal_sampler_sum_1fx;
 typedef struct mui_temporal_sampler_sum_1d mui_temporal_sampler_sum_1d;
 typedef struct mui_temporal_sampler_sum_1dx mui_temporal_sampler_sum_1dx;
 typedef struct mui_temporal_sampler_sum_1t mui_temporal_sampler_sum_1t;
+
+typedef struct mui_algorithm_fixed_relaxation_1f mui_algorithm_fixed_relaxation_1f;
+typedef struct mui_algorithm_fixed_relaxation_1fx mui_algorithm_fixed_relaxation_1fx;
+typedef struct mui_algorithm_fixed_relaxation_1d mui_algorithm_fixed_relaxation_1d;
+typedef struct mui_algorithm_fixed_relaxation_1dx mui_algorithm_fixed_relaxation_1dx;
+typedef struct mui_algorithm_fixed_relaxation_1t mui_algorithm_fixed_relaxation_1t;
+
+typedef struct mui_algorithm_aitken_1f mui_algorithm_aitken_1f;
+typedef struct mui_algorithm_aitken_1fx mui_algorithm_aitken_1fx;
+typedef struct mui_algorithm_aitken_1d mui_algorithm_aitken_1d;
+typedef struct mui_algorithm_aitken_1dx mui_algorithm_aitken_1dx;
+typedef struct mui_algorithm_aitken_1t mui_algorithm_aitken_1t;
 
 // MUI single uniface creation
 mui_uniface_1f* mui_create_uniface_1f(const char *URI);
@@ -345,6 +357,62 @@ void mui_destroy_temporal_sampler_sum_1d(mui_temporal_sampler_sum_1d *sampler);
 void mui_destroy_temporal_sampler_sum_1dx(mui_temporal_sampler_sum_1dx *sampler);
 void mui_destroy_temporal_sampler_sum_1t(mui_temporal_sampler_sum_1t *sampler);
 
+// MUI algorithms creation
+mui_algorithm_fixed_relaxation_1f* mui_create_algorithm_fixed_relaxation_1f(float under_relaxation_factor, mui_point_1f *points,
+		float *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_1fx* mui_create_algorithm_fixed_relaxation_1fx(float under_relaxation_factor, mui_point_1fx *points,
+		float *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_1d* mui_create_algorithm_fixed_relaxation_1d(double under_relaxation_factor, mui_point_1d *points,
+		double *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_1dx* mui_create_algorithm_fixed_relaxation_1dx(double under_relaxation_factor, mui_point_1dx *points,
+		double *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_1t* mui_create_algorithm_fixed_relaxation_1t(double under_relaxation_factor, mui_point_1t *points,
+		double *value_init, int pair_count);
+mui_algorithm_aitken_1f* mui_create_algorithm_aitken_1f(float under_relaxation_factor, float under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_1f *points, float *value_init, int pair_count, float res_l2_norm_nm1);
+mui_algorithm_aitken_1fx* mui_create_algorithm_aitken_1fx(float under_relaxation_factor, float under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_1fx *points, float *value_init, int pair_count, float res_l2_norm_nm1);
+mui_algorithm_aitken_1d* mui_create_algorithm_aitken_1d(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_1d *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+mui_algorithm_aitken_1dx* mui_create_algorithm_aitken_1dx(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_1dx *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+mui_algorithm_aitken_1t* mui_create_algorithm_aitken_1t(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_1t *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+
+// Aitken's algorithms functions for get info
+float mui_aitken_get_under_relaxation_factor_1f(mui_algorithm_aitken_1f *aitken, float t);
+float mui_aitken_get_under_relaxation_factor_1fx(mui_algorithm_aitken_1fx *aitken, float t);
+double mui_aitken_get_under_relaxation_factor_1d(mui_algorithm_aitken_1d *aitken, double t);
+double mui_aitken_get_under_relaxation_factor_1dx(mui_algorithm_aitken_1dx *aitken, double t);
+double mui_aitken_get_under_relaxation_factor_1t(mui_algorithm_aitken_1t *aitken, double t);
+float mui_aitken_get_under_relaxation_factor_1f_pair(mui_algorithm_aitken_1f *aitken, float t, float it);
+float mui_aitken_get_under_relaxation_factor_1fx_pair(mui_algorithm_aitken_1fx *aitken, float t, float it);
+double mui_aitken_get_under_relaxation_factor_1d_pair(mui_algorithm_aitken_1d *aitken, double t, double it);
+double mui_aitken_get_under_relaxation_factor_1dx_pair(mui_algorithm_aitken_1dx *aitken, double t, double it);
+double mui_aitken_get_under_relaxation_factor_1t_pair(mui_algorithm_aitken_1t *aitken, double t, double it);
+float mui_aitken_get_residual_L2_Norm_1f(mui_algorithm_aitken_1f *aitken, float t);
+float mui_aitken_get_residual_L2_Norm_1fx(mui_algorithm_aitken_1fx *aitken, float t);
+double mui_aitken_get_residual_L2_Norm_1d(mui_algorithm_aitken_1d *aitken, double t);
+double mui_aitken_get_residual_L2_Norm_1dx(mui_algorithm_aitken_1dx *aitken, double t);
+double mui_aitken_get_residual_L2_Norm_1t(mui_algorithm_aitken_1t *aitken, double t);
+float mui_aitken_get_residual_L2_Norm_1f_pair(mui_algorithm_aitken_1f *aitken, float t, float it);
+float mui_aitken_get_residual_L2_Norm_1fx_pair(mui_algorithm_aitken_1fx *aitken, float t, float it);
+double mui_aitken_get_residual_L2_Norm_1d_pair(mui_algorithm_aitken_1d *aitken, double t, double it);
+double mui_aitken_get_residual_L2_Norm_1dx_pair(mui_algorithm_aitken_1dx *aitken, double t, double it);
+double mui_aitken_get_residual_L2_Norm_1t_pair(mui_algorithm_aitken_1t *aitken, double t, double it);
+
+// MUI algorithms destruction
+void mui_destroy_algorithm_fixed_relaxation_1f(mui_algorithm_fixed_relaxation_1f *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_1fx(mui_algorithm_fixed_relaxation_1fx *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_1d(mui_algorithm_fixed_relaxation_1d *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_1dx(mui_algorithm_fixed_relaxation_1dx *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_1t(mui_algorithm_fixed_relaxation_1t *algorithm);
+void mui_destroy_algorithm_aitken_1f(mui_algorithm_aitken_1f *algorithm);
+void mui_destroy_algorithm_aitken_1fx(mui_algorithm_aitken_1fx *algorithm);
+void mui_destroy_algorithm_aitken_1d(mui_algorithm_aitken_1d *algorithm);
+void mui_destroy_algorithm_aitken_1dx(mui_algorithm_aitken_1dx *algorithm);
+void mui_destroy_algorithm_aitken_1t(mui_algorithm_aitken_1t *algorithm);
+
 // MUI functions for data push
 void mui_push_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float value);
 void mui_push_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float value);
@@ -381,7 +449,7 @@ void mui_forecast_1d_pair(mui_uniface_1d *uniface, double t, double it);
 void mui_forecast_1dx_pair(mui_uniface_1dx *uniface, double t, double it);
 void mui_forecast_1t_pair(mui_uniface_1t *uniface, double t, double it);
 
-// MUI functions for data fetch
+// MUI functions for data fetch using one time value
 float mui_fetch_exact_exact_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
 		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler);
 float mui_fetch_exact_exact_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float t,
@@ -747,10 +815,7 @@ double mui_fetch_rbf_sum_1dx(mui_uniface_1dx *uniface, const char *attr, mui_poi
 double mui_fetch_rbf_sum_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
 		mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_sum_1t *temporal_sampler);
 
-/********************************************************
- * MUI functions for 1D data fetch using two time values *
- *********************************************************/
-
+// MUI functions for data fetch using two time values
 float mui_fetch_exact_exact_1f_pair(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t, float it,
 		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler);
 float mui_fetch_exact_exact_1fx_pair(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float t,
@@ -1152,6 +1217,115 @@ double mui_fetch_rbf_sum_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mu
 		double it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_sum_1dx *temporal_sampler);
 double mui_fetch_rbf_sum_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t, double it,
 		mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_sum_1t *temporal_sampler);
+
+// MUI functions for 1D data fetch with fixed relaxation algorithm using one time value
+float mui_fetch_exact_exact_fixed_relaxation_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
+		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm);
+float mui_fetch_exact_exact_fixed_relaxation_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float t,
+		mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm);
+double mui_fetch_exact_exact_fixed_relaxation_1d(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
+		mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm);
+double mui_fetch_exact_exact_fixed_relaxation_1dx(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+		mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm);
+double mui_fetch_exact_exact_fixed_relaxation_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
+		mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm);
+
+
+
+
+
+float mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
+		mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm);
+float mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point,
+		float t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+		mui_temporal_sampler_exact_1fx *temporal_sampler, mui_algorithm_fixed_relaxation_1fx *algorithm);
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1d(mui_uniface_1d *uniface, const char *attr, mui_point_1d point,
+		double t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+		mui_temporal_sampler_exact_1d *temporal_sampler, mui_algorithm_fixed_relaxation_1d *algorithm);
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1dx(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+		double t, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
+		mui_temporal_sampler_exact_1dx *temporal_sampler, mui_algorithm_fixed_relaxation_1dx *algorithm);
+double mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point,
+		double t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+		mui_temporal_sampler_exact_1t *temporal_sampler, mui_algorithm_fixed_relaxation_1t *algorithm);
+
+
+
+
+
+
+
+
+
+
+// MUI functions for 1D data fetch with aitken algorithm using one time value
+float mui_fetch_exact_exact_aitken_1f(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t,
+		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm);
+float mui_fetch_exact_exact_aitken_1fx(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float t,
+		mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm);
+double mui_fetch_exact_exact_aitken_1d(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
+		mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm);
+double mui_fetch_exact_exact_aitken_1dx(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+		mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm);
+double mui_fetch_exact_exact_aitken_1t(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
+		mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm);
+
+
+
+
+
+// MUI functions for 1D data fetch with fixed relaxation algorithm using two time values
+float mui_fetch_exact_exact_fixed_relaxation_1f_pair(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t, float it,
+		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm);
+float mui_fetch_exact_exact_fixed_relaxation_1fx_pair(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float t,
+		float it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm);
+double mui_fetch_exact_exact_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
+		double it, mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm);
+double mui_fetch_exact_exact_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+		double it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm);
+double mui_fetch_exact_exact_fixed_relaxation_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
+		double it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm);
+
+
+
+
+
+// MUI functions for 1D data fetch with aitken algorithm using two time values
+float mui_fetch_exact_exact_aitken_1f_pair(mui_uniface_1f *uniface, const char *attr, mui_point_1f point, float t, float it,
+		mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_exact_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm);
+float mui_fetch_exact_exact_aitken_1fx_pair(mui_uniface_1fx *uniface, const char *attr, mui_point_1fx point, float t,
+		float it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm);
+double mui_fetch_exact_exact_aitken_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
+		double it, mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm);
+double mui_fetch_exact_exact_aitken_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+		double it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm);
+double mui_fetch_exact_exact_aitken_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
+		double it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm);
+
+
+
+
 
 // MUI functions for 1D data point only fetch using single time value
 void mui_fetch_points_exact_1f(mui_uniface_1f *uniface, const char *attr, float t,
