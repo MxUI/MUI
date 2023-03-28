@@ -51,6 +51,7 @@
 #include "config_name.h"
 #include "sampler_name.h"
 #include "temporal_name.h"
+#include "algorithm_name.h"
 
 template <typename Tconfig, typename T>
 void declare_uniface_fetch_single(py::class_<mui::uniface<Tconfig>> &uniface)
@@ -115,7 +116,7 @@ void declare_uniface_fetch_many(py::class_<mui::uniface<Tconfig>> &uniface)
                   const py::array_t<Treal, py::array::c_style>,
 				  const Ttime,
                   const Tsampler<Tconfig, T, T> &,
-                  const Ttemporal<Tconfig> &)) &
+                  const Ttemporal<Tconfig> &, bool)) &
                   Tclass::fetch_many,
               "");
 }
@@ -136,7 +137,94 @@ void declare_uniface_fetch_many_dual(py::class_<mui::uniface<Tconfig>> &uniface)
 				  const Ttime,
 				  const Titer,
                   const Tsampler<Tconfig, T, T> &,
-                  const Ttemporal<Tconfig> &)) &
+                  const Ttemporal<Tconfig> &, bool)) &
+                  Tclass::fetch_many,
+              "");
+}
+
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal, template <typename> class Talgorithm>
+void declare_uniface_fetch_algo(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+  using Ttime = typename Tconfig::time_type;
+
+  std::string fetch_name = "fetch_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>() + "_" + algorithm_name<Tconfig, Talgorithm>();
+  uniface.def(fetch_name.c_str(),
+              (T(Tclass::*)(
+                  const std::string &,
+				  const mui::point<Treal, Tconfig::D> &,
+				  const Ttime,
+                  const Tsampler<Tconfig, T, T> &,
+                  const Ttemporal<Tconfig> &,
+                  const Talgorithm<Tconfig> &,
+				  bool)) &
+                  Tclass::fetch,
+              "");
+}
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal, template <typename> class Talgorithm>
+void declare_uniface_fetch_algo_dual(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+  using Ttime = typename Tconfig::time_type;
+  using Titer = typename Tconfig::iterator_type;
+
+  std::string fetch_name = "fetch_dual_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>() + "_" + algorithm_name<Tconfig, Talgorithm>();
+  uniface.def(fetch_name.c_str(),
+           (T(Tclass::*)(
+               const std::string &,
+			   const mui::point<Treal, Tconfig::D> &,
+			   const Ttime,
+               const Titer,
+               const Tsampler<Tconfig, T, T> &,
+               const Ttemporal<Tconfig> &,
+			   const Talgorithm<Tconfig> &,
+			   bool)) &
+               Tclass::fetch,
+           "");
+}
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal, template <typename> class Talgorithm>
+void declare_uniface_fetch_algo_many(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+  using Ttime = typename Tconfig::time_type;
+
+  std::string fetch_many_name = "fetch_many_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>() + "_" + algorithm_name<Tconfig, Talgorithm>();
+  uniface.def(fetch_many_name.c_str(),
+              (py::array_t<T, py::array::c_style>(Tclass::*)(
+                  const std::string &,
+                  const py::array_t<Treal, py::array::c_style>,
+				  const Ttime,
+                  const Tsampler<Tconfig, T, T> &,
+                  const Ttemporal<Tconfig> &,
+				  const Talgorithm<Tconfig> &, bool)) &
+                  Tclass::fetch_many,
+              "");
+}
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal, template <typename> class Talgorithm>
+void declare_uniface_fetch_algo_many_dual(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+  using Tclass = mui::uniface<Tconfig>;
+  using Treal = typename Tconfig::REAL;
+  using Ttime = typename Tconfig::time_type;
+  using Titer = typename Tconfig::iterator_type;
+
+  std::string fetch_many_name = "fetch_many_dual_" + type_name<T>() + "_" + sampler_name<Tconfig, T, Tsampler>() + "_" + temporal_sampler_name<Tconfig, Ttemporal>() + "_" + algorithm_name<Tconfig, Talgorithm>();
+  uniface.def(fetch_many_name.c_str(),
+              (py::array_t<T, py::array::c_style>(Tclass::*)(
+                  const std::string &,
+                  const py::array_t<Treal, py::array::c_style>,
+				  const Ttime,
+				  const Titer,
+                  const Tsampler<Tconfig, T, T> &,
+                  const Ttemporal<Tconfig> &,
+				  const Talgorithm<Tconfig> &, bool)) &
                   Tclass::fetch_many,
               "");
 }
@@ -217,6 +305,25 @@ void declare_uniface_fetch_values_dual(py::class_<mui::uniface<Tconfig>> &unifac
               "");
 }
 
+
+template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler, template <typename> class Ttemporal>
+void declare_uniface_fetch_all_algorithm(py::class_<mui::uniface<Tconfig>> &uniface)
+{
+
+  declare_uniface_fetch_algo<Tconfig, T, Tsampler, Ttemporal, mui::algo_fixed_relaxation>(uniface);
+  declare_uniface_fetch_algo<Tconfig, T, Tsampler, Ttemporal, mui::algo_aitken>(uniface);
+
+  declare_uniface_fetch_algo_dual<Tconfig, T, Tsampler, Ttemporal, mui::algo_fixed_relaxation>(uniface);
+  declare_uniface_fetch_algo_dual<Tconfig, T, Tsampler, Ttemporal, mui::algo_aitken>(uniface);
+
+  declare_uniface_fetch_algo_many<Tconfig, T, Tsampler, Ttemporal, mui::algo_fixed_relaxation>(uniface);
+  declare_uniface_fetch_algo_many<Tconfig, T, Tsampler, Ttemporal, mui::algo_aitken>(uniface);
+
+  declare_uniface_fetch_algo_many_dual<Tconfig, T, Tsampler, Ttemporal, mui::algo_fixed_relaxation>(uniface);
+  declare_uniface_fetch_algo_many_dual<Tconfig, T, Tsampler, Ttemporal, mui::algo_aitken>(uniface);
+}
+
+
 template <typename Tconfig, typename T, template <typename, typename, typename> class Tsampler>
 void declare_uniface_fetch_all_temporal(py::class_<mui::uniface<Tconfig>> &uniface)
 {
@@ -240,6 +347,11 @@ void declare_uniface_fetch_all_temporal(py::class_<mui::uniface<Tconfig>> &unifa
   declare_uniface_fetch_many_dual<Tconfig, T, Tsampler, mui::temporal_sampler_gauss>(uniface);
   declare_uniface_fetch_many_dual<Tconfig, T, Tsampler, mui::temporal_sampler_mean>(uniface);
   declare_uniface_fetch_many_dual<Tconfig, T, Tsampler, mui::temporal_sampler_sum>(uniface);
+
+  declare_uniface_fetch_all_algorithm<Tconfig, T, Tsampler, mui::temporal_sampler_exact>(uniface);
+  declare_uniface_fetch_all_algorithm<Tconfig, T, Tsampler, mui::temporal_sampler_gauss>(uniface);
+  declare_uniface_fetch_all_algorithm<Tconfig, T, Tsampler, mui::temporal_sampler_mean>(uniface);
+  declare_uniface_fetch_all_algorithm<Tconfig, T, Tsampler, mui::temporal_sampler_sum>(uniface);
 }
 
 template <typename Tconfig, typename T>
@@ -342,11 +454,10 @@ void declare_uniface_class (py::module &m)
 				}
 			}
 
-			MPI_Comm comm;
 			MPI_Comm ric_mpiComm;
 
 			if (world.is_none()) {
-				comm = MPI_COMM_WORLD;
+				MPI_Comm comm = MPI_COMM_WORLD;
 				ric_mpiComm = reinterpret_cast<MPI_Comm>(comm);
 			} else {
 				PyObject *py_src = world.ptr();

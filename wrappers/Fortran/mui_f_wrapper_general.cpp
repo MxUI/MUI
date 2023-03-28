@@ -62,4 +62,12 @@ void mui_mpi_split_by_app_threaded_f(MPI_Comm **communicator, int *argc, char **
 	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
 }
 
+void mui_mpi_get_size_f(MPI_Comm *communicator, int *size) {
+	MPI_Comm_size(*communicator, size);
+}
+
+void mui_mpi_get_rank_f(MPI_Comm *communicator, int *rank) {
+	MPI_Comm_rank(*communicator, rank);
+}
+
 }

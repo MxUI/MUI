@@ -52,6 +52,7 @@ program main
   use mui_1d_f
   use mui_2d_f
   use mui_3d_f
+  use mui_general_f
 
   implicit none
 

@@ -335,7 +335,7 @@ public:
     template<class SAMPLER, class TIME_SAMPLER>
     py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
     fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
-           SAMPLER& sampler, const TIME_SAMPLER &t_sampler) {
+        const SAMPLER &sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true) {
         // Arrays must have ndim = d; can be non-writeable
         point_type p = 0;
         auto points_arr = points.template unchecked<2>();
@@ -344,7 +344,7 @@ public:
         for (ssize_t i = 0; i < points_arr.shape(0); i++) {
             for (ssize_t j = 0; j < points_arr.shape(1); j++)
                 p[j] = points_arr(i,j);
-            values_arr(i)  = fetch(attr, p, t, sampler, t_sampler);
+            values_arr(i)  = fetch(attr, p, t, sampler, t_sampler, barrier_enabled);
         }
         return values;
     }
@@ -352,7 +352,7 @@ public:
     template<class SAMPLER, class TIME_SAMPLER>
     py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
     fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
-        const iterator_type it, SAMPLER& sampler, const TIME_SAMPLER &t_sampler) {
+        const iterator_type it, const SAMPLER &sampler, const TIME_SAMPLER &t_sampler, bool barrier_enabled = true) {
         // Arrays must have ndim = d; can be non-writeable
         point_type p = 0;
         auto points_arr = points.template unchecked<2>();
@@ -361,7 +361,41 @@ public:
         for (ssize_t i = 0; i < points_arr.shape(0); i++) {
             for (ssize_t j = 0; j < points_arr.shape(1); j++)
                 p[j] = points_arr(i,j);
-            values_arr(i)  = fetch(attr, p, t, it, sampler, t_sampler);
+            values_arr(i)  = fetch(attr, p, t, it, sampler, t_sampler, barrier_enabled);
+        }
+        return values;
+    }
+
+    template<class SAMPLER, class TIME_SAMPLER, class ALGORITHM>
+    py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
+    fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
+        const SAMPLER &sampler, const TIME_SAMPLER &t_sampler, const ALGORITHM &algorithm, bool barrier_enabled = true) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        py::array_t<typename SAMPLER::OTYPE,py::array::c_style> values(points_arr.shape(0));
+        auto values_arr = values.template mutable_unchecked<1>();
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            values_arr(i)  = fetch(attr, p, t, sampler, t_sampler, algorithm, barrier_enabled);
+        }
+        return values;
+    }
+
+    template<class SAMPLER, class TIME_SAMPLER, class ALGORITHM>
+    py::array_t<typename SAMPLER::OTYPE,py::array::c_style>
+    fetch_many(const std::string& attr,const py::array_t<REAL,py::array::c_style> points, const time_type t,
+        const iterator_type it, const SAMPLER &sampler, const TIME_SAMPLER &t_sampler, const ALGORITHM &algorithm, bool barrier_enabled = true) {
+        // Arrays must have ndim = d; can be non-writeable
+        point_type p = 0;
+        auto points_arr = points.template unchecked<2>();
+        py::array_t<typename SAMPLER::OTYPE,py::array::c_style> values(points_arr.shape(0));
+        auto values_arr = values.template mutable_unchecked<1>();
+        for (ssize_t i = 0; i < points_arr.shape(0); i++) {
+            for (ssize_t j = 0; j < points_arr.shape(1); j++)
+                p[j] = points_arr(i,j);
+            values_arr(i)  = fetch(attr, p, t, it, sampler, t_sampler, algorithm, barrier_enabled);
         }
         return values;
     }

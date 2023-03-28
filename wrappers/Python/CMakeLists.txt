@@ -42,9 +42,10 @@ find_package(
 # target_link_libraries
 pybind11_add_module(mui4py_mod MODULE
   mui4py/cpp/mui4py.cpp
+  mui4py/cpp/geometry.cpp
   mui4py/cpp/sampler.cpp
   mui4py/cpp/temporal_sampler.cpp
-  mui4py/cpp/geometry.cpp
+  mui4py/cpp/algorithm.cpp
   mui4py/cpp/uniface1d.cpp
   mui4py/cpp/uniface2d.cpp
   mui4py/cpp/uniface3d.cpp

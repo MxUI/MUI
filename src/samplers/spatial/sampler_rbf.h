@@ -113,10 +113,8 @@ public:
 	 *       The default value of pouSize is 50, setting to 0 disables the partitioned approach
 	 * 12. INT precond:
 	 *       The Preconditioner of the Conjugate Gradient solver. Implemented as follows:
-	 *       No Preconditioner (default):                         precond_=0
-	 *       Incomplete LU Preconditioner:                        precond_=1
-	 *       Incomplete Cholesky Preconditioner:                  precond_=2
-	 *       Symmetric Successive Over-Relaxation Preconditioner: precond_=3
+	 *       No Preconditioner:                         precond_=0
+	 *       Diagonal Preconditioner (default):         precond_=1
 	 * 13. MPI_Comm local_comm:
 	 *       The MPI communicator from the local application. Used for ghost cell construction.
 	 *       The default value of local_comm is MPI_COMM_NULL, i.e. no MPI communicator.
@@ -126,7 +124,7 @@ public:
 			bool conservative = false, bool smoothFunc = false, bool writeMatrix = true,
 			const std::string &writeFileAddress = std::string(), REAL cutOff = 1e-9,
 			REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 50,
-			INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
+			INT precond = 1, MPI_Comm local_comm = MPI_COMM_NULL) :
 			r_(r),
 			pts_(pts),
 			basisFunc_(basisFunc),
@@ -176,8 +174,9 @@ public:
     	  if (!QUIET) {
     		  std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
     				  	<< static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
-    		  std::cout << std::endl
-                        << "                     Average CG error: " << error;
+    		  if (writeMatrix_)
+				  std::cout << std::endl
+							<< "                     Average CG error: " << error;
     		  std::cout << std::endl;
     	  }
 	  }
@@ -243,10 +242,7 @@ public:
 	}
 
 	inline geometry::any_shape<CONFIG> support(point_type focus, REAL domain_mag) const {
-		if( !initialised_ )
-			return geometry::any_shape<CONFIG>();
-		else
-			return geometry::sphere<CONFIG>( focus, twor_ );
+		return geometry::any_shape<CONFIG>();
 	}
 
 	inline void preSetFetchPoints(std::vector<point_type> &pts) {
@@ -578,7 +574,7 @@ public:
 							return b.first == xGhostPointsCountToSend.first;
 						});
 
-				assert(ghostPointsToSendIter->second.size() == xGhostPointsCountToSend.second);
+				assert(ghostPointsToSendIter->second.size() == static_cast<size_t>(xGhostPointsCountToSend.second));
 
 				int buffer_size = ghostPointsToSendIter->second.size() * sizeof(point_type);
 				char *buffer = new char[buffer_size];
@@ -703,122 +699,127 @@ private:
 
 		REAL errorReturn = 0;
 
-		if (conservative_)
-			buildConnectivityConservative(data_points, N_sp_, writeMatrix, fileAddress);
-		else
-			buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
+		// Reading matrix
+		if (!writeMatrix_)
+			readRBFMatrix(fileAddress);
+		else { // Generating matrix
+			if (conservative_)
+				buildConnectivityConservative(data_points, N_sp_, writeMatrix, fileAddress);
+			else
+				buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
 
-		H_.resize_null(ptsExtend_.size(), data_points.size());
-		H_.set_zero();
+			H_.resize_null(ptsExtend_.size(), data_points.size());
+			H_.set_zero();
 
-		if (smoothFunc_) {
-			buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
-			H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
-			H_toSmooth_.set_zero();
-		}
-
-		if (writeMatrix) {
-			std::ofstream outputFileMatrixSize(fileAddress + "/matrixSize.dat");
-
-			if (!outputFileMatrixSize) {
-				std::cerr
-						<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
-						<< std::endl;
+			if (smoothFunc_) {
+				buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
+				H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
+				H_toSmooth_.set_zero();
 			}
-			else {
-				outputFileMatrixSize
-						<< "// *********************************************************************************************************************************************";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** This is the 'matrixSize.dat' file of the RBF spatial sampler of the MUI library";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** This file contains the size (number of rows and number of columns) of the Point Connectivity Matrix (N) and the Coupling Matrix (H).";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// **** The file uses the Comma-Separated Values (CSV) format and the ASCII format with the meanings as follows: ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Point Connectivity Matrix (N), ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Point Connectivity Matrix (N),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of rows of the Coupling Matrix (H),";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// ****            The number of columns of the Coupling Matrix (H)";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize
-						<< "// *********************************************************************************************************************************************";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize << "//  ";
-				outputFileMatrixSize << "\n";
-				outputFileMatrixSize << connectivityAB_.size();
-				outputFileMatrixSize << ",";
-				outputFileMatrixSize << connectivityAB_[0].size();
-				outputFileMatrixSize << ",";
-				if (smoothFunc_) {
-					outputFileMatrixSize << connectivityAA_.size();
-					outputFileMatrixSize << ",";
-					outputFileMatrixSize << connectivityAA_[0].size();
-					outputFileMatrixSize << ",";
+
+			if (writeMatrix) {
+				std::ofstream outputFileMatrixSize(fileAddress + "/matrixSize.dat");
+
+				if (!outputFileMatrixSize) {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat!"
+							<< std::endl;
 				}
 				else {
-					outputFileMatrixSize << "0";
+					outputFileMatrixSize
+							<< "// *********************************************************************************************************************************************";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** This is the 'matrixSize.dat' file of the RBF spatial sampler of the MUI library";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** This file contains the size (number of rows and number of columns) of the Point Connectivity Matrix (N) and the Coupling Matrix (H).";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// **** The file uses the Comma-Separated Values (CSV) format and the ASCII format with the meanings as follows: ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Point Connectivity Matrix (N), ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Point Connectivity Matrix (N),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Point Connectivity Matrix (M) (for smoothing), ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Point Connectivity Matrix (M) (for smoothing),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of rows of the Coupling Matrix (H),";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The number of columns of the Coupling Matrix (H)";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// *********************************************************************************************************************************************";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize << "//  ";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize << connectivityAB_.size();
 					outputFileMatrixSize << ",";
-					outputFileMatrixSize << "0";
+					outputFileMatrixSize << connectivityAB_[0].size();
 					outputFileMatrixSize << ",";
+					if (smoothFunc_) {
+						outputFileMatrixSize << connectivityAA_.size();
+						outputFileMatrixSize << ",";
+						outputFileMatrixSize << connectivityAA_[0].size();
+						outputFileMatrixSize << ",";
+					}
+					else {
+						outputFileMatrixSize << "0";
+						outputFileMatrixSize << ",";
+						outputFileMatrixSize << "0";
+						outputFileMatrixSize << ",";
+					}
+					outputFileMatrixSize << H_.get_rows();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << H_.get_cols();
+					outputFileMatrixSize << "\n";
 				}
-				outputFileMatrixSize << H_.get_rows();
-				outputFileMatrixSize << ",";
-				outputFileMatrixSize << H_.get_cols();
-				outputFileMatrixSize << "\n";
 			}
-		}
 
-		if (conservative_) { // Build matrix for conservative RBF
-			errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
-		}
-		else {
-			// Build matrix for consistent RBF
-			errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
-		}
-
-		if (writeMatrix) {
-			std::ofstream outputFileHMatrix(fileAddress + "/Hmatrix.dat");
-
-			if (!outputFileHMatrix) {
-				std::cerr
-						<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
-						<< std::endl;
+			if (conservative_) { // Build matrix for conservative RBF
+				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
 			}
 			else {
-				outputFileHMatrix
-						<< "// ************************************************************************************************";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** This is the 'Hmatrix.dat' file of the RBF spatial sampler of the MUI library";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** This file contains the entire matrix of the Coupling Matrix (H).";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire H matrix";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix
-						<< "// ************************************************************************************************";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix << "// ";
-				outputFileHMatrix << "\n";
-				outputFileHMatrix << H_;
+				// Build matrix for consistent RBF
+				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
+			}
+
+			if (writeMatrix) {
+				std::ofstream outputFileHMatrix(fileAddress + "/Hmatrix.dat");
+
+				if (!outputFileHMatrix) {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Could not locate the file address of Hmatrix.dat!"
+							<< std::endl;
+				}
+				else {
+					outputFileHMatrix
+							<< "// ************************************************************************************************";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** This is the 'Hmatrix.dat' file of the RBF spatial sampler of the MUI library";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** This file contains the entire matrix of the Coupling Matrix (H).";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire H matrix";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix
+							<< "// ************************************************************************************************";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix << "// ";
+					outputFileHMatrix << "\n";
+					outputFileHMatrix << H_;
+				}
 			}
 		}
 
@@ -841,8 +842,8 @@ private:
 			Aas.resize_null((1 + NP + CONFIG::D), 1);
 
 			//set Css
-			for (INT i = 0; i < NP; i++) {
-				for (INT j = i; j < NP; j++) {
+			for (size_t i = 0; i < NP; i++) {
+				for (size_t j = i; j < NP; j++) {
 					int glob_i = connectivityAB_[row][i];
 					int glob_j = connectivityAB_[row][j];
 
@@ -859,7 +860,7 @@ private:
 				}
 			}
 
-			for (INT i = 0; i < NP; i++) {
+			for (size_t i = 0; i < NP; i++) {
 				Css.set_value(i, NP, 1);
 				Css.set_value(NP, i, 1);
 
@@ -874,7 +875,7 @@ private:
 			}
 
 			//set Aas
-			for (INT j = 0; j < NP; j++) {
+			for (size_t j = 0; j < NP; j++) {
 				int glob_j = connectivityAB_[row][j];
 
 				auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
@@ -890,9 +891,34 @@ private:
 				Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
 			}
 
-			linalg::conjugate_gradient<INT, REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
+			linalg::sparse_matrix<INT, REAL> H_i;
+
+			if (precond_ == 0) {
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else if (precond_ == 1) {
+				linalg::diagonal_preconditioner<INT, REAL> M(Css);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+						<< precond_ << ")" << std::endl
+						<< "Please set the CG Preconditioner function number (precond_) as: "
+						<< std::endl << "precond_=0 (No Preconditioner); "
+						<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+				std::abort();
+			}
 
 			if (DEBUG) {
 				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
@@ -1015,9 +1041,34 @@ private:
 				Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
 			}
 
-			linalg::conjugate_gradient<INT, REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
+			linalg::sparse_matrix<INT, REAL> H_i;
+
+			if (precond_ == 0) {
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else if (precond_ == 1) {
+				linalg::diagonal_preconditioner<INT, REAL> M(Css);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+						<< precond_ << ")" << std::endl
+						<< "Please set the CG Preconditioner function number (precond_) as: "
+						<< std::endl << "precond_=0 (No Preconditioner); "
+						<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+				std::abort();
+			}
 
 			if (DEBUG) {
 				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
@@ -1119,7 +1170,7 @@ private:
 
 		for (size_t i = 0; i < ptsExtend_.size(); i++) {
 			INT pointsCount = 0;
-			for (INT n = 0; n < NP; n++) {
+			for (size_t n = 0; n < NP; n++) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < data_points.size(); j++) {
@@ -1267,7 +1318,7 @@ private:
 		connectivityAA_.resize(ptsExtend_.size());
 
 		for (size_t i = 0; i < ptsExtend_.size(); i++) {
-			for (INT n = 0; n < MP; n++) {
+			for (size_t n = 0; n < MP; n++) {
 				REAL cur = std::numeric_limits<REAL>::max();
 				INT bestj = -1;
 				for (size_t j = 0; j < ptsExtend_.size(); j++) {
@@ -1368,7 +1419,7 @@ private:
 		}
 	}
 
-	inline void readRBFMatrix(const std::string& readFileAddress) {
+	inline void readRBFMatrix(const std::string& readFileAddress) const {
 		std::ifstream inputFileMatrixSize(readFileAddress + "/matrixSize.dat");
 
 		if (!inputFileMatrixSize) {
@@ -1486,41 +1537,6 @@ private:
 		initialised_ = true;
 	}
 
-	inline linalg::conjugate_gradient<INT, REAL> getCGSolver(
-			const linalg::sparse_matrix<INT, REAL> *Css,
-			const linalg::sparse_matrix<INT, REAL> *Aas) const {
-		if (precond_ == 0) {
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_);
-			return cg;
-		}
-		else if (precond_ == 1) {
-			linalg::incomplete_lu_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else if (precond_ == 2) {
-			linalg::incomplete_cholesky_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else if (precond_ == 3) {
-			linalg::symmetric_successive_over_relaxation_preconditioner<INT, REAL> M(*Css, 1.0);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else {
-			std::cerr
-					<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
-					<< precond_ << ")" << std::endl
-					<< "Please set the CG Preconditioner function number (precond_) as: "
-					<< std::endl << "precond_=0 (No Preconditioner); "
-					<< std::endl << "precond_=1 (ILU); " << std::endl
-					<< "precond_=2 (IC); " << std::endl << "precond_=3 (SSOR); "
-					<< std::endl;
-			std::abort();
-		}
-	}
-
 protected:
 	REAL r_;
 	const std::vector<point_type> pts_; //< Local points
@@ -1528,18 +1544,19 @@ protected:
 	const bool conservative_;
 	const bool consistent_;
 	const bool smoothFunc_;
-	INT precond_;
 	const bool writeMatrix_;
 	const std::string writeFileAddress_;
+	INT precond_;
 	mutable bool initialised_;
 	MPI_Comm local_mpi_comm_world_;
-	INT CABrow_;
-	INT CABcol_;
-	INT Hrow_;
-	INT Hcol_;
+	mutable INT CABrow_;
+	mutable INT CABcol_;
+	mutable INT Hrow_;
+	mutable INT Hcol_;
 	bool pouEnabled_;
 	REAL cgSolveTol_;
 	INT cgMaxIter_;
+
 	mutable size_t N_sp_;
 	mutable size_t M_ap_;
 	int local_rank_;
@@ -1547,8 +1564,8 @@ protected:
 
 	REAL twor_;
 	REAL s_;
-	INT CAArow_;
-	INT CAAcol_;
+	mutable INT CAArow_;
+	mutable INT CAAcol_;
 	mutable std::vector<point_type> ptsGhost_; //< Local ghost points
 	mutable std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
 	mutable std::vector<std::vector<INT> > connectivityAB_;

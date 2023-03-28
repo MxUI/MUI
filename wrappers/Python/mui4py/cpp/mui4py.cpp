@@ -56,9 +56,10 @@
 #include "compiler_info.h"
 
 // Declaration of other files
-void temporal_sampler(py::module &m);
-void sampler(py::module &m);
 void geometry(py::module &m);
+void sampler(py::module &m);
+void temporal_sampler(py::module &m);
+void algorithm(py::module &m);
 void uniface1d(py::module &m);
 void uniface2d(py::module &m);
 void uniface3d(py::module &m);
@@ -78,6 +79,7 @@ PYBIND11_MODULE(mui4py_mod, m)
   geometry(m);
   sampler(m);
   temporal_sampler(m);
+  algorithm(m);
   uniface1d(m);
   uniface2d(m);
   uniface3d(m);

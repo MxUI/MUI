@@ -5964,21 +5964,21 @@ module mui_2d_f
     end subroutine mui_set_forget_length_2fx_f
 
     subroutine mui_set_forget_length_2d_f(uniface,length) bind(C)
-      import :: c_ptr,c_float
+      import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: length
+      real(kind=c_double), intent(in), value :: length
     end subroutine mui_set_forget_length_2d_f
 
     subroutine mui_set_forget_length_2dx_f(uniface,length) bind(C)
-      import :: c_ptr,c_float
+      import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: length
+      real(kind=c_double), intent(in), value :: length
     end subroutine mui_set_forget_length_2dx_f
 
     subroutine mui_set_forget_length_2t_f(uniface,length) bind(C)
-      import :: c_ptr,c_float
+      import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: length
+      real(kind=c_double), intent(in), value :: length
     end subroutine mui_set_forget_length_2t_f
 
     !******************************************
