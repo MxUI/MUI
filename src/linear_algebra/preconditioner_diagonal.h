@@ -38,108 +38,62 @@
 *****************************************************************************/
 
 /**
- * @file preconditioner.h
+ * @file preconditioner_diagonal.h
  * @author W. Liu
- * @date 28 January 2023
- * @brief Preconditioner classes.
+ * @date 28 March 2023
+ * @brief Diagonal preconditioner.
  */
 
-#ifndef MUI_PRECONDITIONER_H_
-#define MUI_PRECONDITIONER_H_
+#ifndef MUI_PRECONDITIONER_DIAGONAL_H_
+#define MUI_PRECONDITIONER_DIAGONAL_H_
+
+#include <math.h>
+#include <limits>
 
 namespace mui {
 namespace linalg {
 
-// Base preconditioner class
+// Constructor
 template<typename ITYPE, typename VTYPE>
-class preconditioner {
+diagonal_preconditioner<ITYPE,VTYPE>::diagonal_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
+    // Initialise the lower triangular matrix
+	inv_diag_.resize_null(A.get_rows(), A.get_cols());
+    // Construct the inverse diagonal matrix
+	for (int i = 0; i < A.get_rows(); i++) {
+        if (std::abs(A.get_value(i,i)) >= std::numeric_limits<VTYPE>::min()) {
+            inv_diag_.set_value(i, i, 1.0 / A.get_value(i,i));
+        } else {
+        	inv_diag_.set_value(i, i, 0.0);
+        }
+	}
+ }
 
-    public:
-        // Abstract function on preconditioner apply
-        virtual sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE> &) = 0;
-};
-
-// Class of Incomplete LU preconditioner
+// Destructor
 template<typename ITYPE, typename VTYPE>
-class incomplete_lu_preconditioner : public preconditioner<ITYPE,VTYPE> {
+diagonal_preconditioner<ITYPE,VTYPE>::~diagonal_preconditioner() {
+    // Deallocate the memory for the inverse diagonal matrix
+	inv_diag_.set_zero();
+}
 
-    public:
-        // Constructor
-        incomplete_lu_preconditioner(const sparse_matrix<ITYPE,VTYPE>&);
-        // Destructor
-        ~incomplete_lu_preconditioner();
-        // Member function on preconditioner apply
-        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
-
-    private:
-        // Lower triangular matrix for Incomplete LU preconditioner
-        sparse_matrix<ITYPE,VTYPE> L_;
-        // Upper triangular matrix for Incomplete LU preconditioner
-        sparse_matrix<ITYPE,VTYPE> U_;
-
-};
-
-// Class of Incomplete Cholesky preconditioner
+// Member function on preconditioner apply
 template<typename ITYPE, typename VTYPE>
-class incomplete_cholesky_preconditioner : public preconditioner<ITYPE,VTYPE> {
+sparse_matrix<ITYPE,VTYPE> diagonal_preconditioner<ITYPE,VTYPE>::apply(const sparse_matrix<ITYPE,VTYPE>& x) {
+    assert((x.get_cols()==1) &&
+        "MUI Error [preconditioner_diagonal.h]: apply only works for column vectors");
+    sparse_matrix<ITYPE,VTYPE> z(x.get_rows(), x.get_cols());
 
-    public:
-        // Constructor
-        incomplete_cholesky_preconditioner(const sparse_matrix<ITYPE,VTYPE>&);
-        // Destructor
-        ~incomplete_cholesky_preconditioner();
-        // Member function on preconditioner apply
-        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
+    for (int i = 0; i < x.get_rows(); i++) {
+        if (std::abs(inv_diag_.get_value(i,i)) >= std::numeric_limits<VTYPE>::min()) {
+            z.set_value(i, 0, inv_diag_.get_value(i,i)*x.get_value(i,0));
+        } else {
+        	z.set_value(i, 0, 0.0);
+        }
+    }
 
-    private:
-        // Lower triangular matrix for Incomplete Cholesky preconditioner
-        sparse_matrix<ITYPE,VTYPE> L_;
-};
-
-// Class of Symmetric Successive Over-relaxation preconditioner
-template<typename ITYPE, typename VTYPE>
-class symmetric_successive_over_relaxation_preconditioner : public preconditioner<ITYPE,VTYPE> {
-
-    public:
-        // Constructor
-        symmetric_successive_over_relaxation_preconditioner(const sparse_matrix<ITYPE,VTYPE>&, VTYPE = 1.0);
-        // Destructor
-        ~symmetric_successive_over_relaxation_preconditioner();
-        // Member function on preconditioner apply
-        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
-
-    private:
-        // The coefficient matrix of the matrix equation
-        sparse_matrix<ITYPE,VTYPE> A_;
-        // The relaxation parameter
-        VTYPE omega_;
-};
-
-// Class of diagonal preconditioner
-template<typename ITYPE, typename VTYPE>
-class diagonal_preconditioner : public preconditioner<ITYPE,VTYPE> {
-
-    public:
-        // Constructor
-        diagonal_preconditioner(const sparse_matrix<ITYPE,VTYPE>&);
-        // Destructor
-        ~diagonal_preconditioner();
-        // Member function on preconditioner apply
-        sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE>&);
-
-    private:
-        // The coefficient matrix of the matrix equation
-        sparse_matrix<ITYPE,VTYPE> inv_diag_;
-
-};
+    return z;
+}
 
 } // linalg
 } // mui
 
-// Include implementations
-#include "../linear_algebra/preconditioner_ilu.h"
-#include "../linear_algebra/preconditioner_ic.h"
-#include "../linear_algebra/preconditioner_ssor.h"
-#include "../linear_algebra/preconditioner_diagonal.h"
-
-#endif /* MUI_PRECONDITIONER_H_ */
+#endif /* MUI_PRECONDITIONER_DIAGONAL_H_ */

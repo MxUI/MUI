@@ -113,10 +113,8 @@ public:
 	 *       The default value of pouSize is 50, setting to 0 disables the partitioned approach
 	 * 12. INT precond:
 	 *       The Preconditioner of the Conjugate Gradient solver. Implemented as follows:
-	 *       No Preconditioner (default):                         precond_=0
-	 *       Incomplete LU Preconditioner:                        precond_=1
-	 *       Incomplete Cholesky Preconditioner:                  precond_=2
-	 *       Symmetric Successive Over-Relaxation Preconditioner: precond_=3
+	 *       No Preconditioner:                         precond_=0
+	 *       Diagonal Preconditioner (default):         precond_=1
 	 * 13. MPI_Comm local_comm:
 	 *       The MPI communicator from the local application. Used for ghost cell construction.
 	 *       The default value of local_comm is MPI_COMM_NULL, i.e. no MPI communicator.
@@ -126,7 +124,7 @@ public:
 			bool conservative = false, bool smoothFunc = false, bool writeMatrix = true,
 			const std::string &writeFileAddress = std::string(), REAL cutOff = 1e-9,
 			REAL cgSolveTol = 1e-6, INT cgMaxIter = 0, INT pouSize = 50,
-			INT precond = 0, MPI_Comm local_comm = MPI_COMM_NULL) :
+			INT precond = 1, MPI_Comm local_comm = MPI_COMM_NULL) :
 			r_(r),
 			pts_(pts),
 			basisFunc_(basisFunc),
@@ -893,9 +891,34 @@ private:
 				Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
 			}
 
-			linalg::conjugate_gradient<INT, REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
+			linalg::sparse_matrix<INT, REAL> H_i;
+
+			if (precond_ == 0) {
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else if (precond_ == 1) {
+				linalg::diagonal_preconditioner<INT, REAL> M(Css);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+						<< precond_ << ")" << std::endl
+						<< "Please set the CG Preconditioner function number (precond_) as: "
+						<< std::endl << "precond_=0 (No Preconditioner); "
+						<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+				std::abort();
+			}
 
 			if (DEBUG) {
 				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
@@ -1018,9 +1041,34 @@ private:
 				Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
 			}
 
-			linalg::conjugate_gradient<INT, REAL> cg = getCGSolver(&Css, &Aas);
-			iterErrorReturn = cg.solve();
-			linalg::sparse_matrix<INT, REAL> H_i = cg.getSolution();
+			linalg::sparse_matrix<INT, REAL> H_i;
+
+			if (precond_ == 0) {
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else if (precond_ == 1) {
+				linalg::diagonal_preconditioner<INT, REAL> M(Css);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				iterErrorReturn = cg.solve();
+				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
+				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
+				H_i=H_i_temp;
+				H_i_temp.set_zero();
+			}
+			else {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+						<< precond_ << ")" << std::endl
+						<< "Please set the CG Preconditioner function number (precond_) as: "
+						<< std::endl << "precond_=0 (No Preconditioner); "
+						<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+				std::abort();
+			}
 
 			if (DEBUG) {
 				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
@@ -1487,41 +1535,6 @@ private:
 		}
 
 		initialised_ = true;
-	}
-
-	inline linalg::conjugate_gradient<INT, REAL> getCGSolver(
-			const linalg::sparse_matrix<INT, REAL> *Css,
-			const linalg::sparse_matrix<INT, REAL> *Aas) const {
-		if (precond_ == 0) {
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_);
-			return cg;
-		}
-		else if (precond_ == 1) {
-			linalg::incomplete_lu_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else if (precond_ == 2) {
-			linalg::incomplete_cholesky_preconditioner<INT, REAL> M(*Css);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else if (precond_ == 3) {
-			linalg::symmetric_successive_over_relaxation_preconditioner<INT, REAL> M(*Css, 1.0);
-			linalg::conjugate_gradient<INT, REAL> cg(*Css, *Aas, cgSolveTol_, cgMaxIter_, &M);
-			return cg;
-		}
-		else {
-			std::cerr
-					<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
-					<< precond_ << ")" << std::endl
-					<< "Please set the CG Preconditioner function number (precond_) as: "
-					<< std::endl << "precond_=0 (No Preconditioner); "
-					<< std::endl << "precond_=1 (ILU); " << std::endl
-					<< "precond_=2 (IC); " << std::endl << "precond_=3 (SSOR); "
-					<< std::endl;
-			std::abort();
-		}
 	}
 
 protected:
