@@ -44,7 +44,7 @@
  * @brief Main c++ file for MUI Python wrapper.
  */
 
-#include "../../../../src/mui.h"
+#include <mui.h>
 #include <pybind11/chrono.h>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
