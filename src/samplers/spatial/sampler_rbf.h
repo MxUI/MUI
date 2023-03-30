@@ -830,7 +830,7 @@ private:
 
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
-				const size_t MP, bool smoothing) const {
+				const size_t MP, bool smoothing, bool pou) const {
 		REAL errorReturn = 0;
 		std::pair<INT, REAL> iterErrorReturn(0, 0);
 		if( pou ) { // Using PoU approach
@@ -1053,14 +1053,14 @@ private:
 			if ( smoothing ) {
 				for ( size_t i = 0; i < data_points.size(); i++ ) {
 					for (size_t j = 0; j < ptsExtend_.size(); j++ ) {
-						H_toSmooth_(j, i) = H_more((i + CONFIG::D + 1), j);
+						H_toSmooth_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
 					}
 				}
 			}
 			else {
 				for ( size_t i = 0; i < data_points.size(); i++ ) {
 					for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
-						H_(j, i) = H_more((i + CONFIG::D + 1), j);
+						H_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
 					}
 				}
 			}
@@ -1084,11 +1084,11 @@ private:
 								std::cerr << "Invalid row_k value: " << row_k << std::endl;
 							else {
 								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-								f_sum += w_i * H_toSmooth_(row_k, j);
+								f_sum += w_i * H_toSmooth_.get_value(row_k, j);
 							}
 						}
 
-						H_(row, j) = 0.5 * (f_sum + H_toSmooth_(row, j));
+						H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
 					}
 				}
 			}
@@ -1321,14 +1321,14 @@ private:
 			if ( smoothing ) {
 				for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 					for (size_t j = 0; j < data_points.size(); j++ ) {
-						H_toSmooth_(i, j) = H_more((i + CONFIG::D + 1), j);
+						H_toSmooth_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
 					}
 				}
 			}
 			else {
 				for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
 					for ( size_t j = 0; j < data_points.size(); j++ ) {
-						H_(i, j) = H_more((i + CONFIG::D + 1), j);
+						H_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
 					}
 				}
 			}
@@ -1352,11 +1352,11 @@ private:
 								std::cerr << "Invalid row_k value: " << row_k << std::endl;
 							else {
 								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-								f_sum += w_i * H_toSmooth_(row_k, j);
+								f_sum += w_i * H_toSmooth_.get_value(row_k, j);
 							}
 						}
 
-						H_(row, j) = 0.5 * (f_sum + H_toSmooth_(row, j));
+						H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
 					}
 				}
 			}
