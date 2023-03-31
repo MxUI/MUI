@@ -224,17 +224,39 @@ public:
 				}
 			}
 
-			auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
+			auto p = std::find_if(pts_.begin(), pts_.end(), [focus](point_type b) {
 						return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
 					});
 
-			if (p == std::end(ptsExtend_))
+			if (p == std::end(pts_))
 				EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Point not found. Must pre-set points for RBF interpolation"));
 
-			auto i = std::distance(ptsExtend_.begin(), p);
+			auto i = std::distance(pts_.begin(), p);
 
 			for (size_t j = 0; j < data_points.size(); j++) {
-				sum += H_.get_value(i, j) * data_points[j].second;
+
+				OTYPE HElement = 0;
+
+				if (normsq(remote_pts_[j] - data_points[j].first) < std::numeric_limits<REAL>::epsilon()){
+					HElement = H_.get_value(i, j);
+				} else{
+
+					point_type data_p = data_points[j].first;
+
+					auto remote_p = std::find_if(remote_pts_.begin(), remote_pts_.end(), [data_p](point_type b) {
+								return normsq(data_p - b) < std::numeric_limits<REAL>::epsilon();
+							});
+
+					if (remote_p == std::end(remote_pts_))
+						EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Remote point not found. Must use the same set of remote points as construct the RBF coupling matrix"));
+
+					auto new_j = std::distance(remote_pts_.begin(), remote_p);
+
+					HElement = H_.get_value(i, new_j);
+				}
+
+				sum += HElement * data_points[j].second;
+
 			}
 		}
 
@@ -757,6 +779,12 @@ private:
 							<< "// ****            The number of columns of the Coupling Matrix (H)";
 					outputFileMatrixSize << "\n";
 					outputFileMatrixSize
+							<< "// ****            The size of remote points";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The dimension of remote points";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
 							<< "// *********************************************************************************************************************************************";
 					outputFileMatrixSize << "\n";
 					outputFileMatrixSize << "//  ";
@@ -780,6 +808,10 @@ private:
 					outputFileMatrixSize << H_.get_rows();
 					outputFileMatrixSize << ",";
 					outputFileMatrixSize << H_.get_cols();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << data_points.size();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << CONFIG::D;
 					outputFileMatrixSize << "\n";
 				}
 			}
@@ -1369,6 +1401,7 @@ private:
 	inline void buildConnectivityConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, bool writeMatrix,
 			const std::string& fileAddress) const {
 		std::ofstream outputFileCAB;
+		std::ofstream outputFileRemotePoints;
 		if (writeMatrix) {
 			outputFileCAB.open(fileAddress + "/connectivityAB.dat");
 
@@ -1395,6 +1428,33 @@ private:
 				outputFileCAB << "\n";
 				outputFileCAB << "// ";
 				outputFileCAB << "\n";
+			}
+
+			outputFileRemotePoints.open(fileAddress + "/remotePoints.dat");
+
+			if (!outputFileRemotePoints) {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the remotePoints.dat"
+						<< std::endl;
+			}
+			else {
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This is the 'remotePoints.dat' file of the RBF spatial sampler of the MUI library";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This file contains the remote points in the correct order that build the coupling matrix H.";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints << "// ";
+				outputFileRemotePoints << "\n";
 			}
 		}
 
@@ -1436,14 +1496,38 @@ private:
 				outputFileCAB << '\n';
 		}
 
-		if (writeMatrix)
+		for (size_t i = 0; i < data_points.size(); i++) {
+
+			point_type pointTemp;
+			for (INT dim = 0; dim < CONFIG::D; dim++) {
+				pointTemp[dim] = data_points[i].first[dim];
+			}
+
+			remote_pts_.push_back(pointTemp);
+
+			if (writeMatrix) {
+				for (INT dim = 0; dim < CONFIG::D; dim++) {
+					outputFileRemotePoints << remote_pts_[i][dim];
+					if (dim == (CONFIG::D - 1)) {
+						outputFileRemotePoints << '\n';
+					} else {
+						outputFileRemotePoints << ",";
+					}
+				}
+			}
+		}
+
+		if (writeMatrix) {
 			outputFileCAB.close();
+			outputFileRemotePoints.close();
+		}
 	}
 
 	template<template<typename, typename > class CONTAINER>
 	inline void buildConnectivityConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, bool writeMatrix,
 			const std::string& fileAddress) const {
 		std::ofstream outputFileCAB;
+		std::ofstream outputFileRemotePoints;
 		if (writeMatrix) {
 			outputFileCAB.open(fileAddress + "/connectivityAB.dat");
 
@@ -1470,6 +1554,33 @@ private:
 				outputFileCAB << "\n";
 				outputFileCAB << "// ";
 				outputFileCAB << "\n";
+			}
+
+			outputFileRemotePoints.open(fileAddress + "/remotePoints.dat");
+
+			if (!outputFileRemotePoints) {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the remotePoints.dat"
+						<< std::endl;
+			}
+			else {
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This is the 'remotePoints.dat' file of the RBF spatial sampler of the MUI library";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This file contains the remote points in the correct order that build the coupling matrix H.";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints << "// ";
+				outputFileRemotePoints << "\n";
 			}
 		}
 
@@ -1509,10 +1620,29 @@ private:
 
 			if (writeMatrix && i < ptsExtend_.size() - 1)
 				outputFileCAB << '\n';
+
+			point_type pointTemp;
+			for (INT dim = 0; dim < CONFIG::D; dim++) {
+				pointTemp[dim] = data_points[i].first[dim];
+			}
+			remote_pts_.push_back(pointTemp);
+
+			if (writeMatrix) {
+				for (INT dim = 0; dim < CONFIG::D; dim++) {
+					outputFileRemotePoints << remote_pts_[i][dim];
+					if (dim == (CONFIG::D - 1)) {
+						outputFileRemotePoints << '\n';
+					} else {
+						outputFileRemotePoints << ",";
+					}
+				}
+			}
 		}
 
-		if (writeMatrix)
+		if (writeMatrix) {
 			outputFileCAB.close();
+			outputFileRemotePoints.close();
+		}
 	}
 
 	void buildConnectivitySmooth(const size_t MP, bool writeMatrix, const std::string& fileAddress) const {
@@ -1677,6 +1807,8 @@ private:
 			CAAcol_ = tempV[3];
 			Hrow_ = tempV[4];
 			Hcol_ = tempV[5];
+			remote_pts_num_ = tempV[6];
+			remote_pts_dim_ = tempV[7];
 		}
 
 		std::ifstream inputFileCAB(readFileAddress + "/connectivityAB.dat");
@@ -1766,6 +1898,39 @@ private:
 			}
 		}
 
+		std::ifstream inputFileRemotePoints(readFileAddress + "/remotePoints.dat");
+
+		if (!inputFileRemotePoints) {
+			std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
+					<< std::endl;
+		}
+		else {
+			remote_pts_.resize(remote_pts_num_);
+
+			if (CONFIG::D != remote_pts_dim_){
+				EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: CONFIG::D must equal to remote point dimension in remotePoints.dat"));
+			}
+
+			for (INT i = 0; i < remote_pts_num_; i++) {
+				std::string tempS;
+				while (std::getline(inputFileRemotePoints, tempS)) {
+					// Skips the line if the first two characters are '//'
+					if (tempS[0] == '/' && tempS[1] == '/')
+						continue;
+					std::stringstream lineStream(tempS);
+					std::string tempSS;
+					point_type tempP;
+					size_t temp_i = 0;
+					while (std::getline(lineStream, tempSS, ',')) {
+						assert(temp_i<remote_pts_dim_);
+						tempP[temp_i] = std::stoi(tempSS);
+						temp_i++;
+					}
+					remote_pts_.emplace_back(tempP);
+				}
+			}
+		}
+
 		initialised_ = true;
 	}
 
@@ -1798,12 +1963,15 @@ protected:
 	REAL s_;
 	mutable INT CAArow_;
 	mutable INT CAAcol_;
+	mutable INT remote_pts_num_;
+	mutable INT remote_pts_dim_;
 	mutable std::vector<point_type> ptsGhost_; //< Local ghost points
 	mutable std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
 	mutable std::vector<std::vector<INT> > connectivityAB_;
 	mutable std::vector<std::vector<INT> > connectivityAA_;
 	mutable linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
 	mutable linalg::sparse_matrix<INT, REAL> H_toSmooth_;
+	mutable std::vector<point_type> remote_pts_; //< Remote points
 };
 } // mui
 
