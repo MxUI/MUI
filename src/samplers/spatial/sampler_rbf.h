@@ -162,11 +162,13 @@ public:
 			MPI_Comm_size(local_mpi_comm_world_, &local_size_);
 			MPI_Comm_rank(local_mpi_comm_world_, &local_rank_);
 		}
+
 	}
 
 	template<template<typename, typename > class CONTAINER>
 	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
       OTYPE sum = 0;
+      REAL tolerance= 1e-5;
       if (!initialised_) {
     	  const clock_t begin_time = clock();
     	  facilitateGhostPoints();
@@ -237,19 +239,20 @@ public:
 
 				OTYPE HElement = 0;
 
-				if (normsq(remote_pts_[j] - data_points[j].first) < std::numeric_limits<REAL>::epsilon()){
+				if (normsq(remote_pts_[j] - data_points[j].first) < (std::numeric_limits<REAL>::epsilon() + tolerance)){
 					HElement = H_.get_value(i, j);
 				} else{
 
 					point_type data_p = data_points[j].first;
 
-					auto remote_p = std::find_if(remote_pts_.begin(), remote_pts_.end(), [data_p](point_type b) {
-								return normsq(data_p - b) < std::numeric_limits<REAL>::epsilon();
+					auto remote_p = std::find_if(remote_pts_.begin(), remote_pts_.end(), [data_p, tolerance](point_type b) {
+								return normsq(data_p - b) < (std::numeric_limits<REAL>::epsilon() + tolerance);
 							});
 
-					if (remote_p == std::end(remote_pts_))
+					if (remote_p == std::end(remote_pts_)) {
+						std::cout<< "Missing Remote points: " << data_points[j].first[0] << " " << data_points[j].first[1] << " Size of remote_pts_: " << remote_pts_.size()<< " at rank: " << local_rank_ << std::endl;
 						EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Remote point not found. Must use the same set of remote points as construct the RBF coupling matrix"));
-
+					}
 					auto new_j = std::distance(remote_pts_.begin(), remote_p);
 
 					HElement = H_.get_value(i, new_j);
@@ -1905,30 +1908,29 @@ private:
 					<< std::endl;
 		}
 		else {
-			remote_pts_.resize(remote_pts_num_);
 
 			if (CONFIG::D != remote_pts_dim_){
 				EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: CONFIG::D must equal to remote point dimension in remotePoints.dat"));
 			}
 
-			for (INT i = 0; i < remote_pts_num_; i++) {
-				std::string tempS;
-				while (std::getline(inputFileRemotePoints, tempS)) {
-					// Skips the line if the first two characters are '//'
-					if (tempS[0] == '/' && tempS[1] == '/')
-						continue;
-					std::stringstream lineStream(tempS);
-					std::string tempSS;
-					point_type tempP;
-					size_t temp_i = 0;
-					while (std::getline(lineStream, tempSS, ',')) {
-						assert(temp_i<remote_pts_dim_);
-						tempP[temp_i] = std::stoi(tempSS);
-						temp_i++;
-					}
-					remote_pts_.emplace_back(tempP);
+			std::string tempS;
+			while (std::getline(inputFileRemotePoints, tempS)) {
+				// Skips the line if the first two characters are '//'
+				if (tempS[0] == '/' && tempS[1] == '/')
+					continue;
+				std::stringstream lineStream(tempS);
+				std::string tempSS;
+				point_type tempP;
+				size_t temp_i = 0;
+				while (std::getline(lineStream, tempSS, ',')) {
+					assert(temp_i<remote_pts_dim_);
+					tempP[temp_i] = static_cast<REAL>(std::stold(tempSS));
+					temp_i++;
 				}
+				remote_pts_.emplace_back(tempP);
 			}
+
+			assert(remote_pts_.size() == remote_pts_num_);
 		}
 
 		initialised_ = true;
