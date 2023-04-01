@@ -239,10 +239,10 @@ public:
 
 			for (size_t j = 0; j < data_points.size(); j++) {
 
-				/// Check whether the order of the remote point is consistent with the order when generating the coupling matrix H
-				///   It is essential in the parallel as the order of the remote point will randomly mixed at the partition boundary
-				///   and the result will show an randomly oscillating behaviour. The below code will ensure a correct match between
-				///   the remote point and corresponding coupling matrix element.
+				/// Check whether the order of the remote point is coincide with the order when generating the coupling matrix [H]
+				///   and fix it if not. This `check and fix` is essential in the parallel condition as the order of the remote point
+				///   will randomly mixed at the partition boundary and the result will show an randomly oscillating behaviour. The
+				///   below code will ensure a correct match between the remote point and corresponding coupling matrix element.
 				OTYPE HElement = 0;
 
 				if (normsq(remote_pts_[j] - data_points[j].first) < (std::numeric_limits<REAL>::epsilon() + tolerance)){
