@@ -168,6 +168,8 @@ public:
 	template<template<typename, typename > class CONTAINER>
 	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
       OTYPE sum = 0;
+      /// Set tolerance on coordinate check of points to avoide fake check failure due to
+      ///   precision loss when read remote point from file
       REAL tolerance= 1e-5;
       if (!initialised_) {
     	  const clock_t begin_time = clock();
@@ -237,6 +239,10 @@ public:
 
 			for (size_t j = 0; j < data_points.size(); j++) {
 
+				/// Check whether the order of the remote point is consistent with the order when generating the coupling matrix H
+				///   It is essential in the parallel as the order of the remote point will randomly mixed at the partition boundary
+				///   and the result will show an randomly oscillating behaviour. The below code will ensure a correct match between
+				///   the remote point and corresponding coupling matrix element.
 				OTYPE HElement = 0;
 
 				if (normsq(remote_pts_[j] - data_points[j].first) < (std::numeric_limits<REAL>::epsilon() + tolerance)){
