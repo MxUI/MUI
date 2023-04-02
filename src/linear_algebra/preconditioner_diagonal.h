@@ -57,22 +57,22 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 diagonal_preconditioner<ITYPE,VTYPE>::diagonal_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
     // Initialise the lower triangular matrix
-	inv_diag_.resize_null(A.get_rows(), A.get_cols());
+    inv_diag_.resize_null(A.get_rows(), A.get_cols());
     // Construct the inverse diagonal matrix
-	for (int i = 0; i < A.get_rows(); i++) {
+    for (int i = 0; i < A.get_rows(); i++) {
         if (std::abs(A.get_value(i,i)) >= std::numeric_limits<VTYPE>::min()) {
             inv_diag_.set_value(i, i, 1.0 / A.get_value(i,i));
         } else {
-        	inv_diag_.set_value(i, i, 0.0);
+            inv_diag_.set_value(i, i, 1.0);
         }
-	}
+    }
  }
 
 // Destructor
 template<typename ITYPE, typename VTYPE>
 diagonal_preconditioner<ITYPE,VTYPE>::~diagonal_preconditioner() {
     // Deallocate the memory for the inverse diagonal matrix
-	inv_diag_.set_zero();
+    inv_diag_.set_zero();
 }
 
 // Member function on preconditioner apply
@@ -86,7 +86,7 @@ sparse_matrix<ITYPE,VTYPE> diagonal_preconditioner<ITYPE,VTYPE>::apply(const spa
         if (std::abs(inv_diag_.get_value(i,i)) >= std::numeric_limits<VTYPE>::min()) {
             z.set_value(i, 0, inv_diag_.get_value(i,i)*x.get_value(i,0));
         } else {
-        	z.set_value(i, 0, 0.0);
+            z.set_value(i, 0, 0.0);
         }
     }
 
