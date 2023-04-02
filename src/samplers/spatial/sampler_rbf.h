@@ -937,19 +937,13 @@ private:
 				if (precond_ == 0) {
 					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
 					iterErrorReturn = cg.solve();
-					linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-					H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-					H_i=H_i_temp;
-					H_i_temp.set_zero();
+					H_i = cg.getSolution();
 				}
 				else if (precond_ == 1) {
 					linalg::diagonal_preconditioner<INT, REAL> M(Css);
 					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
 					iterErrorReturn = cg.solve();
-					linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-					H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-					H_i=H_i_temp;
-					H_i_temp.set_zero();
+					H_i = cg.getSolution();
 				}
 				else {
 					std::cerr
@@ -1059,19 +1053,13 @@ private:
 			if (precond_ == 0) {
 				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_more.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_more=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else if (precond_ == 1) {
 				linalg::diagonal_preconditioner<INT, REAL> M(Css);
 				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_, &M);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_more.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_more=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else {
 				std::cerr
@@ -1203,19 +1191,13 @@ private:
 				if (precond_ == 0) {
 					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
 					iterErrorReturn = cg.solve();
-					linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-					H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-					H_i=H_i_temp;
-					H_i_temp.set_zero();
+					H_i = cg.getSolution();
 				}
 				else if (precond_ == 1) {
 					linalg::diagonal_preconditioner<INT, REAL> M(Css);
 					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
 					iterErrorReturn = cg.solve();
-					linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-					H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-					H_i=H_i_temp;
-					H_i_temp.set_zero();
+					H_i = cg.getSolution();
 				}
 				else {
 					std::cerr
@@ -1327,19 +1309,13 @@ private:
 			if (precond_ == 0) {
 				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_more.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_more=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else if (precond_ == 1) {
 				linalg::diagonal_preconditioner<INT, REAL> M(Css);
 				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_, &M);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_more.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_more=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else {
 				std::cerr
