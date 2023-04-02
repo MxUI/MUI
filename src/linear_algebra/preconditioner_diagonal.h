@@ -41,7 +41,7 @@
  * @file preconditioner_diagonal.h
  * @author W. Liu
  * @date 28 March 2023
- * @brief Diagonal preconditioner.
+ * @brief Diagonal (Jacobi) preconditioner.
  */
 
 #ifndef MUI_PRECONDITIONER_DIAGONAL_H_

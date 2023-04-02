@@ -115,7 +115,7 @@ class symmetric_successive_over_relaxation_preconditioner : public preconditione
         VTYPE omega_;
 };
 
-// Class of diagonal preconditioner
+// Class of diagonal (Jacobi) preconditioner
 template<typename ITYPE, typename VTYPE>
 class diagonal_preconditioner : public preconditioner<ITYPE,VTYPE> {
 
