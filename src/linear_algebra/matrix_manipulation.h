@@ -184,6 +184,12 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
         // copy the values from the other matrix to this matrix
         assert(matrix_.empty() &&
                   "MUI Error [matrix_arithmetic.h]: assignment operator '=' only works for empty (all zero elements) matrix");
+
+        if((rows_ == 0) && (cols_ == 0)){
+            rows_ = exist_mat.rows_;
+            cols_ = exist_mat.cols_;
+        }
+
         assert(((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) &&
                   "MUI Error [matrix_arithmetic.h]: matrix size mismatch in assignment operator '='");
         (*this).copy(exist_mat);

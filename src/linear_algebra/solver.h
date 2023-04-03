@@ -43,8 +43,8 @@
  * @date 03 February 2023
  * @brief Classes to solve problem A.x = b using different methods.
  * Solver implemented:
- *        Conjugate Gradient (iterative)
- *        Gaussian Elimination (direct)
+ *        Conjugate Gradient (iterative): classic iterative CG for selfadjoint (hermitian) matrices
+ *        Gaussian Elimination (direct): sequential pivoting for LU factorization​ for general matrices.
  */
 
 #ifndef MUI_SOLVER_H_

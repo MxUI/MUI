@@ -162,11 +162,15 @@ public:
 			MPI_Comm_size(local_mpi_comm_world_, &local_size_);
 			MPI_Comm_rank(local_mpi_comm_world_, &local_rank_);
 		}
+
 	}
 
 	template<template<typename, typename > class CONTAINER>
 	inline OTYPE filter(point_type focus, const CONTAINER<ITYPE, CONFIG> &data_points) const {
       OTYPE sum = 0;
+      /// Set tolerance on coordinate check of points to avoide fake check failure due to
+      ///   precision loss when read remote point from file
+      REAL tolerance= 1e-5;
       if (!initialised_) {
     	  const clock_t begin_time = clock();
     	  facilitateGhostPoints();
@@ -224,17 +228,44 @@ public:
 				}
 			}
 
-			auto p = std::find_if(ptsExtend_.begin(), ptsExtend_.end(), [focus](point_type b) {
+			auto p = std::find_if(pts_.begin(), pts_.end(), [focus](point_type b) {
 						return normsq(focus - b) < std::numeric_limits<REAL>::epsilon();
 					});
 
-			if (p == std::end(ptsExtend_))
+			if (p == std::end(pts_))
 				EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Point not found. Must pre-set points for RBF interpolation"));
 
-			auto i = std::distance(ptsExtend_.begin(), p);
+			auto i = std::distance(pts_.begin(), p);
 
 			for (size_t j = 0; j < data_points.size(); j++) {
-				sum += H_.get_value(i, j) * data_points[j].second;
+
+				/// Check whether the order of the remote point is coincide with the order when generating the coupling matrix [H]
+				///   and fix it if not. This `check and fix` is essential in the parallel condition as the order of the remote point
+				///   will randomly mixed at the partition boundary and the result will show an randomly oscillating behaviour. The
+				///   below code will ensure a correct match between the remote point and corresponding coupling matrix element.
+				OTYPE HElement = 0;
+
+				if (normsq(remote_pts_[j] - data_points[j].first) < (std::numeric_limits<REAL>::epsilon() + tolerance)){
+					HElement = H_.get_value(i, j);
+				} else{
+
+					point_type data_p = data_points[j].first;
+
+					auto remote_p = std::find_if(remote_pts_.begin(), remote_pts_.end(), [data_p, tolerance](point_type b) {
+								return normsq(data_p - b) < (std::numeric_limits<REAL>::epsilon() + tolerance);
+							});
+
+					if (remote_p == std::end(remote_pts_)) {
+						std::cout<< "Missing Remote points: " << data_points[j].first[0] << " " << data_points[j].first[1] << " Size of remote_pts_: " << remote_pts_.size()<< " at rank: " << local_rank_ << std::endl;
+						EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Remote point not found. Must use the same set of remote points as construct the RBF coupling matrix"));
+					}
+					auto new_j = std::distance(remote_pts_.begin(), remote_p);
+
+					HElement = H_.get_value(i, new_j);
+				}
+
+				sum += HElement * data_points[j].second;
+
 			}
 		}
 
@@ -757,6 +788,12 @@ private:
 							<< "// ****            The number of columns of the Coupling Matrix (H)";
 					outputFileMatrixSize << "\n";
 					outputFileMatrixSize
+							<< "// ****            The size of remote points";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
+							<< "// ****            The dimension of remote points";
+					outputFileMatrixSize << "\n";
+					outputFileMatrixSize
 							<< "// *********************************************************************************************************************************************";
 					outputFileMatrixSize << "\n";
 					outputFileMatrixSize << "//  ";
@@ -780,16 +817,20 @@ private:
 					outputFileMatrixSize << H_.get_rows();
 					outputFileMatrixSize << ",";
 					outputFileMatrixSize << H_.get_cols();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << data_points.size();
+					outputFileMatrixSize << ",";
+					outputFileMatrixSize << CONFIG::D;
 					outputFileMatrixSize << "\n";
 				}
 			}
 
 			if (conservative_) { // Build matrix for conservative RBF
-				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_);
+				errorReturn = buildMatrixConservative(data_points, N_sp_, M_ap_, smoothFunc_, pouEnabled_);
 			}
 			else {
 				// Build matrix for consistent RBF
-				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_);
+				errorReturn = buildMatrixConsistent(data_points, N_sp_, M_ap_, smoothFunc_, pouEnabled_);
 			}
 
 			if (writeMatrix) {
@@ -830,85 +871,195 @@ private:
 
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
-				const size_t MP, bool smoothing) const {
+				const size_t MP, bool smoothing, bool pou) const {
 		REAL errorReturn = 0;
 		std::pair<INT, REAL> iterErrorReturn(0, 0);
+		if( pou ) { // Using PoU approach
+			for (size_t row = 0; row < ptsExtend_.size(); row++) {
+				linalg::sparse_matrix<INT, REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+				linalg::sparse_matrix<INT, REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-		for (size_t row = 0; row < ptsExtend_.size(); row++) {
-			linalg::sparse_matrix<INT, REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-			linalg::sparse_matrix<INT, REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+				Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+				Aas.resize_null((1 + NP + CONFIG::D), 1);
 
-			Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-			Aas.resize_null((1 + NP + CONFIG::D), 1);
+				//set Css
+				for (size_t i = 0; i < NP; i++) {
+					for (size_t j = i; j < NP; j++) {
+						int glob_i = connectivityAB_[row][i];
+						int glob_j = connectivityAB_[row][j];
 
-			//set Css
-			for (size_t i = 0; i < NP; i++) {
-				for (size_t j = i; j < NP; j++) {
+						auto d = norm(
+								data_points[glob_i].first
+										- data_points[glob_j].first);
+
+						if (d < r_) {
+							REAL w = rbf(d);
+							Css.set_value(i, j, w);
+							if (i != j)
+								Css.set_value(j, i, w);
+						}
+					}
+				}
+
+				for (size_t i = 0; i < NP; i++) {
+					Css.set_value(i, NP, 1);
+					Css.set_value(NP, i, 1);
+
 					int glob_i = connectivityAB_[row][i];
+
+					for (INT dim = 0; dim < CONFIG::D; dim++) {
+						Css.set_value(i, (NP + dim + 1),
+								data_points[glob_i].first[dim]);
+						Css.set_value((NP + dim + 1), i,
+								data_points[glob_i].first[dim]);
+					}
+				}
+
+				//set Aas
+				for (size_t j = 0; j < NP; j++) {
 					int glob_j = connectivityAB_[row][j];
 
-					auto d = norm(
-							data_points[glob_i].first
-									- data_points[glob_j].first);
+					auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
 
 					if (d < r_) {
-						REAL w = rbf(d);
-						Css.set_value(i, j, w);
-						if (i != j)
-							Css.set_value(j, i, w);
+						Aas.set_value(j, 0, rbf(d));
+					}
+				}
+
+				Aas.set_value(NP, 0, 1);
+
+				for (int dim = 0; dim < CONFIG::D; dim++) {
+					Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
+				}
+
+				linalg::sparse_matrix<INT, REAL> H_i;
+
+				if (precond_ == 0) {
+					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+					iterErrorReturn = cg.solve();
+					H_i = cg.getSolution();
+				}
+				else if (precond_ == 1) {
+					linalg::diagonal_preconditioner<INT, REAL> M(Css);
+					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+					iterErrorReturn = cg.solve();
+					H_i = cg.getSolution();
+				}
+				else {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+							<< precond_ << ")" << std::endl
+							<< "Please set the CG Preconditioner function number (precond_) as: "
+							<< std::endl << "precond_=0 (No Preconditioner); "
+							<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+					std::abort();
+				}
+
+				if (DEBUG) {
+					std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
+							<< ". Error of H_i: " << iterErrorReturn.second
+							<< std::endl;
+				}
+
+				errorReturn += iterErrorReturn.second;
+
+				if (smoothing) {
+					for (size_t j = 0; j < NP; j++) {
+						INT glob_j = connectivityAB_[row][j];
+						H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
+					}
+				}
+				else {
+					for (size_t j = 0; j < NP; j++) {
+						INT glob_j = connectivityAB_[row][j];
+						H_.set_value(row, glob_j, H_i.get_value(j, 0));
 					}
 				}
 			}
 
-			for (size_t i = 0; i < NP; i++) {
-				Css.set_value(i, NP, 1);
-				Css.set_value(NP, i, 1);
+			errorReturn /= static_cast<REAL>(pts_.size());
 
-				int glob_i = connectivityAB_[row][i];
+			if (smoothing) {
+				for (size_t row = 0; row < ptsExtend_.size(); row++) {
+					for (size_t j = 0; j < NP; j++) {
+						INT glob_j = connectivityAB_[row][j];
+						REAL h_j_sum = 0.;
+						REAL f_sum = 0.;
 
-				for (INT dim = 0; dim < CONFIG::D; dim++) {
-					Css.set_value(i, (NP + dim + 1),
-							data_points[glob_i].first[dim]);
-					Css.set_value((NP + dim + 1), i,
-							data_points[glob_i].first[dim]);
+						for (size_t k = 0; k < MP; k++) {
+							INT row_k = connectivityAA_[row][k];
+							if (row_k == static_cast<INT>(row)) {
+								std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
+										<< std::endl;
+							}
+							else
+								h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+						}
+
+						for (size_t k = 0; k < MP; k++) {
+							INT row_k = connectivityAA_[row][k];
+							if (row_k == static_cast<INT>(row)) {
+								std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
+										<< std::endl;
+							}
+							else {
+								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+								f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
+							}
+						}
+
+						H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
+					}
+				}
+			}
+		}
+		else { // Not using PoU
+            linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+            linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+
+            Css.resize_null((1 + data_points.size() + CONFIG::D), (1 + data_points.size() + CONFIG::D));
+            Aas.resize_null(ptsExtend_.size(), (1 + data_points.size() + CONFIG::D));
+
+			//set Css
+			for ( size_t i = 0; i < data_points.size(); i++ ) {
+				for ( size_t j = i; j < data_points.size(); j++ ) {
+					auto d = norm(data_points[i].first - data_points[j].first);
+
+					if ( d < r_ ) {
+						REAL w = rbf(d);
+						Css.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w);
+
+						if ( i != j )
+							Css.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w);
+					}
 				}
 			}
 
 			//set Aas
-			for (size_t j = 0; j < NP; j++) {
-				int glob_j = connectivityAB_[row][j];
+			for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
+				for ( size_t j = 0; j < data_points.size(); j++ ) {
+					auto d = norm(ptsExtend_[i] - data_points[j].first);
 
-				auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
-
-				if (d < r_) {
-					Aas.set_value(j, 0, rbf(d));
+					if ( d < r_ ) {
+						Aas.set_value(i, (j + CONFIG::D + 1), rbf(d));
+					}
 				}
 			}
 
-			Aas.set_value(NP, 0, 1);
+			linalg::sparse_matrix<INT,REAL> Aas_trans = Aas.transpose();
 
-			for (int dim = 0; dim < CONFIG::D; dim++) {
-				Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
-			}
-
-			linalg::sparse_matrix<INT, REAL> H_i;
+			linalg::sparse_matrix<INT, REAL> H_more;
 
 			if (precond_ == 0) {
-				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_i=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else if (precond_ == 1) {
 				linalg::diagonal_preconditioner<INT, REAL> M(Css);
-				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_, &M);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_i=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else {
 				std::cerr
@@ -921,59 +1072,53 @@ private:
 			}
 
 			if (DEBUG) {
-				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
-						<< ". Error of H_i: " << iterErrorReturn.second
+				std::cout << "MUI [sampler_rbf.h]: #iterations of H_more:     " << iterErrorReturn.first
+						<< ". Error of H_more: " << iterErrorReturn.second
 						<< std::endl;
 			}
 
-			errorReturn += iterErrorReturn.second;
+			errorReturn = iterErrorReturn.second;
 
-			if (smoothing) {
-				for (size_t j = 0; j < NP; j++) {
-					INT glob_j = connectivityAB_[row][j];
-					H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
+			if ( smoothing ) {
+				for ( size_t i = 0; i < data_points.size(); i++ ) {
+					for (size_t j = 0; j < ptsExtend_.size(); j++ ) {
+						H_toSmooth_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
+					}
 				}
 			}
 			else {
-				for (size_t j = 0; j < NP; j++) {
-					INT glob_j = connectivityAB_[row][j];
-					H_.set_value(row, glob_j, H_i.get_value(j, 0));
+				for ( size_t i = 0; i < data_points.size(); i++ ) {
+					for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
+						H_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
+					}
 				}
 			}
-		}
 
-		errorReturn /= static_cast<REAL>(pts_.size());
-
-		if (smoothing) {
-			for (size_t row = 0; row < ptsExtend_.size(); row++) {
-				for (size_t j = 0; j < NP; j++) {
-					INT glob_j = connectivityAB_[row][j];
-					REAL h_j_sum = 0.;
-					REAL f_sum = 0.;
-
-					for (size_t k = 0; k < MP; k++) {
-						INT row_k = connectivityAA_[row][k];
-						if (row_k == static_cast<INT>(row)) {
-							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
-									<< std::endl;
+			if ( smoothing ) {
+				for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
+					for ( size_t j = 0; j < data_points.size(); j++ ) {
+						REAL h_j_sum = 0.;
+						REAL f_sum = 0.;
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) )
+								std::cerr << "Invalid row_k value: " << row_k << std::endl;
+							else
+								h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
 						}
-						else
-							h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
+
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) )
+								std::cerr << "Invalid row_k value: " << row_k << std::endl;
+							else {
+								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+								f_sum += w_i * H_toSmooth_.get_value(row_k, j);
+							}
+						}
+
+						H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
 					}
-
-					for (size_t k = 0; k < MP; k++) {
-						INT row_k = connectivityAA_[row][k];
-						if (row_k == static_cast<INT>(row)) {
-							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
-									<< std::endl;
-						}
-						else {
-							REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
-							f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
-						}
-					}
-
-					H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
 				}
 			}
 		}
@@ -984,81 +1129,193 @@ private:
 	template<template<typename, typename > class CONTAINER>
 	inline REAL buildMatrixConservative(
 			const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP,
-			const size_t MP, bool smoothing) const {
+			const size_t MP, bool smoothing, bool pou) const {
 		REAL errorReturn = 0;
 		std::pair<INT, REAL> iterErrorReturn(0, 0);
+		if( pou ) { // Using partitioned approach
+			for (size_t row = 0; row < data_points.size(); row++) {
+				linalg::sparse_matrix<INT, REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+				linalg::sparse_matrix<INT, REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-		for (size_t row = 0; row < data_points.size(); row++) {
-			linalg::sparse_matrix<INT, REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
-			linalg::sparse_matrix<INT, REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+				Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+				Aas.resize_null((1 + NP + CONFIG::D), 1);
 
-			Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-			Aas.resize_null((1 + NP + CONFIG::D), 1);
+				//set Css
+				for (size_t i = 0; i < NP; i++) {
+					for (size_t j = i; j < NP; j++) {
+						INT glob_i = connectivityAB_[row][i];
+						INT glob_j = connectivityAB_[row][j];
 
-			//set Css
-			for (size_t i = 0; i < NP; i++) {
-				for (size_t j = i; j < NP; j++) {
+						auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
+
+						if (d < r_) {
+							REAL w = rbf(d);
+							Css.set_value(i, j, w);
+							if (i != j)
+								Css.set_value(j, i, w);
+						}
+					}
+				}
+
+				for (size_t i = 0; i < NP; i++) {
+					Css.set_value(i, NP, 1);
+					Css.set_value(NP, i, 1);
+
 					INT glob_i = connectivityAB_[row][i];
+
+					for (INT dim = 0; dim < CONFIG::D; dim++) {
+						Css.set_value(i, (NP + dim + 1), ptsExtend_[glob_i][dim]);
+						Css.set_value((NP + dim + 1), i, ptsExtend_[glob_i][dim]);
+					}
+				}
+
+				//set Aas
+				for (size_t j = 0; j < NP; j++) {
 					INT glob_j = connectivityAB_[row][j];
 
-					auto d = norm(ptsExtend_[glob_i] - ptsExtend_[glob_j]);
+					auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
 
 					if (d < r_) {
-						REAL w = rbf(d);
-						Css.set_value(i, j, w);
-						if (i != j)
-							Css.set_value(j, i, w);
+						Aas.set_value(j, 0, rbf(d));
+					}
+				}
+
+				Aas.set_value(NP, 0, 1);
+
+				for (int dim = 0; dim < CONFIG::D; dim++) {
+					Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
+				}
+
+				linalg::sparse_matrix<INT, REAL> H_i;
+
+				if (precond_ == 0) {
+					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+					iterErrorReturn = cg.solve();
+					H_i = cg.getSolution();
+				}
+				else if (precond_ == 1) {
+					linalg::diagonal_preconditioner<INT, REAL> M(Css);
+					linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+					iterErrorReturn = cg.solve();
+					H_i = cg.getSolution();
+				}
+				else {
+					std::cerr
+							<< "MUI Error [sampler_rbf.h]: Invalid CG Preconditioner function number ("
+							<< precond_ << ")" << std::endl
+							<< "Please set the CG Preconditioner function number (precond_) as: "
+							<< std::endl << "precond_=0 (No Preconditioner); "
+							<< std::endl << "precond_=1 (Diagonal Preconditioner); " << std::endl;
+					std::abort();
+				}
+
+				if (DEBUG) {
+					std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
+							<< ". Error of H_i: " << iterErrorReturn.second
+							<< std::endl;
+				}
+
+				errorReturn += iterErrorReturn.second;
+
+				if (smoothing) {
+					for (size_t j = 0; j < NP; j++) {
+						INT glob_j = connectivityAB_[row][j];
+						H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
+					}
+				}
+				else {
+					for (size_t j = 0; j < NP; j++) {
+						INT glob_j = connectivityAB_[row][j];
+						H_.set_value(glob_j, row, H_i.get_value(j, 0));
 					}
 				}
 			}
 
-			for (size_t i = 0; i < NP; i++) {
-				Css.set_value(i, NP, 1);
-				Css.set_value(NP, i, 1);
+			errorReturn /= static_cast<REAL>(data_points.size());
 
-				INT glob_i = connectivityAB_[row][i];
+			if (smoothing) {
+				for (size_t row = 0; row < data_points.size(); row++) {
+					for (size_t j = 0; j < NP; j++) {
+						INT row_i = connectivityAB_[row][j];
+						REAL h_j_sum = 0.;
+						REAL f_sum = 0.;
 
-				for (INT dim = 0; dim < CONFIG::D; dim++) {
-					Css.set_value(i, (NP + dim + 1), ptsExtend_[glob_i][dim]);
-					Css.set_value((NP + dim + 1), i, ptsExtend_[glob_i][dim]);
+						for (size_t k = 0; k < MP; k++) {
+							INT row_k = connectivityAA_[row_i][k];
+							if (row_k == static_cast<INT>(row_i)) {
+								std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
+										<< std::endl;
+							}
+							else
+								h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
+						}
+
+						for (size_t k = 0; k < MP; k++) {
+							INT row_k = connectivityAA_[row_i][k];
+							if (row_k == static_cast<INT>(row_i)) {
+								std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
+										<< std::endl;
+							}
+							else {
+								REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.))
+										/ (h_j_sum));
+								f_sum += w_i * H_toSmooth_.get_value(row_k, row);
+							}
+						}
+
+						H_.set_value(row_i, row,
+								(0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
+					}
+				}
+			}
+		}
+		else { // Not using partitioned approach
+            linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
+            linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
+
+            Css.resize_null((1 + ptsExtend_.size() + CONFIG::D), (1 + ptsExtend_.size() + CONFIG::D));
+            Aas.resize_null(data_points.size(), (1 + ptsExtend_.size() + CONFIG::D));
+
+			//set Css
+			for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
+				for ( size_t j = i; j < ptsExtend_.size(); j++ ) {
+					auto d = norm(ptsExtend_[i] - ptsExtend_[j]);
+
+					if ( d < r_ ) {
+						REAL w = rbf(d);
+						Css.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w);
+
+						if ( i != j )
+							Css.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w);
+					}
 				}
 			}
 
 			//set Aas
-			for (size_t j = 0; j < NP; j++) {
-				INT glob_j = connectivityAB_[row][j];
+			for ( size_t i = 0; i < data_points.size(); i++ ) {
+				for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
+					auto d = norm(data_points[i].first - ptsExtend_[j]);
 
-				auto d = norm(data_points[row].first - ptsExtend_[glob_j]);
-
-				if (d < r_) {
-					Aas.set_value(j, 0, rbf(d));
+					if ( d < r_ ) {
+						Aas.set_value(i, (j + CONFIG::D + 1), rbf(d));
+					}
 				}
 			}
 
-			Aas.set_value(NP, 0, 1);
+			linalg::sparse_matrix<INT,REAL> Aas_trans = Aas.transpose();
 
-			for (int dim = 0; dim < CONFIG::D; dim++) {
-				Aas.set_value((NP + dim + 1), 0, data_points[row].first[dim]);
-			}
-
-			linalg::sparse_matrix<INT, REAL> H_i;
+			linalg::sparse_matrix<INT, REAL> H_more;
 
 			if (precond_ == 0) {
-				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_i=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else if (precond_ == 1) {
 				linalg::diagonal_preconditioner<INT, REAL> M(Css);
-				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas, cgSolveTol_, cgMaxIter_, &M);
+				linalg::conjugate_gradient<INT, REAL> cg(Css, Aas_trans, cgSolveTol_, cgMaxIter_, &M);
 				iterErrorReturn = cg.solve();
-				linalg::sparse_matrix<INT, REAL> H_i_temp = cg.getSolution();
-				H_i.resize_null(H_i_temp.get_rows(), H_i_temp.get_cols());
-				H_i=H_i_temp;
-				H_i_temp.set_zero();
+				H_more = cg.getSolution();
 			}
 			else {
 				std::cerr
@@ -1071,61 +1328,53 @@ private:
 			}
 
 			if (DEBUG) {
-				std::cout << "MUI [sampler_rbf.h]: #iterations of H_i:     " << iterErrorReturn.first
-						<< ". Error of H_i: " << iterErrorReturn.second
+				std::cout << "MUI [sampler_rbf.h]: #iterations of H_more:     " << iterErrorReturn.first
+						<< ". Error of H_more: " << iterErrorReturn.second
 						<< std::endl;
 			}
 
-			errorReturn += iterErrorReturn.second;
+			errorReturn = iterErrorReturn.second;
 
-			if (smoothing) {
-				for (size_t j = 0; j < NP; j++) {
-					INT glob_j = connectivityAB_[row][j];
-					H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
+			if ( smoothing ) {
+				for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
+					for (size_t j = 0; j < data_points.size(); j++ ) {
+						H_toSmooth_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
+					}
 				}
 			}
 			else {
-				for (size_t j = 0; j < NP; j++) {
-					INT glob_j = connectivityAB_[row][j];
-					H_.set_value(glob_j, row, H_i.get_value(j, 0));
+				for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
+					for ( size_t j = 0; j < data_points.size(); j++ ) {
+						H_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
+					}
 				}
 			}
-		}
 
-		errorReturn /= static_cast<REAL>(data_points.size());
-
-		if (smoothing) {
-			for (size_t row = 0; row < data_points.size(); row++) {
-				for (size_t j = 0; j < NP; j++) {
-					INT row_i = connectivityAB_[row][j];
-					REAL h_j_sum = 0.;
-					REAL f_sum = 0.;
-
-					for (size_t k = 0; k < MP; k++) {
-						INT row_k = connectivityAA_[row_i][k];
-						if (row_k == static_cast<INT>(row_i)) {
-							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
-									<< std::endl;
+			if ( smoothing ) {
+				for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
+					for ( size_t j = 0; j < data_points.size(); j++ ) {
+						REAL h_j_sum = 0.;
+						REAL f_sum = 0.;
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) )
+								std::cerr << "Invalid row_k value: " << row_k << std::endl;
+							else
+								h_j_sum += std::pow(dist_h_i(row, row_k), -2.);
 						}
-						else
-							h_j_sum += std::pow(dist_h_i(row_i, row_k), -2.);
+
+						for ( size_t k = 0; k < MP; k++ ) {
+							INT row_k = connectivityAA_[row][k];
+							if ( row_k == static_cast<INT>(row) )
+								std::cerr << "Invalid row_k value: " << row_k << std::endl;
+							else {
+								REAL w_i = ((std::pow(dist_h_i(row, row_k), -2.)) / (h_j_sum));
+								f_sum += w_i * H_toSmooth_.get_value(row_k, j);
+							}
+						}
+
+						H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
 					}
-
-					for (size_t k = 0; k < MP; k++) {
-						INT row_k = connectivityAA_[row_i][k];
-						if (row_k == static_cast<INT>(row_i)) {
-							std::cerr << "MUI Error [sampler_rbf.h]: Invalid row_k value: " << row_k
-									<< std::endl;
-						}
-						else {
-							REAL w_i = ((std::pow(dist_h_i(row_i, row_k), -2.))
-									/ (h_j_sum));
-							f_sum += w_i * H_toSmooth_.get_value(row_k, row);
-						}
-					}
-
-					H_.set_value(row_i, row,
-							(0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
 				}
 			}
 		}
@@ -1137,6 +1386,7 @@ private:
 	inline void buildConnectivityConsistent(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, bool writeMatrix,
 			const std::string& fileAddress) const {
 		std::ofstream outputFileCAB;
+		std::ofstream outputFileRemotePoints;
 		if (writeMatrix) {
 			outputFileCAB.open(fileAddress + "/connectivityAB.dat");
 
@@ -1163,6 +1413,33 @@ private:
 				outputFileCAB << "\n";
 				outputFileCAB << "// ";
 				outputFileCAB << "\n";
+			}
+
+			outputFileRemotePoints.open(fileAddress + "/remotePoints.dat");
+
+			if (!outputFileRemotePoints) {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the remotePoints.dat"
+						<< std::endl;
+			}
+			else {
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This is the 'remotePoints.dat' file of the RBF spatial sampler of the MUI library";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This file contains the remote points in the correct order that build the coupling matrix H.";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints << "// ";
+				outputFileRemotePoints << "\n";
 			}
 		}
 
@@ -1204,14 +1481,38 @@ private:
 				outputFileCAB << '\n';
 		}
 
-		if (writeMatrix)
+		for (size_t i = 0; i < data_points.size(); i++) {
+
+			point_type pointTemp;
+			for (INT dim = 0; dim < CONFIG::D; dim++) {
+				pointTemp[dim] = data_points[i].first[dim];
+			}
+
+			remote_pts_.push_back(pointTemp);
+
+			if (writeMatrix) {
+				for (INT dim = 0; dim < CONFIG::D; dim++) {
+					outputFileRemotePoints << remote_pts_[i][dim];
+					if (dim == (CONFIG::D - 1)) {
+						outputFileRemotePoints << '\n';
+					} else {
+						outputFileRemotePoints << ",";
+					}
+				}
+			}
+		}
+
+		if (writeMatrix) {
 			outputFileCAB.close();
+			outputFileRemotePoints.close();
+		}
 	}
 
 	template<template<typename, typename > class CONTAINER>
 	inline void buildConnectivityConservative(const CONTAINER<ITYPE, CONFIG> &data_points, const size_t NP, bool writeMatrix,
 			const std::string& fileAddress) const {
 		std::ofstream outputFileCAB;
+		std::ofstream outputFileRemotePoints;
 		if (writeMatrix) {
 			outputFileCAB.open(fileAddress + "/connectivityAB.dat");
 
@@ -1238,6 +1539,33 @@ private:
 				outputFileCAB << "\n";
 				outputFileCAB << "// ";
 				outputFileCAB << "\n";
+			}
+
+			outputFileRemotePoints.open(fileAddress + "/remotePoints.dat");
+
+			if (!outputFileRemotePoints) {
+				std::cerr
+						<< "MUI Error [sampler_rbf.h]: Could not locate the file address on the remotePoints.dat"
+						<< std::endl;
+			}
+			else {
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This is the 'remotePoints.dat' file of the RBF spatial sampler of the MUI library";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** This file contains the remote points in the correct order that build the coupling matrix H.";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// **** The file uses the Comma-Separated Values (CSV) format with ASCII for the entire N matrix";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints
+						<< "// ************************************************************************************************";
+				outputFileRemotePoints << "\n";
+				outputFileRemotePoints << "// ";
+				outputFileRemotePoints << "\n";
 			}
 		}
 
@@ -1277,10 +1605,29 @@ private:
 
 			if (writeMatrix && i < ptsExtend_.size() - 1)
 				outputFileCAB << '\n';
+
+			point_type pointTemp;
+			for (INT dim = 0; dim < CONFIG::D; dim++) {
+				pointTemp[dim] = data_points[i].first[dim];
+			}
+			remote_pts_.push_back(pointTemp);
+
+			if (writeMatrix) {
+				for (INT dim = 0; dim < CONFIG::D; dim++) {
+					outputFileRemotePoints << remote_pts_[i][dim];
+					if (dim == (CONFIG::D - 1)) {
+						outputFileRemotePoints << '\n';
+					} else {
+						outputFileRemotePoints << ",";
+					}
+				}
+			}
 		}
 
-		if (writeMatrix)
+		if (writeMatrix) {
 			outputFileCAB.close();
+			outputFileRemotePoints.close();
+		}
 	}
 
 	void buildConnectivitySmooth(const size_t MP, bool writeMatrix, const std::string& fileAddress) const {
@@ -1445,6 +1792,8 @@ private:
 			CAAcol_ = tempV[3];
 			Hrow_ = tempV[4];
 			Hcol_ = tempV[5];
+			remote_pts_num_ = tempV[6];
+			remote_pts_dim_ = tempV[7];
 		}
 
 		std::ifstream inputFileCAB(readFileAddress + "/connectivityAB.dat");
@@ -1534,6 +1883,38 @@ private:
 			}
 		}
 
+		std::ifstream inputFileRemotePoints(readFileAddress + "/remotePoints.dat");
+
+		if (!inputFileRemotePoints) {
+			std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
+					<< std::endl;
+		}
+		else {
+
+			if (CONFIG::D != remote_pts_dim_){
+				EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: CONFIG::D must equal to remote point dimension in remotePoints.dat"));
+			}
+
+			std::string tempS;
+			while (std::getline(inputFileRemotePoints, tempS)) {
+				// Skips the line if the first two characters are '//'
+				if (tempS[0] == '/' && tempS[1] == '/')
+					continue;
+				std::stringstream lineStream(tempS);
+				std::string tempSS;
+				point_type tempP;
+				size_t temp_i = 0;
+				while (std::getline(lineStream, tempSS, ',')) {
+					assert(temp_i<remote_pts_dim_);
+					tempP[temp_i] = static_cast<REAL>(std::stold(tempSS));
+					temp_i++;
+				}
+				remote_pts_.emplace_back(tempP);
+			}
+
+			assert(remote_pts_.size() == remote_pts_num_);
+		}
+
 		initialised_ = true;
 	}
 
@@ -1566,12 +1947,15 @@ protected:
 	REAL s_;
 	mutable INT CAArow_;
 	mutable INT CAAcol_;
+	mutable INT remote_pts_num_;
+	mutable INT remote_pts_dim_;
 	mutable std::vector<point_type> ptsGhost_; //< Local ghost points
 	mutable std::vector<point_type> ptsExtend_; //< Extended local points, i.e. local points and ghost local points
 	mutable std::vector<std::vector<INT> > connectivityAB_;
 	mutable std::vector<std::vector<INT> > connectivityAA_;
 	mutable linalg::sparse_matrix<INT, REAL> H_; //< Transformation Matrix
 	mutable linalg::sparse_matrix<INT, REAL> H_toSmooth_;
+	mutable std::vector<point_type> remote_pts_; //< Remote points
 };
 } // mui
 
