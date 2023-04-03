@@ -5445,53 +5445,53 @@ module mui_1d_f
 !      real(kind=c_double), intent(in) :: point_1,t
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_sum_1t_f
-!
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
-!    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1f_f(uniface,attr,point_1,t,&
-!    spatial_sampler,temporal_sampler,return_value) bind(C)
-!      import :: c_ptr,c_char,c_float
-!      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
-!      character(kind=c_char), intent(in) :: attr(*)
-!      real(kind=c_float), intent(in) :: point_1,t
-!      real(kind=c_float), intent(out) :: return_value
-!    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1f_f
-!
-!    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1fx_f(uniface,attr,point_1,t,&
-!    spatial_sampler,temporal_sampler,return_value) bind(C)
-!      import :: c_ptr,c_char,c_float
-!      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
-!      character(kind=c_char), intent(in) :: attr(*)
-!      real(kind=c_float), intent(in) :: point_1,t
-!      real(kind=c_float), intent(out) :: return_value
-!    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1fx_f
-!
-!    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1d_f(uniface,attr,point_1,t,&
-!    spatial_sampler,temporal_sampler,return_value) bind(C)
-!      import :: c_ptr,c_char,c_double
-!      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
-!      character(kind=c_char), intent(in) :: attr(*)
-!      real(kind=c_double), intent(in) :: point_1,t
-!      real(kind=c_double), intent(out) :: return_value
-!    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1d_f
-!
-!    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1dx_f(uniface,attr,point_1,t,&
-!    spatial_sampler,temporal_sampler,return_value) bind(C)
-!      import :: c_ptr,c_char,c_double
-!      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
-!      character(kind=c_char), intent(in) :: attr(*)
-!      real(kind=c_double), intent(in) :: point_1,t
-!      real(kind=c_double), intent(out) :: return_value
-!    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1dx_f
-!
-!    subroutine mui_fetch_pseudo_nearest_neighbor_exact_1t_f(uniface,attr,point_1,t,&
-!    spatial_sampler,temporal_sampler,return_value) bind(C)
-!      import :: c_ptr,c_char,c_double
-!      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
-!      character(kind=c_char), intent(in) :: attr(*)
-!      real(kind=c_double), intent(in) :: point_1,t
-!      real(kind=c_double), intent(out) :: return_value
-!    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_1t_f
-!
+
+    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact; algorithm: fixed relaxation
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1f_f(uniface,attr,point_1,t,&
+    spatial_sampler,temporal_sampler,algorithm,return_value) bind(C)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler,algorithm
+      character(kind=c_char), intent(in) :: attr(*)
+      real(kind=c_float), intent(in) :: point_1,t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1f_f
+
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1fx_f(uniface,attr,point_1,t,&
+    spatial_sampler,temporal_sampler,algorithm,return_value) bind(C)
+      import :: c_ptr,c_char,c_float
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler,algorithm
+      character(kind=c_char), intent(in) :: attr(*)
+      real(kind=c_float), intent(in) :: point_1,t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1fx_f
+
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1d_f(uniface,attr,point_1,t,&
+    spatial_sampler,temporal_sampler,algorithm,return_value) bind(C)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler,algorithm
+      character(kind=c_char), intent(in) :: attr(*)
+      real(kind=c_double), intent(in) :: point_1,t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1d_f
+
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1dx_f(uniface,attr,point_1,t,&
+    spatial_sampler,temporal_sampler,algorithm,return_value) bind(C)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler,algorithm
+      character(kind=c_char), intent(in) :: attr(*)
+      real(kind=c_double), intent(in) :: point_1,t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1dx_f
+
+    subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1t_f(uniface,attr,point_1,t,&
+    spatial_sampler,temporal_sampler,algorithm,return_value) bind(C)
+      import :: c_ptr,c_char,c_double
+      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler,algorithm
+      character(kind=c_char), intent(in) :: attr(*)
+      real(kind=c_double), intent(in) :: point_1,t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_fixed_relaxation_1t_f
+
 !    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
 !    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_1f_f(uniface,attr,point_1,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
