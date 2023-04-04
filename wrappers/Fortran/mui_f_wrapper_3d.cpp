@@ -681,8 +681,8 @@ void mui_create_sampler_sum_quintic_3t_f(mui_sampler_sum_quintic_3t** ret, doubl
 
 // Radial Basis Function sampler
 void mui_create_sampler_rbf_3f_f(mui_sampler_rbf_3f **ret, float* r, float* points_1, float* points_2, float* points_3, int* points_count, int* basis_func,
-        int* conservative, int* smoothFunc, int* readMatrix, int* writeMatrix, const char* file_address, float* cutoff, float* cg_solve_tol,
-        int* cg_solve_it, int* pou_size) {
+        int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address, float* cutoff, float* cg_solve_tol,
+        int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
     std::vector<mui::point3f> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -691,13 +691,13 @@ void mui_create_sampler_rbf_3f_f(mui_sampler_rbf_3f **ret, float* r, float* poin
     }
 
     *ret = new mui_sampler_rbf_3f(*r, pts, *basis_func, static_cast<bool>(*conservative),
-      static_cast<bool>(*smoothFunc), static_cast<bool>(*readMatrix), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size);
+      static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
 }
 
 void mui_create_sampler_rbf_3fx_f(mui_sampler_rbf_3fx **ret, float* r, float* points_1, float* points_2, float* points_3, int* points_count, int* basis_func,
-        int* conservative, int* smoothFunc, int* readMatrix, int* writeMatrix, const char* file_address, float* cutoff, float* cg_solve_tol,
-    int* cg_solve_it, int* pou_size) {
+        int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address, float* cutoff, float* cg_solve_tol,
+    int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
     std::vector<mui::point3fx> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -706,13 +706,13 @@ void mui_create_sampler_rbf_3fx_f(mui_sampler_rbf_3fx **ret, float* r, float* po
     }
 
     *ret = new mui_sampler_rbf_3fx(*r, pts, *basis_func, static_cast<bool>(*conservative),
-      static_cast<bool>(*smoothFunc), static_cast<bool>(*readMatrix), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size);
+      static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
 }
 
 void mui_create_sampler_rbf_3d_f(mui_sampler_rbf_3d **ret, double* r, double* points_1, double* points_2, double* points_3, int* points_count, int* basis_func,
-        int* conservative, int* smoothFunc, int* readMatrix, int* writeMatrix, const char* file_address, double* cutoff, double* cg_solve_tol,
-    int* cg_solve_it, int* pou_size) {
+        int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address, double* cutoff, double* cg_solve_tol,
+    int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
     std::vector<mui::point3d> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -721,13 +721,13 @@ void mui_create_sampler_rbf_3d_f(mui_sampler_rbf_3d **ret, double* r, double* po
     }
 
     *ret = new mui_sampler_rbf_3d(*r, pts, *basis_func, static_cast<bool>(*conservative),
-      static_cast<bool>(*smoothFunc), static_cast<bool>(*readMatrix), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size);
+      static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
 }
 
 void mui_create_sampler_rbf_3dx_f(mui_sampler_rbf_3dx** ret, double* r, double* points_1, double* points_2, double* points_3, int* points_count, int* basis_func,
-        int* conservative, int* smoothFunc, int* readMatrix, int* writeMatrix, const char* file_address, double* cutoff, double* cg_solve_tol,
-    int* cg_solve_it, int* pou_size) {
+        int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address, double* cutoff, double* cg_solve_tol,
+    int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
     std::vector<mui::point3dx> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -736,13 +736,13 @@ void mui_create_sampler_rbf_3dx_f(mui_sampler_rbf_3dx** ret, double* r, double* 
     }
 
     *ret = new mui_sampler_rbf_3dx(*r, pts, *basis_func, static_cast<bool>(*conservative),
-      static_cast<bool>(*smoothFunc), static_cast<bool>(*readMatrix), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size);
+      static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
 }
 
 void mui_create_sampler_rbf_3t_f(mui_sampler_rbf_3t** ret, double* r, double* points_1, double* points_2, double* points_3, int* points_count, int* basis_func,
-        int* conservative, int* smoothFunc, int* readMatrix, int* writeMatrix, const char* file_address, double* cutoff, double* cg_solve_tol,
-    int* cg_solve_it, int* pou_size) {
+        int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address, double* cutoff, double* cg_solve_tol,
+    int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
     std::vector<mui::mui_f_wrapper_3D::point_type> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = static_cast<mui::mui_f_wrapper_3D::REAL>(points_1[i]);
@@ -752,9 +752,10 @@ void mui_create_sampler_rbf_3t_f(mui_sampler_rbf_3t** ret, double* r, double* po
 
     *ret = new mui_sampler_rbf_3t(static_cast<mui::mui_f_wrapper_3D::REAL>(*r), pts, *basis_func,
       static_cast<bool>(*conservative), static_cast<bool>(*smoothFunc),
-      static_cast<bool>(*readMatrix), static_cast<bool>(*writeMatrix), std::string(file_address),
+      static_cast<bool>(*writeMatrix), std::string(file_address),
       static_cast<mui::mui_f_wrapper_3D::REAL>(*cutoff), static_cast<mui::mui_f_wrapper_3D::REAL>(*cg_solve_tol),
-      static_cast<mui::mui_f_wrapper_3D::INT>(*cg_solve_it), static_cast<mui::mui_f_wrapper_3D::INT>(*pou_size));
+      static_cast<mui::mui_f_wrapper_3D::INT>(*cg_solve_it), static_cast<mui::mui_f_wrapper_3D::INT>(*pou_size),
+	  static_cast<mui::mui_f_wrapper_3D::INT>(*precond), reinterpret_cast<MPI_Comm>(*communicator));
 }
 
 /*******************************************

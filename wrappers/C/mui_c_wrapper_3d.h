@@ -244,20 +244,20 @@ mui_sampler_sum_quintic_3d* mui_create_sampler_sum_quintic_3d(double r);
 mui_sampler_sum_quintic_3dx* mui_create_sampler_sum_quintic_3dx(double r);
 mui_sampler_sum_quintic_3t* mui_create_sampler_sum_quintic_3t(double r);
 mui_sampler_rbf_3f* mui_create_sampler_rbf_3f(float r, mui_point_3f *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size,
-		int precond, MPI_Comm communicator);
+		int conservative, int smoothFunc, int writeMatrix, const char *writeFileAddress, float cutoff,
+		float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm communicator);
 mui_sampler_rbf_3fx* mui_create_sampler_rbf_3fx(float r, mui_point_3fx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, float cutoff, float cg_solve_tol, int cg_solve_it, int pou_size,
-		int precond, MPI_Comm communicator);
+		int conservative, int smoothFunc, int writeMatrix, const char *writeFileAddress, float cutoff,
+		float cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm communicator);
 mui_sampler_rbf_3d* mui_create_sampler_rbf_3d(double r, mui_point_3d *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size,
-		int precond, MPI_Comm communicator);
+		int conservative, int smoothFunc, int writeMatrix, const char *writeFileAddress, double cutoff,
+		double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm communicator);
 mui_sampler_rbf_3dx* mui_create_sampler_rbf_3dx(double r, mui_point_3dx *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size,
-		int precond, MPI_Comm communicator);
+		int conservative, int smoothFunc, int writeMatrix, const char *writeFileAddress, double cutoff,
+		double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm communicator);
 mui_sampler_rbf_3t* mui_create_sampler_rbf_3t(double r, mui_point_3t *points, int points_count, int basis_func,
-		int conservative, int polynomial, int smoothFunc, double cutoff, double cg_solve_tol, int cg_solve_it, int pou_size,
-		int precond, MPI_Comm communicator);
+		int conservative, int smoothFunc, int writeMatrix, const char *writeFileAddress, double cutoff,
+		double cg_solve_tol, int cg_solve_it, int pou_size, int precond, MPI_Comm communicator);
 
 // MUI spatial samplers destruction
 void mui_destroy_sampler_exact_3f(mui_sampler_exact_3f *sampler);
