@@ -376,7 +376,7 @@ module mui_3d_f
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_3t_f
 
-    !Pseudo-linear nearest neighbour interpolation sampler
+    !Pseudo nearest neighbour interpolation sampler
     subroutine mui_create_sampler_pseudo_nearest_neighbor_3f_f(sampler,h) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(out), target :: sampler(*)
@@ -670,32 +670,32 @@ module mui_3d_f
     end subroutine mui_destroy_sampler_nearest_neighbor_3t_f
 
     !Pseudo-linear n^2 interpolation sampler
-    subroutine mui_destroy_sampler_pseudo_nearest2_linear_3f_f(sampler) bind(C)
+    subroutine mui_destroy_sampler_pseudo_n2_linear_3f_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_3f_f
+    end subroutine mui_destroy_sampler_pseudo_n2_linear_3f_f
 
-    subroutine mui_destroy_sampler_pseudo_nearest2_linear_3fx_f(sampler) bind(C)
+    subroutine mui_destroy_sampler_pseudo_n2_linear_3fx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_3fx_f
+    end subroutine mui_destroy_sampler_pseudo_n2_linear_3fx_f
 
-    subroutine mui_destroy_sampler_pseudo_nearest2_linear_3d_f(sampler) bind(C)
+    subroutine mui_destroy_sampler_pseudo_n2_linear_3d_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_3d_f
+    end subroutine mui_destroy_sampler_pseudo_n2_linear_3d_f
 
-    subroutine mui_destroy_sampler_pseudo_nearest2_linear_3dx_f(sampler) bind(C)
+    subroutine mui_destroy_sampler_pseudo_n2_linear_3dx_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_3dx_f
+    end subroutine mui_destroy_sampler_pseudo_n2_linear_3dx_f
 
-    subroutine mui_destroy_sampler_pseudo_nearest2_linear_3t_f(sampler) bind(C)
+    subroutine mui_destroy_sampler_pseudo_n2_linear_3t_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
-    end subroutine mui_destroy_sampler_pseudo_nearest2_linear_3t_f
+    end subroutine mui_destroy_sampler_pseudo_n2_linear_3t_f
 
-    !Pseudo-linear nearest neighbour interpolation sampler
+    !Pseudo nearest neighbour interpolation sampler
     subroutine mui_destroy_sampler_pseudo_nearest_neighbor_3f_f(sampler) bind(C)
       import :: c_ptr
       type(c_ptr), intent(in), value :: sampler
@@ -2233,7 +2233,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_3t_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: exact
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
     subroutine mui_fetch_pseudo_n2_linear_exact_3f_f(uniface,attr,point_1,point_2,point_3,t,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -2279,7 +2279,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_n2_linear_exact_3t_f
 
-    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
     subroutine mui_fetch_pseudo_n2_linear_gauss_3f_f(uniface,attr,point_1,point_2,point_3,t,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -2325,7 +2325,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_n2_linear_gauss_3t_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: mean
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
     subroutine mui_fetch_pseudo_n2_linear_mean_3f_f(uniface,attr,point_1,point_2,point_3,t,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -2371,7 +2371,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_n2_linear_mean_3t_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: sum
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
     subroutine mui_fetch_pseudo_n2_linear_sum_3f_f(uniface,attr,point_1,point_2,point_3,t,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -4157,7 +4157,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_nearest_neighbor_sum_3t_pair_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: exact
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
     subroutine mui_fetch_pseudo_n2_linear_exact_3f_pair_f(uniface,attr,point_1,point_2,point_3,t_1,t_2,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -4203,7 +4203,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_n2_linear_exact_3t_pair_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: gauss
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
     subroutine mui_fetch_pseudo_n2_linear_gauss_3f_pair_f(uniface,attr,point_1,point_2,point_3,t_1,t_2,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -4249,7 +4249,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_n2_linear_gauss_3t_pair_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: mean
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
     subroutine mui_fetch_pseudo_n2_linear_mean_3f_pair_f(uniface,attr,point_1,point_2,point_3,t_1,t_2,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float
@@ -4295,7 +4295,7 @@ module mui_3d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_pseudo_n2_linear_mean_3t_pair_f
 
-    !Spatial sampler: pseudo nearest neighbor linear; temporal sampler: sum
+    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
     subroutine mui_fetch_pseudo_n2_linear_sum_3f_pair_f(uniface,attr,point_1,point_2,point_3,t_1,t_2,&
     spatial_sampler,temporal_sampler,return_value) bind(C)
       import :: c_ptr,c_char,c_float

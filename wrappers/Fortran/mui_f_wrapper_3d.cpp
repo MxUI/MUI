@@ -847,23 +847,23 @@ void mui_destroy_sampler_nearest_neighbor_3t_f(mui_sampler_nearest_neighbor_3t* 
 }
 
 // Pseudo-linear n^2 interpolation sampler
-void mui_destroy_sampler_pseudo_nearest2_linear_3f_f(mui_sampler_pseudo_nearest_neighbor_3f* sampler) {
+void mui_destroy_sampler_pseudo_n2_linear_3f_f(mui_sampler_pseudo_n2_linear_3f* sampler) {
     delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_3fx_f(mui_sampler_pseudo_nearest_neighbor_3fx* sampler) {
+void mui_destroy_sampler_pseudo_n2_linear_3fx_f(mui_sampler_pseudo_n2_linear_3fx* sampler) {
     delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_3d_f(mui_sampler_pseudo_nearest_neighbor_3d* sampler) {
+void mui_destroy_sampler_pseudo_n2_linear_3d_f(mui_sampler_pseudo_n2_linear_3d* sampler) {
     delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_3dx_f(mui_sampler_pseudo_nearest_neighbor_3dx* sampler) {
+void mui_destroy_sampler_pseudo_n2_linear_3dx_f(mui_sampler_pseudo_n2_linear_3dx* sampler) {
     delete sampler;
 }
 
-void mui_destroy_sampler_pseudo_nearest2_linear_3t_f(mui_sampler_pseudo_nearest_neighbor_3t* sampler) {
+void mui_destroy_sampler_pseudo_n2_linear_3t_f(mui_sampler_pseudo_n2_linear_3t* sampler) {
     delete sampler;
 }
 
@@ -3117,7 +3117,7 @@ void mui_fetch_pseudo_nearest_neighbor_sum_3t_pair_f(mui_uniface_3t *uniface, co
             *spatial_sampler, *temporal_sampler));
 }
 
-// Spatial sampler: pseudo nearest neighbor linear; temporal sampler: exact
+// Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
 void mui_fetch_pseudo_n2_linear_exact_3f_pair_f(mui_uniface_3f *uniface, const char *attr, float* point_1, float* point_2, float* point_3,
         float* t, float* it, mui_sampler_pseudo_n2_linear_3f *spatial_sampler,
         mui_temporal_sampler_exact_3f *temporal_sampler, float *return_value) {
@@ -3153,7 +3153,7 @@ void mui_fetch_pseudo_n2_linear_exact_3t_pair_f(mui_uniface_3t *uniface, const c
             *spatial_sampler, *temporal_sampler));
 }
 
-// Spatial sampler: pseudo nearest neighbor linear; temporal sampler: gauss
+// Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
 void mui_fetch_pseudo_n2_linear_gauss_3f_pair_f(mui_uniface_3f *uniface, const char *attr, float* point_1, float* point_2, float* point_3,
         float* t, float* it, mui_sampler_pseudo_n2_linear_3f *spatial_sampler,
         mui_temporal_sampler_gauss_3f *temporal_sampler, float *return_value) {
@@ -3189,7 +3189,7 @@ void mui_fetch_pseudo_n2_linear_gauss_3t_pair_f(mui_uniface_3t *uniface, const c
             *spatial_sampler, *temporal_sampler));
 }
 
-// Spatial sampler: pseudo nearest neighbor linear; temporal sampler: mean
+// Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
 void mui_fetch_pseudo_n2_linear_mean_3f_pair_f(mui_uniface_3f *uniface, const char *attr, float* point_1, float* point_2, float* point_3,
         float* t, float* it, mui_sampler_pseudo_n2_linear_3f *spatial_sampler,
         mui_temporal_sampler_mean_3f *temporal_sampler, float *return_value) {
@@ -3225,7 +3225,7 @@ void mui_fetch_pseudo_n2_linear_mean_3t_pair_f(mui_uniface_3t *uniface, const ch
             *spatial_sampler, *temporal_sampler));
 }
 
-// Spatial sampler: pseudo nearest neighbor linear; temporal sampler: sum
+// Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
 void mui_fetch_pseudo_n2_linear_sum_3f_pair_f(mui_uniface_3f *uniface, const char *attr, float* point_1, float* point_2, float* point_3,
         float* t, float* it, mui_sampler_pseudo_n2_linear_3f *spatial_sampler,
         mui_temporal_sampler_sum_3f *temporal_sampler, float *return_value) {
