@@ -1062,6 +1062,347 @@ module mui_2d_f
     end subroutine mui_destroy_temporal_sampler_sum_2t_f
 
     !******************************************
+    !* Create algorithms                      *
+    !******************************************
+
+    !Fixed relaxation algorithm
+    subroutine mui_create_algorithm_fixed_relaxation_2f_f(algorithm, &
+        under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
+      import :: c_ptr,c_float,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float),intent(in) :: under_relaxation_factor
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_float), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_fixed_relaxation_2f_f
+
+    subroutine mui_create_algorithm_fixed_relaxation_2fx_f(algorithm, &
+        under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
+      import :: c_ptr,c_float,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float),intent(in) :: under_relaxation_factor
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_float), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_fixed_relaxation_2fx_f
+
+    subroutine mui_create_algorithm_fixed_relaxation_2d_f(algorithm, &
+        under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
+      import :: c_ptr,c_double,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double),intent(in) :: under_relaxation_factor
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_double), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_fixed_relaxation_2d_f
+
+    subroutine mui_create_algorithm_fixed_relaxation_2dx_f(algorithm, &
+        under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
+      import :: c_ptr,c_double,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double),intent(in) :: under_relaxation_factor
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_double), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_fixed_relaxation_2dx_f
+
+    subroutine mui_create_algorithm_fixed_relaxation_2t_f(algorithm, &
+        under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
+      import :: c_ptr,c_double,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double),intent(in) :: under_relaxation_factor
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_double), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_fixed_relaxation_2t_f
+
+    !Aitken's algorithm
+    subroutine mui_create_algorithm_aitken_2f_f(algorithm, &
+        under_relaxation_factor,under_relaxation_factor_max, &
+        communicator,points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
+      import :: c_ptr,c_float,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(in), target :: communicator(*)
+      real(kind=c_float),intent(in) :: under_relaxation_factor, &
+        under_relaxation_factor_max,res_l2_norm_nm1
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_float), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_aitken_2f_f
+
+    subroutine mui_create_algorithm_aitken_2fx_f(algorithm,               &
+        under_relaxation_factor,under_relaxation_factor_max,communicator, &
+        points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
+      import :: c_ptr,c_float,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(in), target :: communicator(*)
+      real(kind=c_float),intent(in) :: under_relaxation_factor, &
+        under_relaxation_factor_max,res_l2_norm_nm1
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_float), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_aitken_2fx_f
+
+    subroutine mui_create_algorithm_aitken_2d_f(algorithm,                &
+        under_relaxation_factor,under_relaxation_factor_max,communicator, &
+        points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
+      import :: c_ptr,c_double,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(in), target :: communicator(*)
+      real(kind=c_double),intent(in) :: under_relaxation_factor, &
+        under_relaxation_factor_max,res_l2_norm_nm1
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_double), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_aitken_2d_f
+
+    subroutine mui_create_algorithm_aitken_2dx_f(algorithm, &
+        under_relaxation_factor,under_relaxation_factor_max,communicator, &
+        points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
+      import :: c_ptr,c_double,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(in), target :: communicator(*)
+      real(kind=c_double),intent(in) :: under_relaxation_factor, &
+        under_relaxation_factor_max,res_l2_norm_nm1
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_double), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_aitken_2dx_f
+
+    subroutine mui_create_algorithm_aitken_2t_f(algorithm, &
+        under_relaxation_factor,under_relaxation_factor_max,communicator, &
+        points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
+      import :: c_ptr,c_double,c_int
+      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(in), target :: communicator(*)
+      real(kind=c_double),intent(in) :: under_relaxation_factor, &
+        under_relaxation_factor_max,res_l2_norm_nm1
+      integer(kind=c_int), intent(in), target :: pair_count
+      real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
+      real(c_double), intent(in), dimension(pair_count), target :: value_init
+    end subroutine mui_create_algorithm_aitken_2t_f
+
+    !******************************************
+    !* Aitken's functions for get info        *
+    !******************************************
+
+    !Aitken's get under relaxation factor functions
+    subroutine mui_aitken_get_under_relaxation_factor_2f_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2f_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2fx_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2fx_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2d_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2d_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2dx_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2dx_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2t_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2t_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2f_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2f_pair_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2fx_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2fx_pair_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2d_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2d_pair_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2dx_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2dx_pair_f
+
+    subroutine mui_aitken_get_under_relaxation_factor_2t_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_under_relaxation_factor_2t_pair_f
+
+    !Aitken's get residual L2 Norm functions
+    subroutine mui_aitken_get_residual_L2_Norm_2f_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2f_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2fx_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2fx_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2d_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2d_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2dx_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2dx_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2t_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2t_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2f_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2f_pair_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2fx_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2fx_pair_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2d_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2d_pair_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2dx_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2dx_pair_f
+
+    subroutine mui_aitken_get_residual_L2_Norm_2t_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(out), target :: algorithm(*)
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_aitken_get_residual_L2_Norm_2t_pair_f
+
+    !******************************************
+    !* Destroy algorithms                     *
+    !******************************************
+
+    subroutine mui_destroy_algorithm_fixed_relaxation_2f_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_fixed_relaxation_2f_f
+
+    subroutine mui_destroy_algorithm_fixed_relaxation_2fx_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_fixed_relaxation_2fx_f
+
+    subroutine mui_destroy_algorithm_fixed_relaxation_2d_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_fixed_relaxation_2d_f
+
+    subroutine mui_destroy_algorithm_fixed_relaxation_2dx_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_fixed_relaxation_2dx_f
+
+    subroutine mui_destroy_algorithm_fixed_relaxation_2t_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_fixed_relaxation_2t_f
+
+    subroutine mui_destroy_algorithm_aitken_2f_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_aitken_2f_f
+
+    subroutine mui_destroy_algorithm_aitken_2fx_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_aitken_2fx_f
+
+    subroutine mui_destroy_algorithm_aitken_2d_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_aitken_2d_f
+
+    subroutine mui_destroy_algorithm_aitken_2dx_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_aitken_2dx_f
+
+    subroutine mui_destroy_algorithm_aitken_2t_f(algorithm) bind(C)
+      import :: c_ptr
+      type(c_ptr), intent(in), value :: algorithm
+    end subroutine mui_destroy_algorithm_aitken_2t_f
+
+    !******************************************
     !* MUI functions for data push            *
     !******************************************
 
