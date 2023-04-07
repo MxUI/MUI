@@ -80,7 +80,7 @@ typedef struct mui_point_2t {
 	double point_2;
 } mui_point_2t;
 
-// C access typedefs for uniface and sampler types
+// C access typedefs for uniface and sampler types and algorithms
 typedef struct mui_uniface_2f mui_uniface_2f;
 typedef struct mui_uniface_2fx mui_uniface_2fx;
 typedef struct mui_uniface_2d mui_uniface_2d;
@@ -170,6 +170,18 @@ typedef struct mui_temporal_sampler_sum_2fx mui_temporal_sampler_sum_2fx;
 typedef struct mui_temporal_sampler_sum_2d mui_temporal_sampler_sum_2d;
 typedef struct mui_temporal_sampler_sum_2dx mui_temporal_sampler_sum_2dx;
 typedef struct mui_temporal_sampler_sum_2t mui_temporal_sampler_sum_2t;
+
+typedef struct mui_algorithm_fixed_relaxation_2f mui_algorithm_fixed_relaxation_2f;
+typedef struct mui_algorithm_fixed_relaxation_2fx mui_algorithm_fixed_relaxation_2fx;
+typedef struct mui_algorithm_fixed_relaxation_2d mui_algorithm_fixed_relaxation_2d;
+typedef struct mui_algorithm_fixed_relaxation_2dx mui_algorithm_fixed_relaxation_2dx;
+typedef struct mui_algorithm_fixed_relaxation_2t mui_algorithm_fixed_relaxation_2t;
+
+typedef struct mui_algorithm_aitken_2f mui_algorithm_aitken_2f;
+typedef struct mui_algorithm_aitken_2fx mui_algorithm_aitken_2fx;
+typedef struct mui_algorithm_aitken_2d mui_algorithm_aitken_2d;
+typedef struct mui_algorithm_aitken_2dx mui_algorithm_aitken_2dx;
+typedef struct mui_algorithm_aitken_2t mui_algorithm_aitken_2t;
 
 // MUI uniface creation
 mui_uniface_2f* mui_create_uniface_2f(const char *URI);
@@ -349,6 +361,62 @@ void mui_destroy_temporal_sampler_sum_2fx(mui_temporal_sampler_sum_2fx *sampler)
 void mui_destroy_temporal_sampler_sum_2d(mui_temporal_sampler_sum_2d *sampler);
 void mui_destroy_temporal_sampler_sum_2dx(mui_temporal_sampler_sum_2dx *sampler);
 void mui_destroy_temporal_sampler_sum_2t(mui_temporal_sampler_sum_2t *sampler);
+
+// MUI algorithms creation
+mui_algorithm_fixed_relaxation_2f* mui_create_algorithm_fixed_relaxation_2f(float under_relaxation_factor, mui_point_2f *points,
+		float *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_2fx* mui_create_algorithm_fixed_relaxation_2fx(float under_relaxation_factor, mui_point_2fx *points,
+		float *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_2d* mui_create_algorithm_fixed_relaxation_2d(double under_relaxation_factor, mui_point_2d *points,
+		double *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_2dx* mui_create_algorithm_fixed_relaxation_2dx(double under_relaxation_factor, mui_point_2dx *points,
+		double *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_2t* mui_create_algorithm_fixed_relaxation_2t(double under_relaxation_factor, mui_point_2t *points,
+		double *value_init, int pair_count);
+mui_algorithm_aitken_2f* mui_create_algorithm_aitken_2f(float under_relaxation_factor, float under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_2f *points, float *value_init, int pair_count, float res_l2_norm_nm1);
+mui_algorithm_aitken_2fx* mui_create_algorithm_aitken_2fx(float under_relaxation_factor, float under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_2fx *points, float *value_init, int pair_count, float res_l2_norm_nm1);
+mui_algorithm_aitken_2d* mui_create_algorithm_aitken_2d(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_2d *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+mui_algorithm_aitken_2dx* mui_create_algorithm_aitken_2dx(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_2dx *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+mui_algorithm_aitken_2t* mui_create_algorithm_aitken_2t(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_2t *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+
+// Aitken's algorithms functions for get info
+float mui_aitken_get_under_relaxation_factor_2f(mui_algorithm_aitken_2f *aitken, float t);
+float mui_aitken_get_under_relaxation_factor_2fx(mui_algorithm_aitken_2fx *aitken, float t);
+double mui_aitken_get_under_relaxation_factor_2d(mui_algorithm_aitken_2d *aitken, double t);
+double mui_aitken_get_under_relaxation_factor_2dx(mui_algorithm_aitken_2dx *aitken, double t);
+double mui_aitken_get_under_relaxation_factor_2t(mui_algorithm_aitken_2t *aitken, double t);
+float mui_aitken_get_under_relaxation_factor_2f_pair(mui_algorithm_aitken_2f *aitken, float t, float it);
+float mui_aitken_get_under_relaxation_factor_2fx_pair(mui_algorithm_aitken_2fx *aitken, float t, float it);
+double mui_aitken_get_under_relaxation_factor_2d_pair(mui_algorithm_aitken_2d *aitken, double t, double it);
+double mui_aitken_get_under_relaxation_factor_2dx_pair(mui_algorithm_aitken_2dx *aitken, double t, double it);
+double mui_aitken_get_under_relaxation_factor_2t_pair(mui_algorithm_aitken_2t *aitken, double t, double it);
+float mui_aitken_get_residual_L2_Norm_2f(mui_algorithm_aitken_2f *aitken, float t);
+float mui_aitken_get_residual_L2_Norm_2fx(mui_algorithm_aitken_2fx *aitken, float t);
+double mui_aitken_get_residual_L2_Norm_2d(mui_algorithm_aitken_2d *aitken, double t);
+double mui_aitken_get_residual_L2_Norm_2dx(mui_algorithm_aitken_2dx *aitken, double t);
+double mui_aitken_get_residual_L2_Norm_2t(mui_algorithm_aitken_2t *aitken, double t);
+float mui_aitken_get_residual_L2_Norm_2f_pair(mui_algorithm_aitken_2f *aitken, float t, float it);
+float mui_aitken_get_residual_L2_Norm_2fx_pair(mui_algorithm_aitken_2fx *aitken, float t, float it);
+double mui_aitken_get_residual_L2_Norm_2d_pair(mui_algorithm_aitken_2d *aitken, double t, double it);
+double mui_aitken_get_residual_L2_Norm_2dx_pair(mui_algorithm_aitken_2dx *aitken, double t, double it);
+double mui_aitken_get_residual_L2_Norm_2t_pair(mui_algorithm_aitken_2t *aitken, double t, double it);
+
+// MUI algorithms destruction
+void mui_destroy_algorithm_fixed_relaxation_2f(mui_algorithm_fixed_relaxation_2f *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_2fx(mui_algorithm_fixed_relaxation_2fx *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_2d(mui_algorithm_fixed_relaxation_2d *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_2dx(mui_algorithm_fixed_relaxation_2dx *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_2t(mui_algorithm_fixed_relaxation_2t *algorithm);
+void mui_destroy_algorithm_aitken_2f(mui_algorithm_aitken_2f *algorithm);
+void mui_destroy_algorithm_aitken_2fx(mui_algorithm_aitken_2fx *algorithm);
+void mui_destroy_algorithm_aitken_2d(mui_algorithm_aitken_2d *algorithm);
+void mui_destroy_algorithm_aitken_2dx(mui_algorithm_aitken_2dx *algorithm);
+void mui_destroy_algorithm_aitken_2t(mui_algorithm_aitken_2t *algorithm);
 
 // MUI functions for data push
 void mui_push_2f(mui_uniface_2f *uniface, const char *attr, mui_point_2f point, float value);

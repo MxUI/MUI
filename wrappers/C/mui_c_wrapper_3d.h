@@ -85,7 +85,7 @@ typedef struct mui_point_3t {
 	double point_3;
 } mui_point_3t;
 
-// C access typedefs for uniface and sampler types
+// C access typedefs for uniface and sampler types and algorithms
 typedef struct mui_uniface_3f mui_uniface_3f;
 typedef struct mui_uniface_3fx mui_uniface_3fx;
 typedef struct mui_uniface_3d mui_uniface_3d;
@@ -175,6 +175,18 @@ typedef struct mui_temporal_sampler_sum_3fx mui_temporal_sampler_sum_3fx;
 typedef struct mui_temporal_sampler_sum_3d mui_temporal_sampler_sum_3d;
 typedef struct mui_temporal_sampler_sum_3dx mui_temporal_sampler_sum_3dx;
 typedef struct mui_temporal_sampler_sum_3t mui_temporal_sampler_sum_3t;
+
+typedef struct mui_algorithm_fixed_relaxation_3f mui_algorithm_fixed_relaxation_3f;
+typedef struct mui_algorithm_fixed_relaxation_3fx mui_algorithm_fixed_relaxation_3fx;
+typedef struct mui_algorithm_fixed_relaxation_3d mui_algorithm_fixed_relaxation_3d;
+typedef struct mui_algorithm_fixed_relaxation_3dx mui_algorithm_fixed_relaxation_3dx;
+typedef struct mui_algorithm_fixed_relaxation_3t mui_algorithm_fixed_relaxation_3t;
+
+typedef struct mui_algorithm_aitken_3f mui_algorithm_aitken_3f;
+typedef struct mui_algorithm_aitken_3fx mui_algorithm_aitken_3fx;
+typedef struct mui_algorithm_aitken_3d mui_algorithm_aitken_3d;
+typedef struct mui_algorithm_aitken_3dx mui_algorithm_aitken_3dx;
+typedef struct mui_algorithm_aitken_3t mui_algorithm_aitken_3t;
 
 // MUI uniface creation
 mui_uniface_3f* mui_create_uniface_3f(const char *URI);
@@ -354,6 +366,62 @@ void mui_destroy_temporal_sampler_sum_3fx(mui_temporal_sampler_sum_3fx *sampler)
 void mui_destroy_temporal_sampler_sum_3d(mui_temporal_sampler_sum_3d *sampler);
 void mui_destroy_temporal_sampler_sum_3dx(mui_temporal_sampler_sum_3dx *sampler);
 void mui_destroy_temporal_sampler_sum_3t(mui_temporal_sampler_sum_3t *sampler);
+
+// MUI algorithms creation
+mui_algorithm_fixed_relaxation_3f* mui_create_algorithm_fixed_relaxation_3f(float under_relaxation_factor, mui_point_3f *points,
+		float *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_3fx* mui_create_algorithm_fixed_relaxation_3fx(float under_relaxation_factor, mui_point_3fx *points,
+		float *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_3d* mui_create_algorithm_fixed_relaxation_3d(double under_relaxation_factor, mui_point_3d *points,
+		double *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_3dx* mui_create_algorithm_fixed_relaxation_3dx(double under_relaxation_factor, mui_point_3dx *points,
+		double *value_init, int pair_count);
+mui_algorithm_fixed_relaxation_3t* mui_create_algorithm_fixed_relaxation_3t(double under_relaxation_factor, mui_point_3t *points,
+		double *value_init, int pair_count);
+mui_algorithm_aitken_3f* mui_create_algorithm_aitken_3f(float under_relaxation_factor, float under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_3f *points, float *value_init, int pair_count, float res_l2_norm_nm1);
+mui_algorithm_aitken_3fx* mui_create_algorithm_aitken_3fx(float under_relaxation_factor, float under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_3fx *points, float *value_init, int pair_count, float res_l2_norm_nm1);
+mui_algorithm_aitken_3d* mui_create_algorithm_aitken_3d(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_3d *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+mui_algorithm_aitken_3dx* mui_create_algorithm_aitken_3dx(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_3dx *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+mui_algorithm_aitken_3t* mui_create_algorithm_aitken_3t(double under_relaxation_factor, double under_relaxation_factor_max,
+		MPI_Comm communicator, mui_point_3t *points, double *value_init, int pair_count, double res_l2_norm_nm1);
+
+// Aitken's algorithms functions for get info
+float mui_aitken_get_under_relaxation_factor_3f(mui_algorithm_aitken_3f *aitken, float t);
+float mui_aitken_get_under_relaxation_factor_3fx(mui_algorithm_aitken_3fx *aitken, float t);
+double mui_aitken_get_under_relaxation_factor_3d(mui_algorithm_aitken_3d *aitken, double t);
+double mui_aitken_get_under_relaxation_factor_3dx(mui_algorithm_aitken_3dx *aitken, double t);
+double mui_aitken_get_under_relaxation_factor_3t(mui_algorithm_aitken_3t *aitken, double t);
+float mui_aitken_get_under_relaxation_factor_3f_pair(mui_algorithm_aitken_3f *aitken, float t, float it);
+float mui_aitken_get_under_relaxation_factor_3fx_pair(mui_algorithm_aitken_3fx *aitken, float t, float it);
+double mui_aitken_get_under_relaxation_factor_3d_pair(mui_algorithm_aitken_3d *aitken, double t, double it);
+double mui_aitken_get_under_relaxation_factor_3dx_pair(mui_algorithm_aitken_3dx *aitken, double t, double it);
+double mui_aitken_get_under_relaxation_factor_3t_pair(mui_algorithm_aitken_3t *aitken, double t, double it);
+float mui_aitken_get_residual_L2_Norm_3f(mui_algorithm_aitken_3f *aitken, float t);
+float mui_aitken_get_residual_L2_Norm_3fx(mui_algorithm_aitken_3fx *aitken, float t);
+double mui_aitken_get_residual_L2_Norm_3d(mui_algorithm_aitken_3d *aitken, double t);
+double mui_aitken_get_residual_L2_Norm_3dx(mui_algorithm_aitken_3dx *aitken, double t);
+double mui_aitken_get_residual_L2_Norm_3t(mui_algorithm_aitken_3t *aitken, double t);
+float mui_aitken_get_residual_L2_Norm_3f_pair(mui_algorithm_aitken_3f *aitken, float t, float it);
+float mui_aitken_get_residual_L2_Norm_3fx_pair(mui_algorithm_aitken_3fx *aitken, float t, float it);
+double mui_aitken_get_residual_L2_Norm_3d_pair(mui_algorithm_aitken_3d *aitken, double t, double it);
+double mui_aitken_get_residual_L2_Norm_3dx_pair(mui_algorithm_aitken_3dx *aitken, double t, double it);
+double mui_aitken_get_residual_L2_Norm_3t_pair(mui_algorithm_aitken_3t *aitken, double t, double it);
+
+// MUI algorithms destruction
+void mui_destroy_algorithm_fixed_relaxation_3f(mui_algorithm_fixed_relaxation_3f *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_3fx(mui_algorithm_fixed_relaxation_3fx *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_3d(mui_algorithm_fixed_relaxation_3d *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_3dx(mui_algorithm_fixed_relaxation_3dx *algorithm);
+void mui_destroy_algorithm_fixed_relaxation_3t(mui_algorithm_fixed_relaxation_3t *algorithm);
+void mui_destroy_algorithm_aitken_3f(mui_algorithm_aitken_3f *algorithm);
+void mui_destroy_algorithm_aitken_3fx(mui_algorithm_aitken_3fx *algorithm);
+void mui_destroy_algorithm_aitken_3d(mui_algorithm_aitken_3d *algorithm);
+void mui_destroy_algorithm_aitken_3dx(mui_algorithm_aitken_3dx *algorithm);
+void mui_destroy_algorithm_aitken_3t(mui_algorithm_aitken_3t *algorithm);
 
 // MUI functions for data push
 void mui_push_3f(mui_uniface_3f *uniface, const char *attr, mui_point_3f point, float value);

@@ -224,6 +224,24 @@ typedef mui::temporal_sampler_sum3dx mui_temporal_sampler_sum_3dx;
 // Summation temporal sampler typedefs for template creation (recommended)
 typedef mui::temporal_sampler_sum<mui::mui_c_wrapper_3D> mui_temporal_sampler_sum_3t;
 
+// Fixed relaxation algorithm typedefs for specialism creation
+typedef mui::algo_fixed_relaxation3f mui_algorithm_fixed_relaxation_3f;
+typedef mui::algo_fixed_relaxation3fx mui_algorithm_fixed_relaxation_3fx;
+typedef mui::algo_fixed_relaxation3d mui_algorithm_fixed_relaxation_3d;
+typedef mui::algo_fixed_relaxation3dx mui_algorithm_fixed_relaxation_3dx;
+
+// Fixed relaxation algorithm typedefs for template creation (recommended)
+typedef mui::algo_fixed_relaxation<mui::mui_c_wrapper_3D> mui_algorithm_fixed_relaxation_3t;
+
+// Aitken's algorithm typedefs for specialism creation
+typedef mui::algo_aitken3f mui_algorithm_aitken_3f;
+typedef mui::algo_aitken3fx mui_algorithm_aitken_3fx;
+typedef mui::algo_aitken3d mui_algorithm_aitken_3d;
+typedef mui::algo_aitken3dx mui_algorithm_aitken_3dx;
+
+// Aitken's algorithm typedefs for template creation (recommended)
+typedef mui::algo_aitken<mui::mui_c_wrapper_3D> mui_algorithm_aitken_3t;
+
 /****************************************
  * Create MUI interfaces                 *
  ****************************************/
@@ -640,9 +658,9 @@ mui_sampler_rbf_3t* mui_create_sampler_rbf_3t(double r, mui_point_3t *points, in
 	return new mui_sampler_rbf_3t(static_cast<mui::mui_c_wrapper_3D::REAL>(r), pts, basis_func,
 			static_cast<bool>(conservative), static_cast<bool>(smoothFunc), static_cast<bool>(writeMatrix),
 			std::string(writeFileAddress), static_cast<mui::mui_c_wrapper_3D::REAL>(cutoff),
-			static_cast<mui::mui_c_wrapper_1D::REAL>(cg_solve_tol),
-			static_cast<mui::mui_c_wrapper_1D::INT>(cg_solve_it), static_cast<mui::mui_c_wrapper_1D::INT>(pou_size),
-			static_cast<mui::mui_c_wrapper_1D::INT>(precond), communicator);
+			static_cast<mui::mui_c_wrapper_3D::REAL>(cg_solve_tol),
+			static_cast<mui::mui_c_wrapper_3D::INT>(cg_solve_it), static_cast<mui::mui_c_wrapper_3D::INT>(pou_size),
+			static_cast<mui::mui_c_wrapper_3D::INT>(precond), communicator);
 }
 
 /*******************************************
@@ -1034,6 +1052,344 @@ void mui_destroy_temporal_sampler_sum_3dx(mui_temporal_sampler_sum_3dx *sampler)
 
 void mui_destroy_temporal_sampler_sum_3t(mui_temporal_sampler_sum_3t *sampler) {
 	delete sampler;
+}
+
+/*******************************************
+ * Create algorithms                       *
+ *******************************************/
+
+// Fixed relaxation algorithm
+mui_algorithm_fixed_relaxation_3f* mui_create_algorithm_fixed_relaxation_3f(float under_relaxation_factor = 1.0, mui_point_3f *points = nullptr, float *value_init = nullptr, int pair_count = 0) {
+
+	std::vector<std::pair<mui::point3f, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3f, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3f pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_fixed_relaxation_3f(under_relaxation_factor, pts_value_init);
+}
+
+mui_algorithm_fixed_relaxation_3fx* mui_create_algorithm_fixed_relaxation_3fx(float under_relaxation_factor = 1.0, mui_point_3fx *points = nullptr, float *value_init = nullptr, int pair_count = 0) {
+
+	std::vector<std::pair<mui::point3fx, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3fx, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3fx pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_fixed_relaxation_3fx(under_relaxation_factor, pts_value_init);
+}
+
+mui_algorithm_fixed_relaxation_3d* mui_create_algorithm_fixed_relaxation_3d(double under_relaxation_factor = 1.0, mui_point_3d *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
+
+	std::vector<std::pair<mui::point3d, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3d, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3d pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_fixed_relaxation_3d(under_relaxation_factor, pts_value_init);
+}
+
+mui_algorithm_fixed_relaxation_3dx* mui_create_algorithm_fixed_relaxation_3dx(double under_relaxation_factor = 1.0, mui_point_3dx *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
+
+	std::vector<std::pair<mui::point3dx, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3dx, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3dx pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_fixed_relaxation_3dx(under_relaxation_factor, pts_value_init);
+}
+
+mui_algorithm_fixed_relaxation_3t* mui_create_algorithm_fixed_relaxation_3t(double under_relaxation_factor = 1.0, mui_point_3t *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
+
+	std::vector<std::pair<mui::mui_c_wrapper_3D::point_type, mui::mui_c_wrapper_3D::REAL>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::mui_c_wrapper_3D::point_type, mui::mui_c_wrapper_3D::REAL>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::mui_c_wrapper_3D::point_type pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_fixed_relaxation_3t(static_cast<mui::mui_c_wrapper_3D::REAL>(under_relaxation_factor), pts_value_init);
+}
+
+// Aitken's algorithm
+mui_algorithm_aitken_3f* mui_create_algorithm_aitken_3f(float under_relaxation_factor = 1.0, float under_relaxation_factor_max = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_3f *points = nullptr, float *value_init = nullptr, int pair_count = 0, float res_l2_norm_nm1 = 0.0) {
+
+	std::vector<std::pair<mui::point3f, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3f, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3f pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_aitken_3f(under_relaxation_factor, under_relaxation_factor_max, communicator, pts_value_init, res_l2_norm_nm1);
+}
+
+mui_algorithm_aitken_3fx* mui_create_algorithm_aitken_3fx(float under_relaxation_factor = 1.0, float under_relaxation_factor_max = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_3fx *points = nullptr, float *value_init = nullptr, int pair_count = 0, float res_l2_norm_nm1 = 0.0) {
+
+	std::vector<std::pair<mui::point3fx, float>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3fx, float>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3fx pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_aitken_3fx(under_relaxation_factor, under_relaxation_factor_max, communicator, pts_value_init, res_l2_norm_nm1);
+}
+
+mui_algorithm_aitken_3d* mui_create_algorithm_aitken_3d(double under_relaxation_factor = 1.0, double under_relaxation_factor_max = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_3d *points = nullptr, double *value_init = nullptr, int pair_count = 0, double res_l2_norm_nm1 = 0.0) {
+
+	std::vector<std::pair<mui::point3d, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3d, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3d pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_aitken_3d(under_relaxation_factor, under_relaxation_factor_max, communicator, pts_value_init, res_l2_norm_nm1);
+}
+
+mui_algorithm_aitken_3dx* mui_create_algorithm_aitken_3dx(double under_relaxation_factor = 1.0, double under_relaxation_factor_max = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_3dx *points = nullptr, double *value_init = nullptr, int pair_count = 0, double res_l2_norm_nm1 = 0.0) {
+
+	std::vector<std::pair<mui::point3dx, double>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::point3dx, double>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::point3dx pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_aitken_3dx(under_relaxation_factor, under_relaxation_factor_max, communicator, pts_value_init, res_l2_norm_nm1);
+}
+
+mui_algorithm_aitken_3t* mui_create_algorithm_aitken_3t(double under_relaxation_factor = 1.0, double under_relaxation_factor_max = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_3t *points = nullptr, double *value_init = nullptr, int pair_count = 0, double res_l2_norm_nm1 = 0.0) {
+
+	std::vector<std::pair<mui::mui_c_wrapper_3D::point_type, mui::mui_c_wrapper_3D::REAL>> pts_value_init;
+
+	if ((pair_count == 0) || (points == nullptr) || (value_init == nullptr)) {
+		pts_value_init = std::vector<std::pair<mui::mui_c_wrapper_3D::point_type, mui::mui_c_wrapper_3D::REAL>>();
+	} else {
+		pts_value_init.resize(pair_count);
+		for (size_t i = 0; i < pair_count; i++) {
+			mui::mui_c_wrapper_3D::point_type pts;
+			pts[0] = points[i].point_1;
+			pts[1] = points[i].point_2;
+			pts[2] = points[i].point_3;
+			pts_value_init[i] = std::make_pair(pts,value_init[i]);
+		}
+	}
+
+	return new mui_algorithm_aitken_3t(static_cast<mui::mui_c_wrapper_3D::REAL>(under_relaxation_factor), static_cast<mui::mui_c_wrapper_3D::REAL>(under_relaxation_factor_max), communicator, pts_value_init, static_cast<mui::mui_c_wrapper_3D::REAL>(res_l2_norm_nm1));
+}
+
+/*******************************************
+ * Aitken's functions for get info         *
+ *******************************************/
+
+// Aitken's get under relaxation factor functions
+float mui_aitken_get_under_relaxation_factor_3f(mui_algorithm_aitken_3f *aitken, float t) {
+	return aitken->get_under_relaxation_factor(t);
+}
+
+float mui_aitken_get_under_relaxation_factor_3fx(mui_algorithm_aitken_3fx *aitken, float t) {
+	return aitken->get_under_relaxation_factor(t);
+}
+
+double mui_aitken_get_under_relaxation_factor_3d(mui_algorithm_aitken_3d *aitken, double t) {
+	return aitken->get_under_relaxation_factor(t);
+}
+
+double mui_aitken_get_under_relaxation_factor_3dx(mui_algorithm_aitken_3dx *aitken, double t) {
+	return aitken->get_under_relaxation_factor(t);
+}
+
+double mui_aitken_get_under_relaxation_factor_3t(mui_algorithm_aitken_3t *aitken, double t) {
+	return aitken->get_under_relaxation_factor(static_cast<mui::mui_c_wrapper_3D::time_type>(t));
+}
+
+float mui_aitken_get_under_relaxation_factor_3f_pair(mui_algorithm_aitken_3f *aitken, float t, float it) {
+	return aitken->get_under_relaxation_factor(t, it);
+}
+
+float mui_aitken_get_under_relaxation_factor_3fx_pair(mui_algorithm_aitken_3fx *aitken, float t, float it) {
+	return aitken->get_under_relaxation_factor(t, it);
+}
+
+double mui_aitken_get_under_relaxation_factor_3d_pair(mui_algorithm_aitken_3d *aitken, double t, double it) {
+	return aitken->get_under_relaxation_factor(t, it);
+}
+
+double mui_aitken_get_under_relaxation_factor_3dx_pair(mui_algorithm_aitken_3dx *aitken, double t, double it) {
+	return aitken->get_under_relaxation_factor(t, it);
+}
+
+double mui_aitken_get_under_relaxation_factor_3t_pair(mui_algorithm_aitken_3t *aitken, double t, double it) {
+	return aitken->get_under_relaxation_factor(static_cast<mui::mui_c_wrapper_3D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_3D::iterator_type>(it));
+}
+
+// Aitken's get under relaxation factor functions
+float mui_aitken_get_residual_L2_Norm_3f(mui_algorithm_aitken_3f *aitken, float t) {
+	return aitken->get_residual_L2_Norm(t);
+}
+
+float mui_aitken_get_residual_L2_Norm_3fx(mui_algorithm_aitken_3fx *aitken, float t) {
+	return aitken->get_residual_L2_Norm(t);
+}
+
+double mui_aitken_get_residual_L2_Norm_3d(mui_algorithm_aitken_3d *aitken, double t) {
+	return aitken->get_residual_L2_Norm(t);
+}
+
+double mui_aitken_get_residual_L2_Norm_3dx(mui_algorithm_aitken_3dx *aitken, double t) {
+	return aitken->get_residual_L2_Norm(t);
+}
+
+double mui_aitken_get_residual_L2_Norm_3t(mui_algorithm_aitken_3t *aitken, double t) {
+	return aitken->get_residual_L2_Norm(static_cast<mui::mui_c_wrapper_3D::time_type>(t));
+}
+
+float mui_aitken_get_residual_L2_Norm_3f_pair(mui_algorithm_aitken_3f *aitken, float t, float it) {
+	return aitken->get_residual_L2_Norm(t, it);
+}
+
+float mui_aitken_get_residual_L2_Norm_3fx_pair(mui_algorithm_aitken_3fx *aitken, float t, float it) {
+	return aitken->get_residual_L2_Norm(t, it);
+}
+
+double mui_aitken_get_residual_L2_Norm_3d_pair(mui_algorithm_aitken_3d *aitken, double t, double it) {
+	return aitken->get_residual_L2_Norm(t, it);
+}
+
+double mui_aitken_get_residual_L2_Norm_3dx_pair(mui_algorithm_aitken_3dx *aitken, double t, double it) {
+	return aitken->get_residual_L2_Norm(t, it);
+}
+
+double mui_aitken_get_residual_L2_Norm_3t_pair(mui_algorithm_aitken_3t *aitken, double t, double it) {
+	return aitken->get_residual_L2_Norm(static_cast<mui::mui_c_wrapper_3D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_3D::iterator_type>(it));
+}
+
+/*******************************************
+ * Destroy algorithms                      *
+ *******************************************/
+
+void mui_destroy_algorithm_fixed_relaxation_3f(mui_algorithm_fixed_relaxation_3f *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_3fx(mui_algorithm_fixed_relaxation_3fx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_3d(mui_algorithm_fixed_relaxation_3d *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_3dx(mui_algorithm_fixed_relaxation_3dx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_fixed_relaxation_3t(mui_algorithm_fixed_relaxation_3t *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_3f(mui_algorithm_aitken_3f *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_3fx(mui_algorithm_aitken_3fx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_3d(mui_algorithm_aitken_3d *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_3dx(mui_algorithm_aitken_3dx *algorithm) {
+	delete algorithm;
+}
+
+void mui_destroy_algorithm_aitken_3t(mui_algorithm_aitken_3t *algorithm) {
+	delete algorithm;
 }
 
 /******************************************
