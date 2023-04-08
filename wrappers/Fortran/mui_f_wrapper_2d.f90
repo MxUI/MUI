@@ -5308,7 +5308,7 @@ module mui_2d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_fixed_relaxation_2t_f
 
-!    !Spatial sampler: exact; temporal sampler: gauss
+!    !Spatial sampler: exact; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_exact_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5349,7 +5349,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_gauss_2t_f
 !
-!    !Spatial sampler: exact; temporal sampler: mean
+!    !Spatial sampler: exact; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_exact_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5390,7 +5390,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_mean_2t_f
 !
-!    !Spatial sampler: exact; temporal sampler: sum
+!    !Spatial sampler: exact; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_exact_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5431,7 +5431,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_sum_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: exact
+!    !Spatial sampler: gauss; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5472,7 +5472,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_exact_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: gauss
+!    !Spatial sampler: gauss; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5513,7 +5513,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_gauss_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: mean
+!    !Spatial sampler: gauss; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5554,7 +5554,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_mean_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: sum
+!    !Spatial sampler: gauss; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -5595,7 +5595,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_sum_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: exact
+!    !Spatial sampler: moving average; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5641,7 +5641,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_exact_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: gauss
+!    !Spatial sampler: moving average; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5687,7 +5687,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_gauss_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: mean
+!    !Spatial sampler: moving average; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5733,7 +5733,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_mean_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: sum
+!    !Spatial sampler: moving average; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5779,7 +5779,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_sum_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: nearest neighbor; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5825,7 +5825,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_exact_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: nearest neighbor; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5871,7 +5871,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_gauss_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: nearest neighbor; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5917,7 +5917,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_mean_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: nearest neighbor; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -5963,7 +5963,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_sum_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_exact_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6009,7 +6009,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6055,7 +6055,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_mean_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6101,7 +6101,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_mean_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_sum_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6147,7 +6147,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_sum_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_exact_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6193,7 +6193,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_exact_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_gauss_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6239,7 +6239,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_gauss_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_mean_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6285,7 +6285,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_mean_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_sum_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6331,7 +6331,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_sum_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: exact
+!    !Spatial sampler: shepard quintic; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6377,7 +6377,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_exact_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: gauss
+!    !Spatial sampler: shepard quintic; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6423,7 +6423,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_gauss_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: mean
+!    !Spatial sampler: shepard quintic; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6469,7 +6469,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_mean_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: sum
+!    !Spatial sampler: shepard quintic; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6515,7 +6515,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_sum_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: exact
+!    !Spatial sampler: sph-derived quintic; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6561,7 +6561,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_exact_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss
+!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6607,7 +6607,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_gauss_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: mean
+!    !Spatial sampler: sph-derived quintic; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6653,7 +6653,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_mean_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: sum
+!    !Spatial sampler: sph-derived quintic; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6699,7 +6699,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_sum_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: exact
+!    !Spatial sampler: summation quintic; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6745,7 +6745,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_exact_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: gauss
+!    !Spatial sampler: summation quintic; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6791,7 +6791,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_gauss_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: mean
+!    !Spatial sampler: summation quintic; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6837,7 +6837,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_mean_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: sum
+!    !Spatial sampler: summation quintic; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6883,7 +6883,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_sum_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: exact
+!    !Spatial sampler: radial basis function; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6929,7 +6929,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_exact_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: gauss
+!    !Spatial sampler: radial basis function; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -6975,7 +6975,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_gauss_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: mean
+!    !Spatial sampler: radial basis function; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7021,7 +7021,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_mean_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: sum
+!    !Spatial sampler: radial basis function; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7114,7 +7114,7 @@ module mui_2d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_aitken_2t_f
 
-!    !Spatial sampler: exact; temporal sampler: gauss
+!    !Spatial sampler: exact; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_exact_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7155,7 +7155,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_gauss_2t_f
 !
-!    !Spatial sampler: exact; temporal sampler: mean
+!    !Spatial sampler: exact; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_exact_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7196,7 +7196,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_mean_2t_f
 !
-!    !Spatial sampler: exact; temporal sampler: sum
+!    !Spatial sampler: exact; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_exact_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7237,7 +7237,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_sum_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: exact
+!    !Spatial sampler: gauss; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_gauss_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7278,7 +7278,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_exact_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: gauss
+!    !Spatial sampler: gauss; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_gauss_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7319,7 +7319,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_gauss_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: mean
+!    !Spatial sampler: gauss; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_gauss_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7360,7 +7360,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_mean_2t_f
 !
-!    !Spatial sampler: gauss; temporal sampler: sum
+!    !Spatial sampler: gauss; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_gauss_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
 !      type(c_ptr), intent(in), value :: uniface,spatial_sampler,temporal_sampler
@@ -7401,7 +7401,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_sum_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: exact
+!    !Spatial sampler: moving average; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_moving_average_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7447,7 +7447,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_exact_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: gauss
+!    !Spatial sampler: moving average; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_moving_average_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7493,7 +7493,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_gauss_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: mean
+!    !Spatial sampler: moving average; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_moving_average_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7539,7 +7539,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_mean_2t_f
 !
-!    !Spatial sampler: moving average; temporal sampler: sum
+!    !Spatial sampler: moving average; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_moving_average_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7585,7 +7585,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_sum_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: nearest neighbor; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7631,7 +7631,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_exact_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: nearest neighbor; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7677,7 +7677,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_gauss_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: nearest neighbor; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7723,7 +7723,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_mean_2t_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: nearest neighbor; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7769,7 +7769,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_sum_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_exact_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7815,7 +7815,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7861,7 +7861,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_mean_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7907,7 +7907,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_mean_2t_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_sum_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7953,7 +7953,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_sum_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_exact_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -7999,7 +7999,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_exact_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_gauss_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8045,7 +8045,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_gauss_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_mean_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8091,7 +8091,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_mean_2t_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_sum_2f_f(uniface,attr,point_1,point_2,t,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8137,7 +8137,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_sum_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: exact
+!    !Spatial sampler: shepard quintic; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8183,7 +8183,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_exact_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: gauss
+!    !Spatial sampler: shepard quintic; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8229,7 +8229,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_gauss_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: mean
+!    !Spatial sampler: shepard quintic; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8275,7 +8275,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_mean_2t_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: sum
+!    !Spatial sampler: shepard quintic; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8321,7 +8321,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_sum_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: exact
+!    !Spatial sampler: sph-derived quintic; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8367,7 +8367,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_exact_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss
+!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8413,7 +8413,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_gauss_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: mean
+!    !Spatial sampler: sph-derived quintic; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8459,7 +8459,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_mean_2t_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: sum
+!    !Spatial sampler: sph-derived quintic; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8505,7 +8505,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_sum_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: exact
+!    !Spatial sampler: summation quintic; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8551,7 +8551,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_exact_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: gauss
+!    !Spatial sampler: summation quintic; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8597,7 +8597,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_gauss_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: mean
+!    !Spatial sampler: summation quintic; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8643,7 +8643,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_mean_2t_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: sum
+!    !Spatial sampler: summation quintic; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8689,7 +8689,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_sum_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: exact
+!    !Spatial sampler: radial basis function; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_rbf_exact_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8735,7 +8735,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_exact_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: gauss
+!    !Spatial sampler: radial basis function; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_rbf_gauss_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8781,7 +8781,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_gauss_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: mean
+!    !Spatial sampler: radial basis function; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_rbf_mean_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8827,7 +8827,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_mean_2t_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: sum
+!    !Spatial sampler: radial basis function; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_rbf_sum_2f_f(uniface,attr,point_1,point_2,t,spatial_sampler,temporal_sampler, &
 !      return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8923,7 +8923,7 @@ module mui_2d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_fixed_relaxation_2t_pair_f
 
-!    !Spatial sampler: exact; temporal sampler: gauss
+!    !Spatial sampler: exact; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_exact_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -8969,7 +8969,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_gauss_2t_pair_f
 !
-!    !Spatial sampler: exact; temporal sampler: mean
+!    !Spatial sampler: exact; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_exact_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9015,7 +9015,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_mean_2t_pair_f
 !
-!    !Spatial sampler: exact; temporal sampler: sum
+!    !Spatial sampler: exact; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_exact_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9061,7 +9061,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_sum_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: exact
+!    !Spatial sampler: gauss; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9107,7 +9107,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_exact_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: gauss
+!    !Spatial sampler: gauss; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9153,7 +9153,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_gauss_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: mean
+!    !Spatial sampler: gauss; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9199,7 +9199,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_mean_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: sum
+!    !Spatial sampler: gauss; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_gauss_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9245,7 +9245,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_sum_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: exact
+!    !Spatial sampler: moving average; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9291,7 +9291,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_exact_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: gauss
+!    !Spatial sampler: moving average; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9337,7 +9337,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_gauss_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: mean
+!    !Spatial sampler: moving average; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9383,7 +9383,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_mean_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: sum
+!    !Spatial sampler: moving average; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_moving_average_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9429,7 +9429,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_sum_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: nearest neighbor; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9475,7 +9475,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_exact_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: nearest neighbor; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9521,7 +9521,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_gauss_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: nearest neighbor; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9567,7 +9567,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_mean_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: nearest neighbor; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_nearest_neighbor_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9613,7 +9613,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_sum_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9659,7 +9659,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9705,7 +9705,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9751,7 +9751,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_mean_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_nearest_neighbor_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9797,7 +9797,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_sum_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9843,7 +9843,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_exact_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9889,7 +9889,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_gauss_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9935,7 +9935,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_mean_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_pseudo_n2_linear_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -9981,7 +9981,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_sum_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: exact
+!    !Spatial sampler: shepard quintic; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10027,7 +10027,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_exact_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: gauss
+!    !Spatial sampler: shepard quintic; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10073,7 +10073,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_gauss_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: mean
+!    !Spatial sampler: shepard quintic; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10119,7 +10119,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_mean_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: sum
+!    !Spatial sampler: shepard quintic; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_shepard_quintic_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10165,7 +10165,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_sum_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: exact
+!    !Spatial sampler: sph-derived quintic; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10211,7 +10211,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_exact_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss
+!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10257,7 +10257,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_gauss_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: mean
+!    !Spatial sampler: sph-derived quintic; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10303,7 +10303,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_mean_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: sum
+!    !Spatial sampler: sph-derived quintic; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_sph_quintic_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10349,7 +10349,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_sum_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: exact
+!    !Spatial sampler: summation quintic; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10395,7 +10395,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_exact_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: gauss
+!    !Spatial sampler: summation quintic; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10441,7 +10441,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_gauss_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: mean
+!    !Spatial sampler: summation quintic; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10487,7 +10487,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_mean_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: sum
+!    !Spatial sampler: summation quintic; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_sum_quintic_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10533,7 +10533,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_sum_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: exact
+!    !Spatial sampler: radial basis function; temporal sampler: exact; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10579,7 +10579,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_exact_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: gauss
+!    !Spatial sampler: radial basis function; temporal sampler: gauss; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10625,7 +10625,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_gauss_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: mean
+!    !Spatial sampler: radial basis function; temporal sampler: mean; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10671,7 +10671,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_mean_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: sum
+!    !Spatial sampler: radial basis function; temporal sampler: sum; algorithm: fixed relaxation
 !    subroutine mui_fetch_rbf_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10763,7 +10763,7 @@ module mui_2d_f
       real(kind=c_double), intent(out) :: return_value
     end subroutine mui_fetch_exact_exact_aitken_2t_pair_f
 
-!    !Spatial sampler: exact; temporal sampler: gauss
+!    !Spatial sampler: exact; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_exact_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10809,7 +10809,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_gauss_2t_pair_f
 !
-!    !Spatial sampler: exact; temporal sampler: mean
+!    !Spatial sampler: exact; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_exact_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10855,7 +10855,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_mean_2t_pair_f
 !
-!    !Spatial sampler: exact; temporal sampler: sum
+!    !Spatial sampler: exact; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_exact_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10901,7 +10901,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_exact_sum_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: exact
+!    !Spatial sampler: gauss; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_gauss_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10947,7 +10947,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_exact_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: gauss
+!    !Spatial sampler: gauss; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_gauss_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -10993,7 +10993,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_gauss_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: mean
+!    !Spatial sampler: gauss; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_gauss_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11039,7 +11039,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_mean_2t_pair_f
 !
-!    !Spatial sampler: gauss; temporal sampler: sum
+!    !Spatial sampler: gauss; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_gauss_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11085,7 +11085,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_gauss_sum_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: exact
+!    !Spatial sampler: moving average; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_moving_average_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11131,7 +11131,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_exact_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: gauss
+!    !Spatial sampler: moving average; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_moving_average_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11177,7 +11177,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_gauss_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: mean
+!    !Spatial sampler: moving average; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_moving_average_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11223,7 +11223,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_mean_2t_pair_f
 !
-!    !Spatial sampler: moving average; temporal sampler: sum
+!    !Spatial sampler: moving average; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_moving_average_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11269,7 +11269,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_moving_average_sum_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: nearest neighbor; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11315,7 +11315,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_exact_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: nearest neighbor; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11361,7 +11361,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_gauss_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: nearest neighbor; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11407,7 +11407,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_mean_2t_pair_f
 !
-!    !Spatial sampler: nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: nearest neighbor; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_nearest_neighbor_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11453,7 +11453,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_nearest_neighbor_sum_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11499,7 +11499,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_exact_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11545,7 +11545,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_gauss_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11591,7 +11591,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_mean_2t_pair_f
 !
-!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum
+!    !Spatial sampler: pseudo nearest neighbor; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_pseudo_nearest_neighbor_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11637,7 +11637,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_nearest_neighbor_sum_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11683,7 +11683,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_exact_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11729,7 +11729,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_gauss_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11775,7 +11775,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_mean_2t_pair_f
 !
-!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum
+!    !Spatial sampler: Pseudo-linear n^2; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_pseudo_n2_linear_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11821,7 +11821,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_pseudo_n2_linear_sum_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: exact
+!    !Spatial sampler: shepard quintic; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11867,7 +11867,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_exact_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: gauss
+!    !Spatial sampler: shepard quintic; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11913,7 +11913,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_gauss_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: mean
+!    !Spatial sampler: shepard quintic; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -11959,7 +11959,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_mean_2t_pair_f
 !
-!    !Spatial sampler: shepard quintic; temporal sampler: sum
+!    !Spatial sampler: shepard quintic; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_shepard_quintic_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12005,7 +12005,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_shepard_quintic_sum_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: exact
+!    !Spatial sampler: sph-derived quintic; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12051,7 +12051,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_exact_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss
+!    !Spatial sampler: sph-derived quintic; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12097,7 +12097,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_gauss_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: mean
+!    !Spatial sampler: sph-derived quintic; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12143,7 +12143,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_mean_2t_pair_f
 !
-!    !Spatial sampler: sph-derived quintic; temporal sampler: sum
+!    !Spatial sampler: sph-derived quintic; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_sph_quintic_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12189,7 +12189,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sph_quintic_sum_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: exact
+!    !Spatial sampler: summation quintic; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12235,7 +12235,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_exact_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: gauss
+!    !Spatial sampler: summation quintic; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12281,7 +12281,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_gauss_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: mean
+!    !Spatial sampler: summation quintic; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12327,7 +12327,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_mean_2t_pair_f
 !
-!    !Spatial sampler: summation quintic; temporal sampler: sum
+!    !Spatial sampler: summation quintic; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_sum_quintic_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12373,7 +12373,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_sum_quintic_sum_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: exact
+!    !Spatial sampler: radial basis function; temporal sampler: exact; algorithm: aitken
 !    subroutine mui_fetch_rbf_exact_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12419,7 +12419,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_exact_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: gauss
+!    !Spatial sampler: radial basis function; temporal sampler: gauss; algorithm: aitken
 !    subroutine mui_fetch_rbf_gauss_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12465,7 +12465,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_gauss_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: mean
+!    !Spatial sampler: radial basis function; temporal sampler: mean; algorithm: aitken
 !    subroutine mui_fetch_rbf_mean_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
@@ -12511,7 +12511,7 @@ module mui_2d_f
 !      real(kind=c_double), intent(out) :: return_value
 !    end subroutine mui_fetch_rbf_mean_2t_pair_f
 !
-!    !Spatial sampler: radial basis function; temporal sampler: sum
+!    !Spatial sampler: radial basis function; temporal sampler: sum; algorithm: aitken
 !    subroutine mui_fetch_rbf_sum_2f_pair_f(uniface,attr,point_1,point_2,t,it,&
 !    spatial_sampler,temporal_sampler,return_value) bind(C)
 !      import :: c_ptr,c_char,c_float
