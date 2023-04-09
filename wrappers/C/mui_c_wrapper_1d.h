@@ -2583,7 +2583,7 @@ float mui_fetch_exact_gauss_fixed_relaxation_1fx_pair(mui_uniface_1fx *uniface, 
 double mui_fetch_exact_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
 		double it, mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_exact_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+double mui_fetch_exact_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
 		double it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
 double mui_fetch_exact_gauss_fixed_relaxation_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
@@ -2643,7 +2643,7 @@ float mui_fetch_gauss_gauss_fixed_relaxation_1fx_pair(mui_uniface_1fx *uniface, 
 double mui_fetch_gauss_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
 		double it, mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_gauss_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+double mui_fetch_gauss_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
 		double it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
 double mui_fetch_gauss_gauss_fixed_relaxation_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
@@ -2691,7 +2691,7 @@ float mui_fetch_moving_average_gauss_fixed_relaxation_1fx_pair(mui_uniface_1fx *
 double mui_fetch_moving_average_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
 		double it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_moving_average_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+double mui_fetch_moving_average_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
 		double t, double it, mui_sampler_moving_average_1dx *spatial_sampler,
 		mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
@@ -2760,7 +2760,7 @@ double mui_fetch_nearest_neighbor_gauss_fixed_relaxation_1d_pair(mui_uniface_1d 
 		double t, double it, mui_sampler_nearest_neighbor_1d *spatial_sampler,
 		mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_nearest_neighbor_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+double mui_fetch_nearest_neighbor_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
 		double t, double it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
 		mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
@@ -2836,7 +2836,7 @@ double mui_fetch_pseudo_nearest_neighbor_gauss_fixed_relaxation_1d_pair(mui_unif
 		double t, double it, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
 		mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_pseudo_nearest_neighbor_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+double mui_fetch_pseudo_nearest_neighbor_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
 		double t, double it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
 		mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
@@ -2916,7 +2916,7 @@ double mui_fetch_pseudo_n2_linear_gauss_fixed_relaxation_1d_pair(mui_uniface_1d 
 		double t, double it, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
 		mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_pseudo_n2_linear_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+double mui_fetch_pseudo_n2_linear_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
 		double t, double it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
 		mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
@@ -2994,7 +2994,7 @@ double mui_fetch_shepard_quintic_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *
 		double t, double it, mui_sampler_shepard_quintic_1d *spatial_sampler,
 		mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_shepard_quintic_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
+double mui_fetch_shepard_quintic_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point,
 		double t, double it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
 		mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
@@ -3059,7 +3059,7 @@ float mui_fetch_sph_quintic_gauss_fixed_relaxation_1fx_pair(mui_uniface_1fx *uni
 double mui_fetch_sph_quintic_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
 		double it, mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_sph_quintic_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+double mui_fetch_sph_quintic_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
 		double it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
 double mui_fetch_sph_quintic_gauss_fixed_relaxation_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
@@ -3119,7 +3119,7 @@ float mui_fetch_sum_quintic_gauss_fixed_relaxation_1fx_pair(mui_uniface_1fx *uni
 double mui_fetch_sum_quintic_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
 		double it, mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_sum_quintic_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+double mui_fetch_sum_quintic_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
 		double it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
 double mui_fetch_sum_quintic_gauss_fixed_relaxation_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
@@ -3179,7 +3179,7 @@ float mui_fetch_rbf_gauss_fixed_relaxation_1fx_pair(mui_uniface_1fx *uniface, co
 double mui_fetch_rbf_gauss_fixed_relaxation_1d_pair(mui_uniface_1d *uniface, const char *attr, mui_point_1d point, double t,
 		double it, mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_gauss_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm);
-double mui_fetch_rbf_gauss_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
+double mui_fetch_rbf_gauss_fixed_relaxation_1dx_pair(mui_uniface_1dx *uniface, const char *attr, mui_point_1dx point, double t,
 		double it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_gauss_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm);
 double mui_fetch_rbf_gauss_fixed_relaxation_1t_pair(mui_uniface_1t *uniface, const char *attr, mui_point_1t point, double t,
