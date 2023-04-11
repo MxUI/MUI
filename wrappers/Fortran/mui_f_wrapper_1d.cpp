@@ -1392,43 +1392,43 @@ void mui_aitken_get_under_relaxation_factor_1t_pair_f(mui_algorithm_aitken_1t *a
 }
 
 // Aitken's get residual L2 Norm functions
-void mui_aitken_get_residual_L2_Norm_1f_f(mui_algorithm_aitken_1f *aitken, float* t, float *return_value) {
+void mui_aitken_get_residual_1f_f(mui_algorithm_aitken_1f *aitken, float* t, float *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t);
 }
 
-void mui_aitken_get_residual_L2_Norm_1fx_f(mui_algorithm_aitken_1fx *aitken, float* t, float *return_value) {
+void mui_aitken_get_residual_1fx_f(mui_algorithm_aitken_1fx *aitken, float* t, float *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t);
 }
 
-void mui_aitken_get_residual_L2_Norm_1d_f(mui_algorithm_aitken_1d *aitken, double* t, double *return_value) {
+void mui_aitken_get_residual_1d_f(mui_algorithm_aitken_1d *aitken, double* t, double *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t);
 }
 
-void mui_aitken_get_residual_L2_Norm_1dx_f(mui_algorithm_aitken_1dx *aitken, double* t, double *return_value) {
+void mui_aitken_get_residual_1dx_f(mui_algorithm_aitken_1dx *aitken, double* t, double *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t);
 }
 
-void mui_aitken_get_residual_L2_Norm_1t_f(mui_algorithm_aitken_1t *aitken, double* t, double *return_value) {
+void mui_aitken_get_residual_1t_f(mui_algorithm_aitken_1t *aitken, double* t, double *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
 }
 
-void mui_aitken_get_residual_L2_Norm_1f_pair_f(mui_algorithm_aitken_1f *aitken, float* t, float* it, float *return_value) {
+void mui_aitken_get_residual_1f_pair_f(mui_algorithm_aitken_1f *aitken, float* t, float* it, float *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t, *it);
 }
 
-void mui_aitken_get_residual_L2_Norm_1fx_pair_f(mui_algorithm_aitken_1fx *aitken, float* t, float* it, float *return_value) {
+void mui_aitken_get_residual_1fx_pair_f(mui_algorithm_aitken_1fx *aitken, float* t, float* it, float *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t, *it);
 }
 
-void mui_aitken_get_residual_L2_Norm_1d_pair_f(mui_algorithm_aitken_1d *aitken, double* t, double* it, double *return_value) {
+void mui_aitken_get_residual_1d_pair_f(mui_algorithm_aitken_1d *aitken, double* t, double* it, double *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t, *it);
 }
 
-void mui_aitken_get_residual_L2_Norm_1dx_pair_f(mui_algorithm_aitken_1dx *aitken, double* t, double* it, double *return_value) {
+void mui_aitken_get_residual_1dx_pair_f(mui_algorithm_aitken_1dx *aitken, double* t, double* it, double *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(*t, *it);
 }
 
-void mui_aitken_get_residual_L2_Norm_1t_pair_f(mui_algorithm_aitken_1t *aitken, double* t, double* it, double *return_value) {
+void mui_aitken_get_residual_1t_pair_f(mui_algorithm_aitken_1t *aitken, double* t, double* it, double *return_value) {
 	*return_value = aitken->get_residual_L2_Norm(static_cast<mui::mui_f_wrapper_1D::time_type>(*t),
 			static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it));
 }
