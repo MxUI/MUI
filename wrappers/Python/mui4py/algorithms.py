@@ -70,6 +70,8 @@ class AlgorithmFixedRelaxation(Algorithm):
     def __init__(self, under_relaxation_factor=None, pts_value_init=None, config=None):
         if config is None:
             self.config=Config()
+        else:
+            self.config=config
         if pts_value_init is not None:
             super(AlgorithmFixedRelaxation, self).__init__(config, args=(under_relaxation_factor, pts_value_init))
         else:
@@ -83,6 +85,8 @@ class AlgorithmAitken(Algorithm):
     def __init__(self, under_relaxation_factor=None, under_relaxation_factor_max=None, local_comm=None, pts_vlu_init=None, res_l2_norm_nm1=None, config=None):
         if config is None:
             self.config=Config()
+        else:
+            self.config=config
         if res_l2_norm_nm1 is not None:
             super(AlgorithmAitken, self).__init__(config, args=(under_relaxation_factor, under_relaxation_factor_max, local_comm, pts_vlu_init, res_l2_norm_nm1))
         else:
