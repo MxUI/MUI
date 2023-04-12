@@ -460,10 +460,10 @@ class Uniface(CppClass):
               coupling_algorithm = args[5]
               fetch_fname, ss, cs, ca = self._get_fetch_algo_args("fetch_algorithm_many", tag, points.dtype.type, spatial_sampler, temporal_sampler, coupling_algorithm)
               if(isinstance(ca, AlgorithmAitken)):
-                  self._aitken_under_relaxation_factor.append(((time1, 0), ca.get_under_relaxation_factor(time1)))
-                  self._aitken_residual_l2_norm.append(((time1, 0), ca.get_residual_L2_Norm(time1)))
-                  self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time1)
-                  self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time1)
+                  self._aitken_under_relaxation_factor.append(((time, 0), ca.get_under_relaxation_factor(time)))
+                  self._aitken_residual_l2_norm.append(((time, 0), ca.get_residual_L2_Norm(time)))
+                  self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time)
+                  self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time)
               barrier_enabled = True
               fetch = getattr(self.raw, fetch_fname)
               return fetch(tag, points, time, ss.raw, cs.raw, ca.raw, barrier_enabled)
@@ -474,10 +474,10 @@ class Uniface(CppClass):
           coupling_algorithm = args[6]
           fetch_fname, ss, cs, ca = self._get_fetch_algo_args("fetch_algorithm_many_dual", tag, points.dtype.type, spatial_sampler, temporal_sampler, coupling_algorithm)
           if(isinstance(ca, AlgorithmAitken)):
-              self._aitken_under_relaxation_factor.append(((time1, time2), ca.get_under_relaxation_factor(time1, time2)))
-              self._aitken_residual_l2_norm.append(((time1, time2), ca.get_residual_L2_Norm(time1, time2)))
-              self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time1, time2)
-              self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time1, time2)
+              self._aitken_under_relaxation_factor.append(((time, time2), ca.get_under_relaxation_factor(time, time2)))
+              self._aitken_residual_l2_norm.append(((time, time2), ca.get_residual_L2_Norm(time, time2)))
+              self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time, time2)
+              self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time, time2)
           barrier_enabled = True
           fetch = getattr(self.raw, fetch_fname)
           return fetch(tag, points, time, time2, ss.raw, cs.raw, ca.raw, barrier_enabled)
