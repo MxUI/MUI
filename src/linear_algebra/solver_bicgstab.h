@@ -166,7 +166,15 @@ std::pair<ITYPE, VTYPE> biconjugate_gradient_stabilized_1d<ITYPE, VTYPE>::solve(
     // Initialise p_ with r_
     p_.copy(r_);
 
+    bool debug_switch = true;
+
     if (M_) {
+        std::cout << "MUI Warning [solver_bicgstab.h]: Preconditioner is not yet supported by BiCGStab yet. "
+                << "The preconditioner is ignored."<< std::endl;
+        debug_switch = false;
+    }
+
+    if (M_ && debug_switch) {
         sparse_matrix<ITYPE,VTYPE> tempR(r_.get_rows(), r_.get_cols());
         tempR = M_->apply(r_);
         r_.set_zero();
@@ -205,13 +213,13 @@ std::pair<ITYPE, VTYPE> biconjugate_gradient_stabilized_1d<ITYPE, VTYPE>::solve(
             p_.set_zero();
             p_.copy(r_ + beta_p_omega_dot_v);
         } else {
-        	p_.set_zero();
-        	p_.copy(r_);
+            p_.set_zero();
+            p_.copy(r_);
         }
 
         y_.set_zero();
         y_.copy(p_);
-        if (M_) {
+        if (M_ && debug_switch) {
             sparse_matrix<ITYPE,VTYPE> tempY(y_.get_rows(), y_.get_cols());
             tempY = M_->apply(y_);
             y_.set_zero();
@@ -233,7 +241,7 @@ std::pair<ITYPE, VTYPE> biconjugate_gradient_stabilized_1d<ITYPE, VTYPE>::solve(
 
         z_.set_zero();
         z_.copy(s_);
-        if (M_) {
+        if (M_ && debug_switch) {
             sparse_matrix<ITYPE,VTYPE> tempZ(z_.get_rows(), z_.get_cols());
             tempZ = M_->apply(z_);
             z_.set_zero();
@@ -253,7 +261,7 @@ std::pair<ITYPE, VTYPE> biconjugate_gradient_stabilized_1d<ITYPE, VTYPE>::solve(
         r_.set_zero();
         r_.copy(s_ - omega_dot_t);
 
-        if (M_) {
+        if (M_ && debug_switch) {
             sparse_matrix<ITYPE,VTYPE> tempR(r_.get_rows(), r_.get_cols());
             tempR = M_->apply(r_);
             r_.set_zero();
