@@ -1905,14 +1905,14 @@ private:
 				point_type tempP;
 				size_t temp_i = 0;
 				while (std::getline(lineStream, tempSS, ',')) {
-					assert(temp_i<remote_pts_dim_);
+					assert(temp_i<static_cast<size_t>(remote_pts_dim_));
 					tempP[temp_i] = static_cast<REAL>(std::stold(tempSS));
 					temp_i++;
 				}
 				remote_pts_.emplace_back(tempP);
 			}
 
-			assert(remote_pts_.size() == remote_pts_num_);
+			assert(remote_pts_.size() == static_cast<size_t>(remote_pts_num_));
 		}
 
 		initialised_ = true;

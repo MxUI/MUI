@@ -713,8 +713,6 @@ private:
 						return ((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 								(res_l2_norm_nm1_iter->first.second == b.first.second);});
 
-						assert(pts_time_res_nm1_iter != std::end(pts_time_res_) );
-
 						if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
 
 							REAL local_residual_mag_sq_sum_temp = 0.0;
@@ -849,8 +847,6 @@ private:
 						pts_time_res_.end(), [res_l2_norm_nm1_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
 						return (((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 								(res_l2_norm_nm1_iter->first.second == b.first.second));});
-
-						assert(pts_time_res_nm1_iter != std::end(pts_time_res_) );
 
 						if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
 

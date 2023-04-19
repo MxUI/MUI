@@ -44,6 +44,7 @@
  * @brief Classes to solve problem A.x = b using different methods.
  * Solver implemented:
  *        Conjugate Gradient (iterative): classic iterative CG for selfadjoint (hermitian) matrices
+ *        Biconjugate Gradient Stabilized (iterative): iterative BiCGSTAB for nonsymmetric linear systems
  *        Gaussian Elimination (direct): sequential pivoting for LU factorization​ for general matrices.
  */
 
@@ -139,6 +140,88 @@ class conjugate_gradient : public solver<ITYPE,VTYPE> {
 
 };
 
+// Class of one-dimensional Biconjugate Gradient Stabilized solver
+template<typename ITYPE, typename VTYPE>
+class biconjugate_gradient_stabilized_1d : public solver<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        biconjugate_gradient_stabilized_1d(sparse_matrix<ITYPE,VTYPE>, sparse_matrix<ITYPE,VTYPE>, VTYPE = 1e-6, ITYPE = 0, preconditioner<ITYPE,VTYPE>* = nullptr);
+        // Destructor
+        ~biconjugate_gradient_stabilized_1d();
+        // Member function for solve
+        std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> = sparse_matrix<ITYPE,VTYPE>());
+        // Member function to get the solution
+        sparse_matrix<ITYPE,VTYPE> getSolution();
+
+    private:
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_;
+        // The constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_;
+        // The residual matrix of the CG solver
+        sparse_matrix<ITYPE,VTYPE> r_;
+        sparse_matrix<ITYPE,VTYPE> rTilde_;
+        // The preconditioned residual matrix of the CG solver
+        sparse_matrix<ITYPE,VTYPE> v_;
+        sparse_matrix<ITYPE,VTYPE> t_;
+        // The direction matrix of the CG solver
+        sparse_matrix<ITYPE,VTYPE> p_;
+        sparse_matrix<ITYPE,VTYPE> s_;
+        sparse_matrix<ITYPE,VTYPE> h_;
+        sparse_matrix<ITYPE,VTYPE> y_;
+        sparse_matrix<ITYPE,VTYPE> z_;
+        // Variables
+        VTYPE alpha_;
+        VTYPE beta_;
+        VTYPE omega_;
+        VTYPE rho_;
+        VTYPE rhoTilde_;
+        // Tolerance of CG solver
+        VTYPE bicgstab_solve_tol_;
+        // Maximum iteration of CG solver
+        ITYPE bicgstab_max_iter_;
+        // Preconditioner pointer
+        preconditioner<ITYPE,VTYPE>* M_;
+
+};
+
+// Class of multidimensional Biconjugate Gradient Stabilized solver
+template<typename ITYPE, typename VTYPE>
+class biconjugate_gradient_stabilized : public solver<ITYPE,VTYPE> {
+
+    public:
+        // Constructor
+        biconjugate_gradient_stabilized(sparse_matrix<ITYPE,VTYPE>, sparse_matrix<ITYPE,VTYPE>, VTYPE = 1e-6, ITYPE = 0, preconditioner<ITYPE,VTYPE>* = nullptr);
+        // Destructor
+        ~biconjugate_gradient_stabilized();
+        // Member function for solve
+        std::pair<ITYPE, VTYPE> solve(sparse_matrix<ITYPE,VTYPE> = sparse_matrix<ITYPE,VTYPE>());
+        // Member function to get the solution
+        sparse_matrix<ITYPE,VTYPE> getSolution();
+
+    private:
+        // The coefficient matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> A_;
+        // The constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_;
+        // The column segments of the constant matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> b_column_;
+        // The column segments of the initial guess of the variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_init_column_;
+        // The variable matrix of the matrix equation
+        sparse_matrix<ITYPE,VTYPE> x_;
+        // Tolerance of CG solver
+        VTYPE bicgstab_solve_tol_;
+        // Maximum iteration of CG solver
+        ITYPE bicgstab_max_iter_;
+        // Preconditioner pointer
+        preconditioner<ITYPE,VTYPE>* M_;
+
+};
+
 // Class of one-dimensional Gaussian Elimination solver
 template<typename ITYPE, typename VTYPE>
 class gaussian_elimination_1d : public solver<ITYPE,VTYPE> {
@@ -195,5 +278,6 @@ class gaussian_elimination : public solver<ITYPE,VTYPE> {
 // Include implementations
 #include "../linear_algebra/solver_cg.h"
 #include "../linear_algebra/solver_ge.h"
+#include "../linear_algebra/solver_bicgstab.h"
 
 #endif /* MUI_SOLVER_H_ */

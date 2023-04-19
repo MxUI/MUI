@@ -52,7 +52,7 @@ from mui4py.types import safe_cast, map_type, ALLOWED_IO_TYPES, STRING, BOOL, IN
 from mui4py.geometry import Geometry
 from mui4py.samplers import Sampler
 from mui4py.temporal_samplers import TemporalSampler
-from mui4py.algorithms import Algorithm
+from mui4py.algorithms import Algorithm,AlgorithmAitken
 import copy
 
 
@@ -110,6 +110,10 @@ class Uniface(CppClass):
         self._tags_fetch = {}
         self._tags_fetch_points = {}
         self._ALLOWED_PROTOCOLS = ["mpi"]
+        self._aitken_under_relaxation_factor = []
+        self._aitken_residual_l2_norm = []
+        self._latest_aitken_under_relaxation_factor = 0.0
+        self._latest_aitken_residual_l2_norm = 0.0
 
     def _get_tag_type(self, tag):
         try:
@@ -455,6 +459,11 @@ class Uniface(CppClass):
               temporal_sampler = args[4]
               coupling_algorithm = args[5]
               fetch_fname, ss, cs, ca = self._get_fetch_algo_args("fetch_algorithm_many", tag, points.dtype.type, spatial_sampler, temporal_sampler, coupling_algorithm)
+              if(isinstance(ca, AlgorithmAitken)):
+                  self._aitken_under_relaxation_factor.append(((time, 0), ca.get_under_relaxation_factor(time)))
+                  self._aitken_residual_l2_norm.append(((time, 0), ca.get_residual_L2_Norm(time)))
+                  self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time)
+                  self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time)
               barrier_enabled = True
               fetch = getattr(self.raw, fetch_fname)
               return fetch(tag, points, time, ss.raw, cs.raw, ca.raw, barrier_enabled)
@@ -464,6 +473,11 @@ class Uniface(CppClass):
           temporal_sampler = args[5]
           coupling_algorithm = args[6]
           fetch_fname, ss, cs, ca = self._get_fetch_algo_args("fetch_algorithm_many_dual", tag, points.dtype.type, spatial_sampler, temporal_sampler, coupling_algorithm)
+          if(isinstance(ca, AlgorithmAitken)):
+              self._aitken_under_relaxation_factor.append(((time, time2), ca.get_under_relaxation_factor(time, time2)))
+              self._aitken_residual_l2_norm.append(((time, time2), ca.get_residual_L2_Norm(time, time2)))
+              self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time, time2)
+              self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time, time2)
           barrier_enabled = True
           fetch = getattr(self.raw, fetch_fname)
           return fetch(tag, points, time, time2, ss.raw, cs.raw, ca.raw, barrier_enabled)
@@ -513,6 +527,11 @@ class Uniface(CppClass):
                 temporal_sampler = args[4]
                 coupling_algorithm = args[5]
                 fetch_fname, ss, cs, ca = self._get_fetch_algo_args("fetch_algorithm", tag, data_type, spatial_sampler, temporal_sampler, coupling_algorithm)
+                if(isinstance(ca, AlgorithmAitken)):
+                    self._aitken_under_relaxation_factor.append(((time1, 0), ca.get_under_relaxation_factor(time1)))
+                    self._aitken_residual_l2_norm.append(((time1, 0), ca.get_residual_L2_Norm(time1)))
+                    self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time1)
+                    self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time1)
                 barrier_enabled = True
                 if type(time1).__name__ == 'float':
                     barrier_time = mui4py_mod.numeric_limits_real
@@ -529,6 +548,11 @@ class Uniface(CppClass):
             temporal_sampler = args[5]
             coupling_algorithm = args[6]
             fetch_fname, ss, cs, ca = self._get_fetch_algo_args("fetch_algorithm_dual", tag, data_type, spatial_sampler, temporal_sampler, coupling_algorithm)
+            if(isinstance(ca, AlgorithmAitken)):
+                self._aitken_under_relaxation_factor.append(((time1, time2), ca.get_under_relaxation_factor(time1, time2)))
+                self._aitken_residual_l2_norm.append(((time1, time2), ca.get_residual_L2_Norm(time1, time2)))
+                self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time1, time2)
+                self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time1, time2)
             barrier_enabled = True
             if type(time1).__name__ == 'float':
                 barrier_time = mui4py_mod.numeric_limits_real
@@ -544,3 +568,41 @@ class Uniface(CppClass):
 
     def Point(self, points):
         return array2Point(points, self.config, self.raw_point)
+
+    def get_aitken_under_relaxation_factor(self, t, iter=None):
+        return_value = None
+        for element in self._aitken_under_relaxation_factor:
+            if element[0][0] == t:
+                if iter is not None:
+                    if element[0][1] == iter:
+                        return_value = element[1]
+                        break
+                else:
+                    return_value = element[1]
+                    break
+        if return_value is None:
+            raise Exception("MUI Error [mui4py.py]: No match found for given t and iter in get_aitken_under_relaxation_factor")
+        else:
+            return return_value
+
+    def get_aitken_residual_l2_norm(self, t, iter=None):
+        return_value = None
+        for element in self._aitken_residual_l2_norm:
+            if element[0][0] == t:
+                if iter is not None:
+                    if element[0][1] == iter:
+                        return_value = element[1]
+                        break
+                else:
+                    return_value = element[1]
+                    break
+        if return_value is None:
+            raise Exception("MUI Error [mui4py.py]: No match found for given t and iter in get_aitken_residual_l2_norm")
+        else:
+            return return_value
+
+    def get_latest_aitken_under_relaxation_factor(self):
+        return self._latest_aitken_under_relaxation_factor
+
+    def get_latest_aitken_residual_l2_norm(self):
+        return self._latest_aitken_residual_l2_norm
