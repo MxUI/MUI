@@ -71,35 +71,35 @@ module mui_2d_f
     !2D interface with float=single and int=int32
     subroutine mui_create_uniface_2f_f(uniface,domain) bind(C)
       import :: c_ptr,c_char
-      type(c_ptr), intent(out), target :: uniface(*)
+      type(c_ptr), intent(out), target :: uniface
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2f_f
 
     !2D interface with float=single and int=int64
     subroutine mui_create_uniface_2fx_f(uniface,domain) bind(C)
       import :: c_ptr,c_char
-      type(c_ptr), intent(out), target :: uniface(*)
+      type(c_ptr), intent(out), target :: uniface
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2fx_f
 
     !2D interface with float=double and int=int32
     subroutine mui_create_uniface_2d_f(uniface,domain) bind(C)
       import :: c_ptr,c_char
-      type(c_ptr), intent(out), target :: uniface(*)
+      type(c_ptr), intent(out), target :: uniface
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2d_f
 
     !2D interface with float=double and int=int64
     subroutine mui_create_uniface_2dx_f(uniface,domain) bind(C)
       import :: c_ptr,c_char
-      type(c_ptr), intent(out), target :: uniface(*)
+      type(c_ptr), intent(out), target :: uniface
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2dx_f
 
     !2D interface using config from config_f_wrapper.h
     subroutine mui_create_uniface_2t_f(uniface,domain) bind(C)
       import :: c_ptr,c_char
-      type(c_ptr), intent(out), target :: uniface(*)
+      type(c_ptr), intent(out), target :: uniface
       character(kind=c_char), intent(in) :: domain(*)
     end subroutine mui_create_uniface_2t_f
 
@@ -229,274 +229,274 @@ module mui_2d_f
     !Exact sampler
     subroutine mui_create_sampler_exact_2f_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_2f_f
 
     subroutine mui_create_sampler_exact_2fx_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_2fx_f
 
     subroutine mui_create_sampler_exact_2d_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_2d_f
 
     subroutine mui_create_sampler_exact_2dx_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_2dx_f
 
     subroutine mui_create_sampler_exact_2t_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: tolerance
     end subroutine mui_create_sampler_exact_2t_f
 
     !Gauss sampler
     subroutine mui_create_sampler_gauss_2f_f(sampler,r,h) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_2f_f
 
     subroutine mui_create_sampler_gauss_2fx_f(sampler,r,h) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_2fx_f
 
     subroutine mui_create_sampler_gauss_2d_f(sampler,r,h) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_2d_f
 
     subroutine mui_create_sampler_gauss_2dx_f(sampler,r,h) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_2dx_f
 
     subroutine mui_create_sampler_gauss_2t_f(sampler,r,h) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: r,h
     end subroutine mui_create_sampler_gauss_2t_f
 
     !Moving average sampler
     subroutine mui_create_sampler_moving_average_2f_f(sampler,bbox_1,bbox_2) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in) :: bbox_1,bbox_2
     end subroutine mui_create_sampler_moving_average_2f_f
 
     subroutine mui_create_sampler_moving_average_2fx_f(sampler,bbox_1,bbox_2) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in) :: bbox_1,bbox_2
     end subroutine mui_create_sampler_moving_average_2fx_f
 
     subroutine mui_create_sampler_moving_average_2d_f(sampler,bbox_1,bbox_2) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: bbox_1,bbox_2
     end subroutine mui_create_sampler_moving_average_2d_f
 
     subroutine mui_create_sampler_moving_average_2dx_f(sampler,bbox_1,bbox_2) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: bbox_1,bbox_2
     end subroutine mui_create_sampler_moving_average_2dx_f
 
     subroutine mui_create_sampler_moving_average_2t_f(sampler,bbox_1,bbox_2) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in) :: bbox_1,bbox_2
     end subroutine mui_create_sampler_moving_average_2t_f
 
     !Nearest neighbour sampler
     subroutine mui_create_sampler_nearest_neighbor_2f_f(sampler) bind(C)
       import :: c_ptr
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
     end subroutine mui_create_sampler_nearest_neighbor_2f_f
 
     subroutine mui_create_sampler_nearest_neighbor_2fx_f(sampler) bind(C)
       import :: c_ptr
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
     end subroutine mui_create_sampler_nearest_neighbor_2fx_f
 
     subroutine mui_create_sampler_nearest_neighbor_2d_f(sampler) bind(C)
       import :: c_ptr
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
     end subroutine mui_create_sampler_nearest_neighbor_2d_f
 
     subroutine mui_create_sampler_nearest_neighbor_2dx_f(sampler) bind(C)
       import :: c_ptr
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
     end subroutine mui_create_sampler_nearest_neighbor_2dx_f
 
     subroutine mui_create_sampler_nearest_neighbor_2t_f(sampler) bind(C)
       import :: c_ptr
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
     end subroutine mui_create_sampler_nearest_neighbor_2t_f
 
     !Pseudo-linear n^2 interpolation sampler
     subroutine mui_create_sampler_pseudo_n2_linear_2f_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_2f_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_2fx_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_2fx_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_2d_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_2d_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_2dx_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_2dx_f
 
     subroutine mui_create_sampler_pseudo_n2_linear_2t_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_pseudo_n2_linear_2t_f
 
     !Pseudo-linear nearest neighbour interpolation sampler
     subroutine mui_create_sampler_pseudo_nearest_neighbor_2f_f(sampler,h) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_2f_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_2fx_f(sampler,h) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_2fx_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_2d_f(sampler,h) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_2d_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_2dx_f(sampler,h) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_2dx_f
 
     subroutine mui_create_sampler_pseudo_nearest_neighbor_2t_f(sampler,h) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: h
     end subroutine mui_create_sampler_pseudo_nearest_neighbor_2t_f
 
     !Shepard interpolation with a quintic kernel sampler
     subroutine mui_create_sampler_shepard_quintic_2f_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_2f_f
 
     subroutine mui_create_sampler_shepard_quintic_2fx_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_2fx_f
 
     subroutine mui_create_sampler_shepard_quintic_2d_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_2d_f
 
     subroutine mui_create_sampler_shepard_quintic_2dx_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_2dx_f
 
     subroutine mui_create_sampler_shepard_quintic_2t_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_shepard_quintic_2t_f
 
     !SPH derived interpolation method with a quintic spline kernel sampler
     subroutine mui_create_sampler_sph_quintic_2f_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_2f_f
 
     subroutine mui_create_sampler_sph_quintic_2fx_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_2fx_f
 
     subroutine mui_create_sampler_sph_quintic_2d_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_2d_f
 
     subroutine mui_create_sampler_sph_quintic_2dx_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_2dx_f
 
     subroutine mui_create_sampler_sph_quintic_2t_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sph_quintic_2t_f
 
     !Summation with a quintic kernel sampler
     subroutine mui_create_sampler_sum_quintic_2f_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_2f_f
 
     subroutine mui_create_sampler_sum_quintic_2fx_f(sampler,r) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_2fx_f
 
     subroutine mui_create_sampler_sum_quintic_2d_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_2d_f
 
     subroutine mui_create_sampler_sum_quintic_2dx_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_2dx_f
 
     subroutine mui_create_sampler_sum_quintic_2t_f(sampler,r) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double), intent(in), target :: r
     end subroutine mui_create_sampler_sum_quintic_2t_f
 
@@ -504,7 +504,7 @@ module mui_2d_f
     subroutine mui_create_sampler_rbf_2f_f(sampler,r,points_1,points_2,points_count,basis_func,conservative,smoothFunc, &
                writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
       import :: c_ptr,c_int,c_float,c_char
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       character(kind=c_char), intent(in) :: file_address(*)
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,writeMatrix,cgSolveIt, &
       pouSize,precond
@@ -516,7 +516,7 @@ module mui_2d_f
     subroutine mui_create_sampler_rbf_2fx_f(sampler,r,points_1,points_2,points_count,basis_func,conservative,smoothFunc, &
                writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
       import :: c_ptr,c_int,c_float,c_char
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       character(kind=c_char), intent(in) :: file_address(*)
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,writeMatrix,cgSolveIt, &
       pouSize,precond
@@ -528,7 +528,7 @@ module mui_2d_f
     subroutine mui_create_sampler_rbf_2d_f(sampler,r,points_1,points_2,points_count,basis_func,conservative,smoothFunc, &
                writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
       import :: c_ptr,c_int,c_double,c_char
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       character(kind=c_char), intent(in) :: file_address(*)
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,writeMatrix,cgSolveIt, &
       pouSize,precond
@@ -540,7 +540,7 @@ module mui_2d_f
     subroutine mui_create_sampler_rbf_2dx_f(sampler,r,points_1,points_2,points_count,basis_func,conservative,smoothFunc, &
                writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
       import :: c_ptr,c_int,c_double,c_char
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       character(kind=c_char), intent(in) :: file_address(*)
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,writeMatrix,cgSolveIt, &
       pouSize,precond
@@ -552,7 +552,7 @@ module mui_2d_f
     subroutine mui_create_sampler_rbf_2t_f(sampler,r,points_1,points_2,points_count,basis_func,conservative,smoothFunc, &
                writeMatrix,file_address,cutoff,cgSolveTol,cgSolveIt,pouSize,precond,communicator) bind(C)
       import :: c_ptr,c_int,c_double,c_char
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       character(kind=c_char), intent(in) :: file_address(*)
       integer(kind=c_int), intent(in), target :: points_count,basis_func,conservative,smoothFunc,writeMatrix,cgSolveIt, &
       pouSize,precond
@@ -832,124 +832,124 @@ module mui_2d_f
     !Exact temporal sampler
     subroutine mui_create_temporal_sampler_exact_2f_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: tolerance
     end subroutine mui_create_temporal_sampler_exact_2f_f
 
     subroutine mui_create_temporal_sampler_exact_2fx_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: tolerance
     end subroutine mui_create_temporal_sampler_exact_2fx_f
 
     subroutine mui_create_temporal_sampler_exact_2d_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: tolerance
     end subroutine mui_create_temporal_sampler_exact_2d_f
 
     subroutine mui_create_temporal_sampler_exact_2dx_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: tolerance
     end subroutine mui_create_temporal_sampler_exact_2dx_f
 
     subroutine mui_create_temporal_sampler_exact_2t_f(sampler,tolerance) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: tolerance
     end subroutine mui_create_temporal_sampler_exact_2t_f
 
     !Gauss temporal sampler
     subroutine mui_create_temporal_sampler_gauss_2f_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: cutoff,sigma
     end subroutine mui_create_temporal_sampler_gauss_2f_f
 
     subroutine mui_create_temporal_sampler_gauss_2fx_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: cutoff,sigma
     end subroutine mui_create_temporal_sampler_gauss_2fx_f
 
     subroutine mui_create_temporal_sampler_gauss_2d_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: cutoff,sigma
     end subroutine mui_create_temporal_sampler_gauss_2d_f
 
     subroutine mui_create_temporal_sampler_gauss_2dx_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: cutoff,sigma
     end subroutine mui_create_temporal_sampler_gauss_2dx_f
 
     subroutine mui_create_temporal_sampler_gauss_2t_f(sampler,cutoff,sigma) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: cutoff,sigma
     end subroutine mui_create_temporal_sampler_gauss_2t_f
 
     !Mean temporal sampler
     subroutine mui_create_temporal_sampler_mean_2f_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_mean_2f_f
 
     subroutine mui_create_temporal_sampler_mean_2fx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_mean_2fx_f
 
     subroutine mui_create_temporal_sampler_mean_2d_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_mean_2d_f
 
     subroutine mui_create_temporal_sampler_mean_2dx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_mean_2dx_f
 
     subroutine mui_create_temporal_sampler_mean_2t_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_mean_2t_f
 
     !Sum temporal sampler
     subroutine mui_create_temporal_sampler_sum_2f_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_sum_2f_f
 
     subroutine mui_create_temporal_sampler_sum_2fx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_float
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_float),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_sum_2fx_f
 
     subroutine mui_create_temporal_sampler_sum_2d_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_sum_2d_f
 
     subroutine mui_create_temporal_sampler_sum_2dx_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_sum_2dx_f
 
     subroutine mui_create_temporal_sampler_sum_2t_f(sampler,lower,upper) bind(C)
       import :: c_ptr,c_double
-      type(c_ptr), intent(out), target :: sampler(*)
+      type(c_ptr), intent(out), target :: sampler
       real(kind=c_double),intent(in) :: lower,upper
     end subroutine mui_create_temporal_sampler_sum_2t_f
 
@@ -1069,7 +1069,7 @@ module mui_2d_f
     subroutine mui_create_algorithm_fixed_relaxation_2f_f(algorithm, &
         under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
       import :: c_ptr,c_float,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       real(kind=c_float),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2
@@ -1079,7 +1079,7 @@ module mui_2d_f
     subroutine mui_create_algorithm_fixed_relaxation_2fx_f(algorithm, &
         under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
       import :: c_ptr,c_float,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       real(kind=c_float),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2
@@ -1089,7 +1089,7 @@ module mui_2d_f
     subroutine mui_create_algorithm_fixed_relaxation_2d_f(algorithm, &
         under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
@@ -1099,7 +1099,7 @@ module mui_2d_f
     subroutine mui_create_algorithm_fixed_relaxation_2dx_f(algorithm, &
         under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
@@ -1109,7 +1109,7 @@ module mui_2d_f
     subroutine mui_create_algorithm_fixed_relaxation_2t_f(algorithm, &
         under_relaxation_factor,points_1,points_2,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2
@@ -1121,7 +1121,7 @@ module mui_2d_f
         under_relaxation_factor,under_relaxation_factor_max, &
         communicator,points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_float,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_float),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
@@ -1134,7 +1134,7 @@ module mui_2d_f
         under_relaxation_factor,under_relaxation_factor_max,communicator, &
         points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_float,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_float),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
@@ -1147,7 +1147,7 @@ module mui_2d_f
         under_relaxation_factor,under_relaxation_factor_max,communicator, &
         points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_double,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_double),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
@@ -1160,7 +1160,7 @@ module mui_2d_f
         under_relaxation_factor,under_relaxation_factor_max,communicator, &
         points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_double,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_double),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
@@ -1173,7 +1173,7 @@ module mui_2d_f
         under_relaxation_factor,under_relaxation_factor_max,communicator, &
         points_1,points_2,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_double,c_int
-      type(c_ptr), intent(out), target :: algorithm(*)
+      type(c_ptr), intent(out), target :: algorithm
       type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_double),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
