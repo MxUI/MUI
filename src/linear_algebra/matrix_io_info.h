@@ -50,28 +50,11 @@
 #include <sstream>
 #include <cassert>
 #include <limits>
+#include <algorithm>
+#include <cctype>
 
 namespace mui {
 namespace linalg {
-
-// Function to left trim a string - helper function on matrix file I/O
-inline std::string ltrim(const std::string &s) {
-    const std::string WHITESPACE = " \n\r\t\f\v";
-    size_t start = s.find_first_not_of(WHITESPACE);
-    return (start == std::string::npos) ? "" : s.substr(start);
-}
-
-// Function to right trim a string - helper function on matrix file I/O
-inline std::string rtrim(const std::string &s) {
-    const std::string WHITESPACE = " \n\r\t\f\v";
-    size_t end = s.find_last_not_of(WHITESPACE);
-    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
-}
-
-// Function to trim a string on both sides - helper function on matrix file I/O
-inline std::string trim(const std::string &s) {
-    return rtrim(ltrim(s));
-}
 
 // Member function to print matrix elements to the console
 template<typename ITYPE, typename VTYPE>
@@ -203,6 +186,26 @@ ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
 template<typename ITYPE, typename VTYPE>
 bool sparse_matrix<ITYPE,VTYPE>::empty() const {
     return matrix_.empty();
+}
+
+// Member function to get the format of the matrix
+template<typename ITYPE, typename VTYPE>
+std::string sparse_matrix<ITYPE,VTYPE>::getFormat() const
+{
+	std::string matrix_format;
+
+	if (matrix_format_ == format::COO) {
+		matrix_format = "COO";
+	} else if (matrix_format_ == format::CSR) {
+		matrix_format = "CSR";
+	} else if (matrix_format_ == format::CSC) {
+		matrix_format = "CSC";
+	} else {
+        std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format " << matrix_format << std::endl;
+        std::abort();
+	}
+
+	return matrix_format;
 }
 
 } // linalg
