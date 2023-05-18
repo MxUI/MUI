@@ -50,7 +50,7 @@
 #include <ctime>
 #include "../../solver.h"
 
-void test00 () {
+double test00 () {
 
     std::cout << std::endl;
     std::cout << "============================================================" << std::endl;
@@ -89,8 +89,8 @@ void test00 () {
     mui::linalg::sparse_matrix<int,double> H_i;   //< Coupling Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    H_i.resize_null(Aas.get_rows(), 1);
-    H_diff.resize_null(Aas.get_rows(), 1);
+    H_i.resize_null(Aas.get_rows(), Aas.get_cols());
+    H_diff.resize_null(Aas.get_rows(), Aas.get_cols());
 
     mui::linalg::diagonal_preconditioner<int,double> M(Css);
 
@@ -110,12 +110,16 @@ void test00 () {
     std::cout << "Difference between calculated value and reference value: " << std::endl;
     H_diff.print();
 
-    std::cout << "MUI CG iteration number: " << cgReturn.first <<" with final MUI r_norm_rel: " << cgReturn.second << " solved in " << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s " << std::endl;
+    double mui_time = static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC;
+
+    std::cout << "MUI CG iteration number: " << cgReturn.first <<" with final MUI r_norm_rel: " << cgReturn.second << " solved in " << mui_time << "s " << std::endl;
 
     std::cout << std::endl;
+
+    return mui_time;
 }
 
-void test01 () {
+double test01 () {
 
     std::cout << std::endl;
     std::cout << "============================================================" << std::endl;
@@ -216,18 +220,25 @@ void test01 () {
     std::cout << "Difference between calculated value and reference value: " << std::endl;
     std::cout << H_diff << std::endl;
 
-    std::cout << "Eigen CG iteration number: " << solver.iterations() <<" with final Eigen r_norm_rel: " << solver.error() << " solved in " << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s " << std::endl;
+    double eigen_time = static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC;
+
+    std::cout << "Eigen CG iteration number: " << solver.iterations() <<" with final Eigen r_norm_rel: " << solver.error() << " solved in " << eigen_time << "s " << std::endl;
 
     std::cout << std::endl;
+
+    return eigen_time;
 
 }
 
 int main() {
 
     // Perform test 00
-    test00();
+    double mui_time = test00();
     // Perform test 01
-    test01();
+    double eigen_time = test01();
+
+    std::cout << "MUI::linalg time: " << mui_time << " Eigen time: " << eigen_time << std::endl;
+    std::cout << "Eigen is " <<  mui_time/eigen_time << " times faster than MUI::linalg" << std::endl;
 
     return 0;
 }
