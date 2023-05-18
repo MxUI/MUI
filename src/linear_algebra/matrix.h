@@ -70,6 +70,8 @@ class sparse_matrix {
         sparse_matrix<ITYPE,VTYPE>(const std::string & = "CSR");
         // Constructor - takes in another sparse_matrix object as an argument
         sparse_matrix<ITYPE,VTYPE>(const sparse_matrix<ITYPE,VTYPE> &);
+        // Constructor - takes in a std::vector with row major dense matrix format as an argument
+        sparse_matrix<ITYPE,VTYPE>(const std::vector<std::vector<VTYPE>> &, const std::string & = "CSR");
         // Constructor - generate various square matrices
         sparse_matrix<ITYPE,VTYPE>(ITYPE, const std::string & = {}, const std::string & = "CSR");
         // Destructor
@@ -122,6 +124,8 @@ class sparse_matrix {
         void subtract_scalar(ITYPE, ITYPE, VTYPE);
         // Overloaded assignment operator
         sparse_matrix<ITYPE,VTYPE>& operator=(const sparse_matrix<ITYPE,VTYPE> &);
+        // Member function to convert the format of the sparse matrix
+        void format_conversion(const std::string & = "COO", bool = false, bool = false, const std::string & = "overwrite");
 
         // *****************************************
         // ********* Arithmetic operations *********
@@ -162,18 +166,27 @@ class sparse_matrix {
         // ****** Constructors & Destructor ********
         // *****************************************
 
-        // Member function to set matrix format - helper function on matrix constructors
+        // Protected member function to set matrix format - helper function on matrix constructors
         void set_matrix_format(const std::string & = "CSR");
 
         // *****************************************
         // ********* Matrix manipulations **********
         // *****************************************
 
-        // Member function to sort the entries by row and column for sparse matrix with COO format
+        // Protected member function to sort the entries by row and column for sparse matrix with COO format
         void sort_coo(bool = true, bool = false, const std::string & = "overwrite");
-
-
-
+        // Protected member function to convert COO matrix into CSR matrix
+        void coo_to_csr();
+        // Protected member function to convert COO matrix into CSC matrix
+        void coo_to_csc();
+        // Protected member function to convert CSR matrix into COO matrix
+        void csr_to_coo();
+        // Protected member function to convert CSR matrix into CSC matrix
+        void csr_to_csc();
+        // Protected member function to convert CSC matrix into COO matrix
+        void csc_to_coo();
+        // Protected member function to convert CSC matrix into CSR matrix
+        void csc_to_csr();
 
 	private:
 		// Format of sparse matrix

@@ -197,7 +197,7 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
     return *this;
 }
 
-// Member function to sort the entries by row and column for sparse matrix with COO format
+// Protected member function to sort the entries by row and column for sparse matrix with COO format
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication, const std::string &deduplication_mode) {
 
@@ -326,6 +326,7 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
 	}
 }
 
+// Protected member function to convert COO matrix into CSR matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
 
@@ -366,6 +367,7 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
     matrix_format_ = format::CSR
 }
 
+// Protected member function to convert COO matrix into CSC matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::coo_to_csc() {
 
@@ -406,6 +408,7 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csc() {
     matrix_format_ = format::CSC
 }
 
+// Protected member function to convert CSR matrix into COO matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::csr_to_coo() {
 
@@ -436,6 +439,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_coo() {
     matrix_format_ = format::COO
 }
 
+// Protected member function to convert CSR matrix into CSC matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
 
@@ -487,6 +491,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
 
 }
 
+// Protected member function to convert CSC matrix into COO matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::csc_to_coo() {
 
@@ -517,6 +522,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_coo() {
     matrix_format_ = format::COO
 }
 
+// Protected member function to convert CSC matrix into CSR matrix
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
 

@@ -50,7 +50,7 @@
 namespace mui {
 namespace linalg {
 
-// Member function to set matrix format - helper function on matrix constructors
+// Protected member function to set matrix format - helper function on matrix constructors
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::set_matrix_format(const std::string &format) {
 
