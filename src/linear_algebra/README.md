@@ -12,6 +12,8 @@ The MUI linear algebra system with namespace of mui::linalg is self-contained. T
 -- It is the base file of the linear system solver.
 * preconditioner.h
 -- It is the based file of the preconditioners for the linear system solver.
+* linalg_util.h
+-- It is the file of the utility functions for the MUI linear algebra system.
 
 Implementations are in seperate files with the name of the basic file name plus underscore and the name of the specific implementation content.
 
