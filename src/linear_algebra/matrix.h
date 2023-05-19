@@ -64,8 +64,8 @@ class sparse_matrix {
         // ****** Constructors & Destructor ********
         // *****************************************
 
-        // Constructor - takes in size of row and column to generate an empty matrix
-        sparse_matrix<ITYPE,VTYPE>(ITYPE, ITYPE, const std::string & = "CSR");
+        // Constructor - takes in size of row and column to generate an matrix, with default arguments of format vectors.
+        sparse_matrix<ITYPE,VTYPE>(ITYPE, ITYPE, const std::string & = "CSR", const std::vector<VTYPE> & = {}, const std::vector<ITYPE> & = {}, const std::vector<ITYPE> & = {});
         // Constructor - null matrix
         sparse_matrix<ITYPE,VTYPE>(const std::string & = "CSR");
         // Constructor - takes in another sparse_matrix object as an argument
@@ -102,9 +102,7 @@ class sparse_matrix {
         // ********* Matrix manipulations **********
         // *****************************************
 
-        // Member function to resize a null matrix
-        void resize_null(ITYPE, ITYPE);
-        // Member function to resize an all-zero matrix
+        // Member function to resize an all-zero or null matrix
         void resize(ITYPE, ITYPE);
         // Member function to copy a sparse_matrix
         void copy(const sparse_matrix<ITYPE,VTYPE> &);
@@ -153,13 +151,6 @@ class sparse_matrix {
         // Member function to get the inverse of matrix
         sparse_matrix<ITYPE,VTYPE> inverse() const;
 
-        // *****************************************
-        // **************** Asserts ****************
-        // *****************************************
-
-        // Member function to assert the matrix format
-        //void assertValidFormat() const;
-
     protected:
 
         // *****************************************
@@ -188,55 +179,66 @@ class sparse_matrix {
         // Protected member function to convert CSC matrix into CSR matrix
         void csc_to_csr();
 
-	private:
-		// Format of sparse matrix
-		enum class format {
-			COO,
-			CSR,
-			CSC
-		};
+        // *****************************************
+        // **************** Asserts ****************
+        // *****************************************
 
-		// COO format data
-		struct matrix_coo {
-			// Values of non-zero elements of sparse matrix
-			std::vector<VTYPE> values_;
-			// Row index of each element in the values_ vector
-			std::vector<ITYPE> row_indices_;
-			// Column index of each element in the values_ vector
-			std::vector<ITYPE> col_indices_;
-		}
+        // Member function to assert the matrix vector sizes
+        void assertValidVectorSize(const std::string & = {}, const std::string & = {}) const;
 
-		// CSR format data
-		struct matrix_csr {
-			// Values of non-zero elements of sparse matrix
-			std::vector<VTYPE> values_;
-			// Row pointers of each element in the values_ vector
-			std::vector<ITYPE> row_ptrs_;
-			// Column index of each element in the values_ vector
-			std::vector<ITYPE> col_indices_;
-		}
+        // Member function to assert if the COO matrix is sorted and deduplicated
+        void assertCOOSortedUnique(const std::string & = {}, const std::string & = {})  const;
 
-		// CSC format data
-		struct matrix_csc {
-			// Values of non-zero elements of sparse matrix
-			std::vector<VTYPE> values_;
-			// Row index of each element in the values_ vector
-			std::vector<ITYPE> row_indices_;
-			// Column pointers of each element in the values_ vector
-			std::vector<ITYPE> col_ptrs_;
-		}
+    private:
 
-		// Number of rows of sparse matrix
-		ITYPE rows_ = 0;
-		// Number of columns of sparse matrix
-		ITYPE cols_ = 0;
-		// Number of non-zero elements of sparse matrix
-		ITYPE nnz_ = 0;
-		// Format indicator with default value of format::CSR
-		format matrix_format_ = format::CSR;
+        // Format of sparse matrix
+        enum class format {
+            COO,
+            CSR,
+            CSC
+        };
 
-		// Dummy member variable for invalid or unassigned elements in sparse matrix
-		VTYPE dummy_ = 0;
+        // COO format data
+        struct matrix_coo {
+            // Values of non-zero elements of sparse matrix
+            std::vector<VTYPE> values_;
+            // Row index of each element in the values_ vector
+            std::vector<ITYPE> row_indices_;
+            // Column index of each element in the values_ vector
+            std::vector<ITYPE> col_indices_;
+        }
+
+        // CSR format data
+        struct matrix_csr {
+            // Values of non-zero elements of sparse matrix
+            std::vector<VTYPE> values_;
+            // Row pointers of each element in the values_ vector
+            std::vector<ITYPE> row_ptrs_;
+            // Column index of each element in the values_ vector
+            std::vector<ITYPE> col_indices_;
+        }
+
+        // CSC format data
+        struct matrix_csc {
+            // Values of non-zero elements of sparse matrix
+            std::vector<VTYPE> values_;
+            // Row index of each element in the values_ vector
+            std::vector<ITYPE> row_indices_;
+            // Column pointers of each element in the values_ vector
+            std::vector<ITYPE> col_ptrs_;
+        }
+
+        // Number of rows of sparse matrix
+        ITYPE rows_ = 0;
+        // Number of columns of sparse matrix
+        ITYPE cols_ = 0;
+        // Number of non-zero elements of sparse matrix
+        ITYPE nnz_ = 0;
+        // Format indicator with default value of format::CSR
+        format matrix_format_ = format::CSR;
+
+        // Dummy member variable for invalid or unassigned elements in sparse matrix
+        VTYPE dummy_ = 0;
 
 };
 
@@ -244,7 +246,7 @@ class sparse_matrix {
 } // mui
 
 // Include implementations
-// #include "../linear_algebra/matrix_asserts.h"
+#include "../linear_algebra/matrix_asserts.h"
 #include "../linear_algebra/matrix_ctor_dtor.h"
 #include "../linear_algebra/matrix_arithmetic.h"
 #include "../linear_algebra/matrix_manipulation.h"

@@ -52,18 +52,202 @@
 namespace mui {
 namespace linalg {
 
-// Member function to assert the matrix format
+// **************************************************
+// ********** Protected member functions ************
+// **************************************************
+
+// Member function to assert the matrix vector sizes
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assertValidFormat()  const
+void sparse_matrix<ITYPE,VTYPE>::assertValidVectorSize(const std::string &file_name, const std::string &function_name)  const
 {
-    if (matrix_format_ != format::COO &&
-    	matrix_format_ != format::CSR &&
-		matrix_format_ != format::CSC)
-    {
-        std::cerr << "MUI Error [matrix_asserts.h]: unknown matrix format " << matrix_format_ << std::endl;
+
+    if (file_name.empty())
+        file_name = "matrix_asserts.h";
+    if (function_name.empty())
+        function_name = "assertValidVectorSize()";
+
+    if (matrix_format_ == format::COO) {
+
+        if (nnz_ < 0) {
+            std::cerr << "MUI Error [" << file_name << "]: The number of non-zeros (nnz_=" << nnz_ << ") should be non-negative integer in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (rows_ < 0) {
+            std::cerr << "MUI Error [" << file_name << "]: The number of rows (rows_=" << rows_ << ") should be non-negative integer in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (cols_ < 0) {
+            std::cerr << "MUI Error [" << file_name << "]: The number of columns (cols_=" << cols_ << ") should be non-negative integer in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if ((rows_*cols_) < nnz_) {
+            std::cerr << "MUI Warning [" << file_name << "]: Matrix size (" << (rows_*cols_) << ") smaller than the number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << ". Possible duplicated elements occur. " << std::endl;
+        }
+
+        if (matrix_coo.values_.size() != nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: COO values_ matrix size (" << matrix_coo.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (matrix_coo.row_indices_.size() != nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: COO row_indices_ matrix size (" << matrix_coo.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (matrix_coo.col_indices_.size() != nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: COO col_indices_ matrix size (" << matrix_coo.col_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (!matrix_csr.values_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR values_ matrix (" << matrix_csr.values_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csr.row_ptrs_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR row_ptrs_ matrix (" << matrix_csr.row_ptrs_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csr.col_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR col_indices_ matrix (" << matrix_csr.col_indices_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csc.values_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC values_ matrix (" << matrix_csc.values_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csc.row_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC row_ptrs_ matrix (" << matrix_csc.row_indices_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csc.col_ptrs_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC col_indices_ matrix (" << matrix_csc.col_ptrs_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+    } else if (matrix_format_ == format::CSR) {
+
+        if ((rows_*cols_) < nnz_) {
+            std::cerr << "MUI Warning [" << file_name << "]: Matrix size (" << (rows_*cols_) << ") smaller than the number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << ". Possible duplicated elements occur. " << std::endl;
+        }
+
+        if (!matrix_coo.values_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO values_ matrix (" << matrix_coo.values_.size() << ") under CSR matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_coo.row_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO row_indices_ matrix (" << matrix_coo.row_indices_.size() << ") under CSR matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_coo.col_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO col_indices_ matrix (" << matrix_coo.col_indices_.size() << ") under CSR matrix format in " << function_name << std::endl;
+        }
+
+        if (matrix_csr.values_!= nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: CSR values_ matrix size (" << matrix_csr.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (matrix_csr.row_ptrs_!=(rows_+1)) {
+            std::cerr << "MUI Error [" << file_name << "]: CSR row_ptrs_ matrix size (" << matrix_csr.row_ptrs_.size() << ") does not equals to number of rows + 1 (rows_+1=" << (rows_+1) << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (matrix_csr.col_indices_!= nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: CSR col_indices_ matrix size (" << matrix_csr.col_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (!matrix_csc.values_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC values_ matrix (" << matrix_csc.values_.size() << ") under CSR matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csc.row_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC row_ptrs_ matrix (" << matrix_csc.row_indices_.size() << ") under CSR matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csc.col_ptrs_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC col_indices_ matrix (" << matrix_csc.col_ptrs_.size() << ") under COO matrix format in " << function_name << std::endl;
+        }
+
+    } else if (matrix_format_ == format::CSC) {
+
+        if ((rows_*cols_) < nnz_) {
+            std::cerr << "MUI Warning [" << file_name << "]: Matrix size (" << (rows_*cols_) << ") smaller than the number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << ". Possible duplicated elements occur. " << std::endl;
+        }
+
+        if (!matrix_coo.values_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO values_ matrix (" << matrix_coo.values_.size() << ") under CSC matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_coo.row_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO row_indices_ matrix (" << matrix_coo.row_indices_.size() << ") under CSC matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_coo.col_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO col_indices_ matrix (" << matrix_coo.col_indices_.size() << ") under CSC matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csr.values_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR values_ matrix size (" << matrix_csr.values_.size() << ") under CSC matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csr.row_ptrs_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR row_ptrs_ matrix (" << matrix_csr.row_ptrs_.size() << ") under CSC matrix format in " << function_name << std::endl;
+        }
+
+        if (!matrix_csr.col_indices_.empty()) {
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR col_indices_ matrix (" << matrix_csr.col_indices_.size() << ") under CSC matrix format in " << function_name << std::endl;
+        }
+
+        if (matrix_csc.values_!= nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: CSC values_ matrix size (" << matrix_csc.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (matrix_csc.row_indices_!= nnz_) {
+            std::cerr << "MUI Error [" << file_name << "]: CSC row_ptrs_ matrix size (" << matrix_csc.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+        if (matrix_csc.col_ptrs_!=(cols_+1)) {
+            std::cerr << "MUI Error [" << file_name << "]: CSC col_indices_ matrix size (" << matrix_csc.col_ptrs_.size() << ") does not equals to number of cols + 1 (cols_+1=" << (cols_+1) << ") in " << function_name << std::endl;
+            std::abort();
+        }
+
+    } else {
+        std::cerr << "MUI Error [" << file_name << "]: unknown matrix format " << matrix_format_ << " in " << function_name <<  std::endl;
         std::abort();
     }
+
 }
+
+// Member function to assert if the COO matrix is sorted and deduplicated
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::assertCOOSortedUnique(const std::string &file_name, const std::string &function_name)  const
+{
+    ITYPE numEntries = matrix_coo.values_.size();
+
+    if (numEntries != 0) {
+        for (ITYPE i = 1; i < numEntries; ++i) {
+            // Compare the current entry with the previous one
+            if (matrix_coo.row_indices_[i] < matrix_coo.row_indices_[i - 1]) {
+                // Row index is not sorted
+                std::cerr << "MUI Error [" << file_name << "]: The COO type matrix is not sorted (row index check failed) in " << function_name <<  std::endl;
+                std::abort();
+            } else if (matrix_coo.row_indices_[i] == matrix_coo.row_indices_[i - 1]) {
+                // Row index is the same, check column index
+                if (matrix_coo.col_indices_[i] <= matrix_coo.col_indices_[i - 1]) {
+                    // Column index is not sorted or duplicate
+                    std::cerr << "MUI Error [" << file_name << "]: The COO type matrix is not sorted or exists duplicated elements (column index check failed) in " << function_name <<  std::endl;
+                    std::abort();
+                }
+            }
+        }
+    }
+}
+
 
 } // linalg
 } // mui
