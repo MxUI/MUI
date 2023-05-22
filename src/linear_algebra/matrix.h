@@ -107,9 +107,9 @@ class sparse_matrix {
         // Member function to copy a sparse_matrix
         void copy(const sparse_matrix<ITYPE,VTYPE> &);
         // Member function to get a segment of a sparse_matrix
-        sparse_matrix<ITYPE,VTYPE> segment(ITYPE, ITYPE, ITYPE, ITYPE);
+        sparse_matrix<ITYPE,VTYPE> segment(ITYPE, ITYPE, ITYPE, ITYPE, bool = true);
         // Member function to insert an element
-        void set_value(ITYPE, ITYPE, VTYPE);
+        void set_value(ITYPE, ITYPE, VTYPE, bool = true);
         // Member function to insert the same value to all elements
         void set_value(VTYPE);
         // Member function to swap two elements in a sparse matrix
@@ -117,13 +117,15 @@ class sparse_matrix {
         // Member function to set all elements to zero and empty the sparse matrix
         void set_zero();
         // Member function to add scalar to a specific elements
-        void add_scalar(ITYPE, ITYPE, VTYPE);
+        void add_scalar(ITYPE, ITYPE, VTYPE, bool = true);
         // Member function to subtract a scalar from a specific elements
-        void subtract_scalar(ITYPE, ITYPE, VTYPE);
+        void subtract_scalar(ITYPE, ITYPE, VTYPE, bool = true);
+        // Member function to multiply a scalar from a specific elements
+        void multiply_scalar(ITYPE, ITYPE, VTYPE, bool = true);
         // Overloaded assignment operator
         sparse_matrix<ITYPE,VTYPE>& operator=(const sparse_matrix<ITYPE,VTYPE> &);
         // Member function to convert the format of the sparse matrix
-        void format_conversion(const std::string & = "COO", bool = false, bool = false, const std::string & = "overwrite");
+        void format_conversion(const std::string & = "COO", bool = true, bool = false, const std::string & = "overwrite");
 
         // *****************************************
         // ********* Arithmetic operations *********
@@ -166,6 +168,16 @@ class sparse_matrix {
 
         // Protected member function to sort the entries by row and column for sparse matrix with COO format
         void sort_coo(bool = true, bool = false, const std::string & = "overwrite");
+        // Protected member function to sort the entries for sparse matrix with CSR format
+        void sort_csr(bool = false, const std::string & = "overwrite");
+        // Protected member function to sort the entries for sparse matrix with CSC format
+        void sort_csc(bool = false, const std::string & = "overwrite");
+        // Protected member function for element operation of COO matrix
+        void coo_element_operation(ITYPE, ITYPE, VTYPE, const std::string &, const std::string & = {}, const std::string & = {});
+        // Protected member function for element operation of CSR matrix
+        void csr_element_operation(ITYPE, ITYPE, VTYPE, const std::string &, const std::string & = {}, const std::string & = {});
+        // Protected member function for element operation of CSC matrix
+        void csc_element_operation(ITYPE, ITYPE, VTYPE, const std::string &, const std::string & = {}, const std::string & = {});
         // Protected member function to convert COO matrix into CSR matrix
         void coo_to_csr();
         // Protected member function to convert COO matrix into CSC matrix
