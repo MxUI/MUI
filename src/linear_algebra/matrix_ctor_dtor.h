@@ -221,7 +221,7 @@ template<typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token, const std::string &format)
     : rows_(n), cols_(n) {
 
-	this->set_matrix_format(format);
+    this->set_matrix_format(format);
 
     if(token.empty()) {
         // empty (all-zero) square matrix (Do nothing from the code perspective)

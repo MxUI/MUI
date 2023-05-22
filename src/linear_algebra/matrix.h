@@ -83,6 +83,12 @@ class sparse_matrix {
 
         // Member function to print matrix elements to the console
         void print() const;
+        // Member function to print matrix vectors to the console
+        void print_vectors() const;
+        // Member function to write matrix vectors to the file
+        void write_vectors_to_file(const std::string &, const std::string & = {}, const std::string & = {}, const std::string & = {}) const;
+        // Member function to read matrix vectors to the file
+        void read_vectors_to_file(const std::string &, const std::string & = {}, const std::string & = {}, const std::string & = {});
         // Member function to get the value at a given position
         VTYPE get_value(ITYPE, ITYPE) const;
         // Member function to get the number of rows
@@ -97,6 +103,8 @@ class sparse_matrix {
         bool empty() const;
         // Member function to get the format of the matrix
         std::string getFormat() const;
+        // Member function to check if the sparse matrix is sorted and deduplicated
+        bool isSortedUnique(const std::string & = {}, const std::string & = {}) const;
 
         // *****************************************
         // ********* Matrix manipulations **********
@@ -163,6 +171,17 @@ class sparse_matrix {
         void set_matrix_format(const std::string & = "CSR");
 
         // *****************************************
+        // ********** Matrix I/O & info ************
+        // *****************************************
+
+        // Protected member function to check if the COO matrix is sorted and deduplicated
+        bool isCOOSortedUnique(const std::string & = {}, const std::string & = {}) const;
+        // Protected member function to check if the CSR matrix is sorted and deduplicated
+        bool isCSRSortedUnique(const std::string & = {}, const std::string & = {}) const;
+        // Protected member function to check if the CSC matrix is sorted and deduplicated
+        bool isCSCSortedUnique(const std::string & = {}, const std::string & = {}) const;
+
+        // *****************************************
         // ********* Matrix manipulations **********
         // *****************************************
 
@@ -197,7 +216,6 @@ class sparse_matrix {
 
         // Member function to assert the matrix vector sizes
         void assertValidVectorSize(const std::string & = {}, const std::string & = {}) const;
-
         // Member function to assert if the COO matrix is sorted and deduplicated
         void assertCOOSortedUnique(const std::string & = {}, const std::string & = {})  const;
 
@@ -258,10 +276,10 @@ class sparse_matrix {
 } // mui
 
 // Include implementations
-#include "../linear_algebra/matrix_asserts.h"
 #include "../linear_algebra/matrix_ctor_dtor.h"
-#include "../linear_algebra/matrix_arithmetic.h"
-#include "../linear_algebra/matrix_manipulation.h"
 #include "../linear_algebra/matrix_io_info.h"
+#include "../linear_algebra/matrix_manipulation.h"
+#include "../linear_algebra/matrix_arithmetic.h"
+#include "../linear_algebra/matrix_asserts.h"
 
 #endif /* MUI_SPARSE_MATRIX_H_ */

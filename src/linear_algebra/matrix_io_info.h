@@ -66,20 +66,338 @@ void sparse_matrix<ITYPE,VTYPE>::print() const {
     for (ITYPE i = 0; i < rows_; ++i) {
         std::cout << "      ";
        for (ITYPE j = 0; j < cols_; ++j){
-           auto it = matrix_.find(std::make_pair(i, j));
-           if (it != matrix_.end()) {
-               std::cout << it->second << " ";
-           } else {
-               std::cout << 0 << " ";
-           }
+           std::cout << this->get_value(i,j) << " ";
        }
        std::cout << std::endl;
+    }
+}
+
+// Member function to print matrix vectors to the console
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::print_vectors() const {
+    if (matrix_format_ == format::COO) {
+        std::cout << "The Value vector of matrix in COO format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_coo.values_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "The Row Index vector of matrix in COO format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_coo.row_indices_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "The Column Index vector of matrix in COO format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_coo.col_indices_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+    } else if (matrix_format_ == format::CSR) {
+        std::cout << "The Value vector of matrix in CSR format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_csr.values_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "The Row Pointers vector of matrix in CSR format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_csr.row_ptrs_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "The Column Index vector of matrix in CSR format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_csr.col_indices_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+    } else if (matrix_format_ == format::CSC) {
+        std::cout << "The Value vector of matrix in CSC format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_csc.values_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "The Row Index vector of matrix in CSC format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_csc.row_indices_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "The Column Pointers vector of matrix in CSC format: " << std::endl;
+        std::cout << "      ";
+        for (const auto& element : matrix_csc.col_ptrs_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+    } else {
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix print_vectors >>" << std::endl;
+        std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+        std::cerr << "    format::COO: COOrdinate format" << std::endl;
+        std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+        std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+        std::abort();
+    }
+}
+
+// Member function to write matrix vectors to the file
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::write_vectors_to_file(const std::string &format_file_name, const std::string &val_file_name, const std::string &row_file_name, const std::string &col_file_name) const {
+
+    std::string ffn;
+    std::string vfn;
+    std::string rfn;
+    std::string cfn;
+
+    // Open three separate output files
+    if ((val_file_name.empty()) ||  (row_file_name.empty()) ||  (col_file_name.empty())) {
+        ffn = format_file_name + "_format.dat";
+        vfn = format_file_name + "_value.dat";
+        rfn = format_file_name + "_row.dat";
+        cfn = format_file_name + "_column.dat";
+    } else {
+        ffn = format_file_name;
+        vfn = val_file_name;
+        rfn = row_file_name;
+        cfn = col_file_name;
+    }
+
+    std::ofstream formatFile(ffn);
+    std::ofstream valueFile(vfn);
+    std::ofstream rowFile(rfn);
+    std::ofstream columnFile(cfn);
+
+    // Check if all files were opened successfully
+    if (!formatFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening format output files in write_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+    if (!valueFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening value vector output files in write_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+    if (!rowFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening row vector output files in write_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+    if (!columnFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening column vector output files in write_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+
+
+
+    if (matrix_format_ == format::COO) {
+        formatFile << "COO" << "\n";
+        // Write the contents of the vectors to the respective files
+        for (ITYPE i = 0; i < matrix_coo.values_.size(); ++i) {
+            valueFile << matrix_coo.values_[i] << "\n";
+            rowFile << matrix_coo.row_indices_[i] << "\n";
+            columnFile << matrix_coo.col_indices_[i] << "\n";
+        }
+    } else if (matrix_format_ == format::CSR) {
+        formatFile << "CSR" << "\n";
+        // Write the contents of the vectors to the respective files
+        for (ITYPE i = 0; i < matrix_csr.values_.size(); ++i) {
+            valueFile << matrix_csr.values_[i] << "\n";
+            columnFile << matrix_csr.col_indices_[i] << "\n";
+        }
+        for (ITYPE i = 0; i < (rows_+1); ++i) {
+            rowFile << matrix_csr.row_ptrs_[i] << "\n";
+        }
+    } else if (matrix_format_ == format::CSC) {
+        formatFile << "CSC" << "\n";
+        // Write the contents of the vectors to the respective files
+        for (ITYPE i = 0; i < matrix_csc.values_.size(); ++i) {
+            valueFile << matrix_csc.values_[i] << "\n";
+            columnFile << matrix_csc.row_indices_[i] << "\n";
+        }
+        for (ITYPE i = 0; i < (cols_+1); ++i) {
+            rowFile << matrix_csc.col_ptrs_[i] << "\n";
+        }
+    } else {
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix write_vectors_to_file() >>" << std::endl;
+        std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+        std::cerr << "    format::COO: COOrdinate format" << std::endl;
+        std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+        std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+        std::abort();
+    }
+
+    // Close the files
+    formatFile.close();
+    valueFile.close();
+    rowFile.close();
+    columnFile.close();
+
+}
+
+// Member function to read matrix vectors to the file
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::read_vectors_to_file(const std::string &format_file_name, const std::string &val_file_name, const std::string &row_file_name, const std::string &col_file_name) {
+
+    std::string ffn;
+    std::string vfn;
+    std::string rfn;
+    std::string cfn;
+
+    // Open three separate input files
+    if ((val_file_name.empty()) ||  (row_file_name.empty()) ||  (col_file_name.empty())) {
+        ffn = format_file_name + "_format.dat";
+        vfn = format_file_name + "_value.dat";
+        rfn = format_file_name + "_row.dat";
+        cfn = format_file_name + "_column.dat";
+    } else {
+        ffn = format_file_name;
+        vfn = val_file_name;
+        rfn = row_file_name;
+        cfn = col_file_name;
+    }
+
+    std::ifstream formatFile(ffn);
+    std::ifstream valueFile(vfn);
+    std::ifstream rowFile(rfn);
+    std::ifstream columnFile(cfn);
+
+    // Check if all files were opened successfully
+    if (!formatFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening format input files in read_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+    if (!valueFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening value vector input files in read_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+    if (!rowFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening row vector input files in read_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+    if (!columnFile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening column vector input files in read_vectors_to_file()." << std::endl;
+        std::abort();
+    }
+
+    assert((this->empty()) &&
+      "MUI Error [matrix_io_info.h]: read_vectors_to_file() can only takes in null matrix or empty (all-zero) matrix");
+
+    format format_store = this->matrix_format_;
+
+    std::string file_matrix_format;
+
+    formatFile >> file_matrix_format;
+
+    std::string file_matrix_format_trim = string_to_upper(trim(file_matrix_format));
+
+    if (file_matrix_format_trim == "COO") {
+        // Read the contents of the vectors from the respective files
+        int val;
+        while (valueFile >> val) {
+            matrix_coo.values_.reserve(matrix_coo.values_.size()+1);
+            matrix_coo.values_.emplace_back(val);
+        }
+        int row_idx;
+        while (rowFile >> row_idx) {
+            matrix_coo.row_indices_.reserve(matrix_coo.row_indices_.size()+1);
+            matrix_coo.row_indices_.emplace_back(row_idx);
+        }
+        int col_idx;
+        while (columnFile >> col_idx) {
+            matrix_coo.col_indices_.reserve(matrix_coo.col_indices_.size()+1);
+            matrix_coo.col_indices_.emplace_back(col_idx);
+        }
+        matrix_format_ = format::COO;
+        nnz_ = matrix_coo.values_.size();
+    } else if (file_matrix_format_trim == "CSR") {
+        // Read the contents of the vectors from the respective files
+        int val;
+        while (valueFile >> val) {
+            matrix_csr.values_.reserve(matrix_csr.values_.size()+1);
+            matrix_csr.values_.emplace_back(val);
+        }
+        int row_ptr;
+        while (rowFile >> row_ptr) {
+            matrix_csr.row_ptrs_.reserve(matrix_csr.row_ptrs_.size()+1);
+            matrix_csr.row_ptrs_.emplace_back(row_ptr);
+        }
+        int col_idx;
+        while (columnFile >> col_idx) {
+            matrix_csr.col_indices_.reserve(matrix_csr.col_indices_.size()+1);
+            matrix_csr.col_indices_.emplace_back(col_idx);
+        }
+        matrix_format_ = format::CSR;
+        nnz_ = matrix_csr.values_.size();
+    } else if (file_matrix_format_trim == "CSC") {
+        // Read the contents of the vectors from the respective files
+        int val;
+        while (valueFile >> val) {
+            matrix_csc.values_.reserve(matrix_csc.values_.size()+1);
+            matrix_csc.values_.emplace_back(val);
+        }
+        int row_idx;
+        while (rowFile >> row_idx) {
+            matrix_csc.row_indices_.reserve(matrix_csc.row_indices_.size()+1);
+            matrix_csc.row_indices_.emplace_back(row_idx);
+        }
+        int col_ptr;
+        while (columnFile >> col_ptr) {
+            matrix_csc.col_ptrs_.reserve(matrix_csc.col_ptrs_.size()+1);
+            matrix_csc.col_ptrs_.emplace_back(col_ptr);
+        }
+        matrix_format_ = format::CSC;
+        nnz_ = matrix_csc.values_.size();
+    } else {
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << file_matrix_format_trim << " for matrix read_vectors_to_file() >>" << std::endl;
+        std::cerr << "    Please set the matrix format as:" << std::endl;
+        std::cerr << "    format::COO: COOrdinate format" << std::endl;
+        std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+        std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+        std::abort();
+    }
+
+    // Close the files
+    formatFile.close();
+    valueFile.close();
+    rowFile.close();
+    columnFile.close();
+
+    this->assertValidVectorSize("matrix_io_info.h", "read_vectors_to_file()");
+
+    if (format_store != matrix_format_) {
+        if (format_store == format::COO) {
+            this->format_conversion("COO", true, true, "overwrite");
+        } else if (format_store == format::CSR) {
+            this->format_conversion("CSR", true, true, "overwrite");
+        } else if (format_store == format::CSC) {
+            this->format_conversion("CSC", true, true, "overwrite");
+        } else {
+            std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix write_vectors_to_file()" << std::endl;
+            std::cerr << "    Please set the format_store as:" << std::endl;
+            std::cerr << "    format::COO: COOrdinate format" << std::endl;
+            std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+            std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+            std::abort();
+        }
     }
 }
 
 // Overloading << operator to output matrix in CSV format
 template<typename ITYPE, typename VTYPE>
 std::ostream& operator << (std::ostream &ofile, const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+
+    // Check if file was opened successfully
+    if (!ofile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening output files in overloaded << operator." << std::endl;
+        std::abort();
+    }
+
     for (ITYPE i = 0; i < exist_mat.get_rows(); ++i) {
         for (ITYPE j = 0; j < exist_mat.get_cols(); ++j) {
             if (j == (exist_mat.get_cols() - 1)) {
@@ -98,10 +416,24 @@ std::ostream& operator << (std::ostream &ofile, const sparse_matrix<ITYPE,VTYPE>
 // Overloading >> operator to read matrix from a file in CSV format with lines start with "//" as comment lines
 template<typename ITYPE, typename VTYPE>
 std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+
+    // Check if file was opened successfully
+    if (!ifile) {
+        std::cerr << "MUI Error [matrix_io_info.h]: Error opening output files in overloaded >> operator." << std::endl;
+        std::abort();
+    }
+
     assert((exist_mat.empty()) &&
       "MUI Error [matrix_io_info.h]: Overloading >> operator can only takes in null matrix or empty (all-zero) matrix");
+
+    format format_store = exist_mat.matrix_format_;
+
     std::string rawLine;
-    std::map<std::pair<ITYPE, ITYPE>, VTYPE> tempMatrix;
+
+    std::vector<ITYPE> tempRowIndex;
+    std::vector<ITYPE> tempColIndex;
+    std::vector<VTYPE> tempValue;
+
     ITYPE row = 0;
     ITYPE col = 0;
     while (std::getline(ifile, rawLine)) {
@@ -114,7 +446,12 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
         while (std::getline(ss, value, ',')) {
             VTYPE val = static_cast<VTYPE>(std::stod(value));
             if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
-                tempMatrix[std::make_pair(row, colCount)] = val;
+                tempRowIndex.reserve(tempRowIndex.size()+1);
+                tempColIndex.reserve(tempColIndex.size()+1);
+                tempValue.reserve(tempValue.size()+1);
+                tempRowIndex.emplace_back(row);
+                tempColIndex.emplace_back(colCount);
+                tempValue.emplace_back(val);
             }
             ++colCount;
         }
@@ -131,15 +468,42 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
         ++row;
     }
     if ((exist_mat.get_rows() == 0) && (exist_mat.get_cols() == 0)) {
-        exist_mat.resize_null(row, col);
-        for (auto element : tempMatrix) {
-            exist_mat.set_value(element.first.first, element.first.second, element.second);
-        }
+        exist_mat.resize(row, col);
+        exist_mat.matrix_format_ = format::COO;
+        exist_mat.matrix_coo.values_.reserve(tempValue.size());
+        exist_mat.matrix_coo.row_indices_.reserve(tempRowIndex.size());
+        exist_mat.matrix_coo.col_indices_.reserve(tempColIndex.size());
+        exist_mat.matrix_coo.values_= std::vector<VTYPE>(tempValue.begin(), tempValue.end());
+        exist_mat.matrix_coo.row_indices_= std::vector<ITYPE>(tempRowIndex.begin(), tempRowIndex.end());
+        exist_mat.matrix_coo.col_indices_= std::vector<ITYPE>(tempColIndex.begin(), tempColIndex.end());
     } else {
         assert(((exist_mat.get_rows() == row) && (exist_mat.get_cols() == col)) &&
           "MUI Error [matrix_io_info.h]: Matrix size mismatching between existing matrix and read in matrix in overloading >> operator ");
-        for (auto element : tempMatrix) {
-            exist_mat.set_value(element.first.first, element.first.second, element.second);
+        exist_mat.matrix_format_ = format::COO;
+        exist_mat.matrix_coo.values_.reserve(tempValue.size());
+        exist_mat.matrix_coo.row_indices_.reserve(tempRowIndex.size());
+        exist_mat.matrix_coo.col_indices_.reserve(tempColIndex.size());
+        exist_mat.matrix_coo.values_= std::vector<VTYPE>(tempValue.begin(), tempValue.end());
+        exist_mat.matrix_coo.row_indices_= std::vector<ITYPE>(tempRowIndex.begin(), tempRowIndex.end());
+        exist_mat.matrix_coo.col_indices_= std::vector<ITYPE>(tempColIndex.begin(), tempColIndex.end());
+    }
+
+    exist_mat.nnz_ = exist_mat.matrix_coo.values_.size();
+
+    if (format_store != exist_mat.matrix_format_) {
+        if (format_store == format::COO) {
+            exist_mat.format_conversion("COO", true, true, "overwrite");
+        } else if (format_store == format::CSR) {
+            exist_mat.format_conversion("CSR", true, true, "overwrite");
+        } else if (format_store == format::CSC) {
+            exist_mat.format_conversion("CSC", true, true, "overwrite");
+        } else {
+            std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix operator >>" << std::endl;
+            std::cerr << "    Please set the format_store as:" << std::endl;
+            std::cerr << "    format::COO: COOrdinate format" << std::endl;
+            std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+            std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+            std::abort();
         }
     }
     return ifile;
@@ -150,11 +514,54 @@ template<typename ITYPE, typename VTYPE>
 VTYPE sparse_matrix<ITYPE,VTYPE>::get_value(ITYPE r, ITYPE c) const {
     assert(((r < rows_) && (r >= 0) && (c < cols_) && (c >= 0)) &&
         "MUI Error [matrix_io_info.h]: Matrix index out of range in get_value function");
-    auto it = matrix_.find(std::make_pair(r, c));
-    if (it != matrix_.end()) {
-        return it->second;
+
+    if (matrix_format_ == format::COO) {
+        for (ITYPE i = 0; i < matrix_coo.row_indices_.size(); ++i) {
+            if (matrix_coo.row_indices_[i] == r && matrix_coo.col_indices_[i] == c) {
+                return matrix_coo.values_[i];
+            }
+        }
+        // Return 0 if the element is not found
+        return static_cast<VTYPE>(0);
+    } else if (matrix_format_ == format::CSR) {
+        // Find the row range in the row_ptrs_ vector
+        ITYPE row_start = matrix_csr.row_ptrs_[r];
+        ITYPE row_end = matrix_csr.row_ptrs_[r + 1];
+
+        // Search for the column index within the row range
+        auto it = std::lower_bound(matrix_csr.col_indices_.begin()+row_start, matrix_csr.col_indices_.begin()+row_end, c);
+
+        // Check if the element exists in the CSR vector
+        if (it != matrix_csr.col_indices_.begin()+row_end && *it == c) {
+            ITYPE index = std::distance(matrix_csr.col_indices_.begin(), it);
+            return matrix_csr.values_[index];
+        }
+        // Return 0 if the element is not found
+        return static_cast<VTYPE>(0);
+    } else if (matrix_format_ == format::CSC) {
+        // Find the column range in the col_ptrs_ vector
+        ITYPE col_start = matrix_csc.col_ptrs_[c];
+        ITYPE col_end = matrix_csc.col_ptrs_[c + 1];
+
+        // Search for the row index within the column range
+        auto it = std::lower_bound(matrix_csc.row_indices_.begin()+col_start, matrix_csc.row_indices_.begin()+col_end, r);
+
+        // Check if the element exists in the CSC vector
+        if (it != matrix_csc.row_indices_.begin()+col_end && *it == r) {
+            ITYPE index = std::distance(matrix_csc.row_indices_.begin(), it);
+            return matrix_csc.values_[index];
+        }
+        // Return 0 if the element is not found
+        return static_cast<VTYPE>(0);
     } else {
-        return 0;
+
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix get_value" << std::endl;
+        std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+        std::cerr << "    format::COO: COOrdinate format" << std::endl;
+        std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+        std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+        std::abort();
+
     }
 }
 
@@ -174,8 +581,42 @@ ITYPE sparse_matrix<ITYPE,VTYPE>::get_cols() const {
 template<typename ITYPE, typename VTYPE>
 std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_elements() const {
     std::vector<std::pair<ITYPE, ITYPE>> vec_temp;
-    for (auto const &nn_element : matrix_) {
-        vec_temp.push_back(std::make_pair(nn_element.first.first, nn_element.first.second));
+    if (matrix_format_ == format::COO) {
+        vec_temp.reserve(matrix_coo.values_.size());
+        for (ITYPE i = 0; i < matrix_coo.values_.size(); ++i) {
+            vec_temp.emplace_back(std::make_pair(matrix_coo.row_indices_[i], matrix_coo.col_indices_[i]));
+        }
+    } else if (matrix_format_ == format::CSR) {
+        vec_temp.reserve(matrix_csr.values_.size());
+        for (ITYPE row = 0; row < matrix_csr.row_ptrs_.size()-1; ++row) {
+            ITYPE row_start = matrix_csr.row_ptrs_[row];
+            ITYPE row_end = matrix_csr.row_ptrs_[row + 1];
+
+            // Iterate over the non-zero elements in the row
+            for (ITYPE i = row_start; i < row_end; ++i) {
+                ITYPE column = matrix_csr.col_indices_[i];
+                vec_temp.emplace_back(std::make_pair(row, column));
+            }
+        }
+    } else if (matrix_format_ == format::CSC) {
+        vec_temp.reserve(matrix_csc.values_.size());
+        for (ITYPE column = 0; column < matrix_csc.col_ptrs_.size()-1; ++column) {
+            ITYPE col_start = matrix_csc.col_ptrs_[column];
+            ITYPE col_end = matrix_csc.col_ptrs_[column + 1];
+
+            // Iterate over the non-zero elements in the column
+            for (ITYPE i = col_start; i < col_end; ++i) {
+                ITYPE row = matrix_csc.row_indices_[i];
+                vec_temp.emplace_back(std::make_pair(row, column));
+            }
+        }
+    } else {
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix operator >>" << std::endl;
+        std::cerr << "    Please set the format_store as:" << std::endl;
+        std::cerr << "    format::COO: COOrdinate format" << std::endl;
+        std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+        std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+        std::abort();
     }
     return vec_temp;
 }
@@ -183,35 +624,71 @@ std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_el
 // Member function to get number of non-zero elements
 template<typename ITYPE, typename VTYPE>
 ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
-    return matrix_.size();
+
+    if (matrix_format_ == format::COO) {
+        if (nnz_ != matrix_coo.values_.size()) {
+            std::cerr << "MUI Error [matrix_io_info.h]: Mismatch matrix_coo.values_ size (" << matrix_coo.values_.size() << ") with number of non-zeros (" << nnz_ <<") in non_zero_elements_count()" << std::endl;
+            std::abort();
+        }
+    } else if (matrix_format_ == format::CSR) {
+        if (nnz_ != matrix_csr.values_.size()) {
+            std::cerr << "MUI Error [matrix_io_info.h]: Mismatch matrix_csr.values_ size (" << matrix_csr.values_.size() << ") with number of non-zeros (" << nnz_ <<") in non_zero_elements_count()" << std::endl;
+            std::abort();
+        }
+    } else if (matrix_format_ == format::CSC) {
+        if (nnz_ != matrix_csc.values_.size()) {
+            std::cerr << "MUI Error [matrix_io_info.h]: Mismatch matrix_csc.values_ size (" << matrix_csc.values_.size() << ") with number of non-zeros (" << nnz_ <<") in non_zero_elements_count()" << std::endl;
+            std::abort();
+        }
+    } else {
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix non_zero_elements_count()" << std::endl;
+        std::cerr << "    Please set the format_store as:" << std::endl;
+        std::cerr << "    format::COO: COOrdinate format" << std::endl;
+        std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+        std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+        std::abort();
+    }
+
+    return nnz_;
 }
 
 // Member function to check whether the matrix contains all zero elements
 template<typename ITYPE, typename VTYPE>
 bool sparse_matrix<ITYPE,VTYPE>::empty() const {
-    return matrix_.empty();
+    if ((matrix_coo.values_.empty()) &&
+        (matrix_coo.row_indices_.empty()) &&
+        (matrix_coo.col_indices_.empty()) &&
+        (matrix_csr.values_.empty()) &&
+        (matrix_csr.row_ptrs_.empty()) &&
+        (matrix_csr.col_indices_.empty()) &&
+        (matrix_csc.values_.empty()) &&
+        (matrix_csc.row_indices_.empty()) &&
+        (matrix_csc.col_ptrs_.empty())) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // Member function to get the format of the matrix
 template<typename ITYPE, typename VTYPE>
 std::string sparse_matrix<ITYPE,VTYPE>::getFormat() const
 {
-	std::string matrix_format;
+    std::string matrix_format;
 
-	if (matrix_format_ == format::COO) {
-		matrix_format = "COO";
-	} else if (matrix_format_ == format::CSR) {
-		matrix_format = "CSR";
-	} else if (matrix_format_ == format::CSC) {
-		matrix_format = "CSC";
-	} else {
+    if (matrix_format_ == format::COO) {
+        matrix_format = "COO";
+    } else if (matrix_format_ == format::CSR) {
+        matrix_format = "CSR";
+    } else if (matrix_format_ == format::CSC) {
+        matrix_format = "CSC";
+    } else {
         std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format " << matrix_format_ << std::endl;
         std::abort();
-	}
+    }
 
-	return matrix_format;
+    return matrix_format;
 }
-
 
 // Member function to check if the sparse matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
@@ -222,16 +699,16 @@ bool sparse_matrix<ITYPE,VTYPE>::isSortedUnique(const std::string &file_name, co
     if (function_name.empty())
         function_name = "isSortedUnique()";
 
-	if (matrix_format_ == format::COO) {
-		return this->isCOOSortedUnique(file_name, function_name);
-	} else if (matrix_format_ == format::CSR) {
-		return this->isCSRSortedUnique(file_name, function_name);
-	} else if (matrix_format_ == format::CSC) {
-		return this->isCSCSortedUnique(file_name, function_name);
-	} else {
+    if (matrix_format_ == format::COO) {
+        return this->isCOOSortedUnique(file_name, function_name);
+    } else if (matrix_format_ == format::CSR) {
+        return this->isCSRSortedUnique(file_name, function_name);
+    } else if (matrix_format_ == format::CSC) {
+        return this->isCSCSortedUnique(file_name, function_name);
+    } else {
         std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format " << matrix_format_ << std::endl;
         std::abort();
-	}
+    }
 }
 
 // **************************************************
@@ -247,7 +724,7 @@ bool sparse_matrix<ITYPE,VTYPE>::isCOOSortedUnique(const std::string &file_name,
     if (function_name.empty())
         function_name = "isCOOSortedUnique()";
 
-	ITYPE numEntries = matrix_coo.values_.size();
+    ITYPE numEntries = matrix_coo.values_.size();
 
     if (numEntries > 1) {
         for (ITYPE i = 1; i < numEntries; ++i) {
@@ -270,9 +747,7 @@ bool sparse_matrix<ITYPE,VTYPE>::isCOOSortedUnique(const std::string &file_name,
             }
         }
     }
-
-	return true;
-
+    return true;
 }
 
 // Protected member function to check if the CSR matrix is sorted and deduplicated
@@ -284,7 +759,7 @@ bool sparse_matrix<ITYPE,VTYPE>::isCSRSortedUnique(const std::string &file_name,
     if (function_name.empty())
         function_name = "isCSRSortedUnique()";
 
-	ITYPE numEntries = matrix_csr.values_.size();
+    ITYPE numEntries = matrix_csr.values_.size();
 
     if (numEntries > 1) {
         for(ITYPE i = 0; i < rows_; ++i){
@@ -306,9 +781,7 @@ bool sparse_matrix<ITYPE,VTYPE>::isCSRSortedUnique(const std::string &file_name,
             }
         }
     }
-
-	return true;
-
+    return true;
 }
 
 // Protected member function to check if the CSC matrix is sorted and deduplicated
@@ -320,7 +793,7 @@ bool sparse_matrix<ITYPE,VTYPE>::isCSCSortedUnique(const std::string &file_name,
     if (function_name.empty())
         function_name = "isCSCSortedUnique()";
 
-	ITYPE numEntries = matrix_csc.values_.size();
+    ITYPE numEntries = matrix_csc.values_.size();
 
     if (numEntries > 1) {
         for(ITYPE i = 0; i < cols_; ++i){
@@ -342,11 +815,8 @@ bool sparse_matrix<ITYPE,VTYPE>::isCSCSortedUnique(const std::string &file_name,
             }
         }
     }
-
-	return true;
-
+    return true;
 }
-
 
 } // linalg
 } // mui

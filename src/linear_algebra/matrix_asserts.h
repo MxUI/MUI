@@ -231,7 +231,7 @@ void sparse_matrix<ITYPE,VTYPE>::assertCOOSortedUnique(const std::string &file_n
     if (function_name.empty())
         function_name = "assertCOOSortedUnique()";
 
-	ITYPE numEntries = matrix_coo.values_.size();
+    ITYPE numEntries = matrix_coo.values_.size();
 
     if (numEntries > 1) {
         for (ITYPE i = 1; i < numEntries; ++i) {
@@ -265,7 +265,7 @@ void sparse_matrix<ITYPE,VTYPE>::assertCSRSortedUnique(const std::string &file_n
     if (function_name.empty())
         function_name = "assertCSRSortedUnique()";
 
-	ITYPE numEntries = matrix_csr.values_.size();
+    ITYPE numEntries = matrix_csr.values_.size();
 
     if (numEntries > 1) {
         for(ITYPE i = 0; i < rows_; ++i){
@@ -298,7 +298,7 @@ void sparse_matrix<ITYPE,VTYPE>::assertCSCSortedUnique(const std::string &file_n
     if (function_name.empty())
         function_name = "assertCSCSortedUnique()";
 
-	ITYPE numEntries = matrix_csc.values_.size();
+    ITYPE numEntries = matrix_csc.values_.size();
 
     if (numEntries > 1) {
         for(ITYPE i = 0; i < cols_; ++i){
