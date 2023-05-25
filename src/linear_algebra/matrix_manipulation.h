@@ -75,7 +75,7 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
     assert((((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) || ((rows_ == 0) && (cols_ == 0))) &&
             "MUI Error [matrix_manipulation.h]: matrix size mismatch in copy function ");
 
-    exist_mat.assertValidVectorSize("matrix_manipulation.h", "copy()");
+    exist_mat.assert_valid_vector_size("matrix_manipulation.h", "copy()");
 
     if (exist_mat.nnz_>0) {
 
@@ -125,9 +125,9 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
     }
 
     if (exist_mat.matrix_format_ != matrix_format_)
-        this->format_conversion(this->getFormat(), true, true, "overwrite");
+        this->format_conversion(this->get_format(), true, true, "overwrite");
 
-    this->assertValidVectorSize("matrix_manipulation.h", "copy()");
+    this->assert_valid_vector_size("matrix_manipulation.h", "copy()");
 
 }
 
@@ -143,7 +143,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
           "MUI Error [matrix_manipulation.h]: Matrix index out of range in segment function");
 
       if (performSortAndUniqueCheck) {
-          if (!(this->isSortedUnique("matrix_manipulation.h", "segment()"))){
+          if (!(this->is_sorted_unique("matrix_manipulation.h", "segment()"))){
               if(matrix_format_ == format::COO) {
                   this->sort_coo(true, true, "overwrite");
               } else if (exist_mat.matrix_format_ == format::CSR) {
@@ -161,7 +161,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
           }
       }
 
-    sparse_matrix<ITYPE,VTYPE> res((r_end-r_start+1), (c_end-c_start+1), this->getFormat());
+    sparse_matrix<ITYPE,VTYPE> res((r_end-r_start+1), (c_end-c_start+1), this->get_format());
 
     if(matrix_format_ == format::COO) {
 
@@ -267,7 +267,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
       std::abort();
     }
 
-    res.assertValidVectorSize("matrix_manipulation.h", "segment()");
+    res.assert_valid_vector_size("matrix_manipulation.h", "segment()");
 
     return res;
 }
@@ -279,7 +279,7 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val, bool per
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in set_value function");
 
     if (performSortAndUniqueCheck) {
-        if (!(this->isSortedUnique("matrix_manipulation.h", "set_value()"))){
+        if (!(this->is_sorted_unique("matrix_manipulation.h", "set_value()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
             } else if (exist_mat.matrix_format_ == format::CSR) {
@@ -428,7 +428,7 @@ void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE val, bool pe
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in add_scalar function");
 
     if (performSortAndUniqueCheck) {
-        if (!(this->isSortedUnique("matrix_manipulation.h", "add_scalar()"))){
+        if (!(this->is_sorted_unique("matrix_manipulation.h", "add_scalar()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
             } else if (exist_mat.matrix_format_ == format::CSR) {
@@ -474,7 +474,7 @@ void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE val, bo
     assert(((r < rows_) && (r >= 0) && (c < cols_) && (c >= 0)) &&
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in subtract_scalar function");
     if (performSortAndUniqueCheck) {
-        if (!(this->isSortedUnique("matrix_manipulation.h", "subtract_scalar()"))){
+        if (!(this->is_sorted_unique("matrix_manipulation.h", "subtract_scalar()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
             } else if (exist_mat.matrix_format_ == format::CSR) {
@@ -521,7 +521,7 @@ void sparse_matrix<ITYPE,VTYPE>::multiply_scalar(ITYPE r, ITYPE c, VTYPE val, bo
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in multiply_scalar function");
 
     if (performSortAndUniqueCheck) {
-        if (!(this->isSortedUnique("matrix_manipulation.h", "multiply_scalar()"))){
+        if (!(this->is_sorted_unique("matrix_manipulation.h", "multiply_scalar()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
             } else if (exist_mat.matrix_format_ == format::CSR) {
@@ -600,7 +600,7 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
         }
 
         if (matrix_format_ != exist_mat.matrix_format_) {
-            this->format_conversion(exist_mat.getFormat(), true, true, "overwrite");
+            this->format_conversion(exist_mat.get_format(), true, true, "overwrite");
         }
     }
     return *this;
@@ -621,7 +621,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         } else if (matrix_format == "CSR") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->isSortedUnique("matrix_manipulation.h", "format_conversion()"))){
+                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
                     this->sparse_matrix<ITYPE,VTYPE>::sort_coo(true, deduplication, deduplication_mode);
                 }
             }
@@ -631,7 +631,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         } else if (matrix_format == "CSC") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->isSortedUnique("matrix_manipulation.h", "format_conversion()"))){
+                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
                     this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
                 }
             }
@@ -654,7 +654,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         if (matrix_format == "COO") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->isSortedUnique("matrix_manipulation.h", "format_conversion()"))){
+                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
                     this->sparse_matrix<ITYPE,VTYPE>::sort_csr(deduplication, deduplication_mode);
                 }
             }
@@ -668,7 +668,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         } else if (matrix_format == "CSC") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->isSortedUnique("matrix_manipulation.h", "format_conversion()"))){
+                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
                     this->sparse_matrix<ITYPE,VTYPE>::sort_csr(deduplication, deduplication_mode);
                 }
             }
@@ -691,7 +691,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         if (matrix_format == "COO") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->isSortedUnique("matrix_manipulation.h", "format_conversion()"))){
+                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
                     this->sparse_matrix<ITYPE,VTYPE>::sort_csc(deduplication, deduplication_mode);
                 }
             }
@@ -701,7 +701,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         } else if (matrix_format == "CSR") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->isSortedUnique("matrix_manipulation.h", "format_conversion()"))){
+                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
                     this->sparse_matrix<ITYPE,VTYPE>::sort_csc(deduplication, deduplication_mode);
                 }
             }
@@ -750,10 +750,12 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
 
     std::string deduplication_mode_trim = string_to_lower(trim(deduplication_mode));
 
-    if ((deduplication_mode_trim != "sum") and (deduplication_mode_trim != "overwrite")) {
+    if ((deduplication_mode_trim != "plus") && (deduplication_mode_trim != "minus") && (deduplication_mode_trim != "multiply") && (deduplication_mode_trim != "overwrite")) {
         std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised deduplication mode: " << deduplication_mode << " for sort_coo() function" << std::endl;
         std::cerr << "    Please set the deduplication mode as:" << std::endl;
-        std::cerr << "    'sum': Sum up values for all duplicated elements" << std::endl;
+        std::cerr << "    'plus': Sum up values for all duplicated elements" << std::endl;
+        std::cerr << "    'minus': Take the difference among duplicated elements according to their position (former element minus later element)" << std::endl;
+        std::cerr << "    'multiply': Take the product among all duplicated elements" << std::endl;
         std::cerr << "    'overwrite' (default): Keeps only the value of the last duplicated element" << std::endl;
         std::abort();
     }
@@ -810,6 +812,8 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
         ITYPE prev_row = sorted_row_indices[0];
         ITYPE prev_col = sorted_column_indices[0];
         VTYPE sum_value = sorted_values[0];
+        VTYPE difference_value = sorted_values[0];
+        VTYPE product_value = sorted_values[0];
         VTYPE last_value = sorted_values[0];
 
         for (ITYPE i = 1; i < sorted_indices.size(); ++i) {
@@ -819,16 +823,28 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
 
             if ((curr_row == prev_row) && (curr_col == prev_col)) {
                 sum_value += sorted_values[i];
+                difference_value -= sorted_values[i];
+                product_value *= sorted_values[i];
                 last_value = sorted_values[i];
             } else {
 
                 prev_row = curr_row;
                 prev_col = curr_col;
                 sum_value = sorted_values[i];
+                difference_value = sorted_values[i];
+                product_value = sorted_values[i];
                 last_value = sorted_values[i];
 
-                if ((deduplication_mode_trim == "sum") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
+                if ((deduplication_mode_trim == "plus") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
                     deduplicated_values.emplace_back(sum_value);
+                    deduplicated_row_indices.emplace_back(prev_row);
+                    deduplicated_column_indices.emplace_back(prev_col);
+                } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+                    deduplicated_values.emplace_back(difference_value);
+                    deduplicated_row_indices.emplace_back(prev_row);
+                    deduplicated_column_indices.emplace_back(prev_col);
+                } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+                    deduplicated_values.emplace_back(product_value);
                     deduplicated_row_indices.emplace_back(prev_row);
                     deduplicated_column_indices.emplace_back(prev_col);
                 } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
@@ -839,8 +855,16 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
             }
         }
 
-        if ((deduplication_mode_trim == "sum") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
+        if ((deduplication_mode_trim == "plus") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
             deduplicated_values.emplace_back(sum_value);
+            deduplicated_row_indices.emplace_back(prev_row);
+            deduplicated_column_indices.emplace_back(prev_col);
+        } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+            deduplicated_values.emplace_back(difference_value);
+            deduplicated_row_indices.emplace_back(prev_row);
+            deduplicated_column_indices.emplace_back(prev_col);
+        } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+            deduplicated_values.emplace_back(product_value);
             deduplicated_row_indices.emplace_back(prev_row);
             deduplicated_column_indices.emplace_back(prev_col);
         } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
@@ -879,10 +903,12 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csr(bool deduplication, const std::string 
 
     std::string deduplication_mode_trim = string_to_lower(trim(deduplication_mode));
 
-    if ((deduplication_mode_trim != "sum") and (deduplication_mode_trim != "overwrite")) {
+    if ((deduplication_mode_trim != "plus") && (deduplication_mode_trim != "minus") && (deduplication_mode_trim != "multiply") && (deduplication_mode_trim != "overwrite")) {
         std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised deduplication mode: " << deduplication_mode << " for sort_csr() function" << std::endl;
         std::cerr << "    Please set the deduplication mode as:" << std::endl;
-        std::cerr << "    'sum': Sum up values for all duplicated elements" << std::endl;
+        std::cerr << "    'plus': Sum up values for all duplicated elements" << std::endl;
+        std::cerr << "    'minus': Take the difference among duplicated elements according to their position (former element minus later element)" << std::endl;
+        std::cerr << "    'multiply': Take the product among all duplicated elements" << std::endl;
         std::cerr << "    'overwrite' (default): Keeps only the value of the last duplicated element" << std::endl;
         std::abort();
     }
@@ -935,23 +961,36 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csr(bool deduplication, const std::string 
                 auto it = std::lower_bound(uniqueColumns.begin(), uniqueColumns.end(), col);
                 ITYPE index = std::distance(uniqueColumns.begin(), it);
                 if (it != uniqueColumns.end() && *it == col) {
+                    // Column index already exists, overwrite the value
                     VTYPE sum_value = uniqueValues[index] + val;
+                    VTYPE difference_value = uniqueValues[index] - val;
+                    VTYPE product_value = uniqueValues[index] * val;
                     VTYPE last_value = val;
-                    if ((deduplication_mode_trim == "sum")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
+                    if ((deduplication_mode_trim == "plus")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
                         uniqueValues[index] = sum_value;
+                    } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueValues[index] = difference_value;
+                    } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueValues[index] = product_value;
                     } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Column index already exists, overwrite the value
                         uniqueValues[index] = last_value;
                     }
                 } else {
+                    // Column index does not exist, insert it
                     VTYPE sum_value = val;
+                    VTYPE difference_value = val;
+                    VTYPE product_value = val;
                     VTYPE last_value = val;
-                    if ((deduplication_mode_trim == "sum")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Column index does not exist, insert it
+                    if ((deduplication_mode_trim == "plus")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
                         uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
                         uniqueValues.emplace_back(uniqueValues.begin()+index, sum_value);
+                    } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
+                        uniqueValues.emplace_back(uniqueValues.begin()+index, difference_value);
+                    } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
+                        uniqueValues.emplace_back(uniqueValues.begin()+index, product_value);
                     } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Column index does not exist, insert it
                         uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
                         uniqueValues.emplace_back(uniqueValues.begin()+index, last_value);
                     }
@@ -995,10 +1034,12 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csc(bool deduplication, const std::string 
 
     std::string deduplication_mode_trim = string_to_lower(trim(deduplication_mode));
 
-    if ((deduplication_mode_trim != "sum") and (deduplication_mode_trim != "overwrite")) {
+    if ((deduplication_mode_trim != "plus") && (deduplication_mode_trim != "minus") && (deduplication_mode_trim != "multiply") && (deduplication_mode_trim != "overwrite")) {
         std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised deduplication mode: " << deduplication_mode << " for sort_csc() function" << std::endl;
         std::cerr << "    Please set the deduplication mode as:" << std::endl;
-        std::cerr << "    'sum': Sum up values for all duplicated elements" << std::endl;
+        std::cerr << "    'plus': Sum up values for all duplicated elements" << std::endl;
+        std::cerr << "    'minus': Take the difference among duplicated elements according to their position (former element minus later element)" << std::endl;
+        std::cerr << "    'multiply': Take the product among all duplicated elements" << std::endl;
         std::cerr << "    'overwrite' (default): Keeps only the value of the last duplicated element" << std::endl;
         std::abort();
     }
@@ -1051,24 +1092,36 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csc(bool deduplication, const std::string 
                 auto it = std::lower_bound(uniqueRows.begin(), uniqueRows.end(), row);
                 ITYPE index = std::distance(uniqueRows.begin(), it);
                 if (it != uniqueRows.end() && *it == row) {
+                    // Row index already exists, overwrite the value
                     VTYPE sum_value = uniqueValues[index] + val;
+                    VTYPE difference_value = uniqueValues[index] - val;
+                    VTYPE product_value = uniqueValues[index] * val;
                     VTYPE last_value = val;
-                    if ((deduplication_mode_trim == "sum")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Row index already exists, overwrite the value
+                    if ((deduplication_mode_trim == "plus")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
                         uniqueValues[index] = sum_value;
+                    } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+                         uniqueValues[index] = difference_value;
+                    } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueValues[index] = product_value;
                     } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Row index already exists, overwrite the value
                         uniqueValues[index] = last_value;
                     }
                 } else {
+                    // Column index does not exist, insert it
                     VTYPE sum_value = val;
+                    VTYPE difference_value = val;
+                    VTYPE product_value = val;
                     VTYPE last_value = val;
-                    if ((deduplication_mode_trim == "sum")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Column index does not exist, insert it
+                    if ((deduplication_mode_trim == "plus")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
                         uniqueRows.emplace_back(uniqueRows.begin()+index, row);
                         uniqueValues.emplace_back(uniqueValues.begin()+index, sum_value);
+                    } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueRows.emplace_back(uniqueRows.begin()+index, row);
+                        uniqueValues.emplace_back(uniqueValues.begin()+index, difference_value);
+                    } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+                        uniqueRows.emplace_back(uniqueRows.begin()+index, row);
+                        uniqueValues.emplace_back(uniqueValues.begin()+index, product_value);
                     } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                        // Column index does not exist, insert it
                         uniqueRows.emplace_back(uniqueRows.begin()+index, row);
                         uniqueValues.emplace_back(uniqueValues.begin()+index, last_value);
                     }

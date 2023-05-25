@@ -58,12 +58,12 @@ namespace linalg {
 
 // Member function to assert the matrix vector sizes
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assertValidVectorSize(const std::string &file_name, const std::string &function_name) const {
+void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &file_name, const std::string &function_name) const {
 
     if (file_name.empty())
         file_name = "matrix_asserts.h";
     if (function_name.empty())
-        function_name = "assertValidVectorSize()";
+        function_name = "assert_valid_vector_size()";
 
     if (matrix_format_ == format::COO) {
 
@@ -224,12 +224,12 @@ void sparse_matrix<ITYPE,VTYPE>::assertValidVectorSize(const std::string &file_n
 
 // Member function to assert if the COO matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assertCOOSortedUnique(const std::string &file_name, const std::string &function_name) const {
+void sparse_matrix<ITYPE,VTYPE>::assert_coo_sorted_unique(const std::string &file_name, const std::string &function_name) const {
 
     if (file_name.empty())
         file_name = "matrix_asserts.h";
     if (function_name.empty())
-        function_name = "assertCOOSortedUnique()";
+        function_name = "assert_coo_sorted_unique()";
 
     ITYPE numEntries = matrix_coo.values_.size();
 
@@ -258,12 +258,12 @@ void sparse_matrix<ITYPE,VTYPE>::assertCOOSortedUnique(const std::string &file_n
 
 // Member function to assert if the CSR matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assertCSRSortedUnique(const std::string &file_name, const std::string &function_name) const {
+void sparse_matrix<ITYPE,VTYPE>::assert_csr_sorted_unique(const std::string &file_name, const std::string &function_name) const {
 
     if (file_name.empty())
         file_name = "matrix_asserts.h";
     if (function_name.empty())
-        function_name = "assertCSRSortedUnique()";
+        function_name = "assert_csr_sorted_unique()";
 
     ITYPE numEntries = matrix_csr.values_.size();
 
@@ -291,12 +291,12 @@ void sparse_matrix<ITYPE,VTYPE>::assertCSRSortedUnique(const std::string &file_n
 
 // Member function to assert if the CSC matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assertCSCSortedUnique(const std::string &file_name, const std::string &function_name) const {
+void sparse_matrix<ITYPE,VTYPE>::assert_csc_sorted_unique(const std::string &file_name, const std::string &function_name) const {
 
     if (file_name.empty())
         file_name = "matrix_asserts.h";
     if (function_name.empty())
-        function_name = "assertCSCSortedUnique()";
+        function_name = "assert_csc_sorted_unique()";
 
     ITYPE numEntries = matrix_csc.values_.size();
 

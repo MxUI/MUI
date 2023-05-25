@@ -104,7 +104,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE r, ITYPE c, const std::string &f
               std::abort();
           }
 
-        this->assertValidVectorSize("matrix_ctor_dtor.h", "sparse_matrix constructor function");
+        this->assert_valid_vector_size("matrix_ctor_dtor.h", "sparse_matrix constructor function");
     }
 
 }

@@ -41,8 +41,8 @@
  * @file matrix.h
  * @author W. Liu
  * @date 27 January 2023
- * @brief Base class for sparse matrix based on COO format includes basic
- * arithmetic operations such as addition, subtraction, and multiplication.
+ * @brief Base class for sparse matrix based on COO, CSR & CSC formats includes basic
+ * arithmetic operations, multiplications and matrix I/O.
  */
 
 #ifndef MUI_SPARSE_MATRIX_H_
@@ -60,6 +60,7 @@ template<typename ITYPE, typename VTYPE>
 class sparse_matrix {
 
     public:
+
         // *****************************************
         // ****** Constructors & Destructor ********
         // *****************************************
@@ -87,8 +88,8 @@ class sparse_matrix {
         void print_vectors() const;
         // Member function to write matrix vectors to the file
         void write_vectors_to_file(const std::string &, const std::string & = {}, const std::string & = {}, const std::string & = {}) const;
-        // Member function to read matrix vectors to the file
-        void read_vectors_to_file(const std::string &, const std::string & = {}, const std::string & = {}, const std::string & = {});
+        // Member function to read matrix vectors from the file
+        void read_vectors_from_file(const std::string &, const std::string & = {}, const std::string & = {}, const std::string & = {});
         // Member function to get the value at a given position
         VTYPE get_value(ITYPE, ITYPE) const;
         // Member function to get the number of rows
@@ -140,20 +141,20 @@ class sparse_matrix {
         // *****************************************
 
         // Overload addition operator to perform sparse matrix addition
-        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
         // Overload subtraction operator to perform sparse matrix subtraction
-        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
         // Overload multiplication operator to perform sparse matrix multiplication
-        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
         // Overload multiplication operator to perform scalar multiplication
         template <typename STYPE>
         sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &) const;
         // Member function of dot product
         VTYPE dot_product(sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function of Hadamard product
-        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
         // Member function to get transpose of matrix
-        sparse_matrix<ITYPE,VTYPE> transpose() const;
+        sparse_matrix<ITYPE,VTYPE> transpose(bool = true) const;
         // Member function to perform LU decomposition
         void lu_decomposition(sparse_matrix<ITYPE,VTYPE> &, sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function to perform QR decomposition
@@ -175,11 +176,11 @@ class sparse_matrix {
         // *****************************************
 
         // Protected member function to check if the COO matrix is sorted and deduplicated
-        bool isCOOSortedUnique(const std::string & = {}, const std::string & = {}) const;
+        bool is_coo_sorted_unique(const std::string & = {}, const std::string & = {}) const;
         // Protected member function to check if the CSR matrix is sorted and deduplicated
-        bool isCSRSortedUnique(const std::string & = {}, const std::string & = {}) const;
+        bool is_csr_sorted_unique(const std::string & = {}, const std::string & = {}) const;
         // Protected member function to check if the CSC matrix is sorted and deduplicated
-        bool isCSCSortedUnique(const std::string & = {}, const std::string & = {}) const;
+        bool is_csc_sorted_unique(const std::string & = {}, const std::string & = {}) const;
 
         // *****************************************
         // ********* Matrix manipulations **********
@@ -211,13 +212,26 @@ class sparse_matrix {
         void csc_to_csr();
 
         // *****************************************
+        // ********* Arithmetic operations *********
+        // *****************************************
+
+        // Protected member function to reinterpret the row and column indexes for sparse matrix with COO format - helper function on matrix transpose
+        void index_reinterpretation();
+        // Protected member function to reinterpret the format of sparse matrix between CSR format and CSC format - helper function on matrix transpose
+        void format_reinterpretation();
+
+        // *****************************************
         // **************** Asserts ****************
         // *****************************************
 
         // Member function to assert the matrix vector sizes
-        void assertValidVectorSize(const std::string & = {}, const std::string & = {}) const;
+        void assert_valid_vector_size(const std::string & = {}, const std::string & = {}) const;
         // Member function to assert if the COO matrix is sorted and deduplicated
-        void assertCOOSortedUnique(const std::string & = {}, const std::string & = {})  const;
+        void assert_coo_sorted_unique(const std::string & = {}, const std::string & = {})  const;
+        // Member function to assert if the CSR matrix is sorted and deduplicated
+        void assert_csr_sorted_unique(const std::string & = {}, const std::string & = {})  const;
+        // Member function to assert if the CSC matrix is sorted and deduplicated
+        void assert_csc_sorted_unique(const std::string & = {}, const std::string & = {})  const;
 
     private:
 
