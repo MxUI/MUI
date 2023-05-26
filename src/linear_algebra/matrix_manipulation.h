@@ -1591,7 +1591,7 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
 
     std::swap(matrix_csr.values_, matrix_coo.values_);
     std::swap(matrix_csr.row_ptrs_, rowPtr);
-    std::swap(matrix_csr.col_indices_, matrix_coo.values_);
+    std::swap(matrix_csr.col_indices_, matrix_coo.col_indices_);
 
     // Deallocate the memory
     matrix_coo.values_.clear();
