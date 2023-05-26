@@ -152,7 +152,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
               } else if (matrix_format_ == format::CSC) {
                   this->sort_csc(true, "overwrite");
               } else {
-                    std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+                    std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
                     std::cerr << "    Please set the matrix_format_ as:" << std::endl;
                     std::cerr << "    format::COO: COOrdinate format" << std::endl;
                     std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -260,7 +260,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
         }
 
     } else {
-      std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+      std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
       std::cerr << "    Please set the matrix_format_ as:" << std::endl;
       std::cerr << "    format::COO: COOrdinate format" << std::endl;
       std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -373,7 +373,7 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
                 matrix_csc.col_ptrs_[i + 1] = matrix_csc.row_indices_.size();
             }
         } else {
-            std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+            std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
             std::cerr << "    Please set the matrix_format_ as:" << std::endl;
             std::cerr << "    format::COO: COOrdinate format" << std::endl;
             std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -412,7 +412,7 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
         matrix_csc.row_indices_.clear();
         matrix_csc.col_ptrs_.clear();
     } else {
-        std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+        std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -437,7 +437,7 @@ void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE val, bool pe
             } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
-                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
                   std::cerr << "    Please set the matrix_format_ as:" << std::endl;
                   std::cerr << "    format::COO: COOrdinate format" << std::endl;
                   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -460,7 +460,7 @@ void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE val, bool pe
         this->csc_element_operation(r, c, val, "plus", "matrix_manipulation.h", "add_scalar()");
 
     } else {
-          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
           std::cerr << "    Please set the matrix_format_ as:" << std::endl;
           std::cerr << "    format::COO: COOrdinate format" << std::endl;
           std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -483,7 +483,7 @@ void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE val, bo
             } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
-                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
                   std::cerr << "    Please set the matrix_format_ as:" << std::endl;
                   std::cerr << "    format::COO: COOrdinate format" << std::endl;
                   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -506,7 +506,7 @@ void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE val, bo
         this->csc_element_operation(r, c, val, "minus", "matrix_manipulation.h", "subtract_scalar()");
 
     } else {
-          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
           std::cerr << "    Please set the matrix_format_ as:" << std::endl;
           std::cerr << "    format::COO: COOrdinate format" << std::endl;
           std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -530,7 +530,7 @@ void sparse_matrix<ITYPE,VTYPE>::multiply_scalar(ITYPE r, ITYPE c, VTYPE val, bo
             } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
-                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
                   std::cerr << "    Please set the matrix_format_ as:" << std::endl;
                   std::cerr << "    format::COO: COOrdinate format" << std::endl;
                   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -553,7 +553,7 @@ void sparse_matrix<ITYPE,VTYPE>::multiply_scalar(ITYPE r, ITYPE c, VTYPE val, bo
         this->csc_element_operation(r, c, val, "multiply", "matrix_manipulation.h", "multiply_scalar()");
 
     } else {
-          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
           std::cerr << "    Please set the matrix_format_ as:" << std::endl;
           std::cerr << "    format::COO: COOrdinate format" << std::endl;
           std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -592,7 +592,7 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
             matrix_csc.row_indices_ = std::vector<ITYPE>(exist_mat.matrix_csc.row_indices_.begin(), exist_mat.matrix_csc.row_indices_.end());
             matrix_csc.col_ptrs_ = std::vector<ITYPE>(exist_mat.matrix_csc.col_ptrs_.begin(), exist_mat.matrix_csc.col_ptrs_.end());
         } else {
-            std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix constructor" << std::endl;
+            std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format for matrix constructor" << std::endl;
             std::cerr << "    Please set the matrix_format_ as:" << std::endl;
             std::cerr << "    format::COO: COOrdinate format" << std::endl;
             std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -726,7 +726,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
 
     } else {
 
-        std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix format conversion" << std::endl;
+        std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format for matrix format conversion" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -983,17 +983,17 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csr(bool deduplication, const std::string 
                     VTYPE product_value = val;
                     VTYPE last_value = val;
                     if ((deduplication_mode_trim == "plus")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, sum_value);
+                        uniqueColumns.emplace_back(col);
+                        uniqueValues.emplace_back(sum_value);
                     } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, difference_value);
+                        uniqueColumns.emplace_back(col);
+                        uniqueValues.emplace_back(difference_value);
                     } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, product_value);
+                        uniqueColumns.emplace_back(col);
+                        uniqueValues.emplace_back(product_value);
                     } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueColumns.emplace_back(uniqueColumns.begin()+index, col);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, last_value);
+                        uniqueColumns.emplace_back(col);
+                        uniqueValues.emplace_back(last_value);
                     }
                 }
             }
@@ -1114,17 +1114,17 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csc(bool deduplication, const std::string 
                     VTYPE product_value = val;
                     VTYPE last_value = val;
                     if ((deduplication_mode_trim == "plus")&& (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueRows.emplace_back(uniqueRows.begin()+index, row);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, sum_value);
+                        uniqueRows.emplace_back(row);
+                        uniqueValues.emplace_back(sum_value);
                     } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueRows.emplace_back(uniqueRows.begin()+index, row);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, difference_value);
+                        uniqueRows.emplace_back(row);
+                        uniqueValues.emplace_back(difference_value);
                     } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueRows.emplace_back(uniqueRows.begin()+index, row);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, product_value);
+                        uniqueRows.emplace_back(row);
+                        uniqueValues.emplace_back(product_value);
                     } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                        uniqueRows.emplace_back(uniqueRows.begin()+index, row);
-                        uniqueValues.emplace_back(uniqueValues.begin()+index, last_value);
+                        uniqueRows.emplace_back(row);
+                        uniqueValues.emplace_back(last_value);
                     }
                 }
             }

@@ -139,7 +139,7 @@ void sparse_matrix<ITYPE,VTYPE>::print_vectors() const {
         }
         std::cout << std::endl;
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix print_vectors >>" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix print_vectors >>" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -224,7 +224,7 @@ void sparse_matrix<ITYPE,VTYPE>::write_vectors_to_file(const std::string &format
             rowFile << matrix_csc.col_ptrs_[i] << "\n";
         }
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix write_vectors_to_file() >>" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix write_vectors_to_file() >>" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -547,7 +547,7 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::get_value(ITYPE r, ITYPE c) const {
         return static_cast<VTYPE>(0);
     } else {
 
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix get_value" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix get_value" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -603,7 +603,7 @@ std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_el
             }
         }
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator >>" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix operator >>" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -633,7 +633,7 @@ ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
             std::abort();
         }
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix non_zero_elements_count()" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix non_zero_elements_count()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -675,7 +675,7 @@ std::string sparse_matrix<ITYPE,VTYPE>::get_format() const
     } else if (matrix_format_ == format::CSC) {
         matrix_format = "CSC";
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format " << matrix_format_ << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format" << std::endl;
         std::abort();
     }
 

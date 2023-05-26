@@ -140,7 +140,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const sparse_matrix<ITYPE,VTYPE> &exis
           matrix_csc.row_indices_ = std::move(exist_mat.matrix_csc.row_indices_);
           matrix_csc.col_ptrs_ = std::move(exist_mat.matrix_csc.col_ptrs_);
       } else {
-          std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix constructor" << std::endl;
+          std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format for matrix constructor" << std::endl;
           std::cerr << "    Please set the matrix_format_ as:" << std::endl;
           std::cerr << "    format::COO: COOrdinate format" << std::endl;
           std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -205,7 +205,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const std::vector<std::vector<VTYPE>>&
 
     } else {
 
-        std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix constructor" << std::endl;
+        std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format for matrix constructor" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -272,7 +272,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token, con
             matrix_csc.col_ptrs_.emplace_back(n);
 
         } else {
-            std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix constructor" << std::endl;
+            std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format for matrix constructor" << std::endl;
             std::cerr << "    Please set the matrix_format_ as:" << std::endl;
             std::cerr << "    format::COO: COOrdinate format" << std::endl;
             std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;

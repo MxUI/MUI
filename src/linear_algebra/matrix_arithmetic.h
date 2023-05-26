@@ -95,7 +95,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 		} else if (matrix_format_ == format::CSC) {
 			this->sort_csc(true, "overwrite");
 		} else {
-			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator+()" << std::endl;
+			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator+()" << std::endl;
 			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
 			std::cerr << "    format::COO: COOrdinate format" << std::endl;
 			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -261,7 +261,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
         }
 
     } else {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator+()" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator+()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -309,7 +309,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 		} else if (matrix_format_ == format::CSC) {
 			this->sort_csc(true, "overwrite");
 		} else {
-			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator-()" << std::endl;
+			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator-()" << std::endl;
 			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
 			std::cerr << "    format::COO: COOrdinate format" << std::endl;
 			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -474,7 +474,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
         }
 
     } else {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator-()" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator-()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -523,7 +523,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
 		 } else if (matrix_format_ == format::CSC) {
 			 this->sort_csc(true, "overwrite");
 		 } else {
-			 std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator*()" << std::endl;
+			 std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator*()" << std::endl;
 			 std::cerr << "    Please set the matrix_format_ as:" << std::endl;
 			 std::cerr << "    format::COO: COOrdinate format" << std::endl;
 			 std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -659,7 +659,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
         res.nnz_ = res.matrix_csc.values_.size();
 
     } else {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator*()" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator*()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -702,7 +702,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(const STYPE &sc
        }
 
     } else {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix scalar operator*()" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix scalar operator*()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -770,7 +770,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
 		} else if (matrix_format_ == format::CSC) {
 			this->sort_csc(true, "overwrite");
 		} else {
-			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix hadamard_product()" << std::endl;
+			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix hadamard_product()" << std::endl;
 			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
 			std::cerr << "    format::COO: COOrdinate format" << std::endl;
 			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -883,7 +883,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
         }
 
     } else {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix hadamard_product()" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix hadamard_product()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -923,7 +923,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose(bool performSor
         res.format_reinterpretation();
 
     } else {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix transpose()" << std::endl;
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix transpose()" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
