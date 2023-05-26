@@ -116,7 +116,7 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
             matrix_csc.col_ptrs_ = std::vector<ITYPE>(exist_mat.matrix_csc.col_ptrs_.begin(), exist_mat.matrix_csc.col_ptrs_.end());
 
         } else {
-              std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised exist_mat format: " << exist_mat.matrix_format_ << std::endl;
+              std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised exist_mat format" << std::endl;
               std::cerr << "    Please set the matrix_format_ as:" << std::endl;
               std::cerr << "    format::COO: COOrdinate format" << std::endl;
               std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
