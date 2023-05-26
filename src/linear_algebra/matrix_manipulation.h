@@ -1161,19 +1161,19 @@ void sparse_matrix<ITYPE,VTYPE>::coo_element_operation(ITYPE r, ITYPE c, VTYPE v
 
     std::string operation_mode_trim = string_to_lower(trim(operation_mode));
 
-	std::string file_name;
-	std::string function_name;
+    std::string file_name;
+    std::string function_name;
 
     if (file_name_input.empty()) {
         file_name = "matrix_manipulation.h";
     } else {
-    	file_name = file_name_input;
+        file_name = file_name_input;
     }
 
     if (function_name_input.empty()) {
         function_name = "coo_element_operation()";
     } else {
-    	function_name = function_name_input;
+        function_name = function_name_input;
     }
 
     if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
@@ -1251,13 +1251,31 @@ void sparse_matrix<ITYPE,VTYPE>::coo_element_operation(ITYPE r, ITYPE c, VTYPE v
                 break;
             }
         } else {
-            insert_position--;
+            if (operation_mode_trim != "multiply") {
+                if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
+                    // Insert a new entry at the correct sorted position
+                    matrix_coo.values_.reserve(matrix_coo.values_.size()+1);
+                    matrix_coo.row_indices_.reserve(matrix_coo.row_indices_.size()+1);
+                    matrix_coo.col_indices_.reserve(matrix_coo.col_indices_.size()+1);
+
+                    matrix_coo.row_indices_.insert(matrix_coo.row_indices_.begin() + insert_position, r);
+                    matrix_coo.col_indices_.insert(matrix_coo.col_indices_.begin() + insert_position, c);
+                    if (operation_mode_trim == "minus") {
+                        matrix_coo.values_.insert(matrix_coo.values_.begin() + insert_position, -val);
+                    } else {
+                        matrix_coo.values_.insert(matrix_coo.values_.begin() + insert_position, val);
+                    }
+                    nnz_++;
+                }
+            }
+            isElementAdded = true;
             break;
         }
     }
 
     if (operation_mode_trim != "multiply") {
         if ((!isElementAdded) && (std::abs(val) >= std::numeric_limits<VTYPE>::min())) {
+            insert_position = std::distance(matrix_coo.row_indices_.begin(), upper);
             // Insert a new entry at the correct sorted position
             matrix_coo.values_.reserve(matrix_coo.values_.size()+1);
             matrix_coo.row_indices_.reserve(matrix_coo.row_indices_.size()+1);
@@ -1281,19 +1299,19 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
 
     std::string operation_mode_trim = string_to_lower(trim(operation_mode));
 
-	std::string file_name;
-	std::string function_name;
+    std::string file_name;
+    std::string function_name;
 
     if (file_name_input.empty()) {
         file_name = "matrix_manipulation.h";
     } else {
-    	file_name = file_name_input;
+        file_name = file_name_input;
     }
 
     if (function_name_input.empty()) {
         function_name = "csr_element_operation()";
     } else {
-    	function_name = function_name_input;
+        function_name = function_name_input;
     }
 
     if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
@@ -1415,19 +1433,19 @@ void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE v
 
     std::string operation_mode_trim = string_to_lower(trim(operation_mode));
 
-	std::string file_name;
-	std::string function_name;
+    std::string file_name;
+    std::string function_name;
 
     if (file_name_input.empty()) {
         file_name = "matrix_manipulation.h";
     } else {
-    	file_name = file_name_input;
+        file_name = file_name_input;
     }
 
     if (function_name_input.empty()) {
         function_name = "csc_element_operation()";
     } else {
-    	function_name = function_name_input;
+        function_name = function_name_input;
     }
 
     if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
