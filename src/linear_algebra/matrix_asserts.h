@@ -58,12 +58,22 @@ namespace linalg {
 
 // Member function to assert the matrix vector sizes
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &file_name, const std::string &function_name) const {
+void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &file_name_input, const std::string &function_name_input) const {
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_asserts.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "assert_valid_vector_size()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     if (matrix_format_ == format::COO) {
 
@@ -143,17 +153,17 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
             std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO col_indices_ matrix (" << matrix_coo.col_indices_.size() << ") under CSR matrix format in " << function_name << std::endl;
         }
 
-        if (matrix_csr.values_!= nnz_) {
+        if (matrix_csr.values_.size() != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSR values_ matrix size (" << matrix_csr.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csr.row_ptrs_!=(rows_+1)) {
+        if (matrix_csr.row_ptrs_.size() != (rows_+1)) {
             std::cerr << "MUI Error [" << file_name << "]: CSR row_ptrs_ matrix size (" << matrix_csr.row_ptrs_.size() << ") does not equals to number of rows + 1 (rows_+1=" << (rows_+1) << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csr.col_indices_!= nnz_) {
+        if (matrix_csr.col_indices_.size() != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSR col_indices_ matrix size (" << matrix_csr.col_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
@@ -200,23 +210,23 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
             std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR col_indices_ matrix (" << matrix_csr.col_indices_.size() << ") under CSC matrix format in " << function_name << std::endl;
         }
 
-        if (matrix_csc.values_!= nnz_) {
+        if (matrix_csc.values_.size() != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSC values_ matrix size (" << matrix_csc.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csc.row_indices_!= nnz_) {
+        if (matrix_csc.row_indices_.size() != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSC row_ptrs_ matrix size (" << matrix_csc.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csc.col_ptrs_!=(cols_+1)) {
+        if (matrix_csc.col_ptrs_.size() != (cols_+1)) {
             std::cerr << "MUI Error [" << file_name << "]: CSC col_indices_ matrix size (" << matrix_csc.col_ptrs_.size() << ") does not equals to number of cols + 1 (cols_+1=" << (cols_+1) << ") in " << function_name << std::endl;
             std::abort();
         }
 
     } else {
-        std::cerr << "MUI Error [" << file_name << "]: unknown matrix format " << matrix_format_ << " in " << function_name <<  std::endl;
+        std::cerr << "MUI Error [" << file_name << "]: unknown matrix format in " << function_name <<  std::endl;
         std::abort();
     }
 

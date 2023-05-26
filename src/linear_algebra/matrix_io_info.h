@@ -413,9 +413,9 @@ std::ostream& operator << (std::ostream &ofile, const sparse_matrix<ITYPE,VTYPE>
     return ofile;
 }
 
-// Overloading >> operator to read matrix from a file in CSV format with lines start with "//" as comment lines
+// Function to overloading >> operator to read matrix from a file in CSV format with lines start with "//" as comment lines
 template<typename ITYPE, typename VTYPE>
-std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exist_mat) {
+std::istream& operator>>(std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exist_mat) {
 
     // Check if file was opened successfully
     if (!ifile) {
@@ -426,7 +426,7 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
     assert((exist_mat.empty()) &&
       "MUI Error [matrix_io_info.h]: Overloading >> operator can only takes in null matrix or empty (all-zero) matrix");
 
-    format format_store = exist_mat.matrix_format_;
+    std::string format_store = exist_mat.get_format();
 
     std::string rawLine;
 
@@ -468,34 +468,26 @@ std::istream& operator >> (std::istream &ifile, sparse_matrix<ITYPE,VTYPE> &exis
         ++row;
     }
     if ((exist_mat.get_rows() == 0) && (exist_mat.get_cols() == 0)) {
-        exist_mat.resize(row, col);
-        exist_mat.matrix_format_ = format::COO;
-        exist_mat.matrix_coo.values_.reserve(tempValue.size());
-        exist_mat.matrix_coo.row_indices_.reserve(tempRowIndex.size());
-        exist_mat.matrix_coo.col_indices_.reserve(tempColIndex.size());
-        exist_mat.matrix_coo.values_= std::vector<VTYPE>(tempValue.begin(), tempValue.end());
-        exist_mat.matrix_coo.row_indices_= std::vector<ITYPE>(tempRowIndex.begin(), tempRowIndex.end());
-        exist_mat.matrix_coo.col_indices_= std::vector<ITYPE>(tempColIndex.begin(), tempColIndex.end());
+    	sparse_matrix<ITYPE,VTYPE> temp_matrix(row, col, "COO", tempValue, tempRowIndex, tempColIndex);
+    	exist_mat.resize(row, col);
+        exist_mat.format_conversion("COO", false, false);
+        exist_mat.copy(temp_matrix);
+        temp_matrix.set_zero();
     } else {
         assert(((exist_mat.get_rows() == row) && (exist_mat.get_cols() == col)) &&
           "MUI Error [matrix_io_info.h]: Matrix size mismatching between existing matrix and read in matrix in overloading >> operator ");
-        exist_mat.matrix_format_ = format::COO;
-        exist_mat.matrix_coo.values_.reserve(tempValue.size());
-        exist_mat.matrix_coo.row_indices_.reserve(tempRowIndex.size());
-        exist_mat.matrix_coo.col_indices_.reserve(tempColIndex.size());
-        exist_mat.matrix_coo.values_= std::vector<VTYPE>(tempValue.begin(), tempValue.end());
-        exist_mat.matrix_coo.row_indices_= std::vector<ITYPE>(tempRowIndex.begin(), tempRowIndex.end());
-        exist_mat.matrix_coo.col_indices_= std::vector<ITYPE>(tempColIndex.begin(), tempColIndex.end());
+    	sparse_matrix<ITYPE,VTYPE> temp_matrix(row, col, "COO", tempValue, tempRowIndex, tempColIndex);
+        exist_mat.format_conversion("COO", false, false);
+        exist_mat.copy(temp_matrix);
+        temp_matrix.set_zero();
     }
 
-    exist_mat.nnz_ = exist_mat.matrix_coo.values_.size();
-
-    if (format_store != exist_mat.matrix_format_) {
-        if (format_store == format::COO) {
+    if (format_store != exist_mat.get_format()) {
+        if (format_store == "COO") {
             exist_mat.format_conversion("COO", true, true, "overwrite");
-        } else if (format_store == format::CSR) {
+        } else if (format_store == "CSR") {
             exist_mat.format_conversion("CSR", true, true, "overwrite");
-        } else if (format_store == format::CSC) {
+        } else if (format_store == "CSC") {
             exist_mat.format_conversion("CSC", true, true, "overwrite");
         } else {
             std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix operator >>" << std::endl;
@@ -611,8 +603,8 @@ std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_el
             }
         }
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix operator >>" << std::endl;
-        std::cerr << "    Please set the format_store as:" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator >>" << std::endl;
+        std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
         std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
@@ -641,8 +633,8 @@ ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
             std::abort();
         }
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix non_zero_elements_count()" << std::endl;
-        std::cerr << "    Please set the format_store as:" << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix non_zero_elements_count()" << std::endl;
+        std::cerr << "    Please set the matrix_format_ as:" << std::endl;
         std::cerr << "    format::COO: COOrdinate format" << std::endl;
         std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
         std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
@@ -692,12 +684,22 @@ std::string sparse_matrix<ITYPE,VTYPE>::get_format() const
 
 // Member function to check if the sparse matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-bool sparse_matrix<ITYPE,VTYPE>::is_sorted_unique(const std::string &file_name, const std::string &function_name) const {
+bool sparse_matrix<ITYPE,VTYPE>::is_sorted_unique(const std::string &file_name_input, const std::string &function_name_input) const {
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_io_info.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "is_sorted_unique()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     if (matrix_format_ == format::COO) {
         return this->is_coo_sorted_unique(file_name, function_name);
@@ -706,7 +708,7 @@ bool sparse_matrix<ITYPE,VTYPE>::is_sorted_unique(const std::string &file_name, 
     } else if (matrix_format_ == format::CSC) {
         return this->is_csc_sorted_unique(file_name, function_name);
     } else {
-        std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format " << matrix_format_ << std::endl;
+        std::cerr << "MUI Error [matrix_io_info.h]: unknown matrix format" << std::endl;
         std::abort();
     }
 }
@@ -717,12 +719,22 @@ bool sparse_matrix<ITYPE,VTYPE>::is_sorted_unique(const std::string &file_name, 
 
 // Protected member function to check if the COO matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-bool sparse_matrix<ITYPE,VTYPE>::is_coo_sorted_unique(const std::string &file_name, const std::string &function_name) const {
+bool sparse_matrix<ITYPE,VTYPE>::is_coo_sorted_unique(const std::string &file_name_input, const std::string &function_name_input) const {
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_io_info.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "is_coo_sorted_unique()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     ITYPE numEntries = matrix_coo.values_.size();
 
@@ -752,12 +764,22 @@ bool sparse_matrix<ITYPE,VTYPE>::is_coo_sorted_unique(const std::string &file_na
 
 // Protected member function to check if the CSR matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-bool sparse_matrix<ITYPE,VTYPE>::is_csr_sorted_unique(const std::string &file_name, const std::string &function_name) const {
+bool sparse_matrix<ITYPE,VTYPE>::is_csr_sorted_unique(const std::string &file_name_input, const std::string &function_name_input) const {
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_io_info.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "is_csr_sorted_unique()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     ITYPE numEntries = matrix_csr.values_.size();
 
@@ -786,12 +808,22 @@ bool sparse_matrix<ITYPE,VTYPE>::is_csr_sorted_unique(const std::string &file_na
 
 // Protected member function to check if the CSC matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-bool sparse_matrix<ITYPE,VTYPE>::is_csc_sorted_unique(const std::string &file_name, const std::string &function_name) const {
+bool sparse_matrix<ITYPE,VTYPE>::is_csc_sorted_unique(const std::string &file_name_input, const std::string &function_name_input) const {
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_io_info.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "is_csc_sorted_unique()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     ITYPE numEntries = matrix_csc.values_.size();
 

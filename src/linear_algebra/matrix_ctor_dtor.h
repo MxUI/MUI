@@ -96,7 +96,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE r, ITYPE c, const std::string &f
             matrix_csc.col_ptrs_ = std::vector<ITYPE>(column_vector.begin(), column_vector.end());
 
         } else {
-              std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix constructor" << std::endl;
+              std::cerr << "MUI Error [matrix_ctor_dtor.h]: Unrecognised matrix format for matrix constructor" << std::endl;
               std::cerr << "    Please set the matrix_format_ as:" << std::endl;
               std::cerr << "    format::COO: COOrdinate format" << std::endl;
               std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -158,7 +158,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const std::vector<std::vector<VTYPE>>&
 
     // Set the dimensions of the sparse matrix based on the dimensions of the dense matrix vector
     rows_ = denseVector.size();
-    cols_ = denseVector[0].size()
+    cols_ = denseVector[0].size();
 
     // Calculate the total number of non-zero elements
     for (const auto& row : denseVector) {

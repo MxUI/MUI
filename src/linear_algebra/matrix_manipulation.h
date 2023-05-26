@@ -48,6 +48,7 @@
 #define MUI_MATRIX_MANIPULATION_H_
 
 #include <cassert>
+#include <numeric>
 
 namespace mui {
 namespace linalg {
@@ -70,7 +71,7 @@ template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
 
     // Copy the data from the existing matrix
-    assert(matrix_.empty() &&
+    assert(this->empty() &&
             "MUI Error [matrix_manipulation.h]: copy function only works for empty (all zero elements) matrix");
     assert((((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) || ((rows_ == 0) && (cols_ == 0))) &&
             "MUI Error [matrix_manipulation.h]: matrix size mismatch in copy function ");
@@ -146,9 +147,9 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
           if (!(this->is_sorted_unique("matrix_manipulation.h", "segment()"))){
               if(matrix_format_ == format::COO) {
                   this->sort_coo(true, true, "overwrite");
-              } else if (exist_mat.matrix_format_ == format::CSR) {
+              } else if (matrix_format_ == format::CSR) {
                   this->sort_csr(true, "overwrite");
-              } else if (exist_mat.matrix_format_ == format::CSC) {
+              } else if (matrix_format_ == format::CSC) {
                   this->sort_csc(true, "overwrite");
               } else {
                     std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
@@ -189,7 +190,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
           }
       }
 
-    } else if (exist_mat.matrix_format_ == format::CSR) {
+    } else if (matrix_format_ == format::CSR) {
 
         res.matrix_csr.row_ptrs_.reserve(r_end-r_start+2);
 
@@ -223,7 +224,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
             res.matrix_csr.row_ptrs_[row - r_start + 1] = res.matrix_csr.col_indices_.size();
         }
 
-    } else if (exist_mat.matrix_format_ == format::CSC) {
+    } else if (matrix_format_ == format::CSC) {
 
         res.matrix_csc.col_ptrs_.reserve(c_end-c_start+2);
 
@@ -282,12 +283,12 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val, bool per
         if (!(this->is_sorted_unique("matrix_manipulation.h", "set_value()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSR) {
+            } else if (matrix_format_ == format::CSR) {
                 this->sort_csr(true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSC) {
+            } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
-                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
                   std::cerr << "    Please set the matrix_format_ as:" << std::endl;
                   std::cerr << "    format::COO: COOrdinate format" << std::endl;
                   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -301,16 +302,16 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val, bool per
 
         this->coo_element_operation(r, c, val, "overwrite", "matrix_manipulation.h", "set_value()");
 
-    } else if (exist_mat.matrix_format_ == format::CSR) {
+    } else if (matrix_format_ == format::CSR) {
 
         this->csr_element_operation(r, c, val, "overwrite", "matrix_manipulation.h", "set_value()");
 
-    } else if (exist_mat.matrix_format_ == format::CSC) {
+    } else if (matrix_format_ == format::CSC) {
 
         this->csc_element_operation(r, c, val, "overwrite", "matrix_manipulation.h", "set_value()");
 
     } else {
-          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
+          std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
           std::cerr << "    Please set the matrix_format_ as:" << std::endl;
           std::cerr << "    format::COO: COOrdinate format" << std::endl;
           std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -341,7 +342,7 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
                 std::iota(matrix_coo.col_indices_.begin()+i, matrix_coo.col_indices_.end()+i+cols_, 0);
                 std::fill(matrix_coo.values_.begin()+i, matrix_coo.values_.end()+i+cols_, val);
             }
-        } else if (exist_mat.matrix_format_ == format::CSR) {
+        } else if (matrix_format_ == format::CSR) {
             // Resize the vectors to hold all possible elements
             matrix_csr.values_.reserve(rows_*cols_);
             matrix_csr.row_ptrs_.reserve(rows_+1);
@@ -356,7 +357,7 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
                 std::fill(matrix_csr.values_.begin()+i, matrix_csr.values_.end()+i+cols_, val);
                 matrix_csr.row_ptrs_[i + 1] = matrix_csr.col_indices_.size();
             }
-        } else if (exist_mat.matrix_format_ == format::CSC) {
+        } else if (matrix_format_ == format::CSC) {
             // Resize the vectors to hold all possible elements
             matrix_csc.values_.reserve(rows_*cols_);
             matrix_csc.row_indices_.reserve(rows_*cols_);
@@ -402,11 +403,11 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
         matrix_coo.values_.clear();
         matrix_coo.row_indices_.clear();
         matrix_coo.col_indices_.clear();
-    } else if (exist_mat.matrix_format_ == format::CSR) {
+    } else if (matrix_format_ == format::CSR) {
         matrix_csr.values_.clear();
         matrix_csr.row_ptrs_.clear();
         matrix_csr.col_indices_.clear();
-    } else if (exist_mat.matrix_format_ == format::CSC) {
+    } else if (matrix_format_ == format::CSC) {
         matrix_csc.values_.clear();
         matrix_csc.row_indices_.clear();
         matrix_csc.col_ptrs_.clear();
@@ -431,9 +432,9 @@ void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE val, bool pe
         if (!(this->is_sorted_unique("matrix_manipulation.h", "add_scalar()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSR) {
+            } else if (matrix_format_ == format::CSR) {
                 this->sort_csr(true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSC) {
+            } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
                   std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
@@ -450,11 +451,11 @@ void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE val, bool pe
 
         this->coo_element_operation(r, c, val, "plus", "matrix_manipulation.h", "add_scalar()");
 
-    } else if (exist_mat.matrix_format_ == format::CSR) {
+    } else if (matrix_format_ == format::CSR) {
 
         this->csr_element_operation(r, c, val, "plus", "matrix_manipulation.h", "add_scalar()");
 
-    } else if (exist_mat.matrix_format_ == format::CSC) {
+    } else if (matrix_format_ == format::CSC) {
 
         this->csc_element_operation(r, c, val, "plus", "matrix_manipulation.h", "add_scalar()");
 
@@ -477,9 +478,9 @@ void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE val, bo
         if (!(this->is_sorted_unique("matrix_manipulation.h", "subtract_scalar()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSR) {
+            } else if (matrix_format_ == format::CSR) {
                 this->sort_csr(true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSC) {
+            } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
                   std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
@@ -496,11 +497,11 @@ void sparse_matrix<ITYPE,VTYPE>::subtract_scalar(ITYPE r, ITYPE c, VTYPE val, bo
 
         this->coo_element_operation(r, c, val, "minus", "matrix_manipulation.h", "subtract_scalar()");
 
-    } else if (exist_mat.matrix_format_ == format::CSR) {
+    } else if (matrix_format_ == format::CSR) {
 
         this->csr_element_operation(r, c, val, "minus", "matrix_manipulation.h", "subtract_scalar()");
 
-    } else if (exist_mat.matrix_format_ == format::CSC) {
+    } else if (matrix_format_ == format::CSC) {
 
         this->csc_element_operation(r, c, val, "minus", "matrix_manipulation.h", "subtract_scalar()");
 
@@ -524,9 +525,9 @@ void sparse_matrix<ITYPE,VTYPE>::multiply_scalar(ITYPE r, ITYPE c, VTYPE val, bo
         if (!(this->is_sorted_unique("matrix_manipulation.h", "multiply_scalar()"))){
             if(matrix_format_ == format::COO) {
                 this->sort_coo(true, true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSR) {
+            } else if (matrix_format_ == format::CSR) {
                 this->sort_csr(true, "overwrite");
-            } else if (exist_mat.matrix_format_ == format::CSC) {
+            } else if (matrix_format_ == format::CSC) {
                 this->sort_csc(true, "overwrite");
             } else {
                   std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format: " << matrix_format_ << std::endl;
@@ -543,11 +544,11 @@ void sparse_matrix<ITYPE,VTYPE>::multiply_scalar(ITYPE r, ITYPE c, VTYPE val, bo
 
         this->coo_element_operation(r, c, val, "multiply", "matrix_manipulation.h", "multiply_scalar()");
 
-    } else if (exist_mat.matrix_format_ == format::CSR) {
+    } else if (matrix_format_ == format::CSR) {
 
         this->csr_element_operation(r, c, val, "multiply", "matrix_manipulation.h", "multiply_scalar()");
 
-    } else if (exist_mat.matrix_format_ == format::CSC) {
+    } else if (matrix_format_ == format::CSC) {
 
         this->csc_element_operation(r, c, val, "multiply", "matrix_manipulation.h", "multiply_scalar()");
 
@@ -566,7 +567,7 @@ template <typename ITYPE, typename VTYPE>
 sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_matrix<ITYPE,VTYPE> &exist_mat) {
     if (this != &exist_mat) { // check for self-assignment
         // copy the values from the other matrix to this matrix
-        assert(matrix_.empty() &&
+        assert(this->empty() &&
                   "MUI Error [matrix_manipulation.h]: assignment operator '=' only works for empty (all zero elements) matrix");
 
         if((rows_ == 0) && (cols_ == 0)){
@@ -616,7 +617,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
 
         if (matrix_format == "COO") {
 
-            std::out << "MUI [matrix_manipulation.h]: Convert matrix format from COO to COO (do nothing)." << std::endl;
+            std::cout << "MUI [matrix_manipulation.h]: Convert matrix format from COO to COO (do nothing)." << std::endl;
 
         } else if (matrix_format == "CSR") {
 
@@ -663,7 +664,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
 
         } else if (matrix_format == "CSR") {
 
-            std::out << "MUI [matrix_manipulation.h]: Convert matrix format from CSR to CSR (do nothing)." << std::endl;
+            std::cout << "MUI [matrix_manipulation.h]: Convert matrix format from CSR to CSR (do nothing)." << std::endl;
 
         } else if (matrix_format == "CSC") {
 
@@ -710,7 +711,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
 
         } else if (matrix_format == "CSC") {
 
-            std::out << "MUI [matrix_manipulation.h]: Convert matrix format from CSC to CSC (do nothing)." << std::endl;
+            std::cout << "MUI [matrix_manipulation.h]: Convert matrix format from CSC to CSC (do nothing)." << std::endl;
 
         } else {
 
@@ -767,14 +768,14 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
     // Sort the indices based on row and column indices
     if (is_row_major) {
         std::sort(sorted_indices.begin(), sorted_indices.end(),
-                  [&matrix_coo](ITYPE i, ITYPE j) {
+                  [&](ITYPE i, ITYPE j) {
                       return (matrix_coo.row_indices_[i] == matrix_coo.row_indices_[j])
                              ? matrix_coo.col_indices_[i] < matrix_coo.col_indices_[j]
                              : matrix_coo.row_indices_[i] < matrix_coo.row_indices_[j];
                   });
     } else {
         std::sort(sorted_indices.begin(), sorted_indices.end(),
-                  [&matrix_coo](ITYPE i, ITYPE j) {
+                  [&](ITYPE i, ITYPE j) {
                       return (matrix_coo.col_indices_[i] == matrix_coo.col_indices_[j])
                              ? matrix_coo.row_indices_[i] < matrix_coo.row_indices_[j]
                              : matrix_coo.col_indices_[i] < matrix_coo.col_indices_[j];
@@ -1156,14 +1157,24 @@ void sparse_matrix<ITYPE,VTYPE>::sort_csc(bool deduplication, const std::string 
 
 // Protected member function for element operation of COO matrix
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::coo_element_operation(ITYPE r, ITYPE c, VTYPE val, const std::string &operation_mode, const std::string &file_name, const std::string &function_name) {
+void sparse_matrix<ITYPE,VTYPE>::coo_element_operation(ITYPE r, ITYPE c, VTYPE val, const std::string &operation_mode, const std::string &file_name_input, const std::string &function_name_input) {
 
     std::string operation_mode_trim = string_to_lower(trim(operation_mode));
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_manipulation.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "coo_element_operation()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
         std::cerr << "MUI Error [" << file_name << "]: Unrecognised COO element operation mode: " << operation_mode_trim << " for " << function_name << " function" << std::endl;
@@ -1266,14 +1277,24 @@ void sparse_matrix<ITYPE,VTYPE>::coo_element_operation(ITYPE r, ITYPE c, VTYPE v
 
 // Protected member function for element operation of CSR matrix
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE val, const std::string &operation_mode, const std::string &file_name, const std::string &function_name) {
+void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE val, const std::string &operation_mode, const std::string &file_name_input, const std::string &function_name_input) {
 
     std::string operation_mode_trim = string_to_lower(trim(operation_mode));
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_manipulation.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "csr_element_operation()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
         std::cerr << "MUI Error [" << file_name << "]: Unrecognised CSR element operation mode: " << operation_mode_trim << " for " << function_name << " function" << std::endl;
@@ -1390,14 +1411,24 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
 
 // Protected member function for element operation of CSC matrix
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE val, const std::string &operation_mode, const std::string &file_name, const std::string &function_name) {
+void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE val, const std::string &operation_mode, const std::string &file_name_input, const std::string &function_name_input) {
 
     std::string operation_mode_trim = string_to_lower(trim(operation_mode));
 
-    if (file_name.empty())
+	std::string file_name;
+	std::string function_name;
+
+    if (file_name_input.empty()) {
         file_name = "matrix_manipulation.h";
-    if (function_name.empty())
+    } else {
+    	file_name = file_name_input;
+    }
+
+    if (function_name_input.empty()) {
         function_name = "csc_element_operation()";
+    } else {
+    	function_name = function_name_input;
+    }
 
     if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
         std::cerr << "MUI Error [" << file_name << "]: Unrecognised CSC element operation mode: " << operation_mode_trim << " for " << function_name << " function" << std::endl;
@@ -1551,7 +1582,7 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
     rowPtr.clear();
 
     // Reset the matrix format
-    matrix_format_ = format::CSR
+    matrix_format_ = format::CSR;
 }
 
 // Protected member function to convert COO matrix into CSC matrix
@@ -1592,7 +1623,7 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csc() {
     colPtr.clear();
 
     // Reset the matrix format
-    matrix_format_ = format::CSC
+    matrix_format_ = format::CSC;
 }
 
 // Protected member function to convert CSR matrix into COO matrix
@@ -1623,7 +1654,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_coo() {
     matrix_csr.col_indices_.clear();
 
     // Reset the matrix format
-    matrix_format_ = format::COO
+    matrix_format_ = format::COO;
 }
 
 // Protected member function to convert CSR matrix into CSC matrix
@@ -1674,7 +1705,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
     matrix_csr.col_indices_.clear();
 
     // Reset the matrix format
-    matrix_format_ = format::CSC
+    matrix_format_ = format::CSC;
 
 }
 
@@ -1706,7 +1737,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_coo() {
     matrix_csc.col_ptrs_.clear();
 
     // Reset the matrix format
-    matrix_format_ = format::COO
+    matrix_format_ = format::COO;
 }
 
 // Protected member function to convert CSC matrix into CSR matrix
@@ -1757,7 +1788,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
     matrix_csc.col_ptrs_.clear();
 
     // Reset the matrix format
-    matrix_format_ = format::CSR
+    matrix_format_ = format::CSR;
 
 }
 

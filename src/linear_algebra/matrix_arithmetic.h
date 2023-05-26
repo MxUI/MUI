@@ -59,7 +59,7 @@ namespace linalg {
 
 // Overload addition operator to perform sparse matrix addition
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend, bool performSortAndUniqueCheck) const{
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) const{
 
     if (rows_ != addend.rows_ || cols_ != addend.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix addition" << std::endl;
@@ -67,46 +67,42 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
     }
 
     if (addend.matrix_format_ != matrix_format_) {
-        addend.format_conversion(this->get_format(), performSortAndUniqueCheck, performSortAndUniqueCheck, "overwrite");
+        addend.format_conversion(this->get_format(), true, true, "overwrite");
     } else {
-        if (performSortAndUniqueCheck){
-            if (!addend.is_sorted_unique("matrix_arithmetic.h", "operator+()")){
-                if (addend.matrix_format_ == format::COO) {
-                    addend.sort_coo(true, true, "overwrite");
-                } else if (addend.matrix_format_ == format::CSR) {
-                    addend.sort_csr(true, "overwrite");
-                } else if (addend.matrix_format_ == format::CSC) {
-                    addend.sort_csc(true, "overwrite");
-                } else {
-                    std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised addend matrix format: " << addend.matrix_format_ << " for matrix operator+()" << std::endl;
-                    std::cerr << "    Please set the addend matrix_format_ as:" << std::endl;
-                    std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                    std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                    std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                    std::abort();
-                }
-            }
-        }
+		if (!addend.is_sorted_unique("matrix_arithmetic.h", "operator+()")){
+			if (addend.matrix_format_ == format::COO) {
+				addend.sort_coo(true, true, "overwrite");
+			} else if (addend.matrix_format_ == format::CSR) {
+				addend.sort_csr(true, "overwrite");
+			} else if (addend.matrix_format_ == format::CSC) {
+				addend.sort_csc(true, "overwrite");
+			} else {
+				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised addend matrix format: " << addend.matrix_format_ << " for matrix operator+()" << std::endl;
+				std::cerr << "    Please set the addend matrix_format_ as:" << std::endl;
+				std::cerr << "    format::COO: COOrdinate format" << std::endl;
+				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+				std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+				std::abort();
+			}
+		}
     }
 
-    if (performSortAndUniqueCheck){
-        if (!this->is_sorted_unique("matrix_arithmetic.h", "operator+()")){
-            if (matrix_format_ == format::COO) {
-                this->sort_coo(true, true, "overwrite");
-            } else if (matrix_format_ == format::CSR) {
-                this->sort_csr(true, "overwrite");
-            } else if (matrix_format_ == format::CSC) {
-                this->sort_csc(true, "overwrite");
-            } else {
-                std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator+()" << std::endl;
-                std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-                std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                std::abort();
-            }
-        }
-    }
+	if (!this->is_sorted_unique("matrix_arithmetic.h", "operator+()")){
+		if (matrix_format_ == format::COO) {
+			this->sort_coo(true, true, "overwrite");
+		} else if (matrix_format_ == format::CSR) {
+			this->sort_csr(true, "overwrite");
+		} else if (matrix_format_ == format::CSC) {
+			this->sort_csc(true, "overwrite");
+		} else {
+			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator+()" << std::endl;
+			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+			std::cerr << "    format::COO: COOrdinate format" << std::endl;
+			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+			std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+			std::abort();
+		}
+	}
 
     // Create a new sparse matrix object for the result
     sparse_matrix<ITYPE,VTYPE> res(rows_, cols_, this->get_format());
@@ -278,53 +274,49 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 
 // Overload subtraction operator to perform sparse matrix subtraction
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend, bool performSortAndUniqueCheck) const {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) const {
    if (rows_ != subtrahend.rows_ || cols_ != subtrahend.cols_) {
        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix subtraction" << std::endl;
        std::abort();
    }
 
    if (subtrahend.matrix_format_ != matrix_format_) {
-       subtrahend.format_conversion(this->get_format(), performSortAndUniqueCheck, performSortAndUniqueCheck, "overwrite");
+       subtrahend.format_conversion(this->get_format(), true, true, "overwrite");
    } else {
-       if (performSortAndUniqueCheck){
-           if (!subtrahend.is_sorted_unique("matrix_arithmetic.h", "operator-()")){
-               if (subtrahend.matrix_format_ == format::COO) {
-                   subtrahend.sort_coo(true, true, "overwrite");
-               } else if (subtrahend.matrix_format_ == format::CSR) {
-                   subtrahend.sort_csr(true, "overwrite");
-               } else if (subtrahend.matrix_format_ == format::CSC) {
-                   subtrahend.sort_csc(true, "overwrite");
-               } else {
-                   std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised subtrahend matrix format: " << subtrahend.matrix_format_ << " for matrix operator-()" << std::endl;
-                   std::cerr << "    Please set the subtrahend matrix_format_ as:" << std::endl;
-                   std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                   std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                   std::abort();
-               }
-           }
-       }
+	   if (!subtrahend.is_sorted_unique("matrix_arithmetic.h", "operator-()")){
+		   if (subtrahend.matrix_format_ == format::COO) {
+			   subtrahend.sort_coo(true, true, "overwrite");
+		   } else if (subtrahend.matrix_format_ == format::CSR) {
+			   subtrahend.sort_csr(true, "overwrite");
+		   } else if (subtrahend.matrix_format_ == format::CSC) {
+			   subtrahend.sort_csc(true, "overwrite");
+		   } else {
+			   std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised subtrahend matrix format: " << subtrahend.matrix_format_ << " for matrix operator-()" << std::endl;
+			   std::cerr << "    Please set the subtrahend matrix_format_ as:" << std::endl;
+			   std::cerr << "    format::COO: COOrdinate format" << std::endl;
+			   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+			   std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+			   std::abort();
+		   }
+	   }
    }
 
-   if (performSortAndUniqueCheck){
-        if (!this->is_sorted_unique("matrix_arithmetic.h", "operator-()")){
-            if (matrix_format_ == format::COO) {
-                this->sort_coo(true, true, "overwrite");
-            } else if (matrix_format_ == format::CSR) {
-                this->sort_csr(true, "overwrite");
-            } else if (matrix_format_ == format::CSC) {
-                this->sort_csc(true, "overwrite");
-            } else {
-                std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator-()" << std::endl;
-                std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-                std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                std::abort();
-            }
-        }
-   }
+	if (!this->is_sorted_unique("matrix_arithmetic.h", "operator-()")){
+		if (matrix_format_ == format::COO) {
+			this->sort_coo(true, true, "overwrite");
+		} else if (matrix_format_ == format::CSR) {
+			this->sort_csr(true, "overwrite");
+		} else if (matrix_format_ == format::CSC) {
+			this->sort_csc(true, "overwrite");
+		} else {
+			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator-()" << std::endl;
+			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+			std::cerr << "    format::COO: COOrdinate format" << std::endl;
+			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+			std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+			std::abort();
+		}
+	}
 
    // Create a new sparse matrix object for the result
    sparse_matrix<ITYPE,VTYPE> res(rows_, cols_, this->get_format());
@@ -495,7 +487,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 
 // Overload multiplication operator to perform sparse matrix multiplication
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand, bool performSortAndUniqueCheck) const {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) const {
 
     if (cols_ != multiplicand.rows_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix multiplication" << std::endl;
@@ -503,46 +495,42 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
     }
 
     if (multiplicand.matrix_format_ != matrix_format_) {
-        multiplicand.format_conversion(this->get_format(), performSortAndUniqueCheck, performSortAndUniqueCheck, "overwrite");
+        multiplicand.format_conversion(this->get_format(), true, true, "overwrite");
     } else {
-        if (performSortAndUniqueCheck){
-            if (!multiplicand.is_sorted_unique("matrix_arithmetic.h", "operator*()")){
-                if (multiplicand.matrix_format_ == format::COO) {
-                    multiplicand.sort_coo(true, true, "overwrite");
-                } else if (multiplicand.matrix_format_ == format::CSR) {
-                    multiplicand.sort_csr(true, "overwrite");
-                } else if (multiplicand.matrix_format_ == format::CSC) {
-                    multiplicand.sort_csc(true, "overwrite");
-                } else {
-                    std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised multiplicand matrix format: " << multiplicand.matrix_format_ << " for matrix operator*()" << std::endl;
-                    std::cerr << "    Please set the multiplicand matrix_format_ as:" << std::endl;
-                    std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                    std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                    std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                    std::abort();
-                }
-            }
-        }
+		if (!multiplicand.is_sorted_unique("matrix_arithmetic.h", "operator*()")){
+			if (multiplicand.matrix_format_ == format::COO) {
+				multiplicand.sort_coo(true, true, "overwrite");
+			} else if (multiplicand.matrix_format_ == format::CSR) {
+				multiplicand.sort_csr(true, "overwrite");
+			} else if (multiplicand.matrix_format_ == format::CSC) {
+				multiplicand.sort_csc(true, "overwrite");
+			} else {
+				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised multiplicand matrix format: " << multiplicand.matrix_format_ << " for matrix operator*()" << std::endl;
+				std::cerr << "    Please set the multiplicand matrix_format_ as:" << std::endl;
+				std::cerr << "    format::COO: COOrdinate format" << std::endl;
+				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+				std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+				std::abort();
+			}
+		}
     }
 
-    if (performSortAndUniqueCheck){
-         if (!this->is_sorted_unique("matrix_arithmetic.h", "operator*()")){
-             if (matrix_format_ == format::COO) {
-                 this->sort_coo(true, true, "overwrite");
-             } else if (matrix_format_ == format::CSR) {
-                 this->sort_csr(true, "overwrite");
-             } else if (matrix_format_ == format::CSC) {
-                 this->sort_csc(true, "overwrite");
-             } else {
-                 std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator*()" << std::endl;
-                 std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-                 std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                 std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                 std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                 std::abort();
-             }
-         }
-    }
+	 if (!this->is_sorted_unique("matrix_arithmetic.h", "operator*()")){
+		 if (matrix_format_ == format::COO) {
+			 this->sort_coo(true, true, "overwrite");
+		 } else if (matrix_format_ == format::CSR) {
+			 this->sort_csr(true, "overwrite");
+		 } else if (matrix_format_ == format::CSC) {
+			 this->sort_csc(true, "overwrite");
+		 } else {
+			 std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix operator*()" << std::endl;
+			 std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+			 std::cerr << "    format::COO: COOrdinate format" << std::endl;
+			 std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+			 std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+			 std::abort();
+		 }
+	 }
 
     // Create a new sparse matrix object for the result
     sparse_matrix<ITYPE,VTYPE> res(rows_, multiplicand.cols_, this->get_format());
@@ -747,53 +735,49 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_
 
 // Member function of Hadamard product
 template <typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat, bool performSortAndUniqueCheck) const {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
     if (rows_ != exist_mat.rows_ || cols_ != exist_mat.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
         std::abort();
     }
 
     if (exist_mat.matrix_format_ != matrix_format_) {
-        exist_mat.format_conversion(this->get_format(), performSortAndUniqueCheck, performSortAndUniqueCheck, "overwrite");
+        exist_mat.format_conversion(this->get_format(), true, true, "overwrite");
     } else {
-        if (performSortAndUniqueCheck){
-            if (!exist_mat.is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
-                if (exist_mat.matrix_format_ == format::COO) {
-                    exist_mat.sort_coo(true, true, "overwrite");
-                } else if (exist_mat.matrix_format_ == format::CSR) {
-                    exist_mat.sort_csr(true, "overwrite");
-                } else if (exist_mat.matrix_format_ == format::CSC) {
-                    exist_mat.sort_csc(true, "overwrite");
-                } else {
-                    std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised exist_mat matrix format: " << exist_mat.matrix_format_ << " for matrix hadamard_product()" << std::endl;
-                    std::cerr << "    Please set the exist_mat matrix_format_ as:" << std::endl;
-                    std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                    std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                    std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                    std::abort();
-                }
-            }
-        }
+		if (!exist_mat.is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
+			if (exist_mat.matrix_format_ == format::COO) {
+				exist_mat.sort_coo(true, true, "overwrite");
+			} else if (exist_mat.matrix_format_ == format::CSR) {
+				exist_mat.sort_csr(true, "overwrite");
+			} else if (exist_mat.matrix_format_ == format::CSC) {
+				exist_mat.sort_csc(true, "overwrite");
+			} else {
+				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised exist_mat matrix format: " << exist_mat.matrix_format_ << " for matrix hadamard_product()" << std::endl;
+				std::cerr << "    Please set the exist_mat matrix_format_ as:" << std::endl;
+				std::cerr << "    format::COO: COOrdinate format" << std::endl;
+				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+				std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+				std::abort();
+			}
+		}
     }
 
-    if (performSortAndUniqueCheck){
-        if (!this->is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
-            if (matrix_format_ == format::COO) {
-                this->sort_coo(true, true, "overwrite");
-            } else if (matrix_format_ == format::CSR) {
-                this->sort_csr(true, "overwrite");
-            } else if (matrix_format_ == format::CSC) {
-                this->sort_csc(true, "overwrite");
-            } else {
-                std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix hadamard_product()" << std::endl;
-                std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-                std::cerr << "    format::COO: COOrdinate format" << std::endl;
-                std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-                std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-                std::abort();
-            }
-        }
-    }
+	if (!this->is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
+		if (matrix_format_ == format::COO) {
+			this->sort_coo(true, true, "overwrite");
+		} else if (matrix_format_ == format::CSR) {
+			this->sort_csr(true, "overwrite");
+		} else if (matrix_format_ == format::CSC) {
+			this->sort_csc(true, "overwrite");
+		} else {
+			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format: " << matrix_format_ << " for matrix hadamard_product()" << std::endl;
+			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+			std::cerr << "    format::COO: COOrdinate format" << std::endl;
+			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+			std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+			std::abort();
+		}
+	}
 
     // Create a new sparse matrix object for the result
     sparse_matrix<ITYPE,VTYPE> res(rows_, cols_, this->get_format());

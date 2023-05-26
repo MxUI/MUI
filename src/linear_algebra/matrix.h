@@ -50,7 +50,8 @@
 
 #include <map>
 #include <vector>
-#include "linalg_util.H"
+#include <cassert>
+#include "linalg_util.h"
 
 namespace mui {
 namespace linalg {
@@ -103,9 +104,9 @@ class sparse_matrix {
         // Member function to check whether the matrix contains all zero elements
         bool empty() const;
         // Member function to get the format of the matrix
-        std::string getFormat() const;
+        std::string get_format() const;
         // Member function to check if the sparse matrix is sorted and deduplicated
-        bool isSortedUnique(const std::string & = {}, const std::string & = {}) const;
+        bool is_sorted_unique(const std::string & = {}, const std::string & = {}) const;
 
         // *****************************************
         // ********* Matrix manipulations **********
@@ -141,18 +142,18 @@ class sparse_matrix {
         // *****************************************
 
         // Overload addition operator to perform sparse matrix addition
-        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
+        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &) const;
         // Overload subtraction operator to perform sparse matrix subtraction
-        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
+        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &) const;
         // Overload multiplication operator to perform sparse matrix multiplication
-        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
+        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &) const;
         // Overload multiplication operator to perform scalar multiplication
         template <typename STYPE>
         sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &) const;
         // Member function of dot product
         VTYPE dot_product(sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function of Hadamard product
-        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &, bool = true) const;
+        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function to get transpose of matrix
         sparse_matrix<ITYPE,VTYPE> transpose(bool = true) const;
         // Member function to perform LU decomposition
@@ -235,6 +236,10 @@ class sparse_matrix {
 
     private:
 
+        // *****************************************
+        // ***** Data structure infrastructure *****
+        // *****************************************
+
         // Format of sparse matrix
         enum class format {
             COO,
@@ -242,35 +247,39 @@ class sparse_matrix {
             CSC
         };
 
-        // COO format data
-        struct matrix_coo {
+        // COO format data struct
+        struct m_coo {
             // Values of non-zero elements of sparse matrix
             std::vector<VTYPE> values_;
             // Row index of each element in the values_ vector
             std::vector<ITYPE> row_indices_;
             // Column index of each element in the values_ vector
             std::vector<ITYPE> col_indices_;
-        }
+        };
 
-        // CSR format data
-        struct matrix_csr {
+        // CSR format data struct
+        struct m_csr {
             // Values of non-zero elements of sparse matrix
             std::vector<VTYPE> values_;
             // Row pointers of each element in the values_ vector
             std::vector<ITYPE> row_ptrs_;
             // Column index of each element in the values_ vector
             std::vector<ITYPE> col_indices_;
-        }
+        };
 
-        // CSC format data
-        struct matrix_csc {
+        // CSC format data struct
+        struct m_csc {
             // Values of non-zero elements of sparse matrix
             std::vector<VTYPE> values_;
             // Row index of each element in the values_ vector
             std::vector<ITYPE> row_indices_;
             // Column pointers of each element in the values_ vector
             std::vector<ITYPE> col_ptrs_;
-        }
+        };
+
+        // *****************************************
+        // ******* Sparse matrix attributes ********
+        // *****************************************
 
         // Number of rows of sparse matrix
         ITYPE rows_ = 0;
@@ -280,6 +289,12 @@ class sparse_matrix {
         ITYPE nnz_ = 0;
         // Format indicator with default value of format::CSR
         format matrix_format_ = format::CSR;
+        // COO format data
+        m_coo matrix_coo;
+        // CSR format data
+        m_csr matrix_csr;
+        // CSC format data
+        m_csc matrix_csc;
 
         // Dummy member variable for invalid or unassigned elements in sparse matrix
         VTYPE dummy_ = 0;
