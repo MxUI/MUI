@@ -651,11 +651,9 @@ bool sparse_matrix<ITYPE,VTYPE>::empty() const {
         (matrix_coo.row_indices_.empty()) &&
         (matrix_coo.col_indices_.empty()) &&
         (matrix_csr.values_.empty()) &&
-        (matrix_csr.row_ptrs_.empty()) &&
         (matrix_csr.col_indices_.empty()) &&
         (matrix_csc.values_.empty()) &&
-        (matrix_csc.row_indices_.empty()) &&
-        (matrix_csc.col_ptrs_.empty())) {
+        (matrix_csc.row_indices_.empty())) {
         return true;
     } else {
         return false;
