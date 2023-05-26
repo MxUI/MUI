@@ -61,6 +61,7 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE r, ITYPE c, const std::string &f
 
     this->sparse_matrix<ITYPE,VTYPE>::set_matrix_format(format);
 
+
     if (!value_vector.empty()) {
 
         nnz_ = value_vector.size();
@@ -105,6 +106,13 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE r, ITYPE c, const std::string &f
           }
 
         this->assert_valid_vector_size("matrix_ctor_dtor.h", "sparse_matrix constructor function");
+    } else {
+
+        if (matrix_format_ == format::CSR) {
+        	matrix_csr.row_ptrs_.resize((rows_+1), 0);
+        } else if (matrix_format_ == format::CSC) {
+        	matrix_csc.col_ptrs_.resize((cols_+1), 0);
+        }
     }
 
 }
@@ -115,6 +123,12 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const std::string &format)
     : rows_(0), cols_(0) {
 
     this->sparse_matrix<ITYPE,VTYPE>::set_matrix_format(format);
+
+    if (matrix_format_ == format::CSR) {
+    	matrix_csr.row_ptrs_.resize((rows_+1), 0);
+    } else if (matrix_format_ == format::CSC) {
+    	matrix_csc.col_ptrs_.resize((cols_+1), 0);
+    }
 
 }
 
@@ -224,7 +238,14 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token, con
     this->set_matrix_format(format);
 
     if(token.empty()) {
-        // empty (all-zero) square matrix (Do nothing from the code perspective)
+
+    	// empty (all-zero) square matrix (Do nothing from the code perspective)
+        if (matrix_format_ == format::CSR) {
+        	matrix_csr.row_ptrs_.resize((rows_+1), 0);
+        } else if (matrix_format_ == format::CSC) {
+        	matrix_csc.col_ptrs_.resize((cols_+1), 0);
+        }
+
     } else if(string_to_lower(trim(token))=="identity") {
 
         // set number of non-zero elements as n
@@ -311,6 +332,7 @@ sparse_matrix<ITYPE,VTYPE>::~sparse_matrix<ITYPE,VTYPE>() {
     cols_ = 0;
     nnz_ = 0;
     matrix_format_ = format::CSR;
+    matrix_csr.row_ptrs_.resize(1, 0);
 
 }
 
