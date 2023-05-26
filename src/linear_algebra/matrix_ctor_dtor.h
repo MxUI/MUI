@@ -177,11 +177,9 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const std::vector<std::vector<VTYPE>>&
     // Calculate the total number of non-zero elements
     for (const auto& row : denseVector) {
         for (ITYPE i = 0; i < row.size(); ++i) {
-            for (ITYPE j = 0; j < row[i].size(); j++) {
-                if (std::abs(row[i][j]) >= std::numeric_limits<VTYPE>::min()) {
-                    nnz_++;
-                }
-            }
+			if (std::abs(row[i]) >= std::numeric_limits<VTYPE>::min()) {
+				nnz_++;
+			}
         }
     }
 
