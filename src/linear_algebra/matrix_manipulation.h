@@ -95,6 +95,8 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
             matrix_coo.row_indices_ = std::vector<ITYPE>(exist_mat.matrix_coo.row_indices_.begin(), exist_mat.matrix_coo.row_indices_.end());
             matrix_coo.col_indices_ = std::vector<ITYPE>(exist_mat.matrix_coo.col_indices_.begin(), exist_mat.matrix_coo.col_indices_.end());
 
+            matrix_format_ = exist_mat.matrix_format_;
+
         } else if (exist_mat.matrix_format_ == format::CSR) {
 
             matrix_csr.values_.reserve(exist_mat.matrix_csr.values_.size());
@@ -105,6 +107,8 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
             matrix_csr.row_ptrs_ = std::vector<ITYPE>(exist_mat.matrix_csr.row_ptrs_.begin(), exist_mat.matrix_csr.row_ptrs_.end());
             matrix_csr.col_indices_ = std::vector<ITYPE>(exist_mat.matrix_csr.col_indices_.begin(), exist_mat.matrix_csr.col_indices_.end());
 
+            matrix_format_ = exist_mat.matrix_format_;
+
         } else if (exist_mat.matrix_format_ == format::CSC) {
 
             matrix_csc.values_.reserve(exist_mat.matrix_csc.values_.size());
@@ -114,6 +118,8 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
             matrix_csc.values_ = std::vector<VTYPE>(exist_mat.matrix_csc.values_.begin(), exist_mat.matrix_csc.values_.end());
             matrix_csc.row_indices_ = std::vector<ITYPE>(exist_mat.matrix_csc.row_indices_.begin(), exist_mat.matrix_csc.row_indices_.end());
             matrix_csc.col_ptrs_ = std::vector<ITYPE>(exist_mat.matrix_csc.col_ptrs_.begin(), exist_mat.matrix_csc.col_ptrs_.end());
+
+            matrix_format_ = exist_mat.matrix_format_;
 
         } else {
               std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised exist_mat format" << std::endl;
@@ -632,9 +638,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         } else if (matrix_format == "CSC") {
 
             if (performSortAndUniqueCheck) {
-                if (!(this->is_sorted_unique("matrix_manipulation.h", "format_conversion()"))){
-                    this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
-                }
+				this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
             }
 
             this->sparse_matrix<ITYPE,VTYPE>::coo_to_csc();
@@ -822,56 +826,71 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
             ITYPE curr_row = sorted_row_indices[i];
             ITYPE curr_col = sorted_column_indices[i];
 
-            if ((curr_row == prev_row) && (curr_col == prev_col)) {
-                sum_value += sorted_values[i];
-                difference_value -= sorted_values[i];
-                product_value *= sorted_values[i];
-                last_value = sorted_values[i];
+            if (i == 1) {
+                if ((curr_row == prev_row) && (curr_col == prev_col)) {
+
+                    sum_value += sorted_values[i];
+                    difference_value -= sorted_values[i];
+                    product_value *= sorted_values[i];
+                    last_value = sorted_values[i];
+
+                } else {
+                    if (std::abs(sorted_values[0]) >= std::numeric_limits<VTYPE>::min()) {
+                        deduplicated_values.emplace_back(sorted_values[0]);
+                        deduplicated_row_indices.emplace_back(prev_row);
+                        deduplicated_column_indices.emplace_back(prev_col);
+                    }
+
+                    if (std::abs(sorted_values[1]) >= std::numeric_limits<VTYPE>::min()) {
+                        deduplicated_values.emplace_back(sorted_values[1]);
+                        deduplicated_row_indices.emplace_back(curr_row);
+                        deduplicated_column_indices.emplace_back(curr_col);
+                    }
+
+                    prev_row = curr_row;
+                    prev_col = curr_col;
+                    sum_value = sorted_values[i];
+                    difference_value = sorted_values[i];
+                    product_value = sorted_values[i];
+                    last_value = sorted_values[i];
+
+                }
             } else {
+                if ((curr_row == prev_row) && (curr_col == prev_col)) {
 
-                prev_row = curr_row;
-                prev_col = curr_col;
-                sum_value = sorted_values[i];
-                difference_value = sorted_values[i];
-                product_value = sorted_values[i];
-                last_value = sorted_values[i];
+                    sum_value += sorted_values[i];
+                    difference_value -= sorted_values[i];
+                    product_value *= sorted_values[i];
+                    last_value = sorted_values[i];
 
-                if ((deduplication_mode_trim == "plus") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-                    deduplicated_values.emplace_back(sum_value);
-                    deduplicated_row_indices.emplace_back(prev_row);
-                    deduplicated_column_indices.emplace_back(prev_col);
-                } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
-                    deduplicated_values.emplace_back(difference_value);
-                    deduplicated_row_indices.emplace_back(prev_row);
-                    deduplicated_column_indices.emplace_back(prev_col);
-                } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
-                    deduplicated_values.emplace_back(product_value);
-                    deduplicated_row_indices.emplace_back(prev_row);
-                    deduplicated_column_indices.emplace_back(prev_col);
-                } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-                    deduplicated_values.emplace_back(last_value);
-                    deduplicated_row_indices.emplace_back(prev_row);
-                    deduplicated_column_indices.emplace_back(prev_col);
+                } else {
+
+                    prev_row = curr_row;
+                    prev_col = curr_col;
+                    sum_value = sorted_values[i];
+                    difference_value = sorted_values[i];
+                    product_value = sorted_values[i];
+                    last_value = sorted_values[i];
+
+                    if ((deduplication_mode_trim == "plus") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
+                        deduplicated_values.emplace_back(sum_value);
+                        deduplicated_row_indices.emplace_back(prev_row);
+                        deduplicated_column_indices.emplace_back(prev_col);
+                    } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
+                        deduplicated_values.emplace_back(difference_value);
+                        deduplicated_row_indices.emplace_back(prev_row);
+                        deduplicated_column_indices.emplace_back(prev_col);
+                    } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
+                        deduplicated_values.emplace_back(product_value);
+                        deduplicated_row_indices.emplace_back(prev_row);
+                        deduplicated_column_indices.emplace_back(prev_col);
+                    } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
+                        deduplicated_values.emplace_back(last_value);
+                        deduplicated_row_indices.emplace_back(prev_row);
+                        deduplicated_column_indices.emplace_back(prev_col);
+                    }
                 }
             }
-        }
-
-        if ((deduplication_mode_trim == "plus") && (std::abs(sum_value) >= std::numeric_limits<VTYPE>::min())) {
-            deduplicated_values.emplace_back(sum_value);
-            deduplicated_row_indices.emplace_back(prev_row);
-            deduplicated_column_indices.emplace_back(prev_col);
-        } else if ((deduplication_mode_trim == "minus") && (std::abs(difference_value) >= std::numeric_limits<VTYPE>::min())) {
-            deduplicated_values.emplace_back(difference_value);
-            deduplicated_row_indices.emplace_back(prev_row);
-            deduplicated_column_indices.emplace_back(prev_col);
-        } else if ((deduplication_mode_trim == "multiply") && (std::abs(product_value) >= std::numeric_limits<VTYPE>::min())) {
-            deduplicated_values.emplace_back(product_value);
-            deduplicated_row_indices.emplace_back(prev_row);
-            deduplicated_column_indices.emplace_back(prev_col);
-        } else if ((deduplication_mode_trim == "overwrite") && (std::abs(last_value) >= std::numeric_limits<VTYPE>::min())) {
-            deduplicated_values.emplace_back(last_value);
-            deduplicated_row_indices.emplace_back(prev_row);
-            deduplicated_column_indices.emplace_back(prev_col);
         }
 
         // Update the COOData struct with the deduplicated entries
