@@ -346,9 +346,9 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
             matrix_coo.col_indices_.resize(rows_*cols_);
             // Fill all elements with the given value
             for (ITYPE i = 0; i < rows_; ++i) {
-                std::fill(matrix_coo.row_indices_.begin()+i, matrix_coo.row_indices_.end()+i+cols_, i);
-                std::iota(matrix_coo.col_indices_.begin()+i, matrix_coo.col_indices_.end()+i+cols_, 0);
-                std::fill(matrix_coo.values_.begin()+i, matrix_coo.values_.end()+i+cols_, val);
+                std::fill(matrix_coo.row_indices_.begin()+(i*cols_), matrix_coo.row_indices_.end()+((i+1)*cols_), i);
+                std::iota(matrix_coo.col_indices_.begin()+(i*cols_), matrix_coo.col_indices_.end()+((i+1)*cols_), 0);
+                std::fill(matrix_coo.values_.begin()+(i*cols_), matrix_coo.values_.end()+((i+1)*cols_), val);
             }
         } else if (matrix_format_ == format::CSR) {
             // Resize the vectors to hold all possible elements
@@ -361,9 +361,9 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
             // Fill all elements with the given value
             matrix_csr.row_ptrs_[0] = 0;
             for (ITYPE i = 0; i < rows_; ++i) {
-                std::iota(matrix_csr.col_indices_.begin()+i, matrix_csr.col_indices_.end()+i+cols_, 0);
-                std::fill(matrix_csr.values_.begin()+i, matrix_csr.values_.end()+i+cols_, val);
-                matrix_csr.row_ptrs_[i + 1] = matrix_csr.col_indices_.size();
+                std::iota(matrix_csr.col_indices_.begin()+(i*cols_), matrix_csr.col_indices_.end()+((i+1)*cols_), 0);
+                std::fill(matrix_csr.values_.begin()+(i*cols_), matrix_csr.values_.end()+((i+1)*cols_), val);
+                matrix_csr.row_ptrs_[i + 1] = (i+1)*cols_;
             }
         } else if (matrix_format_ == format::CSC) {
             // Resize the vectors to hold all possible elements
@@ -376,9 +376,9 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(VTYPE val) {
             // Fill all elements with the given value
             matrix_csc.col_ptrs_[0] = 0;
             for (ITYPE i = 0; i < cols_; ++i) {
-                std::iota(matrix_csc.row_indices_.begin()+i, matrix_csc.row_indices_.end()+i+rows_, 0);
-                std::fill(matrix_csc.values_.begin()+i, matrix_csc.values_.end()+i+rows_, val);
-                matrix_csc.col_ptrs_[i + 1] = matrix_csc.row_indices_.size();
+                std::iota(matrix_csc.row_indices_.begin()+(i*rows_), matrix_csc.row_indices_.end()+((i+1)*rows_), 0);
+                std::fill(matrix_csc.values_.begin()+(i*rows_), matrix_csc.values_.end()+((i+1)*rows_), val);
+                matrix_csc.col_ptrs_[i + 1] = (i+1)*rows_;
             }
         } else {
             std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
