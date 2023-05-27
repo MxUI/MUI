@@ -177,7 +177,7 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
         }
 
         if (!matrix_csc.col_ptrs_.empty()) {
-            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC col_indices_ matrix (" << matrix_csc.col_ptrs_.size() << ") under COO matrix format in " << function_name << std::endl;
+            std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSC col_indices_ matrix (" << matrix_csc.col_ptrs_.size() << ") under CSR matrix format in " << function_name << std::endl;
         }
 
     } else if (matrix_format_ == format::CSC) {
@@ -216,7 +216,7 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
         }
 
         if (matrix_csc.row_indices_.size() != nnz_) {
-            std::cerr << "MUI Error [" << file_name << "]: CSC row_ptrs_ matrix size (" << matrix_csc.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
+            std::cerr << "MUI Error [" << file_name << "]: CSC row_indices_ matrix size (" << matrix_csc.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 

@@ -415,10 +415,12 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
         matrix_csr.values_.clear();
         matrix_csr.row_ptrs_.clear();
         matrix_csr.col_indices_.clear();
+        matrix_csr.row_ptrs_.emplace_back(0);
     } else if (matrix_format_ == format::CSC) {
         matrix_csc.values_.clear();
         matrix_csc.row_indices_.clear();
         matrix_csc.col_ptrs_.clear();
+        matrix_csc.col_ptrs_.emplace_back(0);
     } else {
         std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
@@ -427,6 +429,22 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
         std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
         std::abort();
     }
+    nnz_ = 0;
+}
+
+// Member function to clear all vectors of the sparse matrix
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::clear_vectors() {
+    // Clear the existing elements
+	matrix_coo.values_.clear();
+	matrix_coo.row_indices_.clear();
+	matrix_coo.col_indices_.clear();
+	matrix_csr.values_.clear();
+	matrix_csr.row_ptrs_.clear();
+	matrix_csr.col_indices_.clear();
+	matrix_csc.values_.clear();
+	matrix_csc.row_indices_.clear();
+	matrix_csc.col_ptrs_.clear();
     nnz_ = 0;
 }
 
@@ -1705,13 +1723,17 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
 
     if (matrix_csr.values_.size() == 0) return;
 
-    matrix_csc.values_.reserve(nnz_);
-    matrix_csc.row_indices_.reserve(nnz_);
-    matrix_csc.col_ptrs_.reserve(cols_+1);
+    matrix_csc.values_.resize(nnz_, 0);
+    matrix_csc.row_indices_.resize(nnz_, 0);
+    matrix_csc.col_ptrs_.resize((cols_+1), 0);
 
     // Determine the number of non-zero entries in each column
-    for (ITYPE i = 0; i < matrix_csr.col_indices_.size(); ++i) {
-        matrix_csc.col_ptrs_[matrix_csr.col_indices_[i]]++;
+    for (ITYPE i = 0; i < cols_; ++i) {
+		for (ITYPE j = 0; j < matrix_csr.col_indices_.size(); ++j) {
+			if (matrix_csr.col_indices_[j] == i) {
+				++matrix_csc.col_ptrs_[i];
+			}
+		}
     }
 
     for(ITYPE i = 0, accumulator = 0; i < cols_; ++i){
@@ -1788,9 +1810,9 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
 
     if (matrix_csc.values_.size() == 0) return;
 
-    matrix_csr.values_.reserve(nnz_);
-    matrix_csr.row_ptrs_.reserve(rows_+1);
-    matrix_csr.col_indices_.reserve(nnz_);
+    matrix_csr.values_.resize(nnz_, 0);
+    matrix_csr.row_ptrs_.resize((rows_+1), 0);
+    matrix_csr.col_indices_.resize(nnz_, 0);
 
     // Determine the number of non-zero entries in each row
     for (ITYPE i = 0; i < matrix_csc.row_indices_.size(); ++i) {

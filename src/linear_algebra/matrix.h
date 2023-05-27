@@ -126,6 +126,8 @@ class sparse_matrix {
         void swap_elements(ITYPE, ITYPE, ITYPE, ITYPE);
         // Member function to set all elements to zero and empty the sparse matrix
         void set_zero();
+        // Member function to clear all vectors of the sparse matrix
+        void clear_vectors();
         // Member function to add scalar to a specific elements
         void add_scalar(ITYPE, ITYPE, VTYPE, bool = true);
         // Member function to subtract a scalar from a specific elements

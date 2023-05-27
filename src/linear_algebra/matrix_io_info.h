@@ -197,6 +197,8 @@ void sparse_matrix<ITYPE,VTYPE>::write_vectors_to_file(const std::string &format
 
     if (matrix_format_ == format::COO) {
         formatFile << "COO" << "\n";
+        formatFile << rows_ << "\n";
+        formatFile << cols_ << "\n";
         // Write the contents of the vectors to the respective files
         for (ITYPE i = 0; i < matrix_coo.values_.size(); ++i) {
             valueFile << matrix_coo.values_[i] << "\n";
@@ -205,6 +207,8 @@ void sparse_matrix<ITYPE,VTYPE>::write_vectors_to_file(const std::string &format
         }
     } else if (matrix_format_ == format::CSR) {
         formatFile << "CSR" << "\n";
+        formatFile << rows_ << "\n";
+        formatFile << cols_ << "\n";
         // Write the contents of the vectors to the respective files
         for (ITYPE i = 0; i < matrix_csr.values_.size(); ++i) {
             valueFile << matrix_csr.values_[i] << "\n";
@@ -215,13 +219,15 @@ void sparse_matrix<ITYPE,VTYPE>::write_vectors_to_file(const std::string &format
         }
     } else if (matrix_format_ == format::CSC) {
         formatFile << "CSC" << "\n";
+        formatFile << rows_ << "\n";
+        formatFile << cols_ << "\n";
         // Write the contents of the vectors to the respective files
         for (ITYPE i = 0; i < matrix_csc.values_.size(); ++i) {
             valueFile << matrix_csc.values_[i] << "\n";
-            columnFile << matrix_csc.row_indices_[i] << "\n";
+            rowFile << matrix_csc.row_indices_[i] << "\n";
         }
         for (ITYPE i = 0; i < (cols_+1); ++i) {
-            rowFile << matrix_csc.col_ptrs_[i] << "\n";
+        	columnFile << matrix_csc.col_ptrs_[i] << "\n";
         }
     } else {
         std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix write_vectors_to_file() >>" << std::endl;
@@ -293,10 +299,14 @@ void sparse_matrix<ITYPE,VTYPE>::read_vectors_from_file(const std::string &forma
     std::string file_matrix_format;
 
     formatFile >> file_matrix_format;
+    formatFile >> rows_;
+    formatFile >> cols_;
 
     std::string file_matrix_format_trim = string_to_upper(trim(file_matrix_format));
 
+
     if (file_matrix_format_trim == "COO") {
+    	this->clear_vectors();
         // Read the contents of the vectors from the respective files
         int val;
         while (valueFile >> val) {
@@ -316,25 +326,31 @@ void sparse_matrix<ITYPE,VTYPE>::read_vectors_from_file(const std::string &forma
         matrix_format_ = format::COO;
         nnz_ = matrix_coo.values_.size();
     } else if (file_matrix_format_trim == "CSR") {
+    	this->clear_vectors();
         // Read the contents of the vectors from the respective files
         int val;
         while (valueFile >> val) {
             matrix_csr.values_.reserve(matrix_csr.values_.size()+1);
             matrix_csr.values_.emplace_back(val);
         }
+
         int row_ptr;
         while (rowFile >> row_ptr) {
             matrix_csr.row_ptrs_.reserve(matrix_csr.row_ptrs_.size()+1);
             matrix_csr.row_ptrs_.emplace_back(row_ptr);
         }
+
         int col_idx;
         while (columnFile >> col_idx) {
             matrix_csr.col_indices_.reserve(matrix_csr.col_indices_.size()+1);
             matrix_csr.col_indices_.emplace_back(col_idx);
         }
+
         matrix_format_ = format::CSR;
         nnz_ = matrix_csr.values_.size();
+
     } else if (file_matrix_format_trim == "CSC") {
+    	this->clear_vectors();
         // Read the contents of the vectors from the respective files
         int val;
         while (valueFile >> val) {
