@@ -109,9 +109,9 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE r, ITYPE c, const std::string &f
     } else {
 
         if (matrix_format_ == format::CSR) {
-        	matrix_csr.row_ptrs_.resize((rows_+1), 0);
+            matrix_csr.row_ptrs_.resize((rows_+1), 0);
         } else if (matrix_format_ == format::CSC) {
-        	matrix_csc.col_ptrs_.resize((cols_+1), 0);
+            matrix_csc.col_ptrs_.resize((cols_+1), 0);
         }
     }
 
@@ -125,9 +125,9 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const std::string &format)
     this->sparse_matrix<ITYPE,VTYPE>::set_matrix_format(format);
 
     if (matrix_format_ == format::CSR) {
-    	matrix_csr.row_ptrs_.resize((rows_+1), 0);
+        matrix_csr.row_ptrs_.resize((rows_+1), 0);
     } else if (matrix_format_ == format::CSC) {
-    	matrix_csc.col_ptrs_.resize((cols_+1), 0);
+        matrix_csc.col_ptrs_.resize((cols_+1), 0);
     }
 
 }
@@ -177,9 +177,9 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(const std::vector<std::vector<VTYPE>>&
     // Calculate the total number of non-zero elements
     for (const auto& row : denseVector) {
         for (ITYPE i = 0; i < row.size(); ++i) {
-			if (std::abs(row[i]) >= std::numeric_limits<VTYPE>::min()) {
-				nnz_++;
-			}
+            if (std::abs(row[i]) >= std::numeric_limits<VTYPE>::min()) {
+                nnz_++;
+            }
         }
     }
 
@@ -237,11 +237,11 @@ sparse_matrix<ITYPE,VTYPE>::sparse_matrix(ITYPE n, const std::string &token, con
 
     if(token.empty()) {
 
-    	// empty (all-zero) square matrix (Do nothing from the code perspective)
+        // empty (all-zero) square matrix (Do nothing from the code perspective)
         if (matrix_format_ == format::CSR) {
-        	matrix_csr.row_ptrs_.resize((rows_+1), 0);
+            matrix_csr.row_ptrs_.resize((rows_+1), 0);
         } else if (matrix_format_ == format::CSC) {
-        	matrix_csc.col_ptrs_.resize((cols_+1), 0);
+            matrix_csc.col_ptrs_.resize((cols_+1), 0);
         }
 
     } else if(string_to_lower(trim(token))=="identity") {

@@ -398,9 +398,9 @@ void sparse_matrix<ITYPE,VTYPE>::swap_elements(ITYPE r1, ITYPE c1, ITYPE r2, ITY
     assert(((r1 < rows_) && (r1 >= 0) && (c1 < cols_) && (c1 >= 0) &&
             (r2 < rows_) && (r2 >= 0) && (c2 < cols_) && (c2 >= 0)) &&
         "MUI Error [matrix_manipulation.h]: Matrix index out of range in swap_elements function");
-    VTYPE temp = (*this).get_value(r1, c1);
-    (*this).set_value(r1, c1, (*this).get_value(r2, c2));
-    (*this).set_value(r2, c2, temp);
+    VTYPE temp = this->get_value(r1, c1);
+    this->set_value(r1, c1, this->get_value(r2, c2));
+    this->set_value(r2, c2, temp);
 }
 
 // Member function to set all elements to zero and empty the sparse matrix
@@ -415,12 +415,12 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
         matrix_csr.values_.clear();
         matrix_csr.row_ptrs_.clear();
         matrix_csr.col_indices_.clear();
-        matrix_csr.row_ptrs_.emplace_back(0);
+        matrix_csr.row_ptrs_.resize((rows_+1), 0);
     } else if (matrix_format_ == format::CSC) {
         matrix_csc.values_.clear();
         matrix_csc.row_indices_.clear();
         matrix_csc.col_ptrs_.clear();
-        matrix_csc.col_ptrs_.emplace_back(0);
+        matrix_csc.col_ptrs_.resize((cols_+1), 0);
     } else {
         std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
         std::cerr << "    Please set the matrix_format_ as:" << std::endl;
@@ -588,6 +588,11 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
         assert(((rows_ == exist_mat.rows_) && (cols_ == exist_mat.cols_)) &&
                   "MUI Error [matrix_manipulation.h]: matrix size mismatch in assignment operator '='");
 
+        std::string format_store = this->get_format();
+        if (this->get_format() != exist_mat.get_format()) {
+            this->format_conversion(exist_mat.get_format(), true, true, "overwrite");
+        }
+
         // Copy the data from the existing matrix
         if (matrix_format_ == format::COO) {
             matrix_coo.values_ = std::vector<VTYPE>(exist_mat.matrix_coo.values_.begin(), exist_mat.matrix_coo.values_.end());
@@ -610,8 +615,10 @@ sparse_matrix<ITYPE,VTYPE>& sparse_matrix<ITYPE,VTYPE>::operator=(const sparse_m
             std::abort();
         }
 
-        if (matrix_format_ != exist_mat.matrix_format_) {
-            this->format_conversion(exist_mat.get_format(), true, true, "overwrite");
+        nnz_ = exist_mat.nnz_;
+
+        if (this->get_format() != format_store) {
+            this->format_conversion(format_store, true, true, "overwrite");
         }
     }
     return *this;
@@ -1592,7 +1599,11 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
     assert((matrix_format_ == format::COO) &&
       "MUI Error [matrix_manipulation.h]: coo_to_csr() can only applied to sparse matrix with COO format.");
 
-    if (matrix_coo.values_.size() == 0) return;
+    if (matrix_coo.values_.size() == 0) {
+        matrix_format_ = format::CSR;
+        matrix_csr.row_ptrs_.resize((rows_+1), 0);
+        return;
+    }
 
     // Determine the number of non-zero entries in each row
     std::vector<ITYPE> rowPtr(rows_+1, 0);
@@ -1608,8 +1619,8 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
     rowPtr[rows_] = nnz_;
 
     // Fill the CSRData struct
-    matrix_csr.values_.reserve(nnz_);
     matrix_csr.row_ptrs_.reserve(rows_+1);
+    matrix_csr.values_.reserve(nnz_);
     matrix_csr.col_indices_.reserve(nnz_);
 
     std::swap(matrix_csr.values_, matrix_coo.values_);
@@ -1633,7 +1644,11 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csc() {
     assert((matrix_format_ == format::COO) &&
       "MUI Error [matrix_manipulation.h]: coo_to_csc() can only applied to sparse matrix with COO format.");
 
-    if (matrix_coo.values_.size() == 0) return;
+    if (matrix_coo.values_.size() == 0) {
+        matrix_format_ = format::CSC;
+        matrix_csc.col_ptrs_.resize((cols_+1), 0);
+        return;
+    }
 
     // Determine the number of non-zero entries in each column
     std::vector<ITYPE> colPtr(cols_+1, 0);
@@ -1674,7 +1689,10 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_coo() {
     assert((matrix_format_ == format::CSR) &&
       "MUI Error [matrix_manipulation.h]: csr_to_coo() can only applied to sparse matrix with CSR format.");
 
-    if (matrix_csr.values_.size() == 0) return;
+    if (matrix_csr.values_.size() == 0) {
+        matrix_format_ = format::COO;
+        return;
+    }
 
     matrix_coo.values_.reserve(nnz_);
     matrix_coo.row_indices_.reserve(nnz_);
@@ -1705,11 +1723,15 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
     assert((matrix_format_ == format::CSR) &&
       "MUI Error [matrix_manipulation.h]: csr_to_csc() can only applied to sparse matrix with CSR format.");
 
-    if (matrix_csr.values_.size() == 0) return;
+    if (matrix_csr.values_.size() == 0) {
+        matrix_format_ = format::CSC;
+        matrix_csc.col_ptrs_.resize((cols_+1), 0);
+        return;
+    }
 
+    matrix_csc.col_ptrs_.resize((cols_+1), 0);
     matrix_csc.values_.resize(nnz_, 0);
     matrix_csc.row_indices_.resize(nnz_, 0);
-    matrix_csc.col_ptrs_.resize((cols_+1), 0);
 
     // Determine the number of non-zero entries in each column
     for (ITYPE i = 0; i < cols_; ++i) {
@@ -1761,7 +1783,10 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_coo() {
     assert((matrix_format_ == format::CSC) &&
       "MUI Error [matrix_manipulation.h]: csc_to_coo() can only applied to sparse matrix with CSC format.");
 
-    if (matrix_csc.values_.size() == 0) return;
+    if (matrix_csc.values_.size() == 0) {
+        matrix_format_ = format::COO;
+        return;
+    }
 
     matrix_coo.values_.reserve(nnz_);
     matrix_coo.row_indices_.reserve(nnz_);
@@ -1792,7 +1817,11 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
     assert((matrix_format_ == format::CSC) &&
       "MUI Error [matrix_manipulation.h]: csc_to_csr() can only applied to sparse matrix with CSC format.");
 
-    if (matrix_csc.values_.size() == 0) return;
+    if (matrix_csc.values_.size() == 0) {
+        matrix_format_ = format::CSR;
+        matrix_csr.row_ptrs_.resize((rows_+1), 0);
+        return;
+    }
 
     matrix_csr.values_.resize(nnz_, 0);
     matrix_csr.row_ptrs_.resize((rows_+1), 0);
