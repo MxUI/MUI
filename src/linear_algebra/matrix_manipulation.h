@@ -432,22 +432,6 @@ void sparse_matrix<ITYPE,VTYPE>::set_zero() {
     nnz_ = 0;
 }
 
-// Member function to clear all vectors of the sparse matrix
-template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::clear_vectors() {
-    // Clear the existing elements
-	matrix_coo.values_.clear();
-	matrix_coo.row_indices_.clear();
-	matrix_coo.col_indices_.clear();
-	matrix_csr.values_.clear();
-	matrix_csr.row_ptrs_.clear();
-	matrix_csr.col_indices_.clear();
-	matrix_csc.values_.clear();
-	matrix_csc.row_indices_.clear();
-	matrix_csc.col_ptrs_.clear();
-    nnz_ = 0;
-}
-
 // Member function to add scalar to a specific elements
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::add_scalar(ITYPE r, ITYPE c, VTYPE val, bool performSortAndUniqueCheck) {
@@ -1851,6 +1835,22 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
     // Reset the matrix format
     matrix_format_ = format::CSR;
 
+}
+
+// Protected member function to clear all vectors of the sparse matrix
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::clear_vectors() {
+    // Clear the existing elements
+	matrix_coo.values_.clear();
+	matrix_coo.row_indices_.clear();
+	matrix_coo.col_indices_.clear();
+	matrix_csr.values_.clear();
+	matrix_csr.row_ptrs_.clear();
+	matrix_csr.col_indices_.clear();
+	matrix_csc.values_.clear();
+	matrix_csc.row_indices_.clear();
+	matrix_csc.col_ptrs_.clear();
+    nnz_ = 0;
 }
 
 } // linalg
