@@ -378,7 +378,7 @@ void sparse_matrix<ITYPE,VTYPE>::read_vectors_from_file(const std::string &forma
         } else if (format_store == format::CSC) {
             this->format_conversion("CSC", true, true, "overwrite");
         } else {
-            std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format: " << format_store << " for matrix write_vectors_to_file()" << std::endl;
+            std::cerr << "MUI Error [matrix_io_info.h]: Unrecognised matrix format for matrix write_vectors_to_file()" << std::endl;
             std::cerr << "    Please set the format_store as:" << std::endl;
             std::cerr << "    format::COO: COOrdinate format" << std::endl;
             std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;

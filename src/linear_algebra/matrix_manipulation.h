@@ -78,6 +78,8 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
 
     exist_mat.assert_valid_vector_size("matrix_manipulation.h", "copy()");
 
+    std::string format_store = this->get_format();
+
     if (exist_mat.nnz_>0) {
 
         if ((rows_ == 0) && (cols_ == 0))
@@ -131,8 +133,8 @@ void sparse_matrix<ITYPE,VTYPE>::copy(const sparse_matrix<ITYPE,VTYPE> &exist_ma
           }
     }
 
-    if (exist_mat.matrix_format_ != matrix_format_)
-        this->format_conversion(this->get_format(), true, true, "overwrite");
+    if (this->get_format() != format_store)
+        this->format_conversion(format_store, true, true, "overwrite");
 
     this->assert_valid_vector_size("matrix_manipulation.h", "copy()");
 
