@@ -642,7 +642,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
         } else if (matrix_format == "CSC") {
 
             if (performSortAndUniqueCheck) {
-				this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
+                this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
             }
 
             this->sparse_matrix<ITYPE,VTYPE>::coo_to_csc();
@@ -1713,11 +1713,11 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
 
     // Determine the number of non-zero entries in each column
     for (ITYPE i = 0; i < cols_; ++i) {
-		for (ITYPE j = 0; j < matrix_csr.col_indices_.size(); ++j) {
-			if (matrix_csr.col_indices_[j] == i) {
-				++matrix_csc.col_ptrs_[i];
-			}
-		}
+        for (ITYPE j = 0; j < matrix_csr.col_indices_.size(); ++j) {
+            if (matrix_csr.col_indices_[j] == i) {
+                ++matrix_csc.col_ptrs_[i];
+            }
+        }
     }
 
     for(ITYPE i = 0, accumulator = 0; i < cols_; ++i){
@@ -1841,15 +1841,15 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
 template<typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::clear_vectors() {
     // Clear the existing elements
-	matrix_coo.values_.clear();
-	matrix_coo.row_indices_.clear();
-	matrix_coo.col_indices_.clear();
-	matrix_csr.values_.clear();
-	matrix_csr.row_ptrs_.clear();
-	matrix_csr.col_indices_.clear();
-	matrix_csc.values_.clear();
-	matrix_csc.row_indices_.clear();
-	matrix_csc.col_ptrs_.clear();
+    matrix_coo.values_.clear();
+    matrix_coo.row_indices_.clear();
+    matrix_coo.col_indices_.clear();
+    matrix_csr.values_.clear();
+    matrix_csr.row_ptrs_.clear();
+    matrix_csr.col_indices_.clear();
+    matrix_csc.values_.clear();
+    matrix_csc.row_indices_.clear();
+    matrix_csc.col_ptrs_.clear();
     nnz_ = 0;
 }
 
