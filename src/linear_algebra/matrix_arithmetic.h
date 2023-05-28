@@ -69,40 +69,40 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
     if (addend.matrix_format_ != matrix_format_) {
         addend.format_conversion(this->get_format(), true, true, "overwrite");
     } else {
-		if (!addend.is_sorted_unique("matrix_arithmetic.h", "operator+()")){
-			if (addend.matrix_format_ == format::COO) {
-				addend.sort_coo(true, true, "overwrite");
-			} else if (addend.matrix_format_ == format::CSR) {
-				addend.sort_csr(true, "overwrite");
-			} else if (addend.matrix_format_ == format::CSC) {
-				addend.sort_csc(true, "overwrite");
-			} else {
-				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised addend matrix format for matrix operator+()" << std::endl;
-				std::cerr << "    Please set the addend matrix_format_ as:" << std::endl;
-				std::cerr << "    format::COO: COOrdinate format" << std::endl;
-				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-				std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-				std::abort();
-			}
-		}
+        if (!addend.is_sorted_unique("matrix_arithmetic.h", "operator+()")){
+            if (addend.matrix_format_ == format::COO) {
+                addend.sort_coo(true, true, "overwrite");
+            } else if (addend.matrix_format_ == format::CSR) {
+                addend.sort_csr(true, "overwrite");
+            } else if (addend.matrix_format_ == format::CSC) {
+                addend.sort_csc(true, "overwrite");
+            } else {
+                std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised addend matrix format for matrix operator+()" << std::endl;
+                std::cerr << "    Please set the addend matrix_format_ as:" << std::endl;
+                std::cerr << "    format::COO: COOrdinate format" << std::endl;
+                std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+                std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+                std::abort();
+            }
+        }
     }
 
-	if (!this->is_sorted_unique("matrix_arithmetic.h", "operator+()")){
-		if (matrix_format_ == format::COO) {
-			this->sort_coo(true, true, "overwrite");
-		} else if (matrix_format_ == format::CSR) {
-			this->sort_csr(true, "overwrite");
-		} else if (matrix_format_ == format::CSC) {
-			this->sort_csc(true, "overwrite");
-		} else {
-			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator+()" << std::endl;
-			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-			std::cerr << "    format::COO: COOrdinate format" << std::endl;
-			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-			std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-			std::abort();
-		}
-	}
+    if (!this->is_sorted_unique("matrix_arithmetic.h", "operator+()")){
+        if (matrix_format_ == format::COO) {
+            this->sort_coo(true, true, "overwrite");
+        } else if (matrix_format_ == format::CSR) {
+            this->sort_csr(true, "overwrite");
+        } else if (matrix_format_ == format::CSC) {
+            this->sort_csc(true, "overwrite");
+        } else {
+            std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator+()" << std::endl;
+            std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+            std::cerr << "    format::COO: COOrdinate format" << std::endl;
+            std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+            std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+            std::abort();
+        }
+    }
 
     // Create a new sparse matrix object for the result
     sparse_matrix<ITYPE,VTYPE> res(rows_, cols_, this->get_format());
@@ -152,21 +152,27 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
                 ITYPE col = matrix_csr.col_indices_[i];
                 ITYPE addend_col = addend.matrix_csr.col_indices_[j];
 
-                if ((col == addend_col) && std::abs(matrix_csr.values_[i] + addend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                if (col == addend_col) {
                     // Add the corresponding values if the columns match
-                    res.matrix_csr.values_.emplace_back(matrix_csr.values_[i] + addend.matrix_csr.values_[j]);
-                    res.matrix_csr.col_indices_.emplace_back(col);
+                    if (std::abs(matrix_csr.values_[i] + addend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()){
+                        res.matrix_csr.values_.emplace_back(matrix_csr.values_[i] + addend.matrix_csr.values_[j]);
+                        res.matrix_csr.col_indices_.emplace_back(col);
+                    }
                     i++;
                     j++;
-                } else if ((col < addend_col) && std::abs(matrix_csr.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                } else if (col < addend_col) {
                     // Add the current value from the initial matrix
-                    res.matrix_csr.values_.emplace_back(matrix_csr.values_[i]);
-                    res.matrix_csr.col_indices_.emplace_back(col);
+                    if (std::abs(matrix_csr.values_[i]) >= std::numeric_limits<VTYPE>::min()){
+                        res.matrix_csr.values_.emplace_back(matrix_csr.values_[i]);
+                        res.matrix_csr.col_indices_.emplace_back(col);
+                    }
                     i++;
-                } else if (std::abs(addend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                } else {
                     // Add the current value from the addend matrix
-                    res.matrix_csr.values_.emplace_back(addend.matrix_csr.values_[j]);
-                    res.matrix_csr.col_indices_.emplace_back(addend_col);
+                    if (std::abs(addend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()){
+                        res.matrix_csr.values_.emplace_back(addend.matrix_csr.values_[j]);
+                        res.matrix_csr.col_indices_.emplace_back(addend_col);
+                    }
                     j++;
                 }
             }
@@ -218,21 +224,27 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
                 ITYPE row = matrix_csc.row_indices_[i];
                 ITYPE addend_row = addend.matrix_csc.row_indices_[j];
 
-                if ((row == addend_row) && std::abs(matrix_csc.values_[i] + addend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                if (row == addend_row) {
                     // Add the corresponding values if the columns match
-                    res.matrix_csc.values_.emplace_back(matrix_csc.values_[i] + addend.matrix_csc.values_[j]);
-                    res.matrix_csc.row_indices_.emplace_back(row);
+                    if (std::abs(matrix_csc.values_[i] + addend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csc.values_.emplace_back(matrix_csc.values_[i] + addend.matrix_csc.values_[j]);
+                        res.matrix_csc.row_indices_.emplace_back(row);
+                    }
                     i++;
                     j++;
-                } else if ((row < addend_row) && std::abs(matrix_csc.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                } else if (row < addend_row) {
                     // Add the current value from the initial matrix
-                    res.matrix_csc.values_.emplace_back(matrix_csc.values_[i]);
-                    res.matrix_csc.row_indices_.emplace_back(row);
+                    if (std::abs(matrix_csc.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csc.values_.emplace_back(matrix_csc.values_[i]);
+                        res.matrix_csc.row_indices_.emplace_back(row);
+                    }
                     i++;
-                } else if (std::abs(addend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                } else {
                     // Add the current value from the addend matrix
-                    res.matrix_csc.values_.emplace_back(addend.matrix_csc.values_[j]);
-                    res.matrix_csc.row_indices_.emplace_back(addend_row);
+                    if (std::abs(addend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csc.values_.emplace_back(addend.matrix_csc.values_[j]);
+                        res.matrix_csc.row_indices_.emplace_back(addend_row);
+                    }
                     j++;
                 }
             }
@@ -283,52 +295,52 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
    if (subtrahend.matrix_format_ != matrix_format_) {
        subtrahend.format_conversion(this->get_format(), true, true, "overwrite");
    } else {
-	   if (!subtrahend.is_sorted_unique("matrix_arithmetic.h", "operator-()")){
-		   if (subtrahend.matrix_format_ == format::COO) {
-			   subtrahend.sort_coo(true, true, "overwrite");
-		   } else if (subtrahend.matrix_format_ == format::CSR) {
-			   subtrahend.sort_csr(true, "overwrite");
-		   } else if (subtrahend.matrix_format_ == format::CSC) {
-			   subtrahend.sort_csc(true, "overwrite");
-		   } else {
-			   std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised subtrahend matrix format for matrix operator-()" << std::endl;
-			   std::cerr << "    Please set the subtrahend matrix_format_ as:" << std::endl;
-			   std::cerr << "    format::COO: COOrdinate format" << std::endl;
-			   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-			   std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-			   std::abort();
-		   }
-	   }
+       if (!subtrahend.is_sorted_unique("matrix_arithmetic.h", "operator-()")){
+           if (subtrahend.matrix_format_ == format::COO) {
+               subtrahend.sort_coo(true, true, "overwrite");
+           } else if (subtrahend.matrix_format_ == format::CSR) {
+               subtrahend.sort_csr(true, "overwrite");
+           } else if (subtrahend.matrix_format_ == format::CSC) {
+               subtrahend.sort_csc(true, "overwrite");
+           } else {
+               std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised subtrahend matrix format for matrix operator-()" << std::endl;
+               std::cerr << "    Please set the subtrahend matrix_format_ as:" << std::endl;
+               std::cerr << "    format::COO: COOrdinate format" << std::endl;
+               std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+               std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+               std::abort();
+           }
+       }
    }
 
-	if (!this->is_sorted_unique("matrix_arithmetic.h", "operator-()")){
-		if (matrix_format_ == format::COO) {
-			this->sort_coo(true, true, "overwrite");
-		} else if (matrix_format_ == format::CSR) {
-			this->sort_csr(true, "overwrite");
-		} else if (matrix_format_ == format::CSC) {
-			this->sort_csc(true, "overwrite");
-		} else {
-			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator-()" << std::endl;
-			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-			std::cerr << "    format::COO: COOrdinate format" << std::endl;
-			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-			std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-			std::abort();
-		}
-	}
+    if (!this->is_sorted_unique("matrix_arithmetic.h", "operator-()")){
+        if (matrix_format_ == format::COO) {
+            this->sort_coo(true, true, "overwrite");
+        } else if (matrix_format_ == format::CSR) {
+            this->sort_csr(true, "overwrite");
+        } else if (matrix_format_ == format::CSC) {
+            this->sort_csc(true, "overwrite");
+        } else {
+            std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator-()" << std::endl;
+            std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+            std::cerr << "    format::COO: COOrdinate format" << std::endl;
+            std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+            std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+            std::abort();
+        }
+    }
 
    // Create a new sparse matrix object for the result
    sparse_matrix<ITYPE,VTYPE> res(rows_, cols_, this->get_format());
 
    if (matrix_format_ == format::COO) {
 
-	   std::vector<VTYPE> subtrahend_value;
-	   subtrahend_value.reserve(subtrahend.matrix_coo.values_.size());
+       std::vector<VTYPE> subtrahend_value;
+       subtrahend_value.reserve(subtrahend.matrix_coo.values_.size());
 
-		for (VTYPE &element : subtrahend.matrix_coo.values_) {
-			subtrahend_value.emplace_back(element*(-1));
-		}
+        for (VTYPE &element : subtrahend.matrix_coo.values_) {
+            subtrahend_value.emplace_back(element*(-1));
+        }
 
         // Perform element-wise subtrahend of the COO vectors
         res.matrix_coo.values_.reserve(matrix_coo.values_.size() + subtrahend.matrix_coo.values_.size());
@@ -372,21 +384,27 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
                 ITYPE col = matrix_csr.col_indices_[i];
                 ITYPE subtrahend_col = subtrahend.matrix_csr.col_indices_[j];
 
-                if ((col == subtrahend_col) && std::abs(matrix_csr.values_[i] - subtrahend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                if (col == subtrahend_col) {
                     // Add the corresponding values if the columns match
-                    res.matrix_csr.values_.emplace_back(matrix_csr.values_[i] - subtrahend.matrix_csr.values_[j]);
-                    res.matrix_csr.col_indices_.emplace_back(col);
+                    if (std::abs(matrix_csr.values_[i] - subtrahend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csr.values_.emplace_back(matrix_csr.values_[i] - subtrahend.matrix_csr.values_[j]);
+                        res.matrix_csr.col_indices_.emplace_back(col);
+                    }
                     i++;
                     j++;
-                } else if ((col < subtrahend_col) && std::abs(matrix_csr.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                } else if (col < subtrahend_col) {
                     // Add the current value from the initial matrix
-                    res.matrix_csr.values_.emplace_back(matrix_csr.values_[i]);
-                    res.matrix_csr.col_indices_.emplace_back(col);
+                    if (std::abs(matrix_csr.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csr.values_.emplace_back(matrix_csr.values_[i]);
+                        res.matrix_csr.col_indices_.emplace_back(col);
+                    }
                     i++;
-                } else if (std::abs(-subtrahend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                } else {
                     // Add the current value from the subtrahend matrix
-                    res.matrix_csr.values_.emplace_back(-subtrahend.matrix_csr.values_[j]);
-                    res.matrix_csr.col_indices_.emplace_back(subtrahend_col);
+                    if (std::abs(-subtrahend.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csr.values_.emplace_back(-subtrahend.matrix_csr.values_[j]);
+                        res.matrix_csr.col_indices_.emplace_back(subtrahend_col);
+                    }
                     j++;
                 }
             }
@@ -438,21 +456,27 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
                 ITYPE row = matrix_csc.row_indices_[i];
                 ITYPE subtrahend_row = subtrahend.matrix_csc.row_indices_[j];
 
-                if ((row == subtrahend_row) && std::abs(matrix_csc.values_[i] - subtrahend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                if (row == subtrahend_row) {
                     // Add the corresponding values if the columns match
-                    res.matrix_csc.values_.emplace_back(matrix_csc.values_[i] - subtrahend.matrix_csc.values_[j]);
-                    res.matrix_csc.row_indices_.emplace_back(row);
+                    if (std::abs(matrix_csc.values_[i] - subtrahend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csc.values_.emplace_back(matrix_csc.values_[i] - subtrahend.matrix_csc.values_[j]);
+                        res.matrix_csc.row_indices_.emplace_back(row);
+                    }
                     i++;
                     j++;
-                } else if ((row < subtrahend_row) && std::abs(matrix_csc.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                } else if (row < subtrahend_row) {
                     // Add the current value from the initial matrix
-                    res.matrix_csc.values_.emplace_back(matrix_csc.values_[i]);
-                    res.matrix_csc.row_indices_.emplace_back(row);
+                    if (std::abs(matrix_csc.values_[i]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csc.values_.emplace_back(matrix_csc.values_[i]);
+                        res.matrix_csc.row_indices_.emplace_back(row);
+                    }
                     i++;
-                } else if (std::abs(-subtrahend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                } else {
                     // Add the current value from the subtrahend matrix
-                    res.matrix_csc.values_.emplace_back(-subtrahend.matrix_csc.values_[j]);
-                    res.matrix_csc.row_indices_.emplace_back(subtrahend_row);
+                    if (std::abs(-subtrahend.matrix_csc.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csc.values_.emplace_back(-subtrahend.matrix_csc.values_[j]);
+                        res.matrix_csc.row_indices_.emplace_back(subtrahend_row);
+                    }
                     j++;
                 }
             }
@@ -504,40 +528,40 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
     if (multiplicand.matrix_format_ != matrix_format_) {
         multiplicand.format_conversion(this->get_format(), true, true, "overwrite");
     } else {
-		if (!multiplicand.is_sorted_unique("matrix_arithmetic.h", "operator*()")){
-			if (multiplicand.matrix_format_ == format::COO) {
-				multiplicand.sort_coo(true, true, "overwrite");
-			} else if (multiplicand.matrix_format_ == format::CSR) {
-				multiplicand.sort_csr(true, "overwrite");
-			} else if (multiplicand.matrix_format_ == format::CSC) {
-				multiplicand.sort_csc(true, "overwrite");
-			} else {
-				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised multiplicand matrix format for matrix operator*()" << std::endl;
-				std::cerr << "    Please set the multiplicand matrix_format_ as:" << std::endl;
-				std::cerr << "    format::COO: COOrdinate format" << std::endl;
-				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-				std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-				std::abort();
-			}
-		}
+        if (!multiplicand.is_sorted_unique("matrix_arithmetic.h", "operator*()")){
+            if (multiplicand.matrix_format_ == format::COO) {
+                multiplicand.sort_coo(true, true, "overwrite");
+            } else if (multiplicand.matrix_format_ == format::CSR) {
+                multiplicand.sort_csr(true, "overwrite");
+            } else if (multiplicand.matrix_format_ == format::CSC) {
+                multiplicand.sort_csc(true, "overwrite");
+            } else {
+                std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised multiplicand matrix format for matrix operator*()" << std::endl;
+                std::cerr << "    Please set the multiplicand matrix_format_ as:" << std::endl;
+                std::cerr << "    format::COO: COOrdinate format" << std::endl;
+                std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+                std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+                std::abort();
+            }
+        }
     }
 
-	 if (!this->is_sorted_unique("matrix_arithmetic.h", "operator*()")){
-		 if (matrix_format_ == format::COO) {
-			 this->sort_coo(true, true, "overwrite");
-		 } else if (matrix_format_ == format::CSR) {
-			 this->sort_csr(true, "overwrite");
-		 } else if (matrix_format_ == format::CSC) {
-			 this->sort_csc(true, "overwrite");
-		 } else {
-			 std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator*()" << std::endl;
-			 std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-			 std::cerr << "    format::COO: COOrdinate format" << std::endl;
-			 std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-			 std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-			 std::abort();
-		 }
-	 }
+     if (!this->is_sorted_unique("matrix_arithmetic.h", "operator*()")){
+         if (matrix_format_ == format::COO) {
+             this->sort_coo(true, true, "overwrite");
+         } else if (matrix_format_ == format::CSR) {
+             this->sort_csr(true, "overwrite");
+         } else if (matrix_format_ == format::CSC) {
+             this->sort_csc(true, "overwrite");
+         } else {
+             std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix operator*()" << std::endl;
+             std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+             std::cerr << "    format::COO: COOrdinate format" << std::endl;
+             std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+             std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+             std::abort();
+         }
+     }
 
     // Create a new sparse matrix object for the result
     sparse_matrix<ITYPE,VTYPE> res(rows_, multiplicand.cols_, this->get_format());
@@ -638,17 +662,17 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
             // Iterate over the non-zero elements of the cloumn
             for (ITYPE k = multiplicand_start; k < multiplicand_end; ++k) {
                 // Get the row index and value of the element
-                ITYPE row = multiplicand.matrix_csc.row_indices_[k];
+                ITYPE multiplicand_row = multiplicand.matrix_csc.row_indices_[k];
                 VTYPE multiplicand_value = multiplicand.matrix_csc.values_[k];
 
-                ITYPE start = matrix_csc.col_ptrs_[row];
-                ITYPE end = matrix_csc.col_ptrs_[row + 1];
+                ITYPE start = matrix_csc.col_ptrs_[multiplicand_row];
+                ITYPE end = matrix_csc.col_ptrs_[multiplicand_row + 1];
 
                 // Multiply the element with the corresponding column of the other matrix
                 for (ITYPE i = start; i < end; ++i) {
-                    ITYPE col = multiplicand.matrix_csc.row_indices_[i];
+                    ITYPE row = matrix_csc.row_indices_[i];
                     VTYPE value = matrix_csc.values_[i];
-                    intermediate[col] += value * multiplicand_value;
+                    intermediate[row] += value * multiplicand_value;
                 }
             }
 
@@ -751,40 +775,40 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(sparse_m
     if (exist_mat.matrix_format_ != matrix_format_) {
         exist_mat.format_conversion(this->get_format(), true, true, "overwrite");
     } else {
-		if (!exist_mat.is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
-			if (exist_mat.matrix_format_ == format::COO) {
-				exist_mat.sort_coo(true, true, "overwrite");
-			} else if (exist_mat.matrix_format_ == format::CSR) {
-				exist_mat.sort_csr(true, "overwrite");
-			} else if (exist_mat.matrix_format_ == format::CSC) {
-				exist_mat.sort_csc(true, "overwrite");
-			} else {
-				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised exist_mat matrix format for matrix hadamard_product()" << std::endl;
-				std::cerr << "    Please set the exist_mat matrix_format_ as:" << std::endl;
-				std::cerr << "    format::COO: COOrdinate format" << std::endl;
-				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-				std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-				std::abort();
-			}
-		}
+        if (!exist_mat.is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
+            if (exist_mat.matrix_format_ == format::COO) {
+                exist_mat.sort_coo(true, true, "overwrite");
+            } else if (exist_mat.matrix_format_ == format::CSR) {
+                exist_mat.sort_csr(true, "overwrite");
+            } else if (exist_mat.matrix_format_ == format::CSC) {
+                exist_mat.sort_csc(true, "overwrite");
+            } else {
+                std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised exist_mat matrix format for matrix hadamard_product()" << std::endl;
+                std::cerr << "    Please set the exist_mat matrix_format_ as:" << std::endl;
+                std::cerr << "    format::COO: COOrdinate format" << std::endl;
+                std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+                std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+                std::abort();
+            }
+        }
     }
 
-	if (!this->is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
-		if (matrix_format_ == format::COO) {
-			this->sort_coo(true, true, "overwrite");
-		} else if (matrix_format_ == format::CSR) {
-			this->sort_csr(true, "overwrite");
-		} else if (matrix_format_ == format::CSC) {
-			this->sort_csc(true, "overwrite");
-		} else {
-			std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix hadamard_product()" << std::endl;
-			std::cerr << "    Please set the matrix_format_ as:" << std::endl;
-			std::cerr << "    format::COO: COOrdinate format" << std::endl;
-			std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
-			std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
-			std::abort();
-		}
-	}
+    if (!this->is_sorted_unique("matrix_arithmetic.h", "hadamard_product()")){
+        if (matrix_format_ == format::COO) {
+            this->sort_coo(true, true, "overwrite");
+        } else if (matrix_format_ == format::CSR) {
+            this->sort_csr(true, "overwrite");
+        } else if (matrix_format_ == format::CSC) {
+            this->sort_csc(true, "overwrite");
+        } else {
+            std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised matrix format for matrix hadamard_product()" << std::endl;
+            std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+            std::cerr << "    format::COO: COOrdinate format" << std::endl;
+            std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+            std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+            std::abort();
+        }
+    }
 
     // Create a new sparse matrix object for the result
     sparse_matrix<ITYPE,VTYPE> res(rows_, cols_, this->get_format());
@@ -833,11 +857,17 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(sparse_m
                 ITYPE col = matrix_csr.col_indices_[i];
                 ITYPE exist_mat_col = exist_mat.matrix_csr.col_indices_[j];
 
-                if ((col == exist_mat_col) && std::abs(matrix_csr.values_[i] * exist_mat.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                if (col == exist_mat_col) {
                     // Add the corresponding values if the columns match
-                    res.matrix_csr.values_.emplace_back(matrix_csr.values_[i] * exist_mat.matrix_csr.values_[j]);
-                    res.matrix_csr.col_indices_.emplace_back(col);
+                    if (std::abs(matrix_csr.values_[i] * exist_mat.matrix_csr.values_[j]) >= std::numeric_limits<VTYPE>::min()) {
+                        res.matrix_csr.values_.emplace_back(matrix_csr.values_[i] * exist_mat.matrix_csr.values_[j]);
+                        res.matrix_csr.col_indices_.emplace_back(col);
+                    }
                     i++;
+                    j++;
+                } else if (col < exist_mat_col) {
+                    i++;
+                } else {
                     j++;
                 }
             }
@@ -878,6 +908,10 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(sparse_m
                     res.matrix_csc.values_.emplace_back(matrix_csc.values_[i] * exist_mat.matrix_csc.values_[j]);
                     res.matrix_csc.row_indices_.emplace_back(row);
                     i++;
+                    j++;
+                } else if (row < exist_mat_row) {
+                    i++;
+                } else {
                     j++;
                 }
             }

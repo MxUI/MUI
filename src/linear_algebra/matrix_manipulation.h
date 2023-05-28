@@ -648,9 +648,7 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
 
         } else if (matrix_format == "CSC") {
 
-            if (performSortAndUniqueCheck) {
-                this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
-            }
+            this->sparse_matrix<ITYPE,VTYPE>::sort_coo(false, deduplication, deduplication_mode);
 
             this->sparse_matrix<ITYPE,VTYPE>::coo_to_csc();
 
@@ -837,38 +835,33 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
             ITYPE curr_row = sorted_row_indices[i];
             ITYPE curr_col = sorted_column_indices[i];
 
-            if (i == 1) {
-                if ((curr_row == prev_row) && (curr_col == prev_col)) {
+           if (i != (sorted_indices.size()-1)) {
+               if (i == 1) {
+                  if ((curr_row == prev_row) && (curr_col == prev_col)) {
 
-                    sum_value += sorted_values[i];
-                    difference_value -= sorted_values[i];
-                    product_value *= sorted_values[i];
-                    last_value = sorted_values[i];
-                    is_multiply_by_zero = false;
+                      sum_value += sorted_values[i];
+                      difference_value -= sorted_values[i];
+                      product_value *= sorted_values[i];
+                      last_value = sorted_values[i];
+                      is_multiply_by_zero = false;
 
-                } else {
-                    if ((std::abs(sorted_values[0]) >= std::numeric_limits<VTYPE>::min()) && (deduplication_mode_trim != "multiply")) {
-                        deduplicated_values.emplace_back(sorted_values[0]);
-                        deduplicated_row_indices.emplace_back(prev_row);
-                        deduplicated_column_indices.emplace_back(prev_col);
-                    }
+                  } else {
+                      if ((std::abs(sorted_values[0]) >= std::numeric_limits<VTYPE>::min()) && (deduplication_mode_trim != "multiply")) {
+                          deduplicated_values.emplace_back(sorted_values[0]);
+                          deduplicated_row_indices.emplace_back(prev_row);
+                          deduplicated_column_indices.emplace_back(prev_col);
+                      }
 
-                    if ((std::abs(sorted_values[1]) >= std::numeric_limits<VTYPE>::min()) && (deduplication_mode_trim != "multiply")) {
-                        deduplicated_values.emplace_back(sorted_values[1]);
-                        deduplicated_row_indices.emplace_back(curr_row);
-                        deduplicated_column_indices.emplace_back(curr_col);
-                    }
+                      prev_row = curr_row;
+                      prev_col = curr_col;
+                      sum_value = sorted_values[i];
+                      difference_value = sorted_values[i];
+                      product_value = sorted_values[i];
+                      last_value = sorted_values[i];
+                      is_multiply_by_zero = true;
 
-                    prev_row = curr_row;
-                    prev_col = curr_col;
-                    sum_value = sorted_values[i];
-                    difference_value = sorted_values[i];
-                    product_value = sorted_values[i];
-                    last_value = sorted_values[i];
-                    is_multiply_by_zero = true;
-
-                }
-            } else if (i != (sorted_indices.size()-1)) {
+                  }
+              } else {
                 if ((curr_row == prev_row) && (curr_col == prev_col)) {
 
                     sum_value += sorted_values[i];
@@ -906,6 +899,7 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
                     is_multiply_by_zero = true;
 
                 }
+              }
             } else {
                 if ((curr_row == prev_row) && (curr_col == prev_col)) {
 
