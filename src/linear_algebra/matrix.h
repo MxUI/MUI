@@ -142,18 +142,18 @@ class sparse_matrix {
         // *****************************************
 
         // Overload addition operator to perform sparse matrix addition
-        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> operator+(sparse_matrix<ITYPE,VTYPE> &);
         // Overload subtraction operator to perform sparse matrix subtraction
-        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> operator-(sparse_matrix<ITYPE,VTYPE> &);
         // Overload multiplication operator to perform sparse matrix multiplication
-        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> operator*(sparse_matrix<ITYPE,VTYPE> &);
         // Overload multiplication operator to perform scalar multiplication
         template <typename STYPE>
         sparse_matrix<ITYPE,VTYPE> operator*(const STYPE &) const;
         // Member function of dot product
         VTYPE dot_product(sparse_matrix<ITYPE,VTYPE> &) const;
         // Member function of Hadamard product
-        sparse_matrix<ITYPE,VTYPE> hadamard_product(const sparse_matrix<ITYPE,VTYPE> &) const;
+        sparse_matrix<ITYPE,VTYPE> hadamard_product(sparse_matrix<ITYPE,VTYPE> &);
         // Member function to get transpose of matrix
         sparse_matrix<ITYPE,VTYPE> transpose(bool = true) const;
         // Member function to perform LU decomposition

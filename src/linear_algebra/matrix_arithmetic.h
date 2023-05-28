@@ -59,7 +59,7 @@ namespace linalg {
 
 // Overload addition operator to perform sparse matrix addition
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) const{
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<ITYPE,VTYPE> &addend) {
 
     if (rows_ != addend.rows_ || cols_ != addend.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix addition" << std::endl;
@@ -77,7 +77,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 			} else if (addend.matrix_format_ == format::CSC) {
 				addend.sort_csc(true, "overwrite");
 			} else {
-				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised addend matrix format: " << addend.matrix_format_ << " for matrix operator+()" << std::endl;
+				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised addend matrix format for matrix operator+()" << std::endl;
 				std::cerr << "    Please set the addend matrix_format_ as:" << std::endl;
 				std::cerr << "    format::COO: COOrdinate format" << std::endl;
 				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -274,7 +274,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator+(sparse_matrix<I
 
 // Overload subtraction operator to perform sparse matrix subtraction
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) const {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<ITYPE,VTYPE> &subtrahend) {
    if (rows_ != subtrahend.rows_ || cols_ != subtrahend.cols_) {
        std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix subtraction" << std::endl;
        std::abort();
@@ -291,7 +291,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 		   } else if (subtrahend.matrix_format_ == format::CSC) {
 			   subtrahend.sort_csc(true, "overwrite");
 		   } else {
-			   std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised subtrahend matrix format: " << subtrahend.matrix_format_ << " for matrix operator-()" << std::endl;
+			   std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised subtrahend matrix format for matrix operator-()" << std::endl;
 			   std::cerr << "    Please set the subtrahend matrix_format_ as:" << std::endl;
 			   std::cerr << "    format::COO: COOrdinate format" << std::endl;
 			   std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -323,6 +323,13 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 
    if (matrix_format_ == format::COO) {
 
+	   std::vector<VTYPE> subtrahend_value;
+	   subtrahend_value.reserve(subtrahend.matrix_coo.values_.size());
+
+		for (VTYPE &element : subtrahend.matrix_coo.values_) {
+			subtrahend_value.emplace_back(element*(-1));
+		}
+
         // Perform element-wise subtrahend of the COO vectors
         res.matrix_coo.values_.reserve(matrix_coo.values_.size() + subtrahend.matrix_coo.values_.size());
         res.matrix_coo.row_indices_.reserve(matrix_coo.row_indices_.size() + subtrahend.matrix_coo.row_indices_.size());
@@ -334,12 +341,12 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
        res.matrix_coo.col_indices_ = std::vector<ITYPE>(matrix_coo.col_indices_.begin(), matrix_coo.col_indices_.end());
 
        // Append the subtrahend COO vectors to the result sparse matrix
-       res.matrix_coo.values_.insert(res.matrix_coo.values_.end(), subtrahend.matrix_coo.values_.begin(), subtrahend.matrix_coo.values_.end());
+       res.matrix_coo.values_.insert(res.matrix_coo.values_.end(), subtrahend_value.begin(), subtrahend_value.end());
        res.matrix_coo.row_indices_.insert(res.matrix_coo.row_indices_.end(), subtrahend.matrix_coo.row_indices_.begin(), subtrahend.matrix_coo.row_indices_.end());
        res.matrix_coo.col_indices_.insert(res.matrix_coo.col_indices_.end(), subtrahend.matrix_coo.col_indices_.begin(), subtrahend.matrix_coo.col_indices_.end());
 
        // Sort and deduplicate the result
-       res.sort_coo(true, true, "minus");
+       res.sort_coo(true, true, "plus");
 
     } else if (matrix_format_ == format::CSR) {
 
@@ -487,7 +494,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator-(sparse_matrix<I
 
 // Overload multiplication operator to perform sparse matrix multiplication
 template<typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) const {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<ITYPE,VTYPE> &multiplicand) {
 
     if (cols_ != multiplicand.rows_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix multiplication" << std::endl;
@@ -505,7 +512,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
 			} else if (multiplicand.matrix_format_ == format::CSC) {
 				multiplicand.sort_csc(true, "overwrite");
 			} else {
-				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised multiplicand matrix format: " << multiplicand.matrix_format_ << " for matrix operator*()" << std::endl;
+				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised multiplicand matrix format for matrix operator*()" << std::endl;
 				std::cerr << "    Please set the multiplicand matrix_format_ as:" << std::endl;
 				std::cerr << "    format::COO: COOrdinate format" << std::endl;
 				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
@@ -735,7 +742,7 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::dot_product(sparse_matrix<ITYPE,VTYPE> &exist_
 
 // Member function of Hadamard product
 template <typename ITYPE, typename VTYPE>
-sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sparse_matrix<ITYPE,VTYPE> &exist_mat) const {
+sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(sparse_matrix<ITYPE,VTYPE> &exist_mat) {
     if (rows_ != exist_mat.rows_ || cols_ != exist_mat.cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: matrix size mismatch during matrix Hadamard product" << std::endl;
         std::abort();
@@ -752,7 +759,7 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::hadamard_product(const sp
 			} else if (exist_mat.matrix_format_ == format::CSC) {
 				exist_mat.sort_csc(true, "overwrite");
 			} else {
-				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised exist_mat matrix format: " << exist_mat.matrix_format_ << " for matrix hadamard_product()" << std::endl;
+				std::cerr << "MUI Error [matrix_arithmetic.h]: Unrecognised exist_mat matrix format for matrix hadamard_product()" << std::endl;
 				std::cerr << "    Please set the exist_mat matrix_format_ as:" << std::endl;
 				std::cerr << "    format::COO: COOrdinate format" << std::endl;
 				std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
