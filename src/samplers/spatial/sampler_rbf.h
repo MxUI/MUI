@@ -739,12 +739,12 @@ private:
 			else
 				buildConnectivityConsistent(data_points, N_sp_, writeMatrix, fileAddress);
 
-			H_.resize_null(ptsExtend_.size(), data_points.size());
+			H_.resize(ptsExtend_.size(), data_points.size());
 			H_.set_zero();
 
 			if (smoothFunc_) {
 				buildConnectivitySmooth(M_ap_, writeMatrix, fileAddress);
-				H_toSmooth_.resize_null(ptsExtend_.size(), data_points.size());
+				H_toSmooth_.resize(ptsExtend_.size(), data_points.size());
 				H_toSmooth_.set_zero();
 			}
 
@@ -879,8 +879,8 @@ private:
 				linalg::sparse_matrix<INT, REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
 				linalg::sparse_matrix<INT, REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-				Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-				Aas.resize_null((1 + NP + CONFIG::D), 1);
+				Css.resize((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+				Aas.resize((1 + NP + CONFIG::D), 1);
 
 				//set Css
 				for (size_t i = 0; i < NP; i++) {
@@ -1017,8 +1017,8 @@ private:
             linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
             linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-            Css.resize_null((1 + data_points.size() + CONFIG::D), (1 + data_points.size() + CONFIG::D));
-            Aas.resize_null(ptsExtend_.size(), (1 + data_points.size() + CONFIG::D));
+            Css.resize((1 + data_points.size() + CONFIG::D), (1 + data_points.size() + CONFIG::D));
+            Aas.resize(ptsExtend_.size(), (1 + data_points.size() + CONFIG::D));
 
 			//set Css
 			for ( size_t i = 0; i < data_points.size(); i++ ) {
@@ -1137,8 +1137,8 @@ private:
 				linalg::sparse_matrix<INT, REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
 				linalg::sparse_matrix<INT, REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-				Css.resize_null((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
-				Aas.resize_null((1 + NP + CONFIG::D), 1);
+				Css.resize((1 + NP + CONFIG::D), (1 + NP + CONFIG::D));
+				Aas.resize((1 + NP + CONFIG::D), 1);
 
 				//set Css
 				for (size_t i = 0; i < NP; i++) {
@@ -1273,8 +1273,8 @@ private:
             linalg::sparse_matrix<INT,REAL> Css; //< Matrix of radial basis function evaluations between prescribed points
             linalg::sparse_matrix<INT,REAL> Aas; //< Matrix of RBF evaluations between prescribed and interpolation points
 
-            Css.resize_null((1 + ptsExtend_.size() + CONFIG::D), (1 + ptsExtend_.size() + CONFIG::D));
-            Aas.resize_null(data_points.size(), (1 + ptsExtend_.size() + CONFIG::D));
+            Css.resize((1 + ptsExtend_.size() + CONFIG::D), (1 + ptsExtend_.size() + CONFIG::D));
+            Aas.resize(data_points.size(), (1 + ptsExtend_.size() + CONFIG::D));
 
 			//set Css
 			for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
@@ -1862,7 +1862,7 @@ private:
 			}
 		}
 
-		H_.resize_null(Hrow_, Hcol_);
+		H_.resize(Hrow_, Hcol_);
 		H_.set_zero();
 
 		std::ifstream inputFileHMatrix(readFileAddress + "/Hmatrix.dat");
