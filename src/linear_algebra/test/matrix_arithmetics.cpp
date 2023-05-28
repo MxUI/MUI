@@ -155,8 +155,8 @@ void test03 () {
     std::cout << "Matrix G: " << std::endl;
     G.print();
 
-    mui::linalg::sparse_matrix<int,double> L(2, 2, "CSR");
-    mui::linalg::sparse_matrix<int,double> U(2, 2, "CSR");
+    mui::linalg::sparse_matrix<int,double> L;
+    mui::linalg::sparse_matrix<int,double> U;
     G.lu_decomposition(L,U);
     std::cout << "L matrix of LU decomposition of matrix G: " << std::endl;
     L.print();
@@ -190,8 +190,8 @@ void test04 () {
     std::cout << "Matrix H: " << std::endl;
     H.print();
 
-    mui::linalg::sparse_matrix<int,double> Q(3, 3, "CSR");
-    mui::linalg::sparse_matrix<int,double> R(3, 3, "CSR");
+    mui::linalg::sparse_matrix<int,double> Q;
+    mui::linalg::sparse_matrix<int,double> R;
     H.qr_decomposition(Q,R);
     std::cout << "Q matrix of QR decomposition of matrix H: " << std::endl;
     Q.print();
