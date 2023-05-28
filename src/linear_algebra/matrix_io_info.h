@@ -48,6 +48,7 @@
 #define MUI_MATRIX_IO_INFO_H_
 
 #include <sstream>
+#include <fstream>
 #include <cassert>
 #include <limits>
 #include <algorithm>
