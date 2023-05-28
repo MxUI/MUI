@@ -982,19 +982,33 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::transpose(bool performSor
 // Member function to perform LU decomposition
 template <typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L, sparse_matrix<ITYPE,VTYPE> &U) const {
-    if ((L.get_rows() != 0) || (U.get_rows() != 0) || (L.get_cols() != 0) || (U.get_cols() != 0)) {
-        std::cerr << "MUI Error [matrix_arithmetic.h]: L & U Matrices must be null in LU decomposition" << std::endl;
+    if (((L.get_rows() != 0) && (L.get_rows() != rows_)) ||
+        ((U.get_rows() != 0) && (U.get_rows() != rows_)) ||
+        ((L.get_cols() != 0) && (L.get_cols() != cols_)) ||
+        ((U.get_cols() != 0) && (U.get_cols() != cols_))) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: L & U Matrices must be null or same size of initial matrix in LU decomposition" << std::endl;
         std::abort();
     }
+
+    if ((!L.empty()) || (!U.empty())) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: L & U Matrices must be empty in LU decomposition" << std::endl;
+        std::abort();
+    }
+
     if (rows_ != cols_) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: Only square matrix can perform LU decomposition" << std::endl;
         std::abort();
     }
 
-    // Resize the lower triangular matrix
-    L.resize(rows_, cols_);
-    // Resize the upper triangular matrix
-    U.resize(rows_, cols_);
+    if ((L.get_rows() != rows_) || (L.get_cols() != cols_)) {
+        // Resize the lower triangular matrix
+        L.resize(rows_, cols_);
+    }
+
+    if ((U.get_rows() != rows_) || (U.get_cols() != cols_)) {
+        // Resize the upper triangular matrix
+        U.resize(rows_, cols_);
+    }
 
     ITYPE n = rows_;
     for (ITYPE i = 0; i < rows_; ++i) {
@@ -1027,16 +1041,29 @@ void sparse_matrix<ITYPE,VTYPE>::lu_decomposition(sparse_matrix<ITYPE,VTYPE> &L,
 // Member function to perform QR decomposition
 template <typename ITYPE, typename VTYPE>
 void sparse_matrix<ITYPE,VTYPE>::qr_decomposition(sparse_matrix<ITYPE,VTYPE> &Q, sparse_matrix<ITYPE,VTYPE> &R) const {
-    if ((Q.get_rows() != 0) || (R.get_rows() != 0) || (Q.get_cols() != 0) || (R.get_cols() != 0)) {
+    if (((Q.get_rows() != 0) && (Q.get_rows() != rows_)) ||
+        ((R.get_rows() != 0) && (R.get_rows() != rows_)) ||
+        ((Q.get_cols() != 0) && (Q.get_cols() != cols_)) ||
+        ((R.get_cols() != 0) && (R.get_cols() != cols_))) {
         std::cerr << "MUI Error [matrix_arithmetic.h]: Q & R Matrices must be null in QR decomposition" << std::endl;
+        std::abort();
+    }
+    if ((!Q.empty()) || (!R.empty())) {
+        std::cerr << "MUI Error [matrix_arithmetic.h]: Q & R Matrices must be empty in QR decomposition" << std::endl;
         std::abort();
     }
     assert((rows_ >= cols_) &&
           "MUI Error [matrix_arithmetic.h]: number of rows of matrix should larger or equals to number of columns in QR decomposition");
-    // Resize the orthogonal matrix
-    Q.resize(rows_, cols_);
-    // Resize the upper triangular matrix
-    R.resize(rows_, cols_);
+
+    if ((Q.get_rows() != rows_) || (Q.get_cols() != cols_)) {
+        // Resize the orthogonal matrix
+        Q.resize(rows_, cols_);
+    }
+    if ((R.get_rows() != rows_) || (R.get_cols() != cols_)) {
+        // Resize the upper triangular matrix
+        R.resize(rows_, cols_);
+    }
+
     // Get a copy of the matrix
     sparse_matrix<ITYPE,VTYPE> mat_copy (*this);
     // Diagonal elements
