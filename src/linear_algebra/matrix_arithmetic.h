@@ -587,6 +587,9 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
             }
         }
 
+        // Sort and deduplicate the result
+        res.sort_coo(true, true, "plus");
+
         res.nnz_ = res.matrix_coo.values_.size();
 
     } else if (matrix_format_ == format::CSR) {
