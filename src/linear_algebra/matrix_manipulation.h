@@ -64,6 +64,14 @@ void sparse_matrix<ITYPE,VTYPE>::resize(ITYPE r, ITYPE c) {
             "MUI Error [matrix_manipulation.h]: resize function only works for all-zero matrix");
     rows_ = r;
     cols_ = c;
+
+    if (matrix_format_ == format::CSR) {
+        matrix_csr.row_ptrs_.clear();
+        matrix_csr.row_ptrs_.resize((r+1), 0);
+    } else if (matrix_format_ == format::CSC) {
+        matrix_csc.col_ptrs_.clear();
+        matrix_csc.col_ptrs_.resize((c+1), 0);
+    }
 }
 
 // Member function to copy a sparse_matrix
