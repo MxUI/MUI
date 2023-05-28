@@ -10,3 +10,4 @@ src/linear_algebra/test/matrix_manipulations
 src/linear_algebra/test/matrix.csv
 src/linear_algebra/test/matrix_vector_*
 src/linear_algebra/test/solver
+src/linear_algebra/test/Resource/solver_compare_with_Eigen

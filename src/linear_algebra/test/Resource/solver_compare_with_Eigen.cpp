@@ -89,8 +89,8 @@ double test00 () {
     mui::linalg::sparse_matrix<int,double> H_i;   //< Coupling Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    H_i.resize_null(Aas.get_rows(), Aas.get_cols());
-    H_diff.resize_null(Aas.get_rows(), Aas.get_cols());
+    H_i.resize(Aas.get_rows(), Aas.get_cols());
+    H_diff.resize(Aas.get_rows(), Aas.get_cols());
 
     mui::linalg::diagonal_preconditioner<int,double> M(Css);
 
