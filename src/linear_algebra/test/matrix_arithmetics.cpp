@@ -38,83 +38,17 @@
 *****************************************************************************/
 
 /**
- * @file matrix.cpp
+ * @file matrix_arithmetics.cpp
  * @author W. Liu
  * @date 28 January 2023
- * @brief Unit test on Sparse Matrix.
+ * @brief Unit test on Sparse Matrix arithmetic operations.
  */
 
 #include <iostream>
 #include <fstream>
 #include "../matrix.h"
 
-void test00 (mui::linalg::sparse_matrix<int,double> A,
-            mui::linalg::sparse_matrix<int,double> B,
-            mui::linalg::sparse_matrix<int,double> C,
-            mui::linalg::sparse_matrix<int,double> D) {
-
-    std::cout << std::endl;
-    std::cout << "============================================================" << std::endl;
-    std::cout << "=============== TEST 00: Basic Matrix Setup and I/O ========" << std::endl;
-    std::cout << "============================================================" << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "Matrix A: " << std::endl;
-    A.print();
-
-    std::cout << "Matrix B: " << std::endl;
-    B.print();
-
-    std::cout << "Empty matrix C: " << std::endl;
-    C.print();
-
-    std::cout << "Identity matrix D: " << std::endl;
-    D.print();
-
-    // Output A matrix to a file in CSV format
-    std::ofstream ofile("matrix.csv");
-    ofile<< "// **************";
-    ofile << "\n";
-    ofile<< "// **** TEST ****";
-    ofile << "\n";
-    ofile<< "// **************";
-    ofile << "\n";
-    ofile << "//  ";
-    ofile << "\n";
-    ofile << A;
-    ofile.close();
-
-    mui::linalg::sparse_matrix<int,double> E;
-    // Reads matrix from a file
-    std::ifstream ifile("matrix.csv");
-    ifile >> E;
-    ifile.close();
-
-    std::cout << "Matrix File I/O Test in CSV format" << std::endl;
-    std::cout << "Read in matrix E (should equals to matrix A): " << std::endl;
-    E.print();
-}
-
-void test01 (mui::linalg::sparse_matrix<int,double> A) {
-
-    std::cout << std::endl;
-    std::cout << "============================================================" << std::endl;
-    std::cout << "==================== TEST 01: Matrix Segments ==============" << std::endl;
-    std::cout << "============================================================" << std::endl;
-    std::cout << std::endl;
-
-    mui::linalg::sparse_matrix<int,double> B;
-    B.resize(A.get_rows(),1);
-    for (int j = 0; j < A.get_cols(); ++j) {
-        B.set_zero();
-        B = A.segment(0,(A.get_rows()-1),j,j);
-        std::cout << "segment of matrix A -- the " << (j+1) << "th column: " << std::endl;
-        B.print();
-    }
-}
-
-void test02 (mui::linalg::sparse_matrix<int,double> A,
-        mui::linalg::sparse_matrix<int,double> B) {
+void test02 () {
 
     std::cout << std::endl;
     std::cout << "============================================================" << std::endl;
@@ -122,7 +56,28 @@ void test02 (mui::linalg::sparse_matrix<int,double> A,
     std::cout << "============================================================" << std::endl;
     std::cout << std::endl;
 
-    mui::linalg::sparse_matrix<int,double> C = A + B;
+    mui::linalg::sparse_matrix<int,double> A(3, 3, "CSR");
+    A.set_value(0, 0, 1);
+    A.set_value(0, 2, 2);
+    A.set_value(1, 1, 3);
+    std::cout << "Matrix A: " << std::endl;
+    A.print();
+
+    // Create matrix B
+    std::vector<double> row0_vector{4,5,0};
+    std::vector<double> row1_vector{0,6,0};
+    std::vector<double> row2_vector{0,0,0};
+    std::vector<std::vector<double>> dense_vector;
+    dense_vector.push_back(row0_vector);
+    dense_vector.push_back(row1_vector);
+    dense_vector.push_back(row2_vector);
+    mui::linalg::sparse_matrix<int,double> B(dense_vector, "CSR");
+    std::cout << "Matrix B: " << std::endl;
+    B.print();
+
+
+    mui::linalg::sparse_matrix<int,double> C(3, 3, "CSR");
+    C = A + B;
     std::cout << "Addition of matrices (A + B): " << std::endl;
     C.print();
 
@@ -142,6 +97,20 @@ void test02 (mui::linalg::sparse_matrix<int,double> A,
     C.print();
 
     C.set_zero();
+    C = A * 8;
+    std::cout << "Scalar multiplication (A * 8): " << std::endl;
+    C.print();
+
+    mui::linalg::sparse_matrix<int,double> D(A.get_rows(), 1, "CSR");
+    mui::linalg::sparse_matrix<int,double> E(B.get_rows(), 1, "CSR");
+    double dot_result = 0;
+    D = A.segment(0,(A.get_rows()-1),1,1);
+    E = B.segment(0,(B.get_rows()-1),1,1);
+    dot_result = D.dot_product(E);
+    std::cout << "The 2nd row of matrix A dot product with the 2nd row of matrix B: " << std::endl;
+    std::cout << "      " << dot_result << std::endl;
+
+    C.set_zero();
     C = A.hadamard_product(B);
     std::cout << "Hadamard product (A {*} B): " << std::endl;
     C.print();
@@ -151,7 +120,7 @@ void test02 (mui::linalg::sparse_matrix<int,double> A,
     std::cout << "Transpose of matrix A (A^T): " << std::endl;
     C.print();
 
-    mui::linalg::sparse_matrix<int,double> F(2,2);
+    mui::linalg::sparse_matrix<int,double> F(2, 2, "CSR");
     F.set_value(0, 0, -1);
     F.set_value(0, 1, 1.5);
     F.set_value(1, 0, 1);
@@ -177,7 +146,7 @@ void test03 () {
     std::cout << "============================================================" << std::endl;
     std::cout << std::endl;
 
-    mui::linalg::sparse_matrix<int,double> G(2,2);
+    mui::linalg::sparse_matrix<int,double> G(2,2, "CSR");
     G.set_value(0, 0, 4);
     G.set_value(0, 1, 3);
     G.set_value(1, 0, 6);
@@ -186,8 +155,8 @@ void test03 () {
     std::cout << "Matrix G: " << std::endl;
     G.print();
 
-    mui::linalg::sparse_matrix<int,double> L;
-    mui::linalg::sparse_matrix<int,double> U;
+    mui::linalg::sparse_matrix<int,double> L(2, 2, "CSR");
+    mui::linalg::sparse_matrix<int,double> U(2, 2, "CSR");
     G.lu_decomposition(L,U);
     std::cout << "L matrix of LU decomposition of matrix G: " << std::endl;
     L.print();
@@ -199,7 +168,6 @@ void test03 () {
     H.print();
 }
 
-
 void test04 () {
 
     std::cout << std::endl;
@@ -208,7 +176,7 @@ void test04 () {
     std::cout << "============================================================" << std::endl;
     std::cout << std::endl;
 
-    mui::linalg::sparse_matrix<int,double> H(3,3);
+    mui::linalg::sparse_matrix<int,double> H(3,3, "CSR");
     H.set_value(0, 0, 12);
     H.set_value(0, 1, -51);
     H.set_value(0, 2, 4);
@@ -222,8 +190,8 @@ void test04 () {
     std::cout << "Matrix H: " << std::endl;
     H.print();
 
-    mui::linalg::sparse_matrix<int,double> Q;
-    mui::linalg::sparse_matrix<int,double> R;
+    mui::linalg::sparse_matrix<int,double> Q(3, 3, "CSR");
+    mui::linalg::sparse_matrix<int,double> R(3, 3, "CSR");
     H.qr_decomposition(Q,R);
     std::cout << "Q matrix of QR decomposition of matrix H: " << std::endl;
     Q.print();
@@ -237,31 +205,14 @@ void test04 () {
 
 int main()
 {
-    // Create matrix A
-    mui::linalg::sparse_matrix<int,double> A(3, 3);
-    A.set_value(0, 0, 1);
-    A.set_value(0, 2, 2);
-    A.set_value(1, 1, 3);
-    // Create matrix B
-    mui::linalg::sparse_matrix<int,double> B(3, 3);
-    B.set_value(0, 0, 4);
-    B.set_value(0, 1, 5);
-    B.set_value(1, 1, 6);
-    // Create empty matrix C
-    mui::linalg::sparse_matrix<int,double> C(3);
-    // Create identity matrix D
-    mui::linalg::sparse_matrix<int,double> D(3,"identity");
-
-    // Perform test 00
-    test00(A, B, C, D);
-    // Perform test 01
-    test01(A);
     // Perform test 02
-    test02(A, B);
+    test02();
     // Perform test 03
     test03();
     // Perform test 04
     test04();
 
     return 0;
-   }
+}
+
+
