@@ -136,6 +136,8 @@ class sparse_matrix {
         sparse_matrix<ITYPE,VTYPE>& operator=(const sparse_matrix<ITYPE,VTYPE> &);
         // Member function to convert the format of the sparse matrix
         void format_conversion(const std::string & = "COO", bool = true, bool = false, const std::string & = "overwrite");
+        // Member function to sort the entries for the sparse matrix
+        void sort_deduplication(bool = true, bool = true, const std::string & = "overwrite", bool = true);
 
         // *****************************************
         // ********* Arithmetic operations *********

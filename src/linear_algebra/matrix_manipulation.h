@@ -757,6 +757,46 @@ void sparse_matrix<ITYPE,VTYPE>::format_conversion(const std::string &format, bo
     }
 }
 
+// Member function to sort the entries for the sparse matrix
+template<typename ITYPE, typename VTYPE>
+void sparse_matrix<ITYPE,VTYPE>::sort_deduplication(bool check_sorted_unique, bool deduplication, const std::string &deduplication_mode, bool is_row_major) {
+
+    if (check_sorted_unique) {
+        if (!(this->is_sorted_unique("matrix_manipulation.h", "sort_deduplication()"))){
+            if(matrix_format_ == format::COO) {
+                this->sort_coo(is_row_major, deduplication, deduplication_mode);
+            } else if (matrix_format_ == format::CSR) {
+                this->sort_csr(deduplication, deduplication_mode);
+            } else if (matrix_format_ == format::CSC) {
+                this->sort_csc(deduplication, deduplication_mode);
+            } else {
+                  std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
+                  std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+                  std::cerr << "    format::COO: COOrdinate format" << std::endl;
+                  std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+                  std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+                  std::abort();
+            }
+        }
+    } else {
+        if(matrix_format_ == format::COO) {
+            this->sort_coo(is_row_major, deduplication, deduplication_mode);
+        } else if (matrix_format_ == format::CSR) {
+            this->sort_csr(deduplication, deduplication_mode);
+        } else if (matrix_format_ == format::CSC) {
+            this->sort_csc(deduplication, deduplication_mode);
+        } else {
+              std::cerr << "MUI Error [matrix_manipulation.h]: Unrecognised matrix format" << std::endl;
+              std::cerr << "    Please set the matrix_format_ as:" << std::endl;
+              std::cerr << "    format::COO: COOrdinate format" << std::endl;
+              std::cerr << "    format::CSR (default): Compressed Sparse Row format" << std::endl;
+              std::cerr << "    format::CSC: Compressed Sparse Column format" << std::endl;
+              std::abort();
+        }
+    }
+}
+
+
 // **************************************************
 // ********** Protected member functions ************
 // **************************************************
@@ -1675,7 +1715,13 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
     // Determine the number of non-zero entries in each row
     std::vector<ITYPE> rowPtr(rows_+1, 0);
     for (ITYPE i = 0; i < matrix_coo.row_indices_.size(); ++i) {
-        rowPtr[matrix_coo.row_indices_[i]]++;
+        if (matrix_coo.row_indices_[i] >= (rows_+1)) {
+            std::cerr << "MUI Error [matrix_manipulation.h]: row index: " << matrix_coo.row_indices_[i] << " at the " << i << "th matrix_coo.row_indices_ is out of range (" << (rows_+1) << ") in coo_to_csr()" << std::endl;
+            std::abort();
+        } else {
+            rowPtr[matrix_coo.row_indices_[i]]++;
+        }
+
     }
 
     for(ITYPE i = 0, accumulator = 0; i < rows_; ++i){
