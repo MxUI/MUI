@@ -883,13 +883,8 @@ private:
                 Aas.resize((1 + NP + CONFIG::D), 1);
 
                 // Set matrix Css
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_Css;
-                std::vector<INT> temp_col_Css;
-                std::vector<REAL> temp_value_Css;
-                temp_row_Css.reserve((1 + NP + CONFIG::D)*(1 + NP + CONFIG::D));
-                temp_col_Css.reserve((1 + NP + CONFIG::D)*(1 + NP + CONFIG::D));
-                temp_value_Css.reserve((1 + NP + CONFIG::D)*(1 + NP + CONFIG::D));
+                // Define intermediate matrix for performance purpose
+                linalg::sparse_matrix<INT, REAL> Css_coo((1 + NP + CONFIG::D),(1 + NP + CONFIG::D),"COO");
 
                 for (size_t i = 0; i < NP; i++) {
                     for (size_t j = i; j < NP; j++) {
@@ -902,14 +897,10 @@ private:
 
                         if (d < r_) {
                             REAL w = rbf(d);
-                            temp_row_Css.emplace_back(i);
-                            temp_col_Css.emplace_back(j);
-                            temp_value_Css.emplace_back(w);
+                            Css_coo.set_value(i, j, w, false);
 //                            Css.set_value(i, j, w);
                             if (i != j) {
-                                temp_row_Css.emplace_back(j);
-                                temp_col_Css.emplace_back(i);
-                                temp_value_Css.emplace_back(w);
+                                Css_coo.set_value(j, i, w, false);
 //                                Css.set_value(j, i, w);
                             }
                         }
@@ -917,52 +908,29 @@ private:
                 }
 
                 for (size_t i = 0; i < NP; i++) {
-                    temp_row_Css.emplace_back(i);
-                    temp_col_Css.emplace_back(NP);
-                    temp_value_Css.emplace_back(1);
-
-                    temp_row_Css.emplace_back(NP);
-                    temp_col_Css.emplace_back(i);
-                    temp_value_Css.emplace_back(1);
+                    Css_coo.set_value(i, NP, 1, false);
+                    Css_coo.set_value(NP, i, 1, false);
 //                    Css.set_value(i, NP, 1);
 //                    Css.set_value(NP, i, 1);
 
                     int glob_i = connectivityAB_[row][i];
 
                     for (INT dim = 0; dim < CONFIG::D; dim++) {
-                        temp_row_Css.emplace_back(i);
-                        temp_col_Css.emplace_back(NP + dim + 1);
-                        temp_value_Css.emplace_back(data_points[glob_i].first[dim]);
+                        Css_coo.set_value(i, (NP + dim + 1),
+                                data_points[glob_i].first[dim], false);
 //                        Css.set_value(i, (NP + dim + 1),
 //                                data_points[glob_i].first[dim]);
-                        temp_row_Css.emplace_back(NP + dim + 1);
-                        temp_col_Css.emplace_back(i);
-                        temp_value_Css.emplace_back(data_points[glob_i].first[dim]);
+                        Css_coo.set_value((NP + dim + 1), i,
+                                data_points[glob_i].first[dim], false);
 //                        Css.set_value((NP + dim + 1), i,
 //                                data_points[glob_i].first[dim]);
                     }
                 }
-
-                linalg::sparse_matrix<INT, REAL> Css_coo((1 + NP + CONFIG::D),
-                                                         (1 + NP + CONFIG::D),
-                                                         "COO",
-                                                         temp_value_Css,
-                                                         temp_row_Css,
-                                                         temp_col_Css);
-                Css_coo.format_conversion("CSR", true, true, "overwrite");
                 Css = Css_coo;
-                temp_row_Css.clear();
-                temp_col_Css.clear();
-                temp_value_Css.clear();
 
                 // Set Aas
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_Aas;
-                std::vector<INT> temp_col_Aas;
-                std::vector<REAL> temp_value_Aas;
-                temp_row_Aas.reserve(1 + NP + CONFIG::D);
-                temp_col_Aas.reserve(1 + NP + CONFIG::D);
-                temp_value_Aas.reserve(1 + NP + CONFIG::D);
+                // Define intermediate matrix for performance purpose
+                linalg::sparse_matrix<INT, REAL> Aas_coo((1 + NP + CONFIG::D),1,"COO");
 
                 for (size_t j = 0; j < NP; j++) {
                     int glob_j = connectivityAB_[row][j];
@@ -970,36 +938,18 @@ private:
                     auto d = norm(ptsExtend_[row] - data_points[glob_j].first);
 
                     if (d < r_) {
-                        temp_row_Aas.emplace_back(j);
-                        temp_col_Aas.emplace_back(0);
-                        temp_value_Aas.emplace_back(rbf(d));
+                        Aas_coo.set_value(j, 0, rbf(d), false);
 //                        Aas.set_value(j, 0, rbf(d));
                     }
                 }
-
-                temp_row_Aas.emplace_back(NP);
-                temp_col_Aas.emplace_back(0);
-                temp_value_Aas.emplace_back(1);
+                Aas_coo.set_value(NP, 0, 1, false);
 //                Aas.set_value(NP, 0, 1);
 
                 for (int dim = 0; dim < CONFIG::D; dim++) {
-                    temp_row_Aas.emplace_back(NP + dim + 1);
-                    temp_col_Aas.emplace_back(0);
-                    temp_value_Aas.emplace_back(ptsExtend_[row][dim]);
+                    Aas_coo.set_value((NP + dim + 1), 0, ptsExtend_[row][dim], false);
 //                    Aas.set_value((NP + dim + 1), 0, ptsExtend_[row][dim]);
                 }
-
-                linalg::sparse_matrix<INT, REAL> Aas_coo((1 + NP + CONFIG::D),
-                                                         1,
-                                                         "COO",
-                                                         temp_value_Aas,
-                                                         temp_row_Aas,
-                                                         temp_col_Aas);
-                Aas_coo.format_conversion("CSR", true, true, "overwrite");
                 Aas = Aas_coo;
-                temp_row_Aas.clear();
-                temp_col_Aas.clear();
-                temp_value_Aas.clear();
 
                 linalg::sparse_matrix<INT, REAL> H_i;
 
@@ -1033,74 +983,22 @@ private:
                 errorReturn += iterErrorReturn.second;
 
                 if (smoothing) {
-                    // Define intermediate vectors for performance purpose
-                    std::vector<INT> temp_row_H_toSmooth;
-                    std::vector<INT> temp_col_H_toSmooth;
-                    std::vector<REAL> temp_value_H_toSmooth;
-                    temp_row_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-                    temp_col_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-                    temp_value_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-
                     for (size_t j = 0; j < NP; j++) {
                         INT glob_j = connectivityAB_[row][j];
-                        temp_row_H_toSmooth.emplace_back(row);
-                        temp_col_H_toSmooth.emplace_back(glob_j);
-                        temp_value_H_toSmooth.emplace_back(H_i.get_value(j, 0));
-//                        H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
+                        H_toSmooth_.set_value(row, glob_j, H_i.get_value(j, 0));
                     }
-                    linalg::sparse_matrix<INT, REAL> H_toSmooth_coo(ptsExtend_.size(),
-                                                                    data_points.size(),
-                                                                    "COO",
-                                                                    temp_value_H_toSmooth,
-                                                                    temp_row_H_toSmooth,
-                                                                    temp_col_H_toSmooth);
-                    H_toSmooth_coo.format_conversion("CSR", true, true, "overwrite");
-                    H_toSmooth_ = H_toSmooth_coo;
-                    temp_row_H_toSmooth.clear();
-                    temp_col_H_toSmooth.clear();
-                    temp_value_H_toSmooth.clear();
                 }
                 else {
-                    // Define intermediate vectors for performance purpose
-                    std::vector<INT> temp_row_H;
-                    std::vector<INT> temp_col_H;
-                    std::vector<REAL> temp_value_H;
-                    temp_row_H.reserve(ptsExtend_.size() * data_points.size());
-                    temp_col_H.reserve(ptsExtend_.size() * data_points.size());
-                    temp_value_H.reserve(ptsExtend_.size() * data_points.size());
-
                     for (size_t j = 0; j < NP; j++) {
                         INT glob_j = connectivityAB_[row][j];
-                        temp_row_H.emplace_back(row);
-                        temp_col_H.emplace_back(glob_j);
-                        temp_value_H.emplace_back(H_i.get_value(j, 0));
-//                        H_.set_value(row, glob_j, H_i.get_value(j, 0));
+                        H_.set_value(row, glob_j, H_i.get_value(j, 0));
                     }
-                    linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),
-                                                           data_points.size(),
-                                                           "COO",
-                                                           temp_value_H,
-                                                           temp_row_H,
-                                                           temp_col_H);
-                    H_coo.format_conversion("CSR", true, true, "overwrite");
-                    H_ = H_coo;
-                    temp_row_H.clear();
-                    temp_col_H.clear();
-                    temp_value_H.clear();
                 }
             }
 
             errorReturn /= static_cast<REAL>(pts_.size());
 
             if (smoothing) {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H;
-                std::vector<INT> temp_col_H;
-                std::vector<REAL> temp_value_H;
-                temp_row_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H.reserve(ptsExtend_.size() * data_points.size());
-
                 for (size_t row = 0; row < ptsExtend_.size(); row++) {
                     for (size_t j = 0; j < NP; j++) {
                         INT glob_j = connectivityAB_[row][j];
@@ -1128,23 +1026,9 @@ private:
                                 f_sum += w_i * H_toSmooth_.get_value(row_k, glob_j);
                             }
                         }
-                        temp_row_H.emplace_back(row);
-                        temp_col_H.emplace_back(glob_j);
-                        temp_value_H.emplace_back(0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j)));
-//                        H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
+                        H_.set_value(row, glob_j, (0.5 * (f_sum + H_toSmooth_.get_value(row, glob_j))));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),
-                                                       data_points.size(),
-                                                       "COO",
-                                                       temp_value_H,
-                                                       temp_row_H,
-                                                       temp_col_H);
-                H_coo.format_conversion("CSR", true, true, "overwrite");
-                H_ = H_coo;
-                temp_row_H.clear();
-                temp_col_H.clear();
-                temp_value_H.clear();
             }
         }
         else { // Not using PoU
@@ -1155,13 +1039,8 @@ private:
             Aas.resize(ptsExtend_.size(), (1 + data_points.size() + CONFIG::D));
 
             //set Css
-            // Define intermediate vectors for performance purpose
-            std::vector<INT> temp_row_Css;
-            std::vector<INT> temp_col_Css;
-            std::vector<REAL> temp_value_Css;
-            temp_row_Css.reserve((1 + data_points.size() + CONFIG::D)*(1 + data_points.size() + CONFIG::D));
-            temp_col_Css.reserve((1 + data_points.size() + CONFIG::D)*(1 + data_points.size() + CONFIG::D));
-            temp_value_Css.reserve((1 + data_points.size() + CONFIG::D)*(1 + data_points.size() + CONFIG::D));
+            // Define intermediate matrix for performance purpose
+            linalg::sparse_matrix<INT, REAL> Css_coo((1 + data_points.size() + CONFIG::D),(1 + data_points.size() + CONFIG::D),"COO");
 
             for ( size_t i = 0; i < data_points.size(); i++ ) {
                 for ( size_t j = i; j < data_points.size(); j++ ) {
@@ -1169,64 +1048,33 @@ private:
 
                     if ( d < r_ ) {
                         REAL w = rbf(d);
-                        temp_row_Css.emplace_back(i + CONFIG::D + 1);
-                        temp_col_Css.emplace_back(j + CONFIG::D + 1);
-                        temp_value_Css.emplace_back(w);
+                        Css_coo.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w, false);
 //                        Css.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w);
 
                         if ( i != j )
-                            temp_row_Css.emplace_back(j + CONFIG::D + 1);
-                            temp_col_Css.emplace_back(i + CONFIG::D + 1);
-                            temp_value_Css.emplace_back(w);
+                            Css_coo.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w, false);
 //                            Css.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w);
                     }
                 }
             }
-
-            linalg::sparse_matrix<INT, REAL> Css_coo((1 + data_points.size() + CONFIG::D),
-                                                     (1 + data_points.size() + CONFIG::D),
-                                                     "COO",
-                                                     temp_value_Css,
-                                                     temp_row_Css,
-                                                     temp_col_Css);
-            Css_coo.format_conversion("CSR", true, true, "overwrite");
             Css = Css_coo;
-            temp_row_Css.clear();
-            temp_col_Css.clear();
-            temp_value_Css.clear();
 
             //set Aas
-            // Define intermediate vectors for performance purpose
-            std::vector<INT> temp_row_Aas;
-            std::vector<INT> temp_col_Aas;
-            std::vector<REAL> temp_value_Aas;
-            temp_row_Aas.reserve(ptsExtend_.size() * (1 + data_points.size() + CONFIG::D));
-            temp_col_Aas.reserve(ptsExtend_.size() * (1 + data_points.size() + CONFIG::D));
-            temp_value_Aas.reserve(ptsExtend_.size() * (1 + data_points.size() + CONFIG::D));
+            // Define intermediate matrix for performance purpose
+            linalg::sparse_matrix<INT, REAL> Aas_coo(ptsExtend_.size(),(1 + data_points.size() + CONFIG::D),"COO");
 
             for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
                 for ( size_t j = 0; j < data_points.size(); j++ ) {
                     auto d = norm(ptsExtend_[i] - data_points[j].first);
 
                     if ( d < r_ ) {
-                        temp_row_Aas.emplace_back(i);
-                        temp_col_Aas.emplace_back(j + CONFIG::D + 1);
-                        temp_value_Aas.emplace_back(rbf(d));
+
+                        Aas_coo.set_value(i, (j + CONFIG::D + 1), rbf(d), false);
 //                        Aas.set_value(i, (j + CONFIG::D + 1), rbf(d));
                     }
                 }
             }
-            linalg::sparse_matrix<INT, REAL> Aas_coo(ptsExtend_.size(),
-                                                     (1 + data_points.size() + CONFIG::D),
-                                                     "COO",
-                                                     temp_value_Aas,
-                                                     temp_row_Aas,
-                                                     temp_col_Aas);
-            Aas_coo.format_conversion("CSR", true, true, "overwrite");
             Aas = Aas_coo;
-            temp_row_Aas.clear();
-            temp_col_Aas.clear();
-            temp_value_Aas.clear();
 
             linalg::sparse_matrix<INT,REAL> Aas_trans = Aas.transpose();
 
@@ -1262,74 +1110,21 @@ private:
             errorReturn = iterErrorReturn.second;
 
             if ( smoothing ) {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H_toSmooth;
-                std::vector<INT> temp_col_H_toSmooth;
-                std::vector<REAL> temp_value_H_toSmooth;
-                temp_row_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-
                 for ( size_t i = 0; i < data_points.size(); i++ ) {
                     for (size_t j = 0; j < ptsExtend_.size(); j++ ) {
-                        temp_row_H_toSmooth.emplace_back(j);
-                        temp_col_H_toSmooth.emplace_back(i);
-                        temp_value_H_toSmooth.emplace_back(H_more.get_value((i + CONFIG::D + 1), j));
-//                        H_toSmooth_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
+                        H_toSmooth_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_toSmooth_coo(ptsExtend_.size(),
-                                                                data_points.size(),
-                                                                "COO",
-                                                                temp_value_H_toSmooth,
-                                                                temp_row_H_toSmooth,
-                                                                temp_col_H_toSmooth);
-                H_toSmooth_coo.format_conversion("CSR", true, true, "overwrite");
-                H_toSmooth_ = H_toSmooth_coo;
-                temp_row_H_toSmooth.clear();
-                temp_col_H_toSmooth.clear();
-                temp_value_H_toSmooth.clear();
-
             }
             else {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H;
-                std::vector<INT> temp_col_H;
-                std::vector<REAL> temp_value_H;
-                temp_row_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H.reserve(ptsExtend_.size() * data_points.size());
-
                 for ( size_t i = 0; i < data_points.size(); i++ ) {
                     for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
-                        temp_row_H.emplace_back(j);
-                        temp_col_H.emplace_back(i);
-                        temp_value_H.emplace_back(H_more.get_value((i + CONFIG::D + 1), j));
-//                        H_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
+                        H_.set_value(j, i, H_more.get_value((i + CONFIG::D + 1), j));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),
-                                                       data_points.size(),
-                                                       "COO",
-                                                       temp_value_H,
-                                                       temp_row_H,
-                                                       temp_col_H);
-                H_coo.format_conversion("CSR", true, true, "overwrite");
-                H_ = H_coo;
-                temp_row_H.clear();
-                temp_col_H.clear();
-                temp_value_H.clear();
             }
 
             if ( smoothing ) {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H;
-                std::vector<INT> temp_col_H;
-                std::vector<REAL> temp_value_H;
-                temp_row_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H.reserve(ptsExtend_.size() * data_points.size());
-
                 for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
                     for ( size_t j = 0; j < data_points.size(); j++ ) {
                         REAL h_j_sum = 0.;
@@ -1351,23 +1146,9 @@ private:
                                 f_sum += w_i * H_toSmooth_.get_value(row_k, j);
                             }
                         }
-                        temp_row_H.emplace_back(row);
-                        temp_col_H.emplace_back(j);
-                        temp_value_H.emplace_back(0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
-//                        H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
+                        H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),
-                                                       data_points.size(),
-                                                       "COO",
-                                                       temp_value_H,
-                                                       temp_row_H,
-                                                       temp_col_H);
-                H_coo.format_conversion("CSR", true, true, "overwrite");
-                H_ = H_coo;
-                temp_row_H.clear();
-                temp_col_H.clear();
-                temp_value_H.clear();
             }
         }
 
@@ -1485,36 +1266,22 @@ private:
                 errorReturn += iterErrorReturn.second;
 
                 if (smoothing) {
-                    // Define intermediate matrix for performance purpose
-                    linalg::sparse_matrix<INT, REAL> H_toSmooth_coo(ptsExtend_.size(),data_points.size(),"COO");
-
                     for (size_t j = 0; j < NP; j++) {
                         INT glob_j = connectivityAB_[row][j];
-//                        H_toSmooth_coo.set_value(glob_j, row, H_i.get_value(j, 0), false);
                         H_toSmooth_.set_value(glob_j, row, H_i.get_value(j, 0));
                     }
-//                    H_toSmooth_ = H_toSmooth_coo;
                 }
                 else {
-                    // Define intermediate matrix for performance purpose
-                    linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),data_points.size(),"COO");
-
                     for (size_t j = 0; j < NP; j++) {
                         INT glob_j = connectivityAB_[row][j];
-//                        H_coo.set_value(glob_j, row, H_i.get_value(j, 0), false);
                         H_.set_value(glob_j, row, H_i.get_value(j, 0));
                     }
-//                    H_ = H_coo;
                 }
             }
 
             errorReturn /= static_cast<REAL>(data_points.size());
 
             if (smoothing) {
-                // Define intermediate matrix for performance purpose
-                linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),data_points.size(),"COO");
-
-
                 for (size_t row = 0; row < data_points.size(); row++) {
                     for (size_t j = 0; j < NP; j++) {
                         INT row_i = connectivityAB_[row][j];
@@ -1543,13 +1310,10 @@ private:
                                 f_sum += w_i * H_toSmooth_.get_value(row_k, row);
                             }
                         }
-//                        H_coo.set_value(row_i, row,
-//                                (0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))), false);
                         H_.set_value(row_i, row,
                                 (0.5 * (f_sum + H_toSmooth_.get_value(row_i, row))));
                     }
                 }
-//                H_ = H_coo;
             }
         }
         else { // Not using partitioned approach
@@ -1561,12 +1325,7 @@ private:
 
             //set Css
             // Define intermediate vectors for performance purpose
-            std::vector<INT> temp_row_Css;
-            std::vector<INT> temp_col_Css;
-            std::vector<REAL> temp_value_Css;
-            temp_row_Css.reserve((1 + ptsExtend_.size() + CONFIG::D)*(1 + ptsExtend_.size() + CONFIG::D));
-            temp_col_Css.reserve((1 + ptsExtend_.size() + CONFIG::D)*(1 + ptsExtend_.size() + CONFIG::D));
-            temp_value_Css.reserve((1 + ptsExtend_.size() + CONFIG::D)*(1 + ptsExtend_.size() + CONFIG::D));
+            linalg::sparse_matrix<INT, REAL> Css_coo((1 + ptsExtend_.size() + CONFIG::D),(1 + ptsExtend_.size() + CONFIG::D),"COO");
 
             for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
                 for ( size_t j = i; j < ptsExtend_.size(); j++ ) {
@@ -1574,64 +1333,33 @@ private:
 
                     if ( d < r_ ) {
                         REAL w = rbf(d);
-                        temp_row_Css.emplace_back(i + CONFIG::D + 1);
-                        temp_col_Css.emplace_back(j + CONFIG::D + 1);
-                        temp_value_Css.emplace_back(w);
+                        Css_coo.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w, false);
 //                        Css.set_value((i + CONFIG::D + 1), (j + CONFIG::D + 1), w);
 
                         if ( i != j ) {
-                            temp_row_Css.emplace_back(j + CONFIG::D + 1);
-                            temp_col_Css.emplace_back(i + CONFIG::D + 1);
-                            temp_value_Css.emplace_back(w);
+                            Css_coo.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w, false);
 //                            Css.set_value((j + CONFIG::D + 1), (i + CONFIG::D + 1), w);
                         }
                     }
                 }
             }
-            linalg::sparse_matrix<INT, REAL> Css_coo((1 + ptsExtend_.size() + CONFIG::D),
-                                                     (1 + ptsExtend_.size() + CONFIG::D),
-                                                     "COO",
-                                                     temp_value_Css,
-                                                     temp_row_Css,
-                                                     temp_col_Css);
-            Css_coo.format_conversion("CSR", true, true, "overwrite");
             Css = Css_coo;
-            temp_row_Css.clear();
-            temp_col_Css.clear();
-            temp_value_Css.clear();
 
             //set Aas
             // Define intermediate vectors for performance purpose
-            std::vector<INT> temp_row_Aas;
-            std::vector<INT> temp_col_Aas;
-            std::vector<REAL> temp_value_Aas;
-            temp_row_Aas.reserve(data_points.size() * (1 + ptsExtend_.size() + CONFIG::D));
-            temp_col_Aas.reserve(data_points.size() * (1 + ptsExtend_.size() + CONFIG::D));
-            temp_value_Aas.reserve(data_points.size() * (1 + ptsExtend_.size() + CONFIG::D));
+            linalg::sparse_matrix<INT, REAL> Aas_coo(data_points.size(),(1 + ptsExtend_.size() + CONFIG::D),"COO");
 
             for ( size_t i = 0; i < data_points.size(); i++ ) {
                 for ( size_t j = 0; j < ptsExtend_.size(); j++ ) {
                     auto d = norm(data_points[i].first - ptsExtend_[j]);
 
                     if ( d < r_ ) {
-                        temp_row_Aas.emplace_back(i);
-                        temp_col_Aas.emplace_back(j + CONFIG::D + 1);
-                        temp_value_Aas.emplace_back(rbf(d));
+                        Aas_coo.set_value(i, (j + CONFIG::D + 1), rbf(d), false);
 //                        Aas.set_value(i, (j + CONFIG::D + 1), rbf(d));
                     }
                 }
             }
-            linalg::sparse_matrix<INT, REAL> Aas_coo(data_points.size(),
-                                                     (1 + ptsExtend_.size() + CONFIG::D),
-                                                     "COO",
-                                                     temp_value_Aas,
-                                                     temp_row_Aas,
-                                                     temp_col_Aas);
-            Aas_coo.format_conversion("CSR", true, true, "overwrite");
             Aas = Aas_coo;
-            temp_row_Aas.clear();
-            temp_col_Aas.clear();
-            temp_value_Aas.clear();
 
             linalg::sparse_matrix<INT,REAL> Aas_trans = Aas.transpose();
 
@@ -1667,73 +1395,21 @@ private:
             errorReturn = iterErrorReturn.second;
 
             if ( smoothing ) {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H_toSmooth;
-                std::vector<INT> temp_col_H_toSmooth;
-                std::vector<REAL> temp_value_H_toSmooth;
-                temp_row_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H_toSmooth.reserve(ptsExtend_.size() * data_points.size());
-
                 for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
                     for (size_t j = 0; j < data_points.size(); j++ ) {
-                        temp_row_H_toSmooth.emplace_back(i);
-                        temp_col_H_toSmooth.emplace_back(j);
-                        temp_value_H_toSmooth.emplace_back(H_more.get_value((i + CONFIG::D + 1), j));
-//                        H_toSmooth_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
+                        H_toSmooth_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_toSmooth_coo(ptsExtend_.size(),
-                                                                data_points.size(),
-                                                                "COO",
-                                                                temp_value_H_toSmooth,
-                                                                temp_row_H_toSmooth,
-                                                                temp_col_H_toSmooth);
-                H_toSmooth_coo.format_conversion("CSR", true, true, "overwrite");
-                H_toSmooth_ = H_toSmooth_coo;
-                temp_row_H_toSmooth.clear();
-                temp_col_H_toSmooth.clear();
-                temp_value_H_toSmooth.clear();
             }
             else {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H;
-                std::vector<INT> temp_col_H;
-                std::vector<REAL> temp_value_H;
-                temp_row_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H.reserve(ptsExtend_.size() * data_points.size());
-
                 for ( size_t i = 0; i < ptsExtend_.size(); i++ ) {
                     for ( size_t j = 0; j < data_points.size(); j++ ) {
-                        temp_row_H.emplace_back(i);
-                        temp_col_H.emplace_back(j);
-                        temp_value_H.emplace_back(H_more.get_value((i + CONFIG::D + 1), j));
-//                        H_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
+                        H_.set_value(i, j, H_more.get_value((i + CONFIG::D + 1), j));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),
-                                                       data_points.size(),
-                                                       "COO",
-                                                       temp_value_H,
-                                                       temp_row_H,
-                                                       temp_col_H);
-                H_coo.format_conversion("CSR", true, true, "overwrite");
-                H_ = H_coo;
-                temp_row_H.clear();
-                temp_col_H.clear();
-                temp_value_H.clear();
             }
 
             if ( smoothing ) {
-                // Define intermediate vectors for performance purpose
-                std::vector<INT> temp_row_H;
-                std::vector<INT> temp_col_H;
-                std::vector<REAL> temp_value_H;
-                temp_row_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_col_H.reserve(ptsExtend_.size() * data_points.size());
-                temp_value_H.reserve(ptsExtend_.size() * data_points.size());
-
                 for ( size_t row = 0; row < ptsExtend_.size(); row++ ) {
                     for ( size_t j = 0; j < data_points.size(); j++ ) {
                         REAL h_j_sum = 0.;
@@ -1755,23 +1431,9 @@ private:
                                 f_sum += w_i * H_toSmooth_.get_value(row_k, j);
                             }
                         }
-                        temp_row_H.emplace_back(row);
-                        temp_col_H.emplace_back(j);
-                        temp_value_H.emplace_back(0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
-//                        H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
+                        H_.set_value(row, j, 0.5 * (f_sum + H_toSmooth_.get_value(row, j)));
                     }
                 }
-                linalg::sparse_matrix<INT, REAL> H_coo(ptsExtend_.size(),
-                                                       data_points.size(),
-                                                       "COO",
-                                                       temp_value_H,
-                                                       temp_row_H,
-                                                       temp_col_H);
-                H_coo.format_conversion("CSR", true, true, "overwrite");
-                H_ = H_coo;
-                temp_row_H.clear();
-                temp_col_H.clear();
-                temp_value_H.clear();
             }
         }
 
