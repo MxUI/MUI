@@ -302,6 +302,8 @@ class sparse_matrix {
 
         // Dummy member variable for invalid or unassigned elements in sparse matrix
         VTYPE dummy_ = 0;
+        // Sparse matrix debug switch
+        bool DEBUG = false;
 
 };
 

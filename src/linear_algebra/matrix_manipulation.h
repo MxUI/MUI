@@ -316,7 +316,11 @@ void sparse_matrix<ITYPE,VTYPE>::set_value(ITYPE r, ITYPE c, VTYPE val, bool per
 
     if(matrix_format_ == format::COO) {
 
-        this->coo_element_operation(r, c, val, "overwrite", "matrix_manipulation.h", "set_value()");
+        if (performSortAndUniqueCheck) {
+            this->coo_element_operation(r, c, val, "overwrite", "matrix_manipulation.h", "set_value()");
+        } else {
+            this->coo_element_operation(r, c, val, "nonsort", "matrix_manipulation.h", "set_value()");
+        }
 
     } else if (matrix_format_ == format::CSR) {
 
@@ -1313,14 +1317,28 @@ void sparse_matrix<ITYPE,VTYPE>::coo_element_operation(ITYPE r, ITYPE c, VTYPE v
         function_name = function_name_input;
     }
 
-    if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite")) {
+    if ((operation_mode_trim != "plus") and (operation_mode_trim != "minus") and (operation_mode_trim != "multiply") and (operation_mode_trim != "overwrite") and (operation_mode_trim != "nonsort")) {
         std::cerr << "MUI Error [" << file_name << "]: Unrecognised COO element operation mode: " << operation_mode_trim << " for " << function_name << " function" << std::endl;
         std::cerr << "    Please set the COO element operation mode as:" << std::endl;
         std::cerr << "    'plus': Sum up elemental values" << std::endl;
         std::cerr << "    'minus': Take the difference among elemental values" << std::endl;
         std::cerr << "    'multiply': Take the product among elemental values" << std::endl;
         std::cerr << "    'overwrite' (default): Keeps only the last elemental value" << std::endl;
+        std::cerr << "    'nonsort': Append the element value without sort or deduplication" << std::endl;
         std::abort();
+    }
+
+    if (operation_mode_trim == "nonsort") {
+        if (std::abs(val) >= std::numeric_limits<VTYPE>::min()) {
+            matrix_coo.values_.reserve(matrix_coo.values_.size()+1);
+            matrix_coo.row_indices_.reserve(matrix_coo.row_indices_.size()+1);
+            matrix_coo.col_indices_.reserve(matrix_coo.col_indices_.size()+1);
+            matrix_coo.values_.emplace_back(val);
+            matrix_coo.row_indices_.emplace_back(r);
+            matrix_coo.col_indices_.emplace_back(c);
+            nnz_++;
+        }
+        return;
     }
 
     bool isElementAdded = false;

@@ -758,17 +758,23 @@ bool sparse_matrix<ITYPE,VTYPE>::is_coo_sorted_unique(const std::string &file_na
             // Compare the current entry with the previous one
             if (matrix_coo.row_indices_[i] < matrix_coo.row_indices_[i - 1]) {
                 // Row index is not sorted
-                std::cout << "MUI [" << file_name << "]: The COO type matrix is not sorted (sorted row index check failed) in " << function_name <<  std::endl;
+                if (DEBUG) {
+                    std::cout << "MUI [" << file_name << "]: The COO type matrix is not sorted (sorted row index check failed) in " << function_name <<  std::endl;
+                }
                 return false;
             } else if (matrix_coo.row_indices_[i] == matrix_coo.row_indices_[i - 1]) {
                 // Row index is the same, check column index
                 if (matrix_coo.col_indices_[i] < matrix_coo.col_indices_[i - 1]) {
                     // Column index is not sorted
-                    std::cout << "MUI [" << file_name << "]: The COO type matrix is not sorted (sorted column index check failed) in " << function_name <<  std::endl;
+                    if (DEBUG) {
+                        std::cout << "MUI [" << file_name << "]: The COO type matrix is not sorted (sorted column index check failed) in " << function_name <<  std::endl;
+                    }
                     return false;
                 } else if (matrix_coo.col_indices_[i] == matrix_coo.col_indices_[i - 1]) {
                     // Column index has duplicate elements
-                    std::cout << "MUI [" << file_name << "]: The COO type matrix exists duplicated elements (unique column index check failed) in " << function_name <<  std::endl;
+                    if (DEBUG) {
+                        std::cout << "MUI [" << file_name << "]: The COO type matrix exists duplicated elements (unique column index check failed) in " << function_name <<  std::endl;
+                    }
                     return false;
                 }
             }
@@ -802,17 +808,23 @@ bool sparse_matrix<ITYPE,VTYPE>::is_csr_sorted_unique(const std::string &file_na
         for(ITYPE i = 0; i < rows_; ++i){
             if (matrix_csr.row_ptrs_[i] > matrix_csr.row_ptrs_[i+1]) {
                 // Row pointers is not sorted
-                std::cout << "MUI [" << file_name << "]: The CSR type matrix is not sorted (sorted row pointers check failed) in " << function_name <<  std::endl;
+                if (DEBUG) {
+                    std::cout << "MUI [" << file_name << "]: The CSR type matrix is not sorted (sorted row pointers check failed) in " << function_name <<  std::endl;
+                }
                 return false;
             }
             for(ITYPE j = matrix_csr.row_ptrs_[i] + 1; j < matrix_csr.row_ptrs_[i+1]; ++j){
                 if(matrix_csr.col_indices_[j-1] > matrix_csr.col_indices_[j]){
                     // Column indices is not sorted
-                    std::cout << "MUI [" << file_name << "]: The CSR type matrix is not sorted (sorted column index check failed) in " << function_name <<  std::endl;
+                    if (DEBUG) {
+                        std::cout << "MUI [" << file_name << "]: The CSR type matrix is not sorted (sorted column index check failed) in " << function_name <<  std::endl;
+                    }
                     return false;
                 } else if (matrix_csr.col_indices_[j-1] == matrix_csr.col_indices_[j]) {
                     // Column indices is not unique
-                    std::cout << "MUI [" << file_name << "]: The CSR type matrix is not unique (deduplicated column index check failed) in " << function_name <<  std::endl;
+                    if (DEBUG) {
+                        std::cout << "MUI [" << file_name << "]: The CSR type matrix is not unique (deduplicated column index check failed) in " << function_name <<  std::endl;
+                    }
                     return false;
                 }
             }
@@ -846,17 +858,23 @@ bool sparse_matrix<ITYPE,VTYPE>::is_csc_sorted_unique(const std::string &file_na
         for(ITYPE i = 0; i < cols_; ++i){
             if (matrix_csc.col_ptrs_[i] > matrix_csc.col_ptrs_[i+1]) {
                 // Column pointers is not sorted
-                std::cout << "MUI [" << file_name << "]: The CSC type matrix is not sorted (sorted column pointers check failed) in " << function_name <<  std::endl;
+                if (DEBUG) {
+                    std::cout << "MUI [" << file_name << "]: The CSC type matrix is not sorted (sorted column pointers check failed) in " << function_name <<  std::endl;
+                }
                 return false;
             }
             for(ITYPE j = matrix_csc.col_ptrs_[i] + 1; j < matrix_csc.col_ptrs_[i+1]; ++j){
                 if(matrix_csc.row_indices_[j-1] > matrix_csc.row_indices_[j]){
                     // Row indices is not sorted
-                    std::cout << "MUI [" << file_name << "]: The CSC type matrix is not sorted (sorted row index check failed) in " << function_name <<  std::endl;
+                    if (DEBUG) {
+                        std::cout << "MUI [" << file_name << "]: The CSC type matrix is not sorted (sorted row index check failed) in " << function_name <<  std::endl;
+                    }
                     return false;
                 } else if (matrix_csc.row_indices_[j-1] == matrix_csc.row_indices_[j]) {
                     // Row indices is not unique
-                    std::cout << "MUI [" << file_name << "]: The CSC type matrix is not unique (deduplicated row index check failed) in " << function_name <<  std::endl;
+                    if (DEBUG) {
+                        std::cout << "MUI [" << file_name << "]: The CSC type matrix is not unique (deduplicated row index check failed) in " << function_name <<  std::endl;
+                    }
                     return false;
                 }
             }
