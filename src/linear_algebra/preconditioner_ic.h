@@ -57,7 +57,7 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 incomplete_cholesky_preconditioner<ITYPE,VTYPE>::incomplete_cholesky_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
     // Initialise the lower triangular matrix
-    L_.resize_null(A.get_rows(), A.get_cols());
+    L_.resize(A.get_rows(), A.get_cols());
     // Construct the lower triangular matrix
     for (ITYPE i = 0; i < A.get_rows(); ++i) {
         for (ITYPE j = 0; j <= i; ++j) {

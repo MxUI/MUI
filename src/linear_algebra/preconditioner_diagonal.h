@@ -57,7 +57,7 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 diagonal_preconditioner<ITYPE,VTYPE>::diagonal_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
     // Initialise the lower triangular matrix
-    inv_diag_.resize_null(A.get_rows(), A.get_cols());
+    inv_diag_.resize(A.get_rows(), A.get_cols());
     // Construct the inverse diagonal matrix
     for (int i = 0; i < A.get_rows(); i++) {
         if (std::abs(A.get_value(i,i)) >= std::numeric_limits<VTYPE>::min()) {

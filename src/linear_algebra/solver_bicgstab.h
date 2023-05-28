@@ -63,16 +63,16 @@ biconjugate_gradient_stabilized_1d<ITYPE, VTYPE>::biconjugate_gradient_stabilize
       M_(M){
         assert(b_.get_cols() == 1 &&
                 "MUI Error [solver_bicgstab.h]: Number of column of b matrix must be 1");
-        x_.resize_null(A_.get_rows(),1);
-        r_.resize_null(A_.get_rows(),1);
-        rTilde_.resize_null(A_.get_rows(),1);
-        v_.resize_null(A_.get_rows(),1);
-        t_.resize_null(A_.get_rows(),1);
-        p_.resize_null(A_.get_rows(),1);
-        s_.resize_null(A_.get_rows(),1);
-        h_.resize_null(A_.get_rows(),1);
-        y_.resize_null(A_.get_rows(),1);
-        z_.resize_null(A_.get_rows(),1);
+        x_.resize(A_.get_rows(),1);
+        r_.resize(A_.get_rows(),1);
+        rTilde_.resize(A_.get_rows(),1);
+        v_.resize(A_.get_rows(),1);
+        t_.resize(A_.get_rows(),1);
+        p_.resize(A_.get_rows(),1);
+        s_.resize(A_.get_rows(),1);
+        h_.resize(A_.get_rows(),1);
+        y_.resize(A_.get_rows(),1);
+        z_.resize(A_.get_rows(),1);
         alpha_ = 1.0;
         beta_ = 0.0;
         omega_ = 1.0;
@@ -90,9 +90,9 @@ biconjugate_gradient_stabilized<ITYPE, VTYPE>::biconjugate_gradient_stabilized(s
       M_(M){
         assert(A_.get_rows() == b_.get_rows() &&
                 "MUI Error [solver_bicgstab.h]: Number of rows of A matrix must be the same as the number of rows of b matrix");
-        b_column_.resize_null(b_.get_rows(),1);
-        x_.resize_null(b_.get_rows(),b_.get_cols());
-        x_init_column_.resize_null(b_.get_rows(),1);
+        b_column_.resize(b_.get_rows(),1);
+        x_.resize(b_.get_rows(),b_.get_cols());
+        x_init_column_.resize(b_.get_rows(),1);
 }
 
 // Destructor for one-dimensional Conjugate Gradient solver

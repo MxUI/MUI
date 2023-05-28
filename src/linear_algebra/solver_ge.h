@@ -60,7 +60,7 @@ gaussian_elimination_1d<ITYPE, VTYPE>::gaussian_elimination_1d(sparse_matrix<ITY
                 "MUI Error [solver_ge.h]: Number of rows of A matrix must be the same as the number of rows of b matrix");
         assert(b_.get_cols() == 1 &&
                 "MUI Error [solver_ge.h]: Number of column of b matrix must be 1");
-        x_.resize_null(b_.get_rows(),b_.get_cols());
+        x_.resize(b_.get_rows(),b_.get_cols());
 }
 
 // Constructor for multidimensional Gaussian Elimination solver
@@ -70,8 +70,8 @@ gaussian_elimination<ITYPE, VTYPE>::gaussian_elimination(sparse_matrix<ITYPE,VTY
       b_(b){
         assert(A_.get_rows() == b_.get_rows() &&
                 "MUI Error [solver_ge.h]: Number of rows of A matrix must be the same as the number of rows of b matrix");
-        x_.resize_null(b_.get_rows(),b_.get_cols());
-        b_column_.resize_null(b_.get_rows(), 1);
+        x_.resize(b_.get_rows(),b_.get_cols());
+        b_column_.resize(b_.get_rows(), 1);
 }
 
 // Destructor for one-dimensional Gaussian Elimination solver
