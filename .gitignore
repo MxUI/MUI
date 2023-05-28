@@ -5,6 +5,8 @@
 Debug
 Release
 build
-src/linear_algebra/test/matrix
+src/linear_algebra/test/matrix_arithmetics
+src/linear_algebra/test/matrix_manipulations
 src/linear_algebra/test/matrix.csv
+src/linear_algebra/test/matrix_vector_*
 src/linear_algebra/test/solver
