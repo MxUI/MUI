@@ -54,8 +54,8 @@ namespace linalg {
 template<typename ITYPE, typename VTYPE>
 incomplete_lu_preconditioner<ITYPE,VTYPE>::incomplete_lu_preconditioner(const sparse_matrix<ITYPE,VTYPE>& A) {
     // Initialize Lower and Upper triangular matrices
-    L_.resize_null(A.get_rows(), A.get_cols());
-    U_.resize_null(A.get_rows(), A.get_cols());
+    L_.resize(A.get_rows(), A.get_cols());
+    U_.resize(A.get_rows(), A.get_cols());
 
     // Perform the Incomplete LU factorisation
     for (ITYPE i = 0; i < A.get_rows(); ++i) {

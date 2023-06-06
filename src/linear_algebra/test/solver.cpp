@@ -71,11 +71,11 @@ void test00 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 1);
-    H_.resize_null(Aas_size, 1);
-    H_ref.resize_null(Aas_size, 1);
-    H_diff.resize_null(Aas_size, 1);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 1);
+    H_.resize(Aas_size, 1);
+    H_ref.resize(Aas_size, 1);
+    H_diff.resize(Aas_size, 1);
 
     H_ref.set_value(0, 0, 0.5488);
     H_ref.set_value(1, 0, 0.7152);
@@ -120,7 +120,7 @@ void test01 () {
     std::cout << std::endl;
 
     std::pair<int, double> cgReturn;
-    
+
     int Css_size = 2;
     int Aas_size = 2;
     double cg_solve_tol = 1e-6;
@@ -132,15 +132,15 @@ void test01 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 1);
-    H_.resize_null(Aas_size, 1);
-    H_ref.resize_null(Aas_size, 1);
-    H_diff.resize_null(Aas_size, 1);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 1);
+    H_.resize(Aas_size, 1);
+    H_ref.resize(Aas_size, 1);
+    H_diff.resize(Aas_size, 1);
 
     H_ref.set_value(0, 0, 0.5488);
     H_ref.set_value(1, 0, 0.7152);
-    
+
     Css.set_value(0, 0, 2.5409);
     Css.set_value(0, 1, -0.0113);
     Css.set_value(1, 0, -0.0113);
@@ -195,11 +195,11 @@ void test02 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 1);
-    H_.resize_null(Aas_size, 1);
-    H_ref.resize_null(Aas_size, 1);
-    H_diff.resize_null(Aas_size, 1);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 1);
+    H_.resize(Aas_size, 1);
+    H_ref.resize(Aas_size, 1);
+    H_diff.resize(Aas_size, 1);
 
     H_ref.set_value(0, 0, 0.5488);
     H_ref.set_value(1, 0, 0.7152);
@@ -266,12 +266,12 @@ void test03 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 1);
-    H_init.resize_null(Aas_size, 1);
-    H_.resize_null(Aas_size, 1);
-    H_ref.resize_null(Aas_size, 1);
-    H_diff.resize_null(Aas_size, 1);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 1);
+    H_init.resize(Aas_size, 1);
+    H_.resize(Aas_size, 1);
+    H_ref.resize(Aas_size, 1);
+    H_diff.resize(Aas_size, 1);
 
     H_init.set_value(0, 0, 9);
     H_init.set_value(1, 0, 0);
@@ -383,12 +383,12 @@ void test04 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 4);
-    H_init.resize_null(Aas_size, 4);
-    H_.resize_null(Aas_size, 4);
-    H_ref.resize_null(Aas_size, 4);
-    H_diff.resize_null(Aas_size, 4);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 4);
+    H_init.resize(Aas_size, 4);
+    H_.resize(Aas_size, 4);
+    H_ref.resize(Aas_size, 4);
+    H_diff.resize(Aas_size, 4);
 
     H_init.set_value(0, 0, 9);
     H_init.set_value(1, 0, 0);
@@ -549,11 +549,11 @@ void test05 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 1);
-    H_.resize_null(Aas_size, 1);
-    H_ref.resize_null(Aas_size, 1);
-    H_diff.resize_null(Aas_size, 1);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 1);
+    H_.resize(Aas_size, 1);
+    H_ref.resize(Aas_size, 1);
+    H_diff.resize(Aas_size, 1);
 
     H_ref.set_value(0, 0, 0.5488);
     H_ref.set_value(1, 0, 0.7152);
@@ -650,11 +650,11 @@ void test06 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 4);
-    H_.resize_null(Aas_size, 4);
-    H_ref.resize_null(Aas_size, 4);
-    H_diff.resize_null(Aas_size, 4);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 4);
+    H_.resize(Aas_size, 4);
+    H_ref.resize(Aas_size, 4);
+    H_diff.resize(Aas_size, 4);
 
     H_ref.set_value(0, 0, 0.5488);
     H_ref.set_value(1, 0, 0.7152);
@@ -793,12 +793,12 @@ void test07 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 4);
-    H_init.resize_null(Aas_size, 4);
-    H_.resize_null(Aas_size, 4);
-    H_ref.resize_null(Aas_size, 4);
-    H_diff.resize_null(Aas_size, 4);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 4);
+    H_init.resize(Aas_size, 4);
+    H_.resize(Aas_size, 4);
+    H_ref.resize(Aas_size, 4);
+    H_diff.resize(Aas_size, 4);
 
     H_init.set_value(0, 0, 9);
     H_init.set_value(1, 0, 0);
@@ -964,12 +964,12 @@ void test08 () {
     mui::linalg::sparse_matrix<int,double> H_ref; //< Reference value of Transformation Matrix
     mui::linalg::sparse_matrix<int,double> H_diff; //< Difference between reference value and calculated value of Transformation Matrix
 
-    Css.resize_null(Css_size, Css_size);
-    Aas.resize_null(Aas_size, 4);
-    H_init.resize_null(Aas_size, 4);
-    H_.resize_null(Aas_size, 4);
-    H_ref.resize_null(Aas_size, 4);
-    H_diff.resize_null(Aas_size, 4);
+    Css.resize(Css_size, Css_size);
+    Aas.resize(Aas_size, 4);
+    H_init.resize(Aas_size, 4);
+    H_.resize(Aas_size, 4);
+    H_ref.resize(Aas_size, 4);
+    H_diff.resize(Aas_size, 4);
 
     H_init.set_value(0, 0, 9);
     H_init.set_value(1, 0, 0);
