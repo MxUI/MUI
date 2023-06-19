@@ -108,7 +108,7 @@ conjugate_gradient_1d<ITYPE, VTYPE>::~conjugate_gradient_1d() {
 
 // Destructor for multidimensional Conjugate Gradient solver
 template<typename ITYPE, typename VTYPE>
-virtual conjugate_gradient<ITYPE, VTYPE>::~conjugate_gradient() {
+conjugate_gradient<ITYPE, VTYPE>::~conjugate_gradient() {
     // Deallocate the memory for matrices
     A_.set_zero();
     x_.set_zero();
