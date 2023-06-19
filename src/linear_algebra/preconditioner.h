@@ -58,7 +58,7 @@ class preconditioner {
         // Abstract function on preconditioner apply
         virtual sparse_matrix<ITYPE,VTYPE> apply(const sparse_matrix<ITYPE,VTYPE> &) = 0;
         // Destructor
-        virtual ~preconditioner();
+        virtual ~preconditioner(){};
 };
 
 // Class of Incomplete LU preconditioner
