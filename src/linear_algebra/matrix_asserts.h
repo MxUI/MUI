@@ -64,13 +64,13 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
     std::string function_name;
 
     if (file_name_input.empty()) {
-        file_name = "matrix_asserts.h";
+        file_name.assign("matrix_asserts.h");
     } else {
         file_name = file_name_input;
     }
 
     if (function_name_input.empty()) {
-        function_name = "assert_valid_vector_size()";
+        function_name.assign("assert_valid_vector_size()");
     } else {
         function_name = function_name_input;
     }
