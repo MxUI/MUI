@@ -234,12 +234,19 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
 
 // Member function to assert if the COO matrix is sorted and deduplicated
 template<typename ITYPE, typename VTYPE>
-void sparse_matrix<ITYPE,VTYPE>::assert_coo_sorted_unique(const std::string &file_name, const std::string &function_name) const {
+void sparse_matrix<ITYPE,VTYPE>::assert_coo_sorted_unique(const std::string &file_name_input, const std::string &function_name_input) const {
 
-    if (file_name.empty())
-        file_name = "matrix_asserts.h";
-    if (function_name.empty())
-        function_name = "assert_coo_sorted_unique()";
+    std::string file_name;
+    std::string function_name;
+
+    if (file_name_input.empty())
+        file_name.assign("matrix_asserts.h");
+    else
+        file_name = file_name_input;
+    if (function_name_input.empty())
+        function_name.assign("assert_coo_sorted_unique()");
+    else
+        function_name = function_name_input;
 
     ITYPE numEntries = matrix_coo.values_.size();
 
