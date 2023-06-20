@@ -50,9 +50,11 @@
 #include <ctime>
 #include "../../solver.h"
 
-double test00 () {
+int runType = -1;
 
-    std::cout << std::endl;
+inline double test00 () {
+
+	std::cout << std::endl;
     std::cout << "============================================================" << std::endl;
     std::cout << "==== TEST 00: Find Matrix H_i by Matrix Css and Aas ========" << std::endl;
     std::cout << "================== Simplified RBF Matrices =================" << std::endl;
@@ -119,7 +121,7 @@ double test00 () {
     return mui_time;
 }
 
-double test01 () {
+inline double test01 () {
 
     std::cout << std::endl;
     std::cout << "============================================================" << std::endl;
@@ -230,15 +232,47 @@ double test01 () {
 
 }
 
-int main() {
+int main(int argc, char** argv) {
 
-    // Perform test 00
-    double mui_time = test00();
-    // Perform test 01
-    double eigen_time = test01();
+	//Parse input parameters
+	if( argc < 2 ) {  //Check the number of parameters
+		std::cerr << "Usage: " << argv[0] << " [linear algebra solution (eigen/mui/both)]" << std::endl;
+		exit(-1);
+	}
 
-    std::cout << "MUI::linalg time: " << mui_time << " Eigen time: " << eigen_time << std::endl;
-    std::cout << "Eigen is " <<  mui_time/eigen_time << " times faster than MUI::linalg" << std::endl;
+	std::string runTypeArg(argv[1]);
+
+	if ( runTypeArg.compare("mui") == 0 )
+		runType = 0;
+	else if ( runTypeArg.compare("eigen") == 0 )
+		runType = 1;
+	else if ( runTypeArg.compare("both") == 0 )
+		runType = 2;
+	else {
+		std::cerr << "Usage: " << argv[0] << " [linear algebra solution (eigen/mui/both)]" << std::endl;
+		exit(-1);
+	}
+
+	double mui_time = 0;
+	double eigen_time = 0;
+
+	if( runType == 0 ) { // mui::linalg only
+		double mui_time = test00();
+
+		std::cout << "MUI::linalg time: " << mui_time << std::endl;
+	}
+    if( runType == 1 ) { // eigen only
+    	double eigen_time = test01();
+
+    	std::cout << "Eigen time: " << eigen_time << std::endl;
+    }
+    if( runType == 2 ) { // both tests
+    	double mui_time = test00();
+    	double eigen_time = test01();
+
+    	std::cout << "MUI::linalg time: " << mui_time << " Eigen time: " << eigen_time << std::endl;
+		std::cout << "Eigen is " <<  mui_time/eigen_time << " times faster than MUI::linalg" << std::endl;
+    }
 
     return 0;
 }
