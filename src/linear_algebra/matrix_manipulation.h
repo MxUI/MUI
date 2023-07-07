@@ -224,7 +224,6 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
                 // Check if the current element is within the specified column range
                 if (col >= c_start && col <= c_end) {
                     // Calculate the indices for the sub-block
-                    ITYPE subRow = row - r_start;
                     ITYPE subCol = col - c_start;
 
                     res.matrix_csr.values_.reserve(res.matrix_csr.values_.size()+1);
@@ -259,7 +258,6 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::segment(ITYPE r_start, IT
                 if (row >= r_start && row <= r_end) {
                     // Calculate the indices for the sub-block
                     ITYPE subRow = row - r_start;
-                    ITYPE subCol = col - c_start;
 
                     res.matrix_csc.values_.reserve(res.matrix_csc.values_.size()+1);
                     res.matrix_csc.row_indices_.reserve(res.matrix_csc.row_indices_.size()+1);
@@ -856,7 +854,7 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
     sorted_row_indices.reserve(sorted_indices.size());
     sorted_column_indices.reserve(sorted_indices.size());
 
-    for (ITYPE i = 0; i < sorted_indices.size(); ++i) {
+    for (ITYPE i = 0; i < static_cast<ITYPE>(sorted_indices.size()); ++i) {
         if (std::abs(matrix_coo.values_[sorted_indices[i]]) >= std::numeric_limits<VTYPE>::min()) {
             sorted_values.emplace_back(matrix_coo.values_[sorted_indices[i]]);
             sorted_row_indices.emplace_back(matrix_coo.row_indices_[sorted_indices[i]]);
@@ -883,11 +881,11 @@ void sparse_matrix<ITYPE,VTYPE>::sort_coo(bool is_row_major, bool deduplication,
         VTYPE last_value = sorted_values[0];
         bool is_multiply_by_zero = true;
 
-        for (ITYPE i = 1; i < sorted_indices.size(); ++i) {
-            ITYPE curr_row = sorted_row_indices[i];
-            ITYPE curr_col = sorted_column_indices[i];
+        for (ITYPE i = 1; i < static_cast<ITYPE>(sorted_indices.size()); ++i) {
+           ITYPE curr_row = sorted_row_indices[i];
+           ITYPE curr_col = sorted_column_indices[i];
 
-           if (i != (sorted_indices.size()-1)) {
+           if (i != static_cast<ITYPE>((sorted_indices.size()-1))) {
                if (i == 1) {
                   if ((curr_row == prev_row) && (curr_col == prev_col)) {
 
@@ -1501,7 +1499,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csr.values_.erase(matrix_csr.values_.begin()+insert_position);
 
                 // Adjust the row pointers after the erased element
-                for (ITYPE i = r + 1; i < matrix_csr.row_ptrs_.size(); ++i) {
+                for (ITYPE i = r + 1; i < static_cast<ITYPE>(matrix_csr.row_ptrs_.size()); ++i) {
                     matrix_csr.row_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1517,7 +1515,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csr.values_.erase(matrix_csr.values_.begin()+insert_position);
 
                 // Adjust the row pointers after the erased element
-                for (ITYPE i = r + 1; i < matrix_csr.row_ptrs_.size(); ++i) {
+                for (ITYPE i = r + 1; i < static_cast<ITYPE>(matrix_csr.row_ptrs_.size()); ++i) {
                     matrix_csr.row_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1533,7 +1531,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csr.values_.erase(matrix_csr.values_.begin()+insert_position);
 
                 // Adjust the row pointers after the erased element
-                for (ITYPE i = r + 1; i < matrix_csr.row_ptrs_.size(); ++i) {
+                for (ITYPE i = r + 1; i < static_cast<ITYPE>(matrix_csr.row_ptrs_.size()); ++i) {
                     matrix_csr.row_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1549,7 +1547,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csr.values_.erase(matrix_csr.values_.begin()+insert_position);
 
                 // Adjust the row pointers after the erased element
-                for (ITYPE i = r + 1; i < matrix_csr.row_ptrs_.size(); ++i) {
+                for (ITYPE i = r + 1; i < static_cast<ITYPE>(matrix_csr.row_ptrs_.size()); ++i) {
                     matrix_csr.row_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1571,7 +1569,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_element_operation(ITYPE r, ITYPE c, VTYPE v
                 }
 
                 // Adjust the row pointers after the inserted element
-                for (ITYPE i = r + 1; i < matrix_csr.row_ptrs_.size(); ++i) {
+                for (ITYPE i = r + 1; i < static_cast<ITYPE>(matrix_csr.row_ptrs_.size()); ++i) {
                     matrix_csr.row_ptrs_[i]++;
                 }
                 nnz_++;
@@ -1636,7 +1634,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csc.values_.erase(matrix_csc.values_.begin()+insert_position);
 
                 // Adjust the column pointers after the erased element
-                for (ITYPE i = c + 1; i < matrix_csc.col_ptrs_.size(); ++i) {
+                for (ITYPE i = c + 1; i < static_cast<ITYPE>(matrix_csc.col_ptrs_.size()); ++i) {
                     matrix_csc.col_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1652,7 +1650,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csc.values_.erase(matrix_csc.values_.begin()+insert_position);
 
                 // Adjust the column pointers after the erased element
-                for (ITYPE i = c + 1; i < matrix_csc.col_ptrs_.size(); ++i) {
+                for (ITYPE i = c + 1; i < static_cast<ITYPE>(matrix_csc.col_ptrs_.size()); ++i) {
                     matrix_csc.col_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1668,7 +1666,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csc.values_.erase(matrix_csc.values_.begin()+insert_position);
 
                 // Adjust the column pointers after the erased element
-                for (ITYPE i = c + 1; i < matrix_csc.col_ptrs_.size(); ++i) {
+                for (ITYPE i = c + 1; i < static_cast<ITYPE>(matrix_csc.col_ptrs_.size()); ++i) {
                     matrix_csc.col_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1684,7 +1682,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE v
                 matrix_csc.values_.erase(matrix_csc.values_.begin()+insert_position);
 
                 // Adjust the column pointers after the erased element
-                for (ITYPE i = c + 1; i < matrix_csc.col_ptrs_.size(); ++i) {
+                for (ITYPE i = c + 1; i < static_cast<ITYPE>(matrix_csc.col_ptrs_.size()); ++i) {
                     matrix_csc.col_ptrs_[i]--;
                 }
                 nnz_--;
@@ -1705,7 +1703,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_element_operation(ITYPE r, ITYPE c, VTYPE v
                     matrix_csc.values_.insert(matrix_csc.values_.begin()+insert_position, val);
                 }
                 // Adjust the row pointers after the inserted element
-                for (ITYPE i = c + 1; i < matrix_csc.col_ptrs_.size(); ++i) {
+                for (ITYPE i = c + 1; i < static_cast<ITYPE>(matrix_csc.col_ptrs_.size()); ++i) {
                     matrix_csc.col_ptrs_[i]++;
                 }
                 nnz_++;
@@ -1732,7 +1730,8 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csr() {
 
     // Determine the number of non-zero entries in each row
     std::vector<ITYPE> rowPtr(rows_+1, 0);
-    for (ITYPE i = 0; i < matrix_coo.row_indices_.size(); ++i) {
+
+    for (ITYPE i = 0; i < static_cast<ITYPE>(matrix_coo.row_indices_.size()); ++i) {
         if (matrix_coo.row_indices_[i] >= (rows_+1)) {
             std::cerr << "MUI Error [matrix_manipulation.h]: row index: " << matrix_coo.row_indices_[i] << " at the " << i << "th matrix_coo.row_indices_ is out of range (" << (rows_+1) << ") in coo_to_csr()" << std::endl;
             std::abort();
@@ -1783,7 +1782,8 @@ void sparse_matrix<ITYPE,VTYPE>::coo_to_csc() {
 
     // Determine the number of non-zero entries in each column
     std::vector<ITYPE> colPtr(cols_+1, 0);
-    for (ITYPE i = 0; i < matrix_coo.col_indices_.size(); ++i) {
+
+    for (ITYPE i = 0; i < static_cast<ITYPE>(matrix_coo.col_indices_.size()); ++i) {
         colPtr[matrix_coo.col_indices_[i]]++;
     }
 
@@ -1866,7 +1866,7 @@ void sparse_matrix<ITYPE,VTYPE>::csr_to_csc() {
 
     // Determine the number of non-zero entries in each column
     for (ITYPE i = 0; i < cols_; ++i) {
-        for (ITYPE j = 0; j < matrix_csr.col_indices_.size(); ++j) {
+        for (ITYPE j = 0; j < static_cast<ITYPE>(matrix_csr.col_indices_.size()); ++j) {
             if (matrix_csr.col_indices_[j] == i) {
                 ++matrix_csc.col_ptrs_[i];
             }
@@ -1959,7 +1959,7 @@ void sparse_matrix<ITYPE,VTYPE>::csc_to_csr() {
     matrix_csr.col_indices_.resize(nnz_, 0);
 
     // Determine the number of non-zero entries in each row
-    for (ITYPE i = 0; i < matrix_csc.row_indices_.size(); ++i) {
+    for (ITYPE i = 0; i < static_cast<ITYPE>(matrix_csc.row_indices_.size()); ++i) {
         matrix_csr.row_ptrs_[matrix_csc.row_indices_[i]]++;
     }
 

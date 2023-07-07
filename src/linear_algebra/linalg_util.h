@@ -58,14 +58,14 @@ namespace linalg {
 // Function to left trim a string - helper function on matrix file I/O
 inline std::string ltrim(const std::string &s) {
     const std::string WHITESPACE = " \n\r\t\f\v";
-    size_t start = s.find_first_not_of(WHITESPACE);
+    std::string::size_type start = s.find_first_not_of(WHITESPACE);
     return (start == std::string::npos) ? "" : s.substr(start);
 }
 
 // Function to right trim a string - helper function on matrix file I/O
 inline std::string rtrim(const std::string &s) {
     const std::string WHITESPACE = " \n\r\t\f\v";
-    size_t end = s.find_last_not_of(WHITESPACE);
+    std::string::size_type end = s.find_last_not_of(WHITESPACE);
     return (end == std::string::npos) ? "" : s.substr(0, end + 1);
 }
 

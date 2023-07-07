@@ -525,7 +525,7 @@ VTYPE sparse_matrix<ITYPE,VTYPE>::get_value(ITYPE r, ITYPE c) const {
         "MUI Error [matrix_io_info.h]: Matrix index out of range in get_value function");
 
     if (matrix_format_ == format::COO) {
-        for (ITYPE i = 0; i < matrix_coo.row_indices_.size(); ++i) {
+    	for (ITYPE i = 0; i < static_cast<ITYPE>(matrix_coo.row_indices_.size()); ++i) {
             if (matrix_coo.row_indices_[i] == r && matrix_coo.col_indices_[i] == c) {
                 return matrix_coo.values_[i];
             }
@@ -633,19 +633,18 @@ std::vector<std::pair<ITYPE, ITYPE>> sparse_matrix<ITYPE,VTYPE>::get_non_zero_el
 // Member function to get number of non-zero elements
 template<typename ITYPE, typename VTYPE>
 ITYPE sparse_matrix<ITYPE,VTYPE>::non_zero_elements_count() const {
-
     if (matrix_format_ == format::COO) {
-        if (nnz_ != matrix_coo.values_.size()) {
+        if (nnz_ != static_cast<ITYPE>(matrix_coo.values_.size())) {
             std::cerr << "MUI Error [matrix_io_info.h]: Mismatch matrix_coo.values_ size (" << matrix_coo.values_.size() << ") with number of non-zeros (" << nnz_ <<") in non_zero_elements_count()" << std::endl;
             std::abort();
         }
     } else if (matrix_format_ == format::CSR) {
-        if (nnz_ != matrix_csr.values_.size()) {
+        if (nnz_ != static_cast<ITYPE>(matrix_csr.values_.size())) {
             std::cerr << "MUI Error [matrix_io_info.h]: Mismatch matrix_csr.values_ size (" << matrix_csr.values_.size() << ") with number of non-zeros (" << nnz_ <<") in non_zero_elements_count()" << std::endl;
             std::abort();
         }
     } else if (matrix_format_ == format::CSC) {
-        if (nnz_ != matrix_csc.values_.size()) {
+        if (nnz_ != static_cast<ITYPE>(matrix_csc.values_.size())) {
             std::cerr << "MUI Error [matrix_io_info.h]: Mismatch matrix_csc.values_ size (" << matrix_csc.values_.size() << ") with number of non-zeros (" << nnz_ <<") in non_zero_elements_count()" << std::endl;
             std::abort();
         }

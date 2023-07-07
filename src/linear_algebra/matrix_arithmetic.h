@@ -573,8 +573,8 @@ sparse_matrix<ITYPE,VTYPE> sparse_matrix<ITYPE,VTYPE>::operator*(sparse_matrix<I
         res.matrix_coo.row_indices_.reserve((matrix_coo.row_indices_.size() <= multiplicand.matrix_coo.row_indices_.size()) ? multiplicand.matrix_coo.row_indices_.size() : matrix_coo.row_indices_.size());
         res.matrix_coo.col_indices_.reserve((matrix_coo.col_indices_.size() <= multiplicand.matrix_coo.col_indices_.size()) ? multiplicand.matrix_coo.col_indices_.size() : matrix_coo.col_indices_.size());
 
-        for (ITYPE i = 0; i < matrix_coo.row_indices_.size(); ++i) {
-            for (ITYPE j = 0; j < multiplicand.matrix_coo.col_indices_.size(); ++j) {
+        for (ITYPE i = 0; i < static_cast<ITYPE>(matrix_coo.row_indices_.size()); ++i) {
+            for (ITYPE j = 0; j < static_cast<ITYPE>(multiplicand.matrix_coo.col_indices_.size()); ++j) {
                 if (matrix_coo.col_indices_[i] == multiplicand.matrix_coo.row_indices_[j]) {
                     // Multiply the corresponding values if the columns match
                     VTYPE value = matrix_coo.values_[i] * multiplicand.matrix_coo.values_[j];

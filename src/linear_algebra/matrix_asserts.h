@@ -77,7 +77,7 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
 
     if (matrix_format_ == format::COO) {
 
-        if (nnz_ < 0) {
+    	if (nnz_ < 0) {
             std::cerr << "MUI Error [" << file_name << "]: The number of non-zeros (nnz_=" << nnz_ << ") should be non-negative integer in " << function_name << std::endl;
             std::abort();
         }
@@ -96,17 +96,17 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
             std::cerr << "MUI Warning [" << file_name << "]: Matrix size (" << (rows_*cols_) << ") smaller than the number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << ". Possible duplicated elements occur. " << std::endl;
         }
 
-        if (matrix_coo.values_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_coo.values_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: COO values_ matrix size (" << matrix_coo.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_coo.row_indices_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_coo.row_indices_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: COO row_indices_ matrix size (" << matrix_coo.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_coo.col_indices_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_coo.col_indices_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: COO col_indices_ matrix size (" << matrix_coo.col_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
@@ -153,17 +153,17 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
             std::cerr << "MUI Warning [" << file_name << "]: Non-empty COO col_indices_ matrix (" << matrix_coo.col_indices_.size() << ") under CSR matrix format in " << function_name << std::endl;
         }
 
-        if (matrix_csr.values_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_csr.values_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSR values_ matrix size (" << matrix_csr.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csr.row_ptrs_.size() != (rows_+1)) {
+        if (static_cast<ITYPE>(matrix_csr.row_ptrs_.size()) != (rows_+1)) {
             std::cerr << "MUI Error [" << file_name << "]: CSR row_ptrs_ matrix size (" << matrix_csr.row_ptrs_.size() << ") does not equals to number of rows + 1 (rows_+1=" << (rows_+1) << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csr.col_indices_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_csr.col_indices_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSR col_indices_ matrix size (" << matrix_csr.col_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
@@ -210,17 +210,17 @@ void sparse_matrix<ITYPE,VTYPE>::assert_valid_vector_size(const std::string &fil
             std::cerr << "MUI Warning [" << file_name << "]: Non-empty CSR col_indices_ matrix (" << matrix_csr.col_indices_.size() << ") under CSC matrix format in " << function_name << std::endl;
         }
 
-        if (matrix_csc.values_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_csc.values_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSC values_ matrix size (" << matrix_csc.values_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csc.row_indices_.size() != nnz_) {
+        if (static_cast<ITYPE>(matrix_csc.row_indices_.size()) != nnz_) {
             std::cerr << "MUI Error [" << file_name << "]: CSC row_indices_ matrix size (" << matrix_csc.row_indices_.size() << ") does not equals to number of non-zeros (nnz_=" << nnz_ << ") in " << function_name << std::endl;
             std::abort();
         }
 
-        if (matrix_csc.col_ptrs_.size() != (cols_+1)) {
+        if (static_cast<ITYPE>(matrix_csc.col_ptrs_.size()) != (cols_+1)) {
             std::cerr << "MUI Error [" << file_name << "]: CSC col_indices_ matrix size (" << matrix_csc.col_ptrs_.size() << ") does not equals to number of cols + 1 (cols_+1=" << (cols_+1) << ") in " << function_name << std::endl;
             std::abort();
         }
