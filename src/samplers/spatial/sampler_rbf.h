@@ -319,6 +319,158 @@ public:
         initialised_ = false;
     }
 
+    inline void readRBFMatrix(const std::string& readFileAddress) const {
+        std::ifstream inputFileMatrixSize(readFileAddress + "/matrixSize.dat");
+
+        if (!inputFileMatrixSize) {
+            std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat"
+                    << std::endl;
+        }
+        else {
+            std::string tempS;
+            std::vector<INT> tempV;
+            while (std::getline(inputFileMatrixSize, tempS)) {
+                // Skips the line if the first two characters are '//'
+                if (tempS[0] == '/' && tempS[1] == '/')
+                    continue;
+                std::stringstream lineStream(tempS);
+                std::string tempSS;
+                while (std::getline(lineStream, tempSS, ',')) {
+                    tempV.emplace_back(std::stoi(tempSS));
+                }
+            }
+            CABrow_ = tempV[0];
+            CABcol_ = tempV[1];
+            CAArow_ = tempV[2];
+            CAAcol_ = tempV[3];
+            Hrow_ = tempV[4];
+            Hcol_ = tempV[5];
+            remote_pts_num_ = tempV[6];
+            remote_pts_dim_ = tempV[7];
+        }
+
+        std::ifstream inputFileCAB(readFileAddress + "/connectivityAB.dat");
+
+        if (!inputFileCAB) {
+            std::cerr
+                    << "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAB.dat"
+                    << std::endl;
+        }
+        else {
+            connectivityAB_.resize(CABrow_);
+            for (INT i = 0; i < CABrow_; i++) {
+                connectivityAB_[i].resize(CABcol_, -1);
+                std::string tempS;
+                while (std::getline(inputFileCAB, tempS)) {
+                    // Skips the line if the first two characters are '//'
+                    if (tempS[0] == '/' && tempS[1] == '/')
+                        continue;
+                    std::stringstream lineStream(tempS);
+                    std::string tempSS;
+                    std::vector<INT> tempV;
+                    while (std::getline(lineStream, tempSS, ',')) {
+                        tempV.emplace_back(std::stoi(tempSS));
+                    }
+                    connectivityAB_.emplace_back(tempV);
+                }
+            }
+        }
+
+        if (smoothFunc_) {
+            std::ifstream inputFileCAA(readFileAddress + "/connectivityAA.dat");
+
+            if (!inputFileCAA) {
+                std::cerr
+                        << "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAA.dat"
+                        << std::endl;
+            }
+            else {
+                if ((CAArow_ == 0) || (CAAcol_ == 0)) {
+                    std::cerr
+                            << "MUI Error [sampler_rbf.h]: Error on the size of connectivityAA matrix in matrixSize.dat. Number of rows: "
+                            << CAArow_ << " number of columns: " << CAAcol_
+                            << ". Make sure matrices were generated with the smoothing function switched on."
+                            << std::endl;
+                }
+                else {
+                    connectivityAA_.resize(CAArow_);
+
+                    for (INT i = 0; i < CAArow_; i++) {
+                        connectivityAA_[i].resize(CAAcol_, -1);
+                        std::string tempS;
+                        while (std::getline(inputFileCAA, tempS)) {
+                            // Skips the line if the first two characters are '//'
+                            if (tempS[0] == '/' && tempS[1] == '/')
+                                continue;
+                            std::stringstream lineStream(tempS);
+                            std::string tempSS;
+                            std::vector<INT> tempV;
+                            while (std::getline(lineStream, tempSS, ',')) {
+                                tempV.emplace_back(std::stoi(tempSS));
+                            }
+                            connectivityAA_.emplace_back(tempV);
+                        }
+                    }
+                }
+            }
+        }
+
+        H_.resize(Hrow_, Hcol_);
+        H_.set_zero();
+
+        std::ifstream inputFileHMatrix(readFileAddress + "/Hmatrix.dat");
+
+        if (!inputFileHMatrix) {
+            std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
+                    << std::endl;
+        }
+        else {
+            inputFileHMatrix >> H_;
+
+            if ((H_.get_rows() != Hrow_) || (H_.get_cols() != Hcol_)) {
+                std::cerr << "row of H_ (" << H_.get_rows()
+                        << ") is not NOT equal to Hrow_ (" << Hrow_ << "), or"
+                        << std::endl << "column of H_ (" << H_.get_cols()
+                        << ") is not NOT equal to Hcol_ (" << Hcol_ << ")"
+                        << std::endl;
+            }
+        }
+
+        std::ifstream inputFileRemotePoints(readFileAddress + "/remotePoints.dat");
+
+        if (!inputFileRemotePoints) {
+            std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
+                    << std::endl;
+        }
+        else {
+
+            if (CONFIG::D != remote_pts_dim_){
+                EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: CONFIG::D must equal to remote point dimension in remotePoints.dat"));
+            }
+
+            std::string tempS;
+            while (std::getline(inputFileRemotePoints, tempS)) {
+                // Skips the line if the first two characters are '//'
+                if (tempS[0] == '/' && tempS[1] == '/')
+                    continue;
+                std::stringstream lineStream(tempS);
+                std::string tempSS;
+                point_type tempP;
+                size_t temp_i = 0;
+                while (std::getline(lineStream, tempSS, ',')) {
+                    assert(temp_i<static_cast<size_t>(remote_pts_dim_));
+                    tempP[temp_i] = static_cast<REAL>(std::stold(tempSS));
+                    temp_i++;
+                }
+                remote_pts_.emplace_back(tempP);
+            }
+
+            assert(remote_pts_.size() == static_cast<size_t>(remote_pts_num_));
+        }
+
+        initialised_ = true;
+    }
+
     // Functions to facilitate ghost points
 
     // Determine bounding box of local points
@@ -1836,158 +1988,6 @@ private:
             std::cerr << "MUI Error [sampler_rbf.h]: CONFIG::D must equal 1-3" << std::endl;
             return 0.;
         }
-    }
-
-    inline void readRBFMatrix(const std::string& readFileAddress) const {
-        std::ifstream inputFileMatrixSize(readFileAddress + "/matrixSize.dat");
-
-        if (!inputFileMatrixSize) {
-            std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address of matrixSize.dat"
-                    << std::endl;
-        }
-        else {
-            std::string tempS;
-            std::vector<INT> tempV;
-            while (std::getline(inputFileMatrixSize, tempS)) {
-                // Skips the line if the first two characters are '//'
-                if (tempS[0] == '/' && tempS[1] == '/')
-                    continue;
-                std::stringstream lineStream(tempS);
-                std::string tempSS;
-                while (std::getline(lineStream, tempSS, ',')) {
-                    tempV.emplace_back(std::stoi(tempSS));
-                }
-            }
-            CABrow_ = tempV[0];
-            CABcol_ = tempV[1];
-            CAArow_ = tempV[2];
-            CAAcol_ = tempV[3];
-            Hrow_ = tempV[4];
-            Hcol_ = tempV[5];
-            remote_pts_num_ = tempV[6];
-            remote_pts_dim_ = tempV[7];
-        }
-
-        std::ifstream inputFileCAB(readFileAddress + "/connectivityAB.dat");
-
-        if (!inputFileCAB) {
-            std::cerr
-                    << "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAB.dat"
-                    << std::endl;
-        }
-        else {
-            connectivityAB_.resize(CABrow_);
-            for (INT i = 0; i < CABrow_; i++) {
-                connectivityAB_[i].resize(CABcol_, -1);
-                std::string tempS;
-                while (std::getline(inputFileCAB, tempS)) {
-                    // Skips the line if the first two characters are '//'
-                    if (tempS[0] == '/' && tempS[1] == '/')
-                        continue;
-                    std::stringstream lineStream(tempS);
-                    std::string tempSS;
-                    std::vector<INT> tempV;
-                    while (std::getline(lineStream, tempSS, ',')) {
-                        tempV.emplace_back(std::stoi(tempSS));
-                    }
-                    connectivityAB_.emplace_back(tempV);
-                }
-            }
-        }
-
-        if (smoothFunc_) {
-            std::ifstream inputFileCAA(readFileAddress + "/connectivityAA.dat");
-
-            if (!inputFileCAA) {
-                std::cerr
-                        << "MUI Error [sampler_rbf.h]: Could not locate the file address on the connectivityAA.dat"
-                        << std::endl;
-            }
-            else {
-                if ((CAArow_ == 0) || (CAAcol_ == 0)) {
-                    std::cerr
-                            << "MUI Error [sampler_rbf.h]: Error on the size of connectivityAA matrix in matrixSize.dat. Number of rows: "
-                            << CAArow_ << " number of columns: " << CAAcol_
-                            << ". Make sure matrices were generated with the smoothing function switched on."
-                            << std::endl;
-                }
-                else {
-                    connectivityAA_.resize(CAArow_);
-
-                    for (INT i = 0; i < CAArow_; i++) {
-                        connectivityAA_[i].resize(CAAcol_, -1);
-                        std::string tempS;
-                        while (std::getline(inputFileCAA, tempS)) {
-                            // Skips the line if the first two characters are '//'
-                            if (tempS[0] == '/' && tempS[1] == '/')
-                                continue;
-                            std::stringstream lineStream(tempS);
-                            std::string tempSS;
-                            std::vector<INT> tempV;
-                            while (std::getline(lineStream, tempSS, ',')) {
-                                tempV.emplace_back(std::stoi(tempSS));
-                            }
-                            connectivityAA_.emplace_back(tempV);
-                        }
-                    }
-                }
-            }
-        }
-
-        H_.resize(Hrow_, Hcol_);
-        H_.set_zero();
-
-        std::ifstream inputFileHMatrix(readFileAddress + "/Hmatrix.dat");
-
-        if (!inputFileHMatrix) {
-            std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
-                    << std::endl;
-        }
-        else {
-            inputFileHMatrix >> H_;
-
-            if ((H_.get_rows() != Hrow_) || (H_.get_cols() != Hcol_)) {
-                std::cerr << "row of H_ (" << H_.get_rows()
-                        << ") is not NOT equal to Hrow_ (" << Hrow_ << "), or"
-                        << std::endl << "column of H_ (" << H_.get_cols()
-                        << ") is not NOT equal to Hcol_ (" << Hcol_ << ")"
-                        << std::endl;
-            }
-        }
-
-        std::ifstream inputFileRemotePoints(readFileAddress + "/remotePoints.dat");
-
-        if (!inputFileRemotePoints) {
-            std::cerr << "MUI Error [sampler_rbf.h]: Could not locate the file address on the Hmatrix.dat"
-                    << std::endl;
-        }
-        else {
-
-            if (CONFIG::D != remote_pts_dim_){
-                EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: CONFIG::D must equal to remote point dimension in remotePoints.dat"));
-            }
-
-            std::string tempS;
-            while (std::getline(inputFileRemotePoints, tempS)) {
-                // Skips the line if the first two characters are '//'
-                if (tempS[0] == '/' && tempS[1] == '/')
-                    continue;
-                std::stringstream lineStream(tempS);
-                std::string tempSS;
-                point_type tempP;
-                size_t temp_i = 0;
-                while (std::getline(lineStream, tempSS, ',')) {
-                    assert(temp_i<static_cast<size_t>(remote_pts_dim_));
-                    tempP[temp_i] = static_cast<REAL>(std::stold(tempSS));
-                    temp_i++;
-                }
-                remote_pts_.emplace_back(tempP);
-            }
-
-            assert(remote_pts_.size() == static_cast<size_t>(remote_pts_num_));
-        }
-
-        initialised_ = true;
     }
 
 protected:
