@@ -169,7 +169,7 @@ public:
         // Create the matrix output folder if a directory name is given
         if ( !writeFileAddress_.empty() ) {
             int createError = 0;
-            #ifdef defined(_WIN32) //Handle creation in Windows
+            #if defined(_WIN32) //Handle creation in Windows
               createError = _mkdir(writeFileAddress_.c_str());
             #else //Handle creation otherwise
               createError = mkdir(writeFileAddress_.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
