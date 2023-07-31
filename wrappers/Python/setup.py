@@ -73,20 +73,18 @@ class CMakeBuild(build_ext):
 
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+        cfg = 'Debug' if self.debug else 'Release'
         cmake_args = shlex.split(os.environ.get("CMAKE_ARGS", ""))
         cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir + "/mui4py",
                        '-DPython3_EXECUTABLE=' + sys.executable,
-                       f'-DPython3_LIBRARIES={sysconfig.get_config_var("LIBDEST")}',
-                       f'-DPython3_INCLUDE_DIRS={sysconfig.get_config_var("INCLUDEPY")}']
-
-        cfg = 'Debug' if self.debug else 'Release'
+                       '-DPython3_INCLUDE_DIRS={sysconfig.get_config_var("INCLUDEPY")}',
+                       '-DCMAKE_BUILD_TYPE=' + cfg]
         build_args = ['--config', cfg]
-        cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
 
         env = os.environ.copy()
-        # default to 3 build threads
+        # default to 2 build threads
         if "CMAKE_BUILD_PARALLEL_LEVEL" not in env:
-            env["CMAKE_BUILD_PARALLEL_LEVEL"] = "3"
+            env["CMAKE_BUILD_PARALLEL_LEVEL"] = "1"
 
         import pybind11
         env['pybind11_DIR'] = pybind11.get_cmake_dir()
@@ -104,7 +102,7 @@ setup(
       version='2.0',
       description='Python bindings for MUI coupling library.',
       url='http://mxui.github.io',
-      author='Eduardo Ramos Fernandez, Chris Richardson',
+      author='Eduardo Ramos Fernandez, Chris Richardson, Wendi Liu',
       author_email='eduardo.rf159@gmail.com',
       license='GPLv3 or Apache v2.0',
       packages=['mui4py', 'mui4py.cpp'],

@@ -153,7 +153,7 @@ if(PYTHON_WRAPPER)
 	    set(_pip_args "--user")	
 	endif()
 	
-	set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python/")
+	set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python")
 
 	add_custom_target(mui4py ALL COMMAND bash -c "${Python_EXECUTABLE} -m pip install ${_pip_args} ${_pkg_mui4py}")	
 
