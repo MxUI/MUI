@@ -174,7 +174,7 @@ public:
             #else //Handle creation otherwise
               createError = mkdir(writeFileAddress_.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
             #endif
-            if (createError != EEXIST)
+            if (createError != 0 && createError != EEXIST)
               EXCEPTION(std::runtime_error("MUI Error [sampler_rbf.h]: Problem creating RBF matrix folder"));
         }
     }

@@ -67,13 +67,10 @@ export PYTHONPATH=$PYTHONPATH:/path/to/MUI/wrappers/Python
 
 # Contact
 
-Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com for any issues about the overall design or *Chris Richardson (Cambridge University)* for issues relating to packaging.
+Please contact *Eduardo Ramos Fernandez* at eduardo.rf159@gmail.com and *Wendi Liu* at wendi.liu@stfc.ac.uk for issues about overall design or *Chris Richardson (Cambridge University)* for issues relating to packaging.
 
 # ToDo List
 
-- Include interface send/receive disable in the bindings.
-- Include multi-time functions in the bindings (partial).
-- Include fucntions to retrieve all points or values in the bindings. 
 - Include boolean OR operation of shapes in the bindings.
 - Write exception hierarchy to replace generic exceptions.
 - Add 'collide' function to library.

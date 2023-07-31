@@ -2,7 +2,7 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
-[31 July 2023, 2.0]
+[01 August 2023, 2.0]
   - Refactor code base into new directory structure
   - Add new coupling algorithms
   - Rename "chrono" filters to "temporal" to avoid conflation with STL and other projects
