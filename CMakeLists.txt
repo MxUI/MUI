@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(MUI VERSION 1.2.4 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
+project(MUI VERSION 2.0 DESCRIPTION "Multiscale Universal Interface" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -75,7 +75,6 @@ if(C_WRAPPER)
  
         set_target_properties(MUI_C_wrapper_static PROPERTIES OUTPUT_NAME MUI_C_wrapper)
 
-        
         target_link_libraries(MUI_C_wrapper ${MPI_CXX_LIBRARIES})
         target_link_libraries(MUI_C_wrapper_static ${MPI_CXX_LIBRARIES})
         

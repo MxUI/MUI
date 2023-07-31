@@ -101,7 +101,7 @@ setup(
       ext_modules=[CMakeExtension('mui4py_mod')],
       cmdclass=dict(build_ext=CMakeBuild),
       name='mui4py',
-      version='1.2.4',
+      version='2.0',
       description='Python bindings for MUI coupling library.',
       url='http://mxui.github.io',
       author='Eduardo Ramos Fernandez, Chris Richardson',

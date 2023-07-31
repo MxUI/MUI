@@ -2,7 +2,7 @@
 # Multiscale Universal Interface Changelog #
 ############################################
 
-[10 February 2023, ongoing]
+[31 July 2023, 2.0]
   - Refactor code base into new directory structure
   - Add new coupling algorithms
   - Rename "chrono" filters to "temporal" to avoid conflation with STL and other projects
@@ -10,8 +10,9 @@
   - Update C and Fortran wrappers
   - Refactor Python wrapper for smaller footprint and CMake based build
   - Update top-level CMake for refactored Python wrapper and directory structure
-  - Add standalone parallel linear algebra capability
-  - Update RBF filter to utilise new parallel linear algebra functionality
+  - Add standalone linear algebra capability mui::linalg
+  - Update RBF filter to utilise new mui::linalg package
+  - Add parallel capability to RBF filter
   - Remove Eigen dependency and USE_RBF compile time parameter
 
 [05 October 2022, 1.2.4]
