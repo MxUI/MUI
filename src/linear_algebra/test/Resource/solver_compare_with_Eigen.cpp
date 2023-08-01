@@ -66,7 +66,7 @@ inline double test00 () {
     const clock_t begin_time = clock();
 
     double cg_solve_tol = 1e-6;
-    int cg_max_iter = 500;
+    int cg_max_iter = 100;
 
     std::pair<int, double> cgReturn;
 
@@ -135,7 +135,7 @@ inline double test01 () {
     const clock_t begin_time = clock();
 
     double cg_solve_tol = 1e-6;
-    int cg_max_iter = 500;
+    int cg_max_iter = 100;
 
     Eigen::SparseMatrix<double> Css;
     Eigen::SparseMatrix<double> Aas;

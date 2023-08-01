@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CC	= mpiicpc -cxx=icpx
+CC	= mpic++
 CFLAGS	= -std=c++11 -O3
 EIGEN_PATH ?= ./
 

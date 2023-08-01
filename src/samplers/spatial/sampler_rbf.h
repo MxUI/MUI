@@ -158,6 +158,7 @@ public:
             cgMaxIter_ = 0;
         if (cgSolveTol_ < 0)
             cgSolveTol_ = 0;
+
         // Initialise the extened local points (ptsExtend_) by assign local points (pts_)
         ptsExtend_.assign(pts_.begin(), pts_.end());
 
