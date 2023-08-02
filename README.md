@@ -1,3 +1,5 @@
+<img src='doc/resources/MUI_logo.png' width='100px'/>
+
 # MUI - Multiscale Universal Interface
 Concurrently coupled numerical simulations using heterogeneous solvers are powerful tools for modeling both multiscale and multiphysics phenomena. However, major modifications to existing codes are often required to enable such simulations, posing significant difficulties in practice. Here we present the Multiscale Universal Interface (MUI), which is capable of facilitating the coupling effort for a wide range of simulation types. 
 
@@ -37,10 +39,14 @@ Should you have any question please do not hesitate to contact the developers, a
 
 ## Examples
 
-| Concurrently coupled simulation of conjugate heat transfer using Finite Element (FEM) - Dissipative Particle Dynamics (DPD) |
+| Computational Fluid Dynamics (CFD) - Finite Element (FEM) Fluid Structure Interaction |
 |:------------------------------------------------------------------------------------------------------------------:|
-| <img src='doc/resources/fem-dpd.jpg' width='1080px'/>                                                                           |
+|<img src='doc/resources/MUI_FSI.jpg' width='616px'/> |
 
-| DPD-SPH coupled simulation of flow past polymer-grafted surface |
+| Finite Element (FEM) - Dissipative Particle Dynamics (DPD) Conjugate Heat Transfer |
 |:------------------------------------------------------------------------------------------------------------------:|
-|<img src='doc/resources/graft.jpg' width='720px'/>|
+| <img src='doc/resources/fem-dpd.jpg' width='540px'/> |
+
+| Dissipative Particle Dynamics (DPD) - Smoothed Particle Hydrodynamics (SPH) flow past a polymer-grafted surface |
+|:------------------------------------------------------------------------------------------------------------------:|
+|<img src='doc/resources/graft.jpg' width='360px'/> |
