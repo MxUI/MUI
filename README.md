@@ -11,7 +11,7 @@ In the publication referenced below, the library is validated by solving three d
 
 ## Licensing
 
-The source code is dual-licensed under either the GNU General Purpose License v3 or Apache License v2.0.
+The source code is dual-licensed under either the GNU General Purpose License v3 or Apache License v2.0, copies of both licenses should have been provided along with this source code.
 
 ## Installation
 
