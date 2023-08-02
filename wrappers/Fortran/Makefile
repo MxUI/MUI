@@ -9,19 +9,10 @@ FFLAGS = -O3 -cpp -std=f2003 -fcheck=all -Wall
 # C++ compilation flags
 CXXFLAGS = -O3 -std=c++11 -fpic -shared
 
-ifdef USE_RBF
-    # Path to Eigen library
-    EIGEN_PATH = /usr/include/eigen3
-    # C compilation flags
-    FFLAGS += -DUSE_RBF
-    # C++ compilation flags
-    CXXFLAGS += -DUSE_RBF -I${EIGEN_PATH}
-endif
-
 default: mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o mui_f_wrapper_general.mod mui_f_wrapper_1d.mod mui_f_wrapper_2d.mod mui_f_wrapper_3d.mod
 	 @echo "Compiling and linking MUI Fortran wrapper..."
-	 ${CCX} ${CXXFLAGS} -o libmui_f_wrapper.so mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o
-	 ${AR} rcs libmui_f_wrapper.a mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o
+	 ${CCX} ${CXXFLAGS} -o libMUI_Fortran_wrapper.so mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o
+	 ${AR} rcs libMUI_Fortran_wrapper.a mui_f_wrapper_general.o mui_f_wrapper_1d.o mui_f_wrapper_2d.o mui_f_wrapper_3d.o
 
 mui_f_wrapper_general.o: mui_f_wrapper_general.cpp
 	 @echo "Generating MUI Fortran wrapper general object file..."
@@ -57,8 +48,8 @@ mui_f_wrapper_3d.mod: mui_f_wrapper_3d.f90
 
 test:
 	 @echo "Compiling and linking MUI Fortran wrapper unit test code..."
-	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 mui_f_wrapper_3d.f90 unit_test.f90 -o unit_test_fortran_wrapper -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
-	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 mui_f_wrapper_3d.f90 unit_test_multi.f90 -o unit_test_multi_fortran_wrapper -L. -lstdc++ -lmpi_cxx -lmui_f_wrapper
+	 ${FC} ${FFLAGS} unit_test.f90 -o unit_test_fortran_wrapper -L. libMUI_Fortran_wrapper.a -lstdc++ -lmpi_cxx
+	 ${FC} ${FFLAGS} mui_f_wrapper_1d.f90 mui_f_wrapper_2d.f90 mui_f_wrapper_3d.f90 unit_test_multi.f90 -o unit_test_multi_fortran_wrapper -L. libMUI_Fortran_wrapper.a -lstdc++ -lmpi_cxx
 	 @echo "Launching unit test code for direct interface creation..."
 	 ${MPI} -np 1 ./unit_test_fortran_wrapper domain1 interface : -np 1 ./unit_test_fortran_wrapper domain2 interface
 	 @echo "Launching unit test code for interface creation using helper fucntion..."

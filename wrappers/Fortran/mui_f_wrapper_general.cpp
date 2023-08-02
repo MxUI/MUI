@@ -47,7 +47,7 @@
  */
 
 // Main MUI header include (contains any other needed includes)
-#include "../../mui.h"
+#include "../../src/mui.h"
 #include "mpi.h"
 
 extern "C" {
@@ -60,6 +60,14 @@ void mui_mpi_split_by_app_f(MPI_Comm **communicator) {
 // Function to split MPI communicator and return new, local communicator using threaded MPI init
 void mui_mpi_split_by_app_threaded_f(MPI_Comm **communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
 	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
+}
+
+void mui_mpi_get_size_f(MPI_Comm *communicator, int *size) {
+	MPI_Comm_size(*communicator, size);
+}
+
+void mui_mpi_get_rank_f(MPI_Comm *communicator, int *rank) {
+	MPI_Comm_rank(*communicator, rank);
 }
 
 }

@@ -49,10 +49,6 @@
 #ifndef CONFIG_C_WRAPPER_H
 #define CONFIG_C_WRAPPER_H
 
-#include "../../util.h"
-#include "../../dim.h"
-#include "../../exception.h"
-
 namespace mui {
 
 struct mui_c_wrapper_1D {
@@ -66,13 +62,17 @@ struct mui_c_wrapper_1D {
 	using REAL = double;						//- REAL data type
 	using INT = int;							//- INT data type
 
-	using time_type = REAL;						//- time_type INT for iteration coupling, REAL for exact coupling
-	using point_type = point<REAL,D>;			//- "point" data type and dimensionality
-	using data_types = type_list<int32_t,		//- Data types that can be used in the interface
-	int64_t,
-	double,
-	float
-	>;
+	using time_type = REAL;						//- INT for iteration coupling, REAL for time-based coupling
+	using iterator_type = INT;					//- Typically INT for sub-iteration count
+	using point_type = point<REAL, D>;			//- "point" data type and dimensionality
+	using data_types = type_list<uint32_t,		//- Data types that can be used in the interface
+								 uint64_t,
+								 int32_t,
+								 int64_t,
+								 double,
+								 float,
+								 std::string
+								>;
 };
 
 struct mui_c_wrapper_2D {
@@ -86,13 +86,17 @@ struct mui_c_wrapper_2D {
 	using REAL = double;						//- REAL data type
 	using INT = int;							//- INT data type
 
-	using time_type = REAL;						//- time_type INT for iteration coupling, REAL for exact coupling
-	using point_type = point<REAL,D>;			//- "point" data type and dimensionality
-	using data_types = type_list<int32_t,		//- Data types that can be used in the interface
-	int64_t,
-	double,
-	float
-	>;
+	using time_type = REAL;						//- INT for iteration coupling, REAL for time-based coupling
+	using iterator_type = INT;					//- Typically INT for sub-iteration count
+	using point_type = point<REAL, D>;			//- "point" data type and dimensionality
+	using data_types = type_list<uint32_t,		//- Data types that can be used in the interface
+								 uint64_t,
+								 int32_t,
+								 int64_t,
+								 double,
+								 float,
+								 std::string
+								>;
 };
 
 struct mui_c_wrapper_3D {
@@ -106,13 +110,17 @@ struct mui_c_wrapper_3D {
 	using REAL = double;						//- REAL data type
 	using INT = int;							//- INT data type
 
-	using time_type = REAL;						//- time_type INT for iteration coupling, REAL for exact coupling
-	using point_type = point<REAL,D>;			//- "point" data type and dimensionality
-	using data_types = type_list<int32_t,		//- Data types that can be used in the interface
-	int64_t,
-	double,
-	float
-	>;
+	using time_type = REAL;						//- INT for iteration coupling, REAL for time-based coupling
+	using iterator_type = INT;					//- Typically INT for sub-iteration count
+	using point_type = point<REAL, D>;			//- "point" data type and dimensionality
+	using data_types = type_list<uint32_t,		//- Data types that can be used in the interface
+								 uint64_t,
+								 int32_t,
+								 int64_t,
+								 double,
+								 float,
+								 std::string
+								>;
 };
 
 }

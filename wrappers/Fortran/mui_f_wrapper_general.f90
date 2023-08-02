@@ -56,17 +56,31 @@ module mui_general_f
     !Function to split MPI communicator and return new, local communicator
     subroutine mui_mpi_split_by_app_f(communicator) bind(C)
       import :: c_ptr
-      type(c_ptr), intent(out), target :: communicator(*)
+      type(c_ptr), intent(out), target :: communicator
     end subroutine mui_mpi_split_by_app_f
 
     !Function to split MPI communicator and return new, local communicator
     subroutine mui_mpi_split_by_app_threaded_f(communicator,argc,argv,threadType,thread_support) bind(C)
       import :: c_ptr,c_char,c_int
-      type(c_ptr), intent(out), target :: thread_support(*)
-      type(c_ptr), intent(out), target :: communicator(*)
+      type(c_ptr), intent(out), target :: thread_support
+      type(c_ptr), intent(out), target :: communicator
       integer(kind=c_int), intent(in) :: argc, threadType
       character(kind=c_char), intent(in), dimension(argc) :: argv(*)
     end subroutine mui_mpi_split_by_app_threaded_f
+
+    !Function to get MPI size
+    subroutine mui_mpi_get_size_f(communicator,local_size) bind(C)
+      import :: c_ptr,c_int
+      type(c_ptr), intent(out), target :: communicator
+      integer(kind=c_int), intent(in) :: local_size
+    end subroutine mui_mpi_get_size_f
+
+    !Function to get MPI rank
+    subroutine mui_mpi_get_rank_f(communicator,local_rank) bind(C)
+      import :: c_ptr,c_int
+      type(c_ptr), intent(out), target :: communicator
+      integer(kind=c_int), intent(in) :: local_rank
+    end subroutine mui_mpi_get_rank_f
 
   end interface 
 

@@ -6,6 +6,8 @@ project(mui4py)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_INCLUDE_DIRECTORIES})
+include_directories(${PROJECT_SOURCE_DIR}/../../src)
 
 # Development component which includes both Development.Module and
 # Development.Embed is not required for building a Python module.  Correct
@@ -41,18 +43,16 @@ find_package(
 # target_link_libraries
 pybind11_add_module(mui4py_mod MODULE
   mui4py/cpp/mui4py.cpp
+  mui4py/cpp/geometry.cpp
   mui4py/cpp/sampler.cpp
-  mui4py/cpp/chrono_sampler.cpp
-  mui4py/cpp/geometry.cpp)
-
-if(USE_RBF)
-  # Note that -fpermissive is required to compile using the rbf sampler
-  # and that it is not supported by clang++
-  find_package(Eigen3 REQUIRED NO_MODULE)
-  target_include_directories(mui4py_mod PRIVATE ${EIGEN3_INCLUDE_DIR})
-  target_compile_definitions(mui4py_mod PRIVATE USE_RBF)
-  target_compile_options(mui4py_mod PRIVATE -fpermissive)
-endif()
+  mui4py/cpp/temporal_sampler.cpp
+  mui4py/cpp/algorithm.cpp
+  mui4py/cpp/uniface1d.cpp
+  mui4py/cpp/uniface2d.cpp
+  mui4py/cpp/uniface3d.cpp
+  mui4py/cpp/uniface1f.cpp
+  mui4py/cpp/uniface2f.cpp
+  mui4py/cpp/uniface3f.cpp)
 
 target_include_directories(mui4py_mod PRIVATE ${MPI_INCLUDE_PATH} ../..)
 target_compile_definitions(mui4py_mod PRIVATE PYTHON_BINDINGS PYTHON_INT_${NUMPY_INT_SIZE})
