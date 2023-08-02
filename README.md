@@ -1,5 +1,3 @@
-<img src='doc/resources/MUI_logo.png' width='100px'/>
-
 # MUI - Multiscale Universal Interface
 Concurrently coupled numerical simulations using heterogeneous solvers are powerful tools for modeling both multiscale and multiphysics phenomena. However, major modifications to existing codes are often required to enable such simulations, posing significant difficulties in practice. Here we present the Multiscale Universal Interface (MUI), which is capable of facilitating the coupling effort for a wide range of simulation types. 
 
