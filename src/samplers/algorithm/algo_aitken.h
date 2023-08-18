@@ -637,308 +637,308 @@ private:
 
         if (t.second <= minimum_iterator_) {
 
-			under_relaxation_factor_.insert(under_relaxation_factor_.begin(),std::make_pair(t, init_under_relaxation_factor_));
+            under_relaxation_factor_.insert(under_relaxation_factor_.begin(),std::make_pair(t, init_under_relaxation_factor_));
 
-			under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
-				under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-			return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-					(t.second == b.first.second);});
+            under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
+                under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+            return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                    (t.second == b.first.second);});
 
-			auto mi = minimum_iterator_;
-			under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-				under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-			return ((t.second == mi) ?
-					(b.first.first < t.first) ||
-					 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-					  (b.first.second == (mi - 1))) :
-					((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-					 (b.first.second < t.second));});
+            auto mi = minimum_iterator_;
+            under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
+                under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+            return ((t.second == mi) ?
+                    (b.first.first < t.first) ||
+                     (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                      (b.first.second == (mi - 1))) :
+                    ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                     (b.first.second < t.second));});
 
-			auto present_res_iter = std::find_if(pts_time_res_.begin(), pts_time_res_.end(),
-				[t](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
-					return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-							(t.second == b.first.second);});
+            auto present_res_iter = std::find_if(pts_time_res_.begin(), pts_time_res_.end(),
+                [t](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                    return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                            (t.second == b.first.second);});
 
-			mi = minimum_iterator_;
-			auto res_l2_norm_iter = std::find_if(residual_l2_norm_.begin(),
-				residual_l2_norm_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
-			return (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-					 (b.first.second == t.second));});
+            mi = minimum_iterator_;
+            auto res_l2_norm_iter = std::find_if(residual_l2_norm_.begin(),
+                residual_l2_norm_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
+            return (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                     (b.first.second == t.second));});
 
-			if ((present_res_iter != std::end(pts_time_res_)) && (res_l2_norm_iter == std::end(residual_l2_norm_))) {
+            if ((present_res_iter != std::end(pts_time_res_)) && (res_l2_norm_iter == std::end(residual_l2_norm_))) {
 
-				REAL local_residual_mag_sq_sum_temp = 0.0;
-				REAL residual_mag_sq_sum_temp = 0.0;
+                REAL local_residual_mag_sq_sum_temp = 0.0;
+                REAL residual_mag_sq_sum_temp = 0.0;
 
-				for (auto & element_pair : present_res_iter->second) {
-					local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
-				}
+                for (auto & element_pair : present_res_iter->second) {
+                    local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
+                }
 
-				if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
-					residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
-				} else {
-					MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
-				}
+                if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+                    residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
+                } else {
+                    MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
+                }
 
-				if((residual_mag_sq_sum_temp != 0) || (!residual_l2_norm_.empty())){
-					residual_l2_norm_.insert(residual_l2_norm_.begin(),
-						std::make_pair(
-							present_res_iter->first, (
-								std::make_pair(
-									static_cast<INT>(
-										present_res_iter->second.size()
-									), std::sqrt(residual_mag_sq_sum_temp)
-								)
-							)
-						)
-					);
-				}
-			}
+                if((residual_mag_sq_sum_temp != 0) || (!residual_l2_norm_.empty())){
+                    residual_l2_norm_.insert(residual_l2_norm_.begin(),
+                        std::make_pair(
+                            present_res_iter->first, (
+                                std::make_pair(
+                                    static_cast<INT>(
+                                        present_res_iter->second.size()
+                                    ), std::sqrt(residual_mag_sq_sum_temp)
+                                )
+                            )
+                        )
+                    );
+                }
+            }
 
         } else {
 
-			if (under_relaxation_present_iter==std::end(under_relaxation_factor_)) {
+            if (under_relaxation_present_iter==std::end(under_relaxation_factor_)) {
 
-				if(res_l2_norm_nm2_iter == std::end(residual_l2_norm_) ) {
+                if(res_l2_norm_nm2_iter == std::end(residual_l2_norm_) ) {
 
-					under_relaxation_factor_.insert(under_relaxation_factor_.begin(),std::make_pair(t, init_under_relaxation_factor_));
+                    under_relaxation_factor_.insert(under_relaxation_factor_.begin(),std::make_pair(t, init_under_relaxation_factor_));
 
-					under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
-						under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-					return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-							(t.second == b.first.second);});
+                    under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
+                        under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                    return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                            (t.second == b.first.second);});
 
-					auto mi = minimum_iterator_;
-					under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-						under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-					return ((t.second == mi) ?
-							(b.first.first < t.first) ||
-							 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-							  (b.first.second == (mi - 1))) :
-							((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-							 (b.first.second < t.second));});
+                    auto mi = minimum_iterator_;
+                    under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
+                        under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                    return ((t.second == mi) ?
+                            (b.first.first < t.first) ||
+                             (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                              (b.first.second == (mi - 1))) :
+                            ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                             (b.first.second < t.second));});
 
 
-				} else {
+                } else {
 
-					if(res_l2_norm_nm2_iter->second.first != 0 ) {
-						auto pts_time_res_nm2_iter = std::find_if(pts_time_res_.begin(),
-						pts_time_res_.end(), [res_l2_norm_nm2_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
-						return ((res_l2_norm_nm2_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								(res_l2_norm_nm2_iter->first.second == b.first.second);});
+                    if(res_l2_norm_nm2_iter->second.first != 0 ) {
+                        auto pts_time_res_nm2_iter = std::find_if(pts_time_res_.begin(),
+                        pts_time_res_.end(), [res_l2_norm_nm2_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                        return ((res_l2_norm_nm2_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                (res_l2_norm_nm2_iter->first.second == b.first.second);});
 
-						assert(pts_time_res_nm2_iter != std::end(pts_time_res_) );
+                        assert(pts_time_res_nm2_iter != std::end(pts_time_res_) );
 
-						if(pts_time_res_nm2_iter->second.size() != static_cast<size_t>(res_l2_norm_nm2_iter->second.first)) {
+                        if(pts_time_res_nm2_iter->second.size() != static_cast<size_t>(res_l2_norm_nm2_iter->second.first)) {
 
-							REAL local_residual_mag_sq_sum_temp = 0.0;
-							REAL residual_mag_sq_sum_temp = 0.0;
+                            REAL local_residual_mag_sq_sum_temp = 0.0;
+                            REAL residual_mag_sq_sum_temp = 0.0;
 
-							for (auto & element_pair : pts_time_res_nm2_iter->second) {
-								local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
-							}
+                            for (auto & element_pair : pts_time_res_nm2_iter->second) {
+                                local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
+                            }
 
-							if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
-								residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
-							} else {
-								MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
-							}
+                            if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+                                residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
+                            } else {
+                                MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
+                            }
 
-							res_l2_norm_nm2_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
+                            res_l2_norm_nm2_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
 
-							update_under_relaxation_factor(res_l2_norm_nm2_iter->first);
-						}
+                            update_under_relaxation_factor(res_l2_norm_nm2_iter->first);
+                        }
 
-						auto pts_time_res_nm1_iter = std::find_if(pts_time_res_.begin(),
-						pts_time_res_.end(), [res_l2_norm_nm1_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
-						return ((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								(res_l2_norm_nm1_iter->first.second == b.first.second);});
+                        auto pts_time_res_nm1_iter = std::find_if(pts_time_res_.begin(),
+                        pts_time_res_.end(), [res_l2_norm_nm1_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                        return ((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                (res_l2_norm_nm1_iter->first.second == b.first.second);});
 
-						if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
+                        if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
 
-							REAL local_residual_mag_sq_sum_temp = 0.0;
-							REAL residual_mag_sq_sum_temp = 0.0;
+                            REAL local_residual_mag_sq_sum_temp = 0.0;
+                            REAL residual_mag_sq_sum_temp = 0.0;
 
-							for (auto & element_pair : pts_time_res_nm1_iter->second) {
-								local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
-							}
+                            for (auto & element_pair : pts_time_res_nm1_iter->second) {
+                                local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
+                            }
 
-							if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
-								residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
-							} else {
-								MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
-							}
+                            if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+                                residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
+                            } else {
+                                MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
+                            }
 
-							res_l2_norm_nm1_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
+                            res_l2_norm_nm1_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
 
-							update_under_relaxation_factor(res_l2_norm_nm1_iter->first);
-						}
-					}
+                            update_under_relaxation_factor(res_l2_norm_nm1_iter->first);
+                        }
+                    }
 
-					double nominator   = res_l2_norm_nm2_iter->second.second;
-					double denominator = res_l2_norm_nm1_iter->second.second - res_l2_norm_nm2_iter->second.second;
+                    double nominator   = res_l2_norm_nm2_iter->second.second;
+                    double denominator = res_l2_norm_nm1_iter->second.second - res_l2_norm_nm2_iter->second.second;
 
-					if (denominator != 0.0 ) {
+                    if (denominator != 0.0 ) {
 
-						if (under_relaxation_prev_iter==std::end(under_relaxation_factor_)) {
-							under_relaxation_factor_.insert(under_relaxation_factor_.begin(),
-								std::make_pair(
-									t, calculate_aitken_constraint_pnz_control(init_under_relaxation_factor_)
-								)
-							);
+                        if (under_relaxation_prev_iter==std::end(under_relaxation_factor_)) {
+                            under_relaxation_factor_.insert(under_relaxation_factor_.begin(),
+                                std::make_pair(
+                                    t, calculate_aitken_constraint_pnz_control(init_under_relaxation_factor_)
+                                )
+                            );
 
-							under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
-								under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-							return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								(t.second == b.first.second);
-							});
+                            under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
+                                under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                            return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                (t.second == b.first.second);
+                            });
 
-							auto mi = minimum_iterator_;
-							under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-								under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-							return ((t.second == mi) ?
-									(b.first.first < t.first) ||
-									 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-									  (b.first.second == (mi - 1))) :
-									((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-									 (b.first.second < t.second));});
-						} else {
-							under_relaxation_factor_.insert(under_relaxation_factor_.begin(),
-								std::make_pair(
-									t, calculate_aitken_constraint_pnz_control(
-										-under_relaxation_prev_iter->second * (nominator/denominator)
-									)
-								)
-							);
+                            auto mi = minimum_iterator_;
+                            under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
+                                under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                            return ((t.second == mi) ?
+                                    (b.first.first < t.first) ||
+                                     (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                      (b.first.second == (mi - 1))) :
+                                    ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                     (b.first.second < t.second));});
+                        } else {
+                            under_relaxation_factor_.insert(under_relaxation_factor_.begin(),
+                                std::make_pair(
+                                    t, calculate_aitken_constraint_pnz_control(
+                                        -under_relaxation_prev_iter->second * (nominator/denominator)
+                                    )
+                                )
+                            );
 
-							under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
-								under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-							return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								(t.second == b.first.second);});
+                            under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
+                                under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                            return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                (t.second == b.first.second);});
 
-							auto mi = minimum_iterator_;
-							under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-								under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-							return ((t.second == mi) ?
-									(b.first.first < t.first) ||
-									 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-									  (b.first.second == (mi - 1))) :
-									((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-									 (b.first.second < t.second));});
-						}
+                            auto mi = minimum_iterator_;
+                            under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
+                                under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                            return ((t.second == mi) ?
+                                    (b.first.first < t.first) ||
+                                     (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                      (b.first.second == (mi - 1))) :
+                                    ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                     (b.first.second < t.second));});
+                        }
 
-					} else {
-						under_relaxation_factor_.insert(under_relaxation_factor_.begin(),std::make_pair(t, init_under_relaxation_factor_));
+                    } else {
+                        under_relaxation_factor_.insert(under_relaxation_factor_.begin(),std::make_pair(t, init_under_relaxation_factor_));
 
-						under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
-							under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-						return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
-								(t.second == b.first.second);});
+                        under_relaxation_present_iter = std::find_if(under_relaxation_factor_.begin(),
+                            under_relaxation_factor_.end(), [t](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                        return ((t.first - b.first.first) < std::numeric_limits<REAL>::epsilon()) &&
+                                (t.second == b.first.second);});
 
-						auto mi = minimum_iterator_;
-						under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
-							under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
-						return ((t.second == mi) ?
-								(b.first.first < t.first) ||
-								 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								  (b.first.second == (mi - 1))) :
-								((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								 (b.first.second < t.second));});
-					}
-				}
-			} else {
+                        auto mi = minimum_iterator_;
+                        under_relaxation_prev_iter = std::find_if(under_relaxation_factor_.begin(),
+                            under_relaxation_factor_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>, REAL> b) {
+                        return ((t.second == mi) ?
+                                (b.first.first < t.first) ||
+                                 (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                  (b.first.second == (mi - 1))) :
+                                ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                 (b.first.second < t.second));});
+                    }
+                }
+            } else {
 
-				assert(under_relaxation_present_iter!=std::end(under_relaxation_factor_));
+                assert(under_relaxation_present_iter!=std::end(under_relaxation_factor_));
 
-				if(res_l2_norm_nm2_iter == std::end(residual_l2_norm_) ) {
-					if(under_relaxation_present_iter->second != init_under_relaxation_factor_) {
-						std::cout << "change under Relax Factor to its initial value." << std::endl;
-						under_relaxation_present_iter->second = init_under_relaxation_factor_;
-					}
-				} else {
+                if(res_l2_norm_nm2_iter == std::end(residual_l2_norm_) ) {
+                    if(under_relaxation_present_iter->second != init_under_relaxation_factor_) {
+                        std::cout << "change under Relax Factor to its initial value." << std::endl;
+                        under_relaxation_present_iter->second = init_under_relaxation_factor_;
+                    }
+                } else {
 
-					if(res_l2_norm_nm2_iter->second.first != 0 ) {
-						auto pts_time_res_nm2_iter = std::find_if(pts_time_res_.begin(),
-						pts_time_res_.end(), [res_l2_norm_nm2_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
-						return ((res_l2_norm_nm2_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								(res_l2_norm_nm2_iter->first.second == b.first.second);});
+                    if(res_l2_norm_nm2_iter->second.first != 0 ) {
+                        auto pts_time_res_nm2_iter = std::find_if(pts_time_res_.begin(),
+                        pts_time_res_.end(), [res_l2_norm_nm2_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                        return ((res_l2_norm_nm2_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                (res_l2_norm_nm2_iter->first.second == b.first.second);});
 
-						assert(pts_time_res_nm2_iter != std::end(pts_time_res_) );
+                        assert(pts_time_res_nm2_iter != std::end(pts_time_res_) );
 
-						if(pts_time_res_nm2_iter->second.size() != static_cast<size_t>(res_l2_norm_nm2_iter->second.first)) {
+                        if(pts_time_res_nm2_iter->second.size() != static_cast<size_t>(res_l2_norm_nm2_iter->second.first)) {
 
-							REAL local_residual_mag_sq_sum_temp = 0.0;
-							REAL residual_mag_sq_sum_temp = 0.0;
+                            REAL local_residual_mag_sq_sum_temp = 0.0;
+                            REAL residual_mag_sq_sum_temp = 0.0;
 
-							for (auto & element_pair : pts_time_res_nm2_iter->second) {
-								local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
-							}
+                            for (auto & element_pair : pts_time_res_nm2_iter->second) {
+                                local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
+                            }
 
-							if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
-								residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
-							} else {
-								MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
-							}
+                            if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+                                residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
+                            } else {
+                                MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
+                            }
 
-							res_l2_norm_nm2_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
+                            res_l2_norm_nm2_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
 
-						}
+                        }
 
-						auto pts_time_res_nm1_iter = std::find_if(pts_time_res_.begin(),
-						pts_time_res_.end(), [res_l2_norm_nm1_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
-						return (((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
-								(res_l2_norm_nm1_iter->first.second == b.first.second));});
+                        auto pts_time_res_nm1_iter = std::find_if(pts_time_res_.begin(),
+                        pts_time_res_.end(), [res_l2_norm_nm1_iter](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+                        return (((res_l2_norm_nm1_iter->first.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+                                (res_l2_norm_nm1_iter->first.second == b.first.second));});
 
-						if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
+                        if(pts_time_res_nm1_iter->second.size() != static_cast<size_t>(res_l2_norm_nm1_iter->second.first)) {
 
-							REAL local_residual_mag_sq_sum_temp = 0.0;
-							REAL residual_mag_sq_sum_temp = 0.0;
+                            REAL local_residual_mag_sq_sum_temp = 0.0;
+                            REAL residual_mag_sq_sum_temp = 0.0;
 
-							for (auto & element_pair : pts_time_res_nm1_iter->second) {
-								local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
-							}
+                            for (auto & element_pair : pts_time_res_nm1_iter->second) {
+                                local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
+                            }
 
-							if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
-								residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
-							} else {
-								MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
-							}
+                            if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+                                residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
+                            } else {
+                                MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
+                            }
 
-							res_l2_norm_nm1_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
+                            res_l2_norm_nm1_iter->second.second = std::sqrt(residual_mag_sq_sum_temp);
 
-							update_under_relaxation_factor(res_l2_norm_nm1_iter->first);
-						}
-					}
+                            update_under_relaxation_factor(res_l2_norm_nm1_iter->first);
+                        }
+                    }
 
-					double nominator   = res_l2_norm_nm2_iter->second.second;
-					double denominator = res_l2_norm_nm1_iter->second.second - res_l2_norm_nm2_iter->second.second;
+                    double nominator   = res_l2_norm_nm2_iter->second.second;
+                    double denominator = res_l2_norm_nm1_iter->second.second - res_l2_norm_nm2_iter->second.second;
 
-					if (denominator != 0.0 ) {
+                    if (denominator != 0.0 ) {
 
-						if (under_relaxation_prev_iter==std::end(under_relaxation_factor_)) {
-							if(under_relaxation_present_iter->second != calculate_aitken_constraint_pnz_control(init_under_relaxation_factor_)
-							) {
-								std::cout << "Update under Relx Factor. Position 01." << std::endl;
-								under_relaxation_present_iter->second = calculate_aitken_constraint_pnz_control(init_under_relaxation_factor_);
-							}
-						} else {
-							if(under_relaxation_present_iter->second != calculate_aitken_constraint_pnz_control(
-								-under_relaxation_prev_iter->second * (nominator/denominator))
-							) {
-								std::cout << "Update under Relx Factor. Position 02." << std::endl;
-								under_relaxation_present_iter->second = calculate_aitken_constraint_pnz_control(
-									-under_relaxation_prev_iter->second * (nominator/denominator)
-								);
-							}
-						}
-					} else {
-						if(under_relaxation_present_iter->second != init_under_relaxation_factor_) {
-								std::cout << "Update under Relx Factor. Position 03." << std::endl;
-								under_relaxation_present_iter->second = init_under_relaxation_factor_;
-						}
-					}
-				}
-			}
+                        if (under_relaxation_prev_iter==std::end(under_relaxation_factor_)) {
+                            if(under_relaxation_present_iter->second != calculate_aitken_constraint_pnz_control(init_under_relaxation_factor_)
+                            ) {
+                                std::cout << "Update under Relx Factor. Position 01." << std::endl;
+                                under_relaxation_present_iter->second = calculate_aitken_constraint_pnz_control(init_under_relaxation_factor_);
+                            }
+                        } else {
+                            if(under_relaxation_present_iter->second != calculate_aitken_constraint_pnz_control(
+                                -under_relaxation_prev_iter->second * (nominator/denominator))
+                            ) {
+                                std::cout << "Update under Relx Factor. Position 02." << std::endl;
+                                under_relaxation_present_iter->second = calculate_aitken_constraint_pnz_control(
+                                    -under_relaxation_prev_iter->second * (nominator/denominator)
+                                );
+                            }
+                        }
+                    } else {
+                        if(under_relaxation_present_iter->second != init_under_relaxation_factor_) {
+                                std::cout << "Update under Relx Factor. Position 03." << std::endl;
+                                under_relaxation_present_iter->second = init_under_relaxation_factor_;
+                        }
+                    }
+                }
+            }
         }
     }
 
