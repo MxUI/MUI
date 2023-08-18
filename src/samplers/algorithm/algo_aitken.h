@@ -654,6 +654,47 @@ private:
 					((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
 					 (b.first.second < t.second));});
 
+			auto present_res_iter = std::find_if(pts_time_res_.begin(), pts_time_res_.end(),
+				[t](std::pair<std::pair<time_type,iterator_type>,std::vector<std::pair<point_type, REAL>>> b) {
+					return ((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+							(t.second == b.first.second);});
+
+			mi = minimum_iterator_;
+			auto res_l2_norm_iter = std::find_if(residual_l2_norm_.begin(),
+				residual_l2_norm_.end(), [t, &mi](std::pair<std::pair<time_type,iterator_type>,std::pair<INT, REAL>> b) {
+			return (((t.first - b.first.first) < std::numeric_limits<time_type>::epsilon()) &&
+					 (b.first.second == t.second));});
+
+			if ((present_res_iter != std::end(pts_time_res_)) && (res_l2_norm_iter == std::end(residual_l2_norm_))) {
+
+				REAL local_residual_mag_sq_sum_temp = 0.0;
+				REAL residual_mag_sq_sum_temp = 0.0;
+
+				for (auto & element_pair : present_res_iter->second) {
+					local_residual_mag_sq_sum_temp += std::pow(element_pair.second, 2);
+				}
+
+				if ( local_mpi_comm_world_ == MPI_COMM_NULL ) {
+					residual_mag_sq_sum_temp = local_residual_mag_sq_sum_temp;
+				} else {
+					MPI_Allreduce(&local_residual_mag_sq_sum_temp, &residual_mag_sq_sum_temp, 1, MPI_DOUBLE, MPI_SUM, local_mpi_comm_world_);
+				}
+
+				if((residual_mag_sq_sum_temp != 0) || (!residual_l2_norm_.empty())){
+					residual_l2_norm_.insert(residual_l2_norm_.begin(),
+						std::make_pair(
+							present_res_iter->first, (
+								std::make_pair(
+									static_cast<INT>(
+										present_res_iter->second.size()
+									), std::sqrt(residual_mag_sq_sum_temp)
+								)
+							)
+						)
+					);
+				}
+			}
+
         } else {
 
 			if (under_relaxation_present_iter==std::end(under_relaxation_factor_)) {
