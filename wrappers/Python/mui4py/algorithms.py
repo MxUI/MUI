@@ -67,19 +67,34 @@ class Algorithm(CppClass):
 Algorithm.fetch_signature = algorithm_signature
 
 class AlgorithmFixedRelaxation(Algorithm):
-    def __init__(self, under_relaxation_factor=None, pts_value_init=None, config=None):
+    def __init__(self, under_relaxation_factor=None, local_comm=None, pts_value_init=None, config=None):
         if config is None:
             self.config=Config()
         else:
             self.config=config
         if pts_value_init is not None:
-            super(AlgorithmFixedRelaxation, self).__init__(config, args=(under_relaxation_factor, pts_value_init))
+            super(AlgorithmFixedRelaxation, self).__init__(config, args=(under_relaxation_factor, local_comm, pts_value_init))
         else:
-            if under_relaxation_factor is not None:
-                super(AlgorithmFixedRelaxation, self).__init__(config, args=(under_relaxation_factor,))
+            if local_comm is not None:
+                super(AlgorithmFixedRelaxation, self).__init__(config, args=(under_relaxation_factor, local_comm, []))
             else:
-                super(AlgorithmFixedRelaxation, self).__init__()
+                if under_relaxation_factor is not None:
+                    super(AlgorithmFixedRelaxation, self).__init__(config, args=(under_relaxation_factor, None, []))
+                else:
+                    super(AlgorithmFixedRelaxation, self).__init__(1.0, None, [])
         self._ALLOWED_IO_TYPES = [INT, INT32, INT64, UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64]
+
+    def get_under_relaxation_factor(self, t1, t2=None):
+        if t2 is not None:
+            return self.raw.get_under_relaxation_factor(t1, t2)
+        else:
+            return self.raw.get_under_relaxation_factor(t1)
+
+    def get_residual_L2_Norm(self, t1, t2=None):
+        if t2 is not None:
+            return self.raw.get_residual_L2_Norm(t1, t2)
+        else:
+            return self.raw.get_residual_L2_Norm(t1)
 
 class AlgorithmAitken(Algorithm):
     def __init__(self, under_relaxation_factor=None, under_relaxation_factor_max=None, local_comm=None, pts_vlu_init=None, res_l2_norm_nm1=None, config=None):
