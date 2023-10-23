@@ -1049,7 +1049,7 @@ void mui_destroy_temporal_sampler_sum_2t(mui_temporal_sampler_sum_2t *sampler) {
  *******************************************/
 
 // Fixed relaxation algorithm
-mui_algorithm_fixed_relaxation_2f* mui_create_algorithm_fixed_relaxation_2f(float under_relaxation_factor = 1.0, mui_point_2f *points = nullptr, float *value_init = nullptr, int pair_count = 0) {
+mui_algorithm_fixed_relaxation_2f* mui_create_algorithm_fixed_relaxation_2f(float under_relaxation_factor = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_2f *points = nullptr, float *value_init = nullptr, int pair_count = 0) {
 
 	std::vector<std::pair<mui::point2f, float>> pts_value_init;
 
@@ -1065,10 +1065,10 @@ mui_algorithm_fixed_relaxation_2f* mui_create_algorithm_fixed_relaxation_2f(floa
 		}
 	}
 
-	return new mui_algorithm_fixed_relaxation_2f(under_relaxation_factor, pts_value_init);
+	return new mui_algorithm_fixed_relaxation_2f(under_relaxation_factor, communicator, pts_value_init);
 }
 
-mui_algorithm_fixed_relaxation_2fx* mui_create_algorithm_fixed_relaxation_2fx(float under_relaxation_factor = 1.0, mui_point_2fx *points = nullptr, float *value_init = nullptr, int pair_count = 0) {
+mui_algorithm_fixed_relaxation_2fx* mui_create_algorithm_fixed_relaxation_2fx(float under_relaxation_factor = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_2fx *points = nullptr, float *value_init = nullptr, int pair_count = 0) {
 
 	std::vector<std::pair<mui::point2fx, float>> pts_value_init;
 
@@ -1084,10 +1084,10 @@ mui_algorithm_fixed_relaxation_2fx* mui_create_algorithm_fixed_relaxation_2fx(fl
 		}
 	}
 
-	return new mui_algorithm_fixed_relaxation_2fx(under_relaxation_factor, pts_value_init);
+	return new mui_algorithm_fixed_relaxation_2fx(under_relaxation_factor, communicator, pts_value_init);
 }
 
-mui_algorithm_fixed_relaxation_2d* mui_create_algorithm_fixed_relaxation_2d(double under_relaxation_factor = 1.0, mui_point_2d *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
+mui_algorithm_fixed_relaxation_2d* mui_create_algorithm_fixed_relaxation_2d(double under_relaxation_factor = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_2d *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
 
 	std::vector<std::pair<mui::point2d, double>> pts_value_init;
 
@@ -1103,10 +1103,10 @@ mui_algorithm_fixed_relaxation_2d* mui_create_algorithm_fixed_relaxation_2d(doub
 		}
 	}
 
-	return new mui_algorithm_fixed_relaxation_2d(under_relaxation_factor, pts_value_init);
+	return new mui_algorithm_fixed_relaxation_2d(under_relaxation_factor, communicator, pts_value_init);
 }
 
-mui_algorithm_fixed_relaxation_2dx* mui_create_algorithm_fixed_relaxation_2dx(double under_relaxation_factor = 1.0, mui_point_2dx *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
+mui_algorithm_fixed_relaxation_2dx* mui_create_algorithm_fixed_relaxation_2dx(double under_relaxation_factor = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_2dx *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
 
 	std::vector<std::pair<mui::point2dx, double>> pts_value_init;
 
@@ -1122,10 +1122,10 @@ mui_algorithm_fixed_relaxation_2dx* mui_create_algorithm_fixed_relaxation_2dx(do
 		}
 	}
 
-	return new mui_algorithm_fixed_relaxation_2dx(under_relaxation_factor, pts_value_init);
+	return new mui_algorithm_fixed_relaxation_2dx(under_relaxation_factor, communicator, pts_value_init);
 }
 
-mui_algorithm_fixed_relaxation_2t* mui_create_algorithm_fixed_relaxation_2t(double under_relaxation_factor = 1.0, mui_point_2t *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
+mui_algorithm_fixed_relaxation_2t* mui_create_algorithm_fixed_relaxation_2t(double under_relaxation_factor = 1.0, MPI_Comm communicator = MPI_COMM_NULL, mui_point_2t *points = nullptr, double *value_init = nullptr, int pair_count = 0) {
 
 	std::vector<std::pair<mui::mui_c_wrapper_2D::point_type, mui::mui_c_wrapper_2D::REAL>> pts_value_init;
 
@@ -1141,7 +1141,7 @@ mui_algorithm_fixed_relaxation_2t* mui_create_algorithm_fixed_relaxation_2t(doub
 		}
 	}
 
-	return new mui_algorithm_fixed_relaxation_2t(static_cast<mui::mui_c_wrapper_2D::REAL>(under_relaxation_factor), pts_value_init);
+	return new mui_algorithm_fixed_relaxation_2t(static_cast<mui::mui_c_wrapper_2D::REAL>(under_relaxation_factor), communicator, pts_value_init);
 }
 
 // Aitken's algorithm

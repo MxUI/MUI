@@ -1067,9 +1067,10 @@ module mui_3d_f
 
     !Fixed relaxation algorithm
     subroutine mui_create_algorithm_fixed_relaxation_3f_f(algorithm, &
-        under_relaxation_factor,points_1,points_2,points_3,value_init,pair_count) bind(C)
+        under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_float,c_int
       type(c_ptr), intent(out), target :: algorithm
+      type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_float),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1077,9 +1078,10 @@ module mui_3d_f
     end subroutine mui_create_algorithm_fixed_relaxation_3f_f
 
     subroutine mui_create_algorithm_fixed_relaxation_3fx_f(algorithm, &
-        under_relaxation_factor,points_1,points_2,points_3,value_init,pair_count) bind(C)
+        under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_float,c_int
       type(c_ptr), intent(out), target :: algorithm
+      type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_float),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1087,9 +1089,10 @@ module mui_3d_f
     end subroutine mui_create_algorithm_fixed_relaxation_3fx_f
 
     subroutine mui_create_algorithm_fixed_relaxation_3d_f(algorithm, &
-        under_relaxation_factor,points_1,points_2,points_3,value_init,pair_count) bind(C)
+        under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
+      type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1097,9 +1100,10 @@ module mui_3d_f
     end subroutine mui_create_algorithm_fixed_relaxation_3d_f
 
     subroutine mui_create_algorithm_fixed_relaxation_3dx_f(algorithm, &
-        under_relaxation_factor,points_1,points_2,points_3,value_init,pair_count) bind(C)
+        under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
+      type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1107,9 +1111,10 @@ module mui_3d_f
     end subroutine mui_create_algorithm_fixed_relaxation_3dx_f
 
     subroutine mui_create_algorithm_fixed_relaxation_3t_f(algorithm, &
-        under_relaxation_factor,points_1,points_2,points_3,value_init,pair_count) bind(C)
+        under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
+      type(c_ptr), intent(in), target :: communicator(*)
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2,points_3

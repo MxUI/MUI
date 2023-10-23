@@ -363,15 +363,15 @@ void mui_destroy_temporal_sampler_sum_2dx(mui_temporal_sampler_sum_2dx *sampler)
 void mui_destroy_temporal_sampler_sum_2t(mui_temporal_sampler_sum_2t *sampler);
 
 // MUI algorithms creation
-mui_algorithm_fixed_relaxation_2f* mui_create_algorithm_fixed_relaxation_2f(float under_relaxation_factor, mui_point_2f *points,
+mui_algorithm_fixed_relaxation_2f* mui_create_algorithm_fixed_relaxation_2f(float under_relaxation_factor, MPI_Comm communicator, mui_point_2f *points,
 		float *value_init, int pair_count);
-mui_algorithm_fixed_relaxation_2fx* mui_create_algorithm_fixed_relaxation_2fx(float under_relaxation_factor, mui_point_2fx *points,
+mui_algorithm_fixed_relaxation_2fx* mui_create_algorithm_fixed_relaxation_2fx(float under_relaxation_factor, MPI_Comm communicator, mui_point_2fx *points,
 		float *value_init, int pair_count);
-mui_algorithm_fixed_relaxation_2d* mui_create_algorithm_fixed_relaxation_2d(double under_relaxation_factor, mui_point_2d *points,
+mui_algorithm_fixed_relaxation_2d* mui_create_algorithm_fixed_relaxation_2d(double under_relaxation_factor, MPI_Comm communicator, mui_point_2d *points,
 		double *value_init, int pair_count);
-mui_algorithm_fixed_relaxation_2dx* mui_create_algorithm_fixed_relaxation_2dx(double under_relaxation_factor, mui_point_2dx *points,
+mui_algorithm_fixed_relaxation_2dx* mui_create_algorithm_fixed_relaxation_2dx(double under_relaxation_factor, MPI_Comm communicator, mui_point_2dx *points,
 		double *value_init, int pair_count);
-mui_algorithm_fixed_relaxation_2t* mui_create_algorithm_fixed_relaxation_2t(double under_relaxation_factor, mui_point_2t *points,
+mui_algorithm_fixed_relaxation_2t* mui_create_algorithm_fixed_relaxation_2t(double under_relaxation_factor, MPI_Comm communicator, mui_point_2t *points,
 		double *value_init, int pair_count);
 mui_algorithm_aitken_2f* mui_create_algorithm_aitken_2f(float under_relaxation_factor, float under_relaxation_factor_max,
 		MPI_Comm communicator, mui_point_2f *points, float *value_init, int pair_count, float res_l2_norm_nm1);
