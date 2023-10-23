@@ -1241,8 +1241,92 @@ mui_algorithm_aitken_2t* mui_create_algorithm_aitken_2t(double under_relaxation_
 }
 
 /*******************************************
- * Aitken's functions for get info         *
+ * Algorithms functions for get info         *
  *******************************************/
+
+// Fixed relaxation get under relaxation factor functions
+float mui_fixed_relaxation_get_under_relaxation_factor_2f(mui_algorithm_fixed_relaxation_2f *fr, float t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+float mui_fixed_relaxation_get_under_relaxation_factor_2fx(mui_algorithm_fixed_relaxation_2fx *fr, float t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_2d(mui_algorithm_fixed_relaxation_2d *fr, double t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_2dx(mui_algorithm_fixed_relaxation_2dx *fr, double t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_2t(mui_algorithm_fixed_relaxation_2t *fr, double t) {
+	return fr->get_under_relaxation_factor(static_cast<mui::mui_c_wrapper_2D::time_type>(t));
+}
+
+float mui_fixed_relaxation_get_under_relaxation_factor_2f_pair(mui_algorithm_fixed_relaxation_2f *fr, float t, float it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+float mui_fixed_relaxation_get_under_relaxation_factor_2fx_pair(mui_algorithm_fixed_relaxation_2fx *fr, float t, float it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_2d_pair(mui_algorithm_fixed_relaxation_2d *fr, double t, double it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_2dx_pair(mui_algorithm_fixed_relaxation_2dx *fr, double t, double it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_2t_pair(mui_algorithm_fixed_relaxation_2t *fr, double t, double it) {
+	return fr->get_under_relaxation_factor(static_cast<mui::mui_c_wrapper_2D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_2D::iterator_type>(it));
+}
+
+// Fixed relaxation get under relaxation factor functions
+float mui_fixed_relaxation_get_residual_L2_Norm_2f(mui_algorithm_fixed_relaxation_2f *fr, float t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+float mui_fixed_relaxation_get_residual_L2_Norm_2fx(mui_algorithm_fixed_relaxation_2fx *fr, float t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_2d(mui_algorithm_fixed_relaxation_2d *fr, double t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_2dx(mui_algorithm_fixed_relaxation_2dx *fr, double t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_2t(mui_algorithm_fixed_relaxation_2t *fr, double t) {
+	return fr->get_residual_L2_Norm(static_cast<mui::mui_c_wrapper_2D::time_type>(t));
+}
+
+float mui_fixed_relaxation_get_residual_L2_Norm_2f_pair(mui_algorithm_fixed_relaxation_2f *fr, float t, float it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+float mui_fixed_relaxation_get_residual_L2_Norm_2fx_pair(mui_algorithm_fixed_relaxation_2fx *fr, float t, float it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_2d_pair(mui_algorithm_fixed_relaxation_2d *fr, double t, double it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_2dx_pair(mui_algorithm_fixed_relaxation_2dx *fr, double t, double it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_2t_pair(mui_algorithm_fixed_relaxation_2t *fr, double t, double it) {
+	return fr->get_residual_L2_Norm(static_cast<mui::mui_c_wrapper_2D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_2D::iterator_type>(it));
+}
 
 // Aitken's get under relaxation factor functions
 float mui_aitken_get_under_relaxation_factor_2f(mui_algorithm_aitken_2f *aitken, float t) {

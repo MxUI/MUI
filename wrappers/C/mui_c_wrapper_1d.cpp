@@ -1221,8 +1221,92 @@ mui_algorithm_aitken_1t* mui_create_algorithm_aitken_1t(double under_relaxation_
 }
 
 /*******************************************
- * Aitken's functions for get info         *
+ * Algorithms functions for get info         *
  *******************************************/
+
+// Fixed relaxation algorithm get under relaxation factor functions
+float mui_fixed_relaxation_get_under_relaxation_factor_1f(mui_algorithm_fixed_relaxation_1f *fr, float t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+float mui_fixed_relaxation_get_under_relaxation_factor_1fx(mui_algorithm_fixed_relaxation_1fx *fr, float t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_1d(mui_algorithm_fixed_relaxation_1d *fr, double t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_1dx(mui_algorithm_fixed_relaxation_1dx *fr, double t) {
+	return fr->get_under_relaxation_factor(t);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_1t(mui_algorithm_fixed_relaxation_1t *fr, double t) {
+	return fr->get_under_relaxation_factor(static_cast<mui::mui_c_wrapper_1D::time_type>(t));
+}
+
+float mui_fixed_relaxation_get_under_relaxation_factor_1f_pair(mui_algorithm_fixed_relaxation_1f *fr, float t, float it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+float mui_fixed_relaxation_get_under_relaxation_factor_1fx_pair(mui_algorithm_fixed_relaxation_1fx *fr, float t, float it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_1d_pair(mui_algorithm_fixed_relaxation_1d *fr, double t, double it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_1dx_pair(mui_algorithm_fixed_relaxation_1dx *fr, double t, double it) {
+	return fr->get_under_relaxation_factor(t, it);
+}
+
+double mui_fixed_relaxation_get_under_relaxation_factor_1t_pair(mui_algorithm_fixed_relaxation_1t *fr, double t, double it) {
+	return fr->get_under_relaxation_factor(static_cast<mui::mui_c_wrapper_1D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_1D::iterator_type>(it));
+}
+
+// Fixed relaxation algorithm get under relaxation factor functions
+float mui_fixed_relaxation_get_residual_L2_Norm_1f(mui_algorithm_fixed_relaxation_1f *fr, float t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+float mui_fixed_relaxation_get_residual_L2_Norm_1fx(mui_algorithm_fixed_relaxation_1fx *fr, float t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_1d(mui_algorithm_fixed_relaxation_1d *fr, double t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_1dx(mui_algorithm_fixed_relaxation_1dx *fr, double t) {
+	return fr->get_residual_L2_Norm(t);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_1t(mui_algorithm_fixed_relaxation_1t *fr, double t) {
+	return fr->get_residual_L2_Norm(static_cast<mui::mui_c_wrapper_1D::time_type>(t));
+}
+
+float mui_fixed_relaxation_get_residual_L2_Norm_1f_pair(mui_algorithm_fixed_relaxation_1f *fr, float t, float it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+float mui_fixed_relaxation_get_residual_L2_Norm_1fx_pair(mui_algorithm_fixed_relaxation_1fx *fr, float t, float it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_1d_pair(mui_algorithm_fixed_relaxation_1d *fr, double t, double it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_1dx_pair(mui_algorithm_fixed_relaxation_1dx *fr, double t, double it) {
+	return fr->get_residual_L2_Norm(t, it);
+}
+
+double mui_fixed_relaxation_get_residual_L2_Norm_1t_pair(mui_algorithm_fixed_relaxation_1t *fr, double t, double it) {
+	return fr->get_residual_L2_Norm(static_cast<mui::mui_c_wrapper_1D::time_type>(t),
+			static_cast<mui::mui_c_wrapper_1D::iterator_type>(it));
+}
 
 // Aitken's get under relaxation factor functions
 float mui_aitken_get_under_relaxation_factor_1f(mui_algorithm_aitken_1f *aitken, float t) {

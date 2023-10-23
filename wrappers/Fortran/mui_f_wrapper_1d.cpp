@@ -1345,8 +1345,93 @@ void mui_create_algorithm_aitken_1t_f(mui_algorithm_aitken_1t** ret, double* und
 }
 
 /*******************************************
- * Aitken's functions for get info         *
+ * Algorithms functions for get info         *
  *******************************************/
+
+// Fixed relaxation get under relaxation factor functions
+void mui_fixed_relaxation_get_under_relaxation_factor_1f_f(mui_algorithm_fixed_relaxation_1f *fr, float* t, float *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t);
+}
+
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1fx_f(mui_algorithm_fixed_relaxation_1fx *fr, float* t, float *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1d_f(mui_algorithm_fixed_relaxation_1d *fr, double* t, double *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1dx_f(mui_algorithm_fixed_relaxation_1dx *fr, double* t, double *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1t_f(mui_algorithm_fixed_relaxation_1t *fr, double* t, double *return_value) {
+	*return_value = fr->get_under_relaxation_factor(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1f_pair_f(mui_algorithm_fixed_relaxation_1f *fr, float* t, float* it, float *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1fx_pair_f(mui_algorithm_fixed_relaxation_1fx *fr, float* t, float* it, float *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1d_pair_f(mui_algorithm_fixed_relaxation_1d *fr, double* t, double* it, double *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1dx_pair_f(mui_algorithm_fixed_relaxation_1dx *fr, double* t, double* it, double *return_value) {
+	*return_value = fr->get_under_relaxation_factor(*t, *it);
+}
+
+void mui_fixed_relaxation_get_under_relaxation_factor_1t_pair_f(mui_algorithm_fixed_relaxation_1t *fr, double* t, double* it, double *return_value) {
+	*return_value = fr->get_under_relaxation_factor(static_cast<mui::mui_f_wrapper_1D::time_type>(*t),
+			static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it));
+}
+
+// Fixed relaxation get residual L2 Norm functions
+void mui_fixed_relaxation_get_residual_1f_f(mui_algorithm_fixed_relaxation_1f *fr, float* t, float *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t);
+}
+
+void mui_fixed_relaxation_get_residual_1fx_f(mui_algorithm_fixed_relaxation_1fx *fr, float* t, float *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t);
+}
+
+void mui_fixed_relaxation_get_residual_1d_f(mui_algorithm_fixed_relaxation_1d *fr, double* t, double *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t);
+}
+
+void mui_fixed_relaxation_get_residual_1dx_f(mui_algorithm_fixed_relaxation_1dx *fr, double* t, double *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t);
+}
+
+void mui_fixed_relaxation_get_residual_1t_f(mui_algorithm_fixed_relaxation_1t *fr, double* t, double *return_value) {
+	*return_value = fr->get_residual_L2_Norm(static_cast<mui::mui_f_wrapper_1D::time_type>(*t));
+}
+
+void mui_fixed_relaxation_get_residual_1f_pair_f(mui_algorithm_fixed_relaxation_1f *fr, float* t, float* it, float *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_fixed_relaxation_get_residual_1fx_pair_f(mui_algorithm_fixed_relaxation_1fx *fr, float* t, float* it, float *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_fixed_relaxation_get_residual_1d_pair_f(mui_algorithm_fixed_relaxation_1d *fr, double* t, double* it, double *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_fixed_relaxation_get_residual_1dx_pair_f(mui_algorithm_fixed_relaxation_1dx *fr, double* t, double* it, double *return_value) {
+	*return_value = fr->get_residual_L2_Norm(*t, *it);
+}
+
+void mui_fixed_relaxation_get_residual_1t_pair_f(mui_algorithm_fixed_relaxation_1t *fr, double* t, double* it, double *return_value) {
+	*return_value = fr->get_residual_L2_Norm(static_cast<mui::mui_f_wrapper_1D::time_type>(*t),
+			static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it));
+}
 
 // Aitken's get under relaxation factor functions
 void mui_aitken_get_under_relaxation_factor_1f_f(mui_algorithm_aitken_1f *aitken, float* t, float *return_value) {

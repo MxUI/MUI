@@ -384,6 +384,28 @@ mui_algorithm_aitken_2dx* mui_create_algorithm_aitken_2dx(double under_relaxatio
 mui_algorithm_aitken_2t* mui_create_algorithm_aitken_2t(double under_relaxation_factor, double under_relaxation_factor_max,
 		MPI_Comm communicator, mui_point_2t *points, double *value_init, int pair_count, double res_l2_norm_nm1);
 
+// Fixed relaxation algorithms functions for get info
+float mui_fixed_relaxation_get_under_relaxation_factor_2f(mui_algorithm_fixed_relaxation_2f *fr, float t);
+float mui_fixed_relaxation_get_under_relaxation_factor_2fx(mui_algorithm_fixed_relaxation_2fx *fr, float t);
+double mui_fixed_relaxation_get_under_relaxation_factor_2d(mui_algorithm_fixed_relaxation_2d *fr, double t);
+double mui_fixed_relaxation_get_under_relaxation_factor_2dx(mui_algorithm_fixed_relaxation_2dx *fr, double t);
+double mui_fixed_relaxation_get_under_relaxation_factor_2t(mui_algorithm_fixed_relaxation_2t *fr, double t);
+float mui_fixed_relaxation_get_under_relaxation_factor_2f_pair(mui_algorithm_fixed_relaxation_2f *fr, float t, float it);
+float mui_fixed_relaxation_get_under_relaxation_factor_2fx_pair(mui_algorithm_fixed_relaxation_2fx *fr, float t, float it);
+double mui_fixed_relaxation_get_under_relaxation_factor_2d_pair(mui_algorithm_fixed_relaxation_2d *fr, double t, double it);
+double mui_fixed_relaxation_get_under_relaxation_factor_2dx_pair(mui_algorithm_fixed_relaxation_2dx *fr, double t, double it);
+double mui_fixed_relaxation_get_under_relaxation_factor_2t_pair(mui_algorithm_fixed_relaxation_2t *fr, double t, double it);
+float mui_fixed_relaxation_get_residual_L2_Norm_2f(mui_algorithm_fixed_relaxation_2f *fr, float t);
+float mui_fixed_relaxation_get_residual_L2_Norm_2fx(mui_algorithm_fixed_relaxation_2fx *fr, float t);
+double mui_fixed_relaxation_get_residual_L2_Norm_2d(mui_algorithm_fixed_relaxation_2d *fr, double t);
+double mui_fixed_relaxation_get_residual_L2_Norm_2dx(mui_algorithm_fixed_relaxation_2dx *fr, double t);
+double mui_fixed_relaxation_get_residual_L2_Norm_2t(mui_algorithm_fixed_relaxation_2t *fr, double t);
+float mui_fixed_relaxation_get_residual_L2_Norm_2f_pair(mui_algorithm_fixed_relaxation_2f *fr, float t, float it);
+float mui_fixed_relaxation_get_residual_L2_Norm_2fx_pair(mui_algorithm_fixed_relaxation_2fx *fr, float t, float it);
+double mui_fixed_relaxation_get_residual_L2_Norm_2d_pair(mui_algorithm_fixed_relaxation_2d *fr, double t, double it);
+double mui_fixed_relaxation_get_residual_L2_Norm_2dx_pair(mui_algorithm_fixed_relaxation_2dx *fr, double t, double it);
+double mui_fixed_relaxation_get_residual_L2_Norm_2t_pair(mui_algorithm_fixed_relaxation_2t *fr, double t, double it);
+
 // Aitken's algorithms functions for get info
 float mui_aitken_get_under_relaxation_factor_2f(mui_algorithm_aitken_2f *aitken, float t);
 float mui_aitken_get_under_relaxation_factor_2fx(mui_algorithm_aitken_2fx *aitken, float t);

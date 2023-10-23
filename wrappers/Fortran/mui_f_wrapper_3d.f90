@@ -1188,8 +1188,170 @@ module mui_3d_f
     end subroutine mui_create_algorithm_aitken_3t_f
 
     !******************************************
-    !* Aitken's functions for get info        *
+    !* Algorithms functions for get info        *
     !******************************************
+
+    !Fixed relaxation get under relaxation factor functions
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3f_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3f_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3fx_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3fx_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3d_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3d_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3dx_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3dx_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3t_f(algorithm,t, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3t_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3f_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3f_pair_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3fx_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3fx_pair_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3d_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3d_pair_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3dx_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3dx_pair_f
+
+    subroutine mui_fixed_relaxation_get_under_relaxation_factor_3t_pair_f(algorithm,t, &
+        it,return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_under_relaxation_factor_3t_pair_f
+
+    !Fixed relaxation get residual L2 Norm functions
+    subroutine mui_fixed_relaxation_get_residual_3f_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3f_f
+
+    subroutine mui_fixed_relaxation_get_residual_3fx_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3fx_f
+
+    subroutine mui_fixed_relaxation_get_residual_3d_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3d_f
+
+    subroutine mui_fixed_relaxation_get_residual_3dx_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3dx_f
+
+    subroutine mui_fixed_relaxation_get_residual_3t_f(algorithm,t,return_value) &
+        bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3t_f
+
+    subroutine mui_fixed_relaxation_get_residual_3f_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3f_pair_f
+
+    subroutine mui_fixed_relaxation_get_residual_3fx_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_float
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_float), intent(in) :: t,it
+      real(kind=c_float), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3fx_pair_f
+
+    subroutine mui_fixed_relaxation_get_residual_3d_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3d_pair_f
+
+    subroutine mui_fixed_relaxation_get_residual_3dx_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3dx_pair_f
+
+    subroutine mui_fixed_relaxation_get_residual_3t_pair_f(algorithm,t,it, &
+        return_value) bind(C)
+      import :: c_ptr,c_double
+      type(c_ptr), intent(in), value :: algorithm
+      real(kind=c_double), intent(in) :: t,it
+      real(kind=c_double), intent(out) :: return_value
+    end subroutine mui_fixed_relaxation_get_residual_3t_pair_f
 
     !Aitken's get under relaxation factor functions
     subroutine mui_aitken_get_under_relaxation_factor_3f_f(algorithm,t, &
