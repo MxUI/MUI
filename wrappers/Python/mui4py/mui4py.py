@@ -52,7 +52,7 @@ from mui4py.types import safe_cast, map_type, ALLOWED_IO_TYPES, STRING, BOOL, IN
 from mui4py.geometry import Geometry
 from mui4py.samplers import Sampler
 from mui4py.temporal_samplers import TemporalSampler
-from mui4py.algorithms import Algorithm,AlgorithmAitken
+from mui4py.algorithms import Algorithm,AlgorithmAitken,AlgorithmFixedRelaxation
 import copy
 
 
@@ -114,6 +114,10 @@ class Uniface(CppClass):
         self._aitken_residual_l2_norm = []
         self._latest_aitken_under_relaxation_factor = 0.0
         self._latest_aitken_residual_l2_norm = 0.0
+        self._fixed_relaxation_under_relaxation_factor = []
+        self._fixed_relaxation_residual_l2_norm = []
+        self._latest_fixed_relaxation_under_relaxation_factor = 0.0
+        self._latest_fixed_relaxation_residual_l2_norm = 0.0
 
     def _get_tag_type(self, tag):
         try:
@@ -464,6 +468,11 @@ class Uniface(CppClass):
                   self._aitken_residual_l2_norm.append(((time, 0), ca.get_residual_L2_Norm(time)))
                   self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time)
                   self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time)
+              elif(isinstance(ca, AlgorithmFixedRelaxation)):
+                  self._fixed_relaxation_under_relaxation_factor.append(((time, 0), ca.get_under_relaxation_factor(time)))
+                  self._fixed_relaxation_residual_l2_norm.append(((time, 0), ca.get_residual_L2_Norm(time)))
+                  self._latest_fixed_relaxation_under_relaxation_factor = ca.get_under_relaxation_factor(time)
+                  self._latest_fixed_relaxation_residual_l2_norm = ca.get_residual_L2_Norm(time)
               barrier_enabled = True
               fetch = getattr(self.raw, fetch_fname)
               return fetch(tag, points, time, ss.raw, cs.raw, ca.raw, barrier_enabled)
@@ -478,6 +487,11 @@ class Uniface(CppClass):
               self._aitken_residual_l2_norm.append(((time, time2), ca.get_residual_L2_Norm(time, time2)))
               self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time, time2)
               self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time, time2)
+          elif(isinstance(ca, AlgorithmFixedRelaxation)):
+              self._fixed_relaxation_under_relaxation_factor.append(((time, time2), ca.get_under_relaxation_factor(time, time2)))
+              self._fixed_relaxation_residual_l2_norm.append(((time, time2), ca.get_residual_L2_Norm(time, time2)))
+              self._latest_fixed_relaxation_under_relaxation_factor = ca.get_under_relaxation_factor(time, time2)
+              self._latest_fixed_relaxation_residual_l2_norm = ca.get_residual_L2_Norm(time, time2)
           barrier_enabled = True
           fetch = getattr(self.raw, fetch_fname)
           return fetch(tag, points, time, time2, ss.raw, cs.raw, ca.raw, barrier_enabled)
@@ -532,6 +546,11 @@ class Uniface(CppClass):
                     self._aitken_residual_l2_norm.append(((time1, 0), ca.get_residual_L2_Norm(time1)))
                     self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time1)
                     self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time1)
+                if(isinstance(ca, AlgorithmFixedRelaxation)):
+                    self._fixed_relaxation_under_relaxation_factor.append(((time1, 0), ca.get_under_relaxation_factor(time1)))
+                    self._fixed_relaxation_residual_l2_norm.append(((time1, 0), ca.get_residual_L2_Norm(time1)))
+                    self._latest_fixed_relaxation_under_relaxation_factor = ca.get_under_relaxation_factor(time1)
+                    self._latest_fixed_relaxation_residual_l2_norm = ca.get_residual_L2_Norm(time1)
                 barrier_enabled = True
                 if type(time1).__name__ == 'float':
                     barrier_time = mui4py_mod.numeric_limits_real
@@ -553,6 +572,11 @@ class Uniface(CppClass):
                 self._aitken_residual_l2_norm.append(((time1, time2), ca.get_residual_L2_Norm(time1, time2)))
                 self._latest_aitken_under_relaxation_factor = ca.get_under_relaxation_factor(time1, time2)
                 self._latest_aitken_residual_l2_norm = ca.get_residual_L2_Norm(time1, time2)
+            if(isinstance(ca, AlgorithmFixedRelaxation)):
+                self._fixed_relaxation_under_relaxation_factor.append(((time1, time2), ca.get_under_relaxation_factor(time1, time2)))
+                self._fixed_relaxation_residual_l2_norm.append(((time1, time2), ca.get_residual_L2_Norm(time1, time2)))
+                self._latest_fixed_relaxation_under_relaxation_factor = ca.get_under_relaxation_factor(time1, time2)
+                self._latest_fixed_relaxation_residual_l2_norm = ca.get_residual_L2_Norm(time1, time2)
             barrier_enabled = True
             if type(time1).__name__ == 'float':
                 barrier_time = mui4py_mod.numeric_limits_real
@@ -606,3 +630,41 @@ class Uniface(CppClass):
 
     def get_latest_aitken_residual_l2_norm(self):
         return self._latest_aitken_residual_l2_norm
+
+    def get_fixed_relaxation_under_relaxation_factor(self, t, iter=None):
+        return_value = None
+        for element in self._fixed_relaxation_under_relaxation_factor:
+            if element[0][0] == t:
+                if iter is not None:
+                    if element[0][1] == iter:
+                        return_value = element[1]
+                        break
+                else:
+                    return_value = element[1]
+                    break
+        if return_value is None:
+            raise Exception("MUI Error [mui4py.py]: No match found for given t and iter in get_fixed_relaxation_under_relaxation_factor")
+        else:
+            return return_value
+
+    def get_fixed_relaxation_residual_l2_norm(self, t, iter=None):
+        return_value = None
+        for element in self._fixed_relaxation_residual_l2_norm:
+            if element[0][0] == t:
+                if iter is not None:
+                    if element[0][1] == iter:
+                        return_value = element[1]
+                        break
+                else:
+                    return_value = element[1]
+                    break
+        if return_value is None:
+            raise Exception("MUI Error [mui4py.py]: No match found for given t and iter in get_fixed_relaxation_residual_l2_norm")
+        else:
+            return return_value
+
+    def get_latest_fixed_relaxation_under_relaxation_factor(self):
+        return self._latest_fixed_relaxation_under_relaxation_factor
+
+    def get_latest_fixed_relaxation_residual_l2_norm(self):
+        return self._latest_fixed_relaxation_residual_l2_norm
