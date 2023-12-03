@@ -52,22 +52,22 @@
 
 extern "C" {
 
-// Function to split MPI communicator and return new, local communicator
-void mui_mpi_split_by_app_f(MPI_Comm **communicator) {
-	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app());
+// Subroutine to split MPI communicator and return new, local communicator
+void mui_mpi_split_by_app_f(MPI_Fint *communicator) {
+	*communicator = MPI_Comm_c2f(mui::mpi_split_by_app());
 }
 
 // Function to split MPI communicator and return new, local communicator using threaded MPI init
-void mui_mpi_split_by_app_threaded_f(MPI_Comm **communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
-	*communicator = reinterpret_cast<MPI_Comm*>(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
+void mui_mpi_split_by_app_threaded_f(MPI_Fint *communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
+	*communicator = MPI_Comm_c2f(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
 }
 
-void mui_mpi_get_size_f(MPI_Comm *communicator, int *size) {
-	MPI_Comm_size(*communicator, size);
+void mui_mpi_get_size_f(MPI_Fint *communicator, int *size) {
+	MPI_Comm_size(MPI_Comm_f2c(*communicator), size);
 }
 
-void mui_mpi_get_rank_f(MPI_Comm *communicator, int *rank) {
-	MPI_Comm_rank(*communicator, rank);
+void mui_mpi_get_rank_f(MPI_Fint *communicator, int *rank) {
+	MPI_Comm_rank(MPI_Comm_f2c(*communicator), rank);
 }
 
 }

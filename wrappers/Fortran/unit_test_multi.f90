@@ -90,7 +90,7 @@ program main
   real(c_double) :: fetch_result_1d=-3_c_double
   real(c_double) :: fetch_result_2d=-3_c_double
   real(c_double) :: fetch_result_3d=-3_c_double
-  type(c_ptr) :: MUI_COMM_WORLD
+  integer(c_int) :: MUI_COMM_WORLD
   integer(kind=8) :: i
 
   !Read in URI from command line
