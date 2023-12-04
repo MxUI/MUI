@@ -700,7 +700,7 @@ void mui_create_sampler_sum_quintic_2t_f(mui_sampler_sum_quintic_2t** ret, doubl
 // Radial Basis Function sampler
 void mui_create_sampler_rbf_2f_f(mui_sampler_rbf_2f **ret, float* r, float* points_1, float* points_2, int* points_count, int* basis_func,
         int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address,
-    float* cutoff, float* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
+    float* cutoff, float* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Fint* communicator) {
     std::vector<mui::point2f> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -709,12 +709,12 @@ void mui_create_sampler_rbf_2f_f(mui_sampler_rbf_2f **ret, float* r, float* poin
 
     *ret = new mui_sampler_rbf_2f(*r, pts, *basis_func, static_cast<bool>(*conservative),
       static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, MPI_Comm_f2c(*communicator));
 }
 
 void mui_create_sampler_rbf_2fx_f(mui_sampler_rbf_2fx **ret, float* r, float* points_1, float* points_2, int* points_count, int* basis_func,
         int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address,
-    float* cutoff, float* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
+    float* cutoff, float* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Fint* communicator) {
     std::vector<mui::point2fx> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -723,12 +723,12 @@ void mui_create_sampler_rbf_2fx_f(mui_sampler_rbf_2fx **ret, float* r, float* po
 
     *ret = new mui_sampler_rbf_2fx(*r, pts, *basis_func, static_cast<bool>(*conservative),
       static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, MPI_Comm_f2c(*communicator));
 }
 
 void mui_create_sampler_rbf_2d_f(mui_sampler_rbf_2d **ret, double* r, double* points_1, double* points_2, int* points_count, int* basis_func,
         int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address,
-        double* cutoff, double* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
+        double* cutoff, double* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Fint* communicator) {
     std::vector<mui::point2d> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -737,12 +737,12 @@ void mui_create_sampler_rbf_2d_f(mui_sampler_rbf_2d **ret, double* r, double* po
 
     *ret = new mui_sampler_rbf_2d(*r, pts, *basis_func, static_cast<bool>(*conservative),
       static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, MPI_Comm_f2c(*communicator));
 }
 
 void mui_create_sampler_rbf_2dx_f(mui_sampler_rbf_2dx** ret, double* r, double* points_1, double* points_2, int* points_count, int* basis_func,
         int* conservative, int* smoothFunc, int* writeMatrix, const char* file_address,
-        double* cutoff, double* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
+        double* cutoff, double* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Fint* communicator) {
     std::vector<mui::point2dx> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = points_1[i];
@@ -751,12 +751,12 @@ void mui_create_sampler_rbf_2dx_f(mui_sampler_rbf_2dx** ret, double* r, double* 
 
     *ret = new mui_sampler_rbf_2dx(*r, pts, *basis_func, static_cast<bool>(*conservative),
       static_cast<bool>(*smoothFunc), static_cast<bool>(*writeMatrix), std::string(file_address),
-      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, reinterpret_cast<MPI_Comm>(*communicator));
+      *cutoff, *cg_solve_tol, *cg_solve_it, *pou_size, *precond, MPI_Comm_f2c(*communicator));
 }
 
 void mui_create_sampler_rbf_2t_f(mui_sampler_rbf_2t** ret, double* r, double* points_1, double* points_2, int* points_count, int* basis_func,
         int* conservative, int* smoothFunc,int* writeMatrix, const char* file_address,
-        double* cutoff, double* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Comm* communicator) {
+        double* cutoff, double* cg_solve_tol, int* cg_solve_it, int* pou_size, int* precond, MPI_Fint* communicator) {
     std::vector<mui::mui_f_wrapper_2D::point_type> pts(*points_count);
     for (size_t i = 0; i < *points_count; i++) {
         pts[i][0] = static_cast<mui::mui_f_wrapper_2D::REAL>(points_1[i]);
@@ -768,7 +768,7 @@ void mui_create_sampler_rbf_2t_f(mui_sampler_rbf_2t** ret, double* r, double* po
       static_cast<bool>(*writeMatrix), std::string(file_address),
       static_cast<mui::mui_f_wrapper_2D::REAL>(*cutoff), static_cast<mui::mui_f_wrapper_2D::REAL>(*cg_solve_tol),
       static_cast<mui::mui_f_wrapper_2D::INT>(*cg_solve_it), static_cast<mui::mui_f_wrapper_2D::INT>(*pou_size),
-	  static_cast<mui::mui_f_wrapper_2D::INT>(*precond), reinterpret_cast<MPI_Comm>(*communicator));
+	  static_cast<mui::mui_f_wrapper_2D::INT>(*precond), MPI_Comm_f2c(*communicator));
 }
 
 /*******************************************
@@ -1168,7 +1168,7 @@ void mui_destroy_temporal_sampler_sum_2t_f(mui_temporal_sampler_sum_2t* sampler)
  *******************************************/
 
 // Fixed relaxation algorithm
-void mui_create_algorithm_fixed_relaxation_2f_f(mui_algorithm_fixed_relaxation_2f **ret, float* under_relaxation_factor, MPI_Comm* communicator, float* points_1, float* points_2, float* value_init, int* pair_count) {
+void mui_create_algorithm_fixed_relaxation_2f_f(mui_algorithm_fixed_relaxation_2f **ret, float* under_relaxation_factor, MPI_Fint* communicator, float* points_1, float* points_2, float* value_init, int* pair_count) {
 
 	std::vector<std::pair<mui::point2f, float>> pts_value_init;
 
@@ -1184,10 +1184,10 @@ void mui_create_algorithm_fixed_relaxation_2f_f(mui_algorithm_fixed_relaxation_2
 		}
 	}
 
-    *ret = new mui_algorithm_fixed_relaxation_2f(*under_relaxation_factor, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init);
+    *ret = new mui_algorithm_fixed_relaxation_2f(*under_relaxation_factor, MPI_Comm_f2c(*communicator), pts_value_init);
 }
 
-void mui_create_algorithm_fixed_relaxation_2fx_f(mui_algorithm_fixed_relaxation_2fx **ret, float* under_relaxation_factor, MPI_Comm* communicator, float* points_1, float* points_2, float* value_init, int* pair_count) {
+void mui_create_algorithm_fixed_relaxation_2fx_f(mui_algorithm_fixed_relaxation_2fx **ret, float* under_relaxation_factor, MPI_Fint* communicator, float* points_1, float* points_2, float* value_init, int* pair_count) {
 
 	std::vector<std::pair<mui::point2fx, float>> pts_value_init;
 
@@ -1203,10 +1203,10 @@ void mui_create_algorithm_fixed_relaxation_2fx_f(mui_algorithm_fixed_relaxation_
 		}
 	}
 
-    *ret = new mui_algorithm_fixed_relaxation_2fx(*under_relaxation_factor, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init);
+    *ret = new mui_algorithm_fixed_relaxation_2fx(*under_relaxation_factor, MPI_Comm_f2c(*communicator), pts_value_init);
 }
 
-void mui_create_algorithm_fixed_relaxation_2d_f(mui_algorithm_fixed_relaxation_2d **ret, double* under_relaxation_factor, MPI_Comm* communicator, double* points_1, double* points_2, double* value_init, int* pair_count) {
+void mui_create_algorithm_fixed_relaxation_2d_f(mui_algorithm_fixed_relaxation_2d **ret, double* under_relaxation_factor, MPI_Fint* communicator, double* points_1, double* points_2, double* value_init, int* pair_count) {
 
 	std::vector<std::pair<mui::point2d, double>> pts_value_init;
 
@@ -1222,10 +1222,10 @@ void mui_create_algorithm_fixed_relaxation_2d_f(mui_algorithm_fixed_relaxation_2
 		}
 	}
 
-    *ret = new mui_algorithm_fixed_relaxation_2d(*under_relaxation_factor, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init);
+    *ret = new mui_algorithm_fixed_relaxation_2d(*under_relaxation_factor, MPI_Comm_f2c(*communicator), pts_value_init);
 }
 
-void mui_create_algorithm_fixed_relaxation_2dx_f(mui_algorithm_fixed_relaxation_2dx** ret, double* under_relaxation_factor, MPI_Comm* communicator, double* points_1, double* points_2, double* value_init, int* pair_count) {
+void mui_create_algorithm_fixed_relaxation_2dx_f(mui_algorithm_fixed_relaxation_2dx** ret, double* under_relaxation_factor, MPI_Fint* communicator, double* points_1, double* points_2, double* value_init, int* pair_count) {
 
 	std::vector<std::pair<mui::point2dx, double>> pts_value_init;
 
@@ -1241,10 +1241,10 @@ void mui_create_algorithm_fixed_relaxation_2dx_f(mui_algorithm_fixed_relaxation_
 		}
 	}
 
-    *ret = new mui_algorithm_fixed_relaxation_2dx(*under_relaxation_factor, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init);
+    *ret = new mui_algorithm_fixed_relaxation_2dx(*under_relaxation_factor, MPI_Comm_f2c(*communicator), pts_value_init);
 }
 
-void mui_create_algorithm_fixed_relaxation_2t_f(mui_algorithm_fixed_relaxation_2t** ret, double* under_relaxation_factor, MPI_Comm* communicator, double* points_1, double* points_2, double* value_init, int* pair_count) {
+void mui_create_algorithm_fixed_relaxation_2t_f(mui_algorithm_fixed_relaxation_2t** ret, double* under_relaxation_factor, MPI_Fint* communicator, double* points_1, double* points_2, double* value_init, int* pair_count) {
 
 	std::vector<std::pair<mui::mui_f_wrapper_2D::point_type, mui::mui_f_wrapper_2D::REAL>> pts_value_init;
 
@@ -1260,11 +1260,11 @@ void mui_create_algorithm_fixed_relaxation_2t_f(mui_algorithm_fixed_relaxation_2
 		}
 	}
 
-    *ret = new mui_algorithm_fixed_relaxation_2t(static_cast<mui::mui_f_wrapper_2D::REAL>(*under_relaxation_factor), reinterpret_cast<MPI_Comm>(*communicator), pts_value_init);
+    *ret = new mui_algorithm_fixed_relaxation_2t(static_cast<mui::mui_f_wrapper_2D::REAL>(*under_relaxation_factor), MPI_Comm_f2c(*communicator), pts_value_init);
 }
 
 // Aitken's algorithm
-void mui_create_algorithm_aitken_2f_f(mui_algorithm_aitken_2f **ret, float* under_relaxation_factor, float* under_relaxation_factor_max, MPI_Comm* communicator, float* points_1, float* points_2, float* value_init, int* pair_count, float* res_l2_norm_nm1) {
+void mui_create_algorithm_aitken_2f_f(mui_algorithm_aitken_2f **ret, float* under_relaxation_factor, float* under_relaxation_factor_max, MPI_Fint* communicator, float* points_1, float* points_2, float* value_init, int* pair_count, float* res_l2_norm_nm1) {
 
 	std::vector<std::pair<mui::point2f, float>> pts_value_init;
 
@@ -1280,10 +1280,10 @@ void mui_create_algorithm_aitken_2f_f(mui_algorithm_aitken_2f **ret, float* unde
 		}
 	}
 
-    *ret = new mui_algorithm_aitken_2f(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init, *res_l2_norm_nm1);
+    *ret = new mui_algorithm_aitken_2f(*under_relaxation_factor, *under_relaxation_factor_max, MPI_Comm_f2c(*communicator), pts_value_init, *res_l2_norm_nm1);
 }
 
-void mui_create_algorithm_aitken_2fx_f(mui_algorithm_aitken_2fx **ret, float* under_relaxation_factor, float* under_relaxation_factor_max, MPI_Comm* communicator, float* points_1, float* points_2, float* value_init, int* pair_count, float* res_l2_norm_nm1) {
+void mui_create_algorithm_aitken_2fx_f(mui_algorithm_aitken_2fx **ret, float* under_relaxation_factor, float* under_relaxation_factor_max, MPI_Fint* communicator, float* points_1, float* points_2, float* value_init, int* pair_count, float* res_l2_norm_nm1) {
 
 	std::vector<std::pair<mui::point2fx, float>> pts_value_init;
 
@@ -1299,10 +1299,10 @@ void mui_create_algorithm_aitken_2fx_f(mui_algorithm_aitken_2fx **ret, float* un
 		}
 	}
 
-    *ret = new mui_algorithm_aitken_2fx(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init, *res_l2_norm_nm1);
+    *ret = new mui_algorithm_aitken_2fx(*under_relaxation_factor, *under_relaxation_factor_max, MPI_Comm_f2c(*communicator), pts_value_init, *res_l2_norm_nm1);
 }
 
-void mui_create_algorithm_aitken_2d_f(mui_algorithm_aitken_2d **ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Comm* communicator, double* points_1, double* points_2, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
+void mui_create_algorithm_aitken_2d_f(mui_algorithm_aitken_2d **ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Fint* communicator, double* points_1, double* points_2, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
 
 	std::vector<std::pair<mui::point2d, double>> pts_value_init;
 
@@ -1318,10 +1318,10 @@ void mui_create_algorithm_aitken_2d_f(mui_algorithm_aitken_2d **ret, double* und
 		}
 	}
 
-    *ret = new mui_algorithm_aitken_2d(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init, *res_l2_norm_nm1);
+    *ret = new mui_algorithm_aitken_2d(*under_relaxation_factor, *under_relaxation_factor_max, MPI_Comm_f2c(*communicator), pts_value_init, *res_l2_norm_nm1);
 }
 
-void mui_create_algorithm_aitken_2dx_f(mui_algorithm_aitken_2dx** ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Comm* communicator, double* points_1, double* points_2, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
+void mui_create_algorithm_aitken_2dx_f(mui_algorithm_aitken_2dx** ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Fint* communicator, double* points_1, double* points_2, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
 
 	std::vector<std::pair<mui::point2dx, double>> pts_value_init;
 
@@ -1337,10 +1337,10 @@ void mui_create_algorithm_aitken_2dx_f(mui_algorithm_aitken_2dx** ret, double* u
 		}
 	}
 
-    *ret = new mui_algorithm_aitken_2dx(*under_relaxation_factor, *under_relaxation_factor_max, reinterpret_cast<MPI_Comm>(*communicator), pts_value_init, *res_l2_norm_nm1);
+    *ret = new mui_algorithm_aitken_2dx(*under_relaxation_factor, *under_relaxation_factor_max, MPI_Comm_f2c(*communicator), pts_value_init, *res_l2_norm_nm1);
 }
 
-void mui_create_algorithm_aitken_2t_f(mui_algorithm_aitken_2t** ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Comm* communicator, double* points_1, double* points_2, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
+void mui_create_algorithm_aitken_2t_f(mui_algorithm_aitken_2t** ret, double* under_relaxation_factor, double* under_relaxation_factor_max, MPI_Fint* communicator, double* points_1, double* points_2, double* value_init, int* pair_count, double* res_l2_norm_nm1) {
 
 	std::vector<std::pair<mui::mui_f_wrapper_2D::point_type, mui::mui_f_wrapper_2D::REAL>> pts_value_init;
 
@@ -1356,7 +1356,7 @@ void mui_create_algorithm_aitken_2t_f(mui_algorithm_aitken_2t** ret, double* und
 		}
 	}
 
-    *ret = new mui_algorithm_aitken_2t(static_cast<mui::mui_f_wrapper_2D::REAL>(*under_relaxation_factor), static_cast<mui::mui_f_wrapper_2D::REAL>(*under_relaxation_factor_max), reinterpret_cast<MPI_Comm>(*communicator), pts_value_init, static_cast<mui::mui_f_wrapper_2D::REAL>(*res_l2_norm_nm1));
+    *ret = new mui_algorithm_aitken_2t(static_cast<mui::mui_f_wrapper_2D::REAL>(*under_relaxation_factor), static_cast<mui::mui_f_wrapper_2D::REAL>(*under_relaxation_factor_max), MPI_Comm_f2c(*communicator), pts_value_init, static_cast<mui::mui_f_wrapper_2D::REAL>(*res_l2_norm_nm1));
 }
 
 /*******************************************

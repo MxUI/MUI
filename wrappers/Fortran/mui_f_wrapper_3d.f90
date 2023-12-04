@@ -510,7 +510,7 @@ module mui_3d_f
       pouSize,precond
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_float), intent(in), dimension(points_count), target :: points_1,points_2,points_3
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
     end subroutine mui_create_sampler_rbf_3f_f
 
     subroutine mui_create_sampler_rbf_3fx_f(sampler,r,points_1,points_2,points_3,points_count,basis_func,conservative,smoothFunc, &
@@ -522,7 +522,7 @@ module mui_3d_f
       pouSize,precond
       real(kind=c_float), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_float), intent(in), dimension(points_count), target :: points_1,points_2,points_3
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
     end subroutine mui_create_sampler_rbf_3fx_f
 
     subroutine mui_create_sampler_rbf_3d_f(sampler,r,points_1,points_2,points_3,points_count,basis_func,conservative,smoothFunc, &
@@ -534,7 +534,7 @@ module mui_3d_f
       pouSize,precond
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
     end subroutine mui_create_sampler_rbf_3d_f
 
     subroutine mui_create_sampler_rbf_3dx_f(sampler,r,points_1,points_2,points_3,points_count,basis_func,conservative,smoothFunc, &
@@ -546,7 +546,7 @@ module mui_3d_f
       pouSize,precond
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
     end subroutine mui_create_sampler_rbf_3dx_f
 
     subroutine mui_create_sampler_rbf_3t_f(sampler,r,points_1,points_2,points_3,points_count,basis_func,conservative,smoothFunc, &
@@ -558,7 +558,7 @@ module mui_3d_f
       pouSize,precond
       real(kind=c_double), intent(in), target :: r,cutoff,cgSolveTol
       real(kind=c_double), intent(in), dimension(points_count), target :: points_1,points_2,points_3
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
     end subroutine mui_create_sampler_rbf_3t_f
 
     !******************************************
@@ -1070,7 +1070,7 @@ module mui_3d_f
         under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_float,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_float),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1081,7 +1081,7 @@ module mui_3d_f
         under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_float,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_float),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_float), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1092,7 +1092,7 @@ module mui_3d_f
         under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1103,7 +1103,7 @@ module mui_3d_f
         under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1114,7 +1114,7 @@ module mui_3d_f
         under_relaxation_factor,communicator,points_1,points_2,points_3,value_init,pair_count) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_double),intent(in) :: under_relaxation_factor
       integer(kind=c_int), intent(in), target :: pair_count
       real(c_double), intent(in), dimension(pair_count), target :: points_1,points_2,points_3
@@ -1127,7 +1127,7 @@ module mui_3d_f
         communicator,points_1,points_2,points_3,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_float,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_float),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
       integer(kind=c_int), intent(in), target :: pair_count
@@ -1140,7 +1140,7 @@ module mui_3d_f
         points_1,points_2,points_3,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_float,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_float),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
       integer(kind=c_int), intent(in), target :: pair_count
@@ -1153,7 +1153,7 @@ module mui_3d_f
         points_1,points_2,points_3,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_double),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
       integer(kind=c_int), intent(in), target :: pair_count
@@ -1166,7 +1166,7 @@ module mui_3d_f
         points_1,points_2,points_3,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_double),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
       integer(kind=c_int), intent(in), target :: pair_count
@@ -1179,7 +1179,7 @@ module mui_3d_f
         points_1,points_2,points_3,value_init,pair_count,res_l2_norm_nm1) bind(C)
       import :: c_ptr,c_double,c_int
       type(c_ptr), intent(out), target :: algorithm
-      type(c_ptr), intent(in), target :: communicator(*)
+      integer(kind=c_int), intent(in), target :: communicator
       real(kind=c_double),intent(in) :: under_relaxation_factor, &
         under_relaxation_factor_max,res_l2_norm_nm1
       integer(kind=c_int), intent(in), target :: pair_count
