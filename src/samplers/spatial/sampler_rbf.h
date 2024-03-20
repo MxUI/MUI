@@ -187,13 +187,13 @@ public:
       // RBF matrix not yet created
       if (!initialised_) {
           if (generateMatrix_) { // Generating the matrix
-              const clock_t begin_time = clock();
+              const clock_t begin_time = std::clock();
               facilitateGhostPoints();
               REAL error = computeRBFtransformationMatrix(data_points, writeFileAddress_);
 
               if (!QUIET) {
                    std::cout << "MUI [sampler_rbf.h]: Matrices generated in: "
-                             << static_cast<double>(clock() - begin_time) / CLOCKS_PER_SEC << "s ";
+                             << static_cast<double>(std::clock() - begin_time) / CLOCKS_PER_SEC << "s ";
                    if (generateMatrix_) {
                        std::cout << std::endl
                                  << "                     Average CG error: " << error << std::endl;
