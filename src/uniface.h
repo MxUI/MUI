@@ -270,9 +270,9 @@ public:
 					 std::bind(&uniface::on_recv_points, this, _1, _2)));
 		readers.link("assignedVals", reader_variables<std::string, storage_single_t>(
 					 std::bind(&uniface::on_recv_assignedVals, this, _1, _2)));
-		readers.link("receivingSpan", reader_variables<int32_t, time_type,iterator_type, span_t>(
+		readers.link("receivingSpan", reader_variables<int32_t, time_type,time_type, span_t>(
 		       std::bind(&uniface::on_recv_span, this, _1, _2, _3, _4)));
-		readers.link("sendingSpan", reader_variables<int32_t, time_type,iterator_type, span_t>(
+		readers.link("sendingSpan", reader_variables<int32_t, time_type,time_type, span_t>(
 		       std::bind(&uniface::on_send_span, this, _1, _2, _3, _4)));
 		readers.link("receivingDisable", reader_variables<int32_t>(
 					 std::bind(&uniface::on_send_disable, this, _1)));
