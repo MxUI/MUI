@@ -89,12 +89,40 @@ PYBIND11_MODULE(mui4py_mod, m)
 
   m.def("set_quiet", &mui::set_quiet, "");
   m.def(
-      "mpi_split_by_app", []() -> py::handle
+      "mpi_split_by_app",
+      [](int argc = 0,
+         std::vector<std::string> argv_py = {},
+         int threadType = -1,
+         py::object thread_support_obj = py::none(),
+         bool use_mpi_comm_split = true) -> py::handle
       {
-    if (import_mpi4py() < 0)
-      Py_RETURN_NONE;
-    return PyMPIComm_New(mui::mpi_split_by_app()); },
-      "");
+        if (import_mpi4py() < 0)
+          Py_RETURN_NONE;
+        std::vector<const char*> argv_c;
+        std::vector<std::string> argv_storage;
+        for (const auto& arg : argv_py) {
+          argv_storage.push_back(arg);
+          argv_c.push_back(argv_storage.back().c_str());
+        }
+        int thread_support_tmp;
+        int* thread_support = nullptr;
+        if (!thread_support_obj.is_none()) {
+          thread_support_tmp = thread_support_obj.cast<int>();
+          thread_support = &thread_support_tmp;
+        }
+        return PyMPIComm_New(
+                mui::mpi_split_by_app(argc,
+                                      argv_c.empty() ? nullptr : const_cast<char**>(argv_c.data()),
+                                      threadType,
+                                      thread_support,
+                                      use_mpi_comm_split));
+      },
+      py::arg("argc") = 0,
+      py::arg("argv") = std::vector<std::string>{},
+      py::arg("threadType") = -1,
+      py::arg("thread_support") = py::none(),
+      py::arg("use_mpi_comm_split") = true,
+      "Split MPI communicator by application.");
   m.def("get_mpi_version", &get_mpi_version, "");
   m.def("get_compiler_config", &get_compiler_config, "");
   m.def("get_compiler_version", &get_compiler_version, "");

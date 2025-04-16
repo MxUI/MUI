@@ -58,8 +58,8 @@ void mui_mpi_split_by_app_f(MPI_Fint *communicator) {
 }
 
 // Function to split MPI communicator and return new, local communicator using threaded MPI init
-void mui_mpi_split_by_app_threaded_f(MPI_Fint *communicator, int *argc, char ***argv, int *threadType, int **thread_support) {
-	*communicator = MPI_Comm_c2f(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support));
+void mui_mpi_split_by_app_threaded_f(MPI_Fint *communicator, int *argc, char ***argv, int *threadType, int **thread_support, bool *use_mpi_comm_split) {
+	*communicator = MPI_Comm_c2f(mui::mpi_split_by_app(*argc, *argv, *threadType, *thread_support, *use_mpi_comm_split));
 }
 
 void mui_mpi_get_size_f(MPI_Fint *communicator, int *size) {
