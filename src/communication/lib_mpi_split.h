@@ -91,15 +91,16 @@ namespace mui {
         std::vector<int> all_appnums(size);
         all_appnums[rank] = appnum;
         MPI_Allgather(MPI_IN_PLACE, 0, MPI_INT, all_appnums.data(), 1, MPI_INT, MPI_COMM_WORLD);
-        std::vector<int> group_ranks;
+        int count = 0;
         for (int i = 0; i < size; ++i) {
             if (all_appnums[i] == appnum) {
-                group_ranks.push_back(i);
+                all_appnums[count++] = i;
             }
         }
+        all_appnums.resize(count);
         MPI_Group world_group, new_group;
         MPI_Comm_group(MPI_COMM_WORLD, &world_group);
-        MPI_Group_incl(world_group, group_ranks.size(), group_ranks.data(), &new_group);
+        MPI_Group_incl(world_group, count, all_appnums.data(), &new_group);
         MPI_Comm_create_group(MPI_COMM_WORLD, new_group, 0, &domain);
         MPI_Group_free(&world_group);
         MPI_Group_free(&new_group);
