@@ -62,10 +62,10 @@ module mui_general_f
     !Function to split MPI communicator and return new, local communicator
     subroutine mui_mpi_split_by_app_threaded_f(communicator,argc,argv,threadType,thread_support,use_mpi_comm_split) bind(C)
       import :: c_ptr,c_char,c_int,c_bool
-      type(c_ptr), intent(out), target :: thread_support
       integer(kind=c_int), intent(in), target :: communicator
       integer(kind=c_int), intent(in) :: argc, threadType
-      character(kind=c_char), intent(in), dimension(argc) :: argv(*)
+      type(c_ptr), intent(in) :: argv
+      type(c_ptr), intent(inout) :: thread_support
       logical(c_bool), intent(in) :: use_mpi_comm_split
     end subroutine mui_mpi_split_by_app_threaded_f
 
