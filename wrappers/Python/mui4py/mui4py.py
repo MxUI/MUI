@@ -84,8 +84,10 @@ def get_compiler_config():
     return mui4py_mod.get_compiler_config()
 
 
-def mpi_split_by_app():
-    return mui4py_mod.mpi_split_by_app()
+def mpi_split_by_app(argc=0, argv=None, threadType=-1, thread_support=None, use_mpi_comm_split=True):
+    if argv is None:
+        argv = []
+    return mui4py_mod.mpi_split_by_app(argc, argv, threadType, thread_support, use_mpi_comm_split)
 
 
 def set_quiet(q):

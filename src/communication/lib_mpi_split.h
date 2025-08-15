@@ -58,7 +58,7 @@ namespace mui {
     if (!flag) MPI_Finalize();
   }
 
-  inline MPI_Comm mpi_split_by_app( int argc=0, char **argv=NULL, int threadType=-1, int *thread_support=NULL )
+  inline MPI_Comm mpi_split_by_app( int argc=0, char **argv=NULL, int threadType=-1, int *thread_support=NULL, bool use_mpi_comm_split = true )
   {
     {
     int flag;
@@ -77,13 +77,35 @@ namespace mui {
     int flag;
     MPI_Comm_get_attr(MPI_COMM_WORLD,MPI_APPNUM,&v,&flag);
     if (!flag) {
-    	std::cout << "MUI Info [lib_mpi_split.h]: Calling mpi_split_by_app() when run as a single application" << std::endl;
+        std::cout << "MUI Info [lib_mpi_split.h]: Calling mpi_split_by_app() when run as a single application" << std::endl;
     }
     int appnum = *static_cast<int*>(v);
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD,&rank);
     MPI_Comm domain;
-    MPI_Comm_split(MPI_COMM_WORLD,appnum,rank,&domain);
+    if (use_mpi_comm_split) {
+        MPI_Comm_split(MPI_COMM_WORLD,appnum,rank,&domain);
+    } else {
+        int size;
+        MPI_Comm_size(MPI_COMM_WORLD,&size);
+        std::vector<int> all_appnums(size);
+        all_appnums[rank] = appnum;
+        MPI_Allgather(MPI_IN_PLACE, 0, MPI_INT, all_appnums.data(), 1, MPI_INT, MPI_COMM_WORLD);
+        int count = 0;
+        for (int i = 0; i < size; ++i) {
+            if (all_appnums[i] == appnum) {
+                all_appnums[count++] = i;
+            }
+        }
+        all_appnums.resize(count);
+        MPI_Group world_group, new_group;
+        MPI_Comm_group(MPI_COMM_WORLD, &world_group);
+        MPI_Group_incl(world_group, count, all_appnums.data(), &new_group);
+        MPI_Comm_create_group(MPI_COMM_WORLD, new_group, 0, &domain);
+        MPI_Group_free(&world_group);
+        MPI_Group_free(&new_group);
+    }
+
     return domain;
   }
 }
