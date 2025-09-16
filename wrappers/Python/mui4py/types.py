@@ -127,7 +127,16 @@ def get_io_type_str(typein):
 
 
 def safe_cast(value_type, value):
-    if not isinstance(value, str):  # Only for numerics types
-        if not np.can_cast(value, value_type):
-            raise Exception("Value '{}' cannot be safely casted to type '{}'.".format(value, value_type.__name__))
-    return value_type(value)
+    if isinstance(value, str):
+        return value_type(value)
+    try:
+        casted_value = value_type(value)
+    except (ValueError, TypeError, OverflowError) as e:
+        raise Exception(
+            f"Value '{value}' of type {type(value).__name__} cannot be casted to type '{value_type.__name__}': {e}"
+        )
+    if not np.can_cast(np.array(value).dtype, np.dtype(value_type), casting='same_kind'):
+        raise Exception(
+            f"Value '{value}' of type {type(value).__name__} cannot be safely casted to type '{value_type.__name__}'."
+        )
+    return casted_value
