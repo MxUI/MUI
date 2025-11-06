@@ -8,17 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Wrapper options
 option(C_WRAPPER "Compile C wrapper" OFF)
 option(FORTRAN_WRAPPER "Compile Fortran wrapper" OFF)
-option(PYTHON_WRAPPER "Compile and install Python wrapper using pip" OFF)
-
-include(CMakePackageConfigHelpers)
-include(CheckLanguage)
-
-find_package(MPI REQUIRED)
-if(MPI_FOUND)
-	include_directories(SYSTEM ${MPI_INCLUDE_PATH})
-elseif(NOT MPI_FOUND)
-	message(SEND_ERROR "MPI not found")
-endif(MPI_FOUND)
+option(PYTHON_WRAPPER "Compile Python wrapper (builds extension in wrappers/Python)" OFF)
 
 add_library(MUI INTERFACE)
 
