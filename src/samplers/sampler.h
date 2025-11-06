@@ -49,7 +49,7 @@
 #ifndef MUI_SAMPLER_H_
 #define MUI_SAMPLER_H_
 
-#include "../config.h"
+#include "../mui_config.h"
 #include "../geometry/geometry.h"
 #include "../storage/virtual_container.h"
 

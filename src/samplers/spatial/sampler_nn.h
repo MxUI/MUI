@@ -48,7 +48,7 @@
 #ifndef MUI_SAMPLER_NN_H_
 #define MUI_SAMPLER_NN_H_
 
-#include "../../config.h"
+#include "../../mui_config.h"
 #include "../sampler.h"
 
 namespace mui {

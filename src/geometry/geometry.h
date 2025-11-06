@@ -50,7 +50,7 @@
 
 #include <memory>
 
-#include "../config.h"
+#include "../mui_config.h"
 #include "../storage/stream.h"
 #include "../storage/stream_string.h"
 

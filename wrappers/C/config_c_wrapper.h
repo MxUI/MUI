@@ -43,7 +43,7 @@
  * @author S. M. Longshaw
  * @date 12 July 2021
  * @brief File containing data structures defining all data types used
- *        by an interface using the C wrapper - based on original config.h.
+ *        by an interface using the C wrapper - based on original mui_config.h.
  */
 
 #ifndef CONFIG_C_WRAPPER_H
