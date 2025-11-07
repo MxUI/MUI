@@ -38,7 +38,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.      #
 ##############################################################################
 #
-# @file types.py
+# @file mui_types.py
 # @author E. R. Fernandez, W. Liu
 # @date 25 January 2019
 # @brief Data type functions for the MUI Python wrapper.
