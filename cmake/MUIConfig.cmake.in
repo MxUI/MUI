@@ -1,9 +1,32 @@
-set(MUI_VERSION 2.0)
+set(MUI_VERSION @PROJECT_VERSION@)
 
 @PACKAGE_INIT@
 
+check_required_components(MUI)
+
+# ------------------------------------------------------------------
+# Define MUI installation directories
+# ------------------------------------------------------------------
 set_and_check(MUI_INCLUDE_DIR "@PACKAGE_MUI_INCLUDE_INSTALL_DIR@")
 set_and_check(MUI_LIB_DIR "@PACKAGE_MUI_LIB_INSTALL_DIR@")
 set_and_check(MUI_BASE_DIR "@PACKAGE_MUI_INSTALL_DIR@")
 
-check_required_components(MUI)
+# ------------------------------------------------------------------
+# Create imported target for MUI
+# ------------------------------------------------------------------
+add_library(MUI::MUI INTERFACE IMPORTED)
+
+set_target_properties(MUI::MUI PROPERTIES
+    INTERFACE_COMPILE_DEFINITIONS "HAVE_MUI_DETECTED;MUI_VERSION=@PACKAGE_MUI_VERSION_INT@"
+    INTERFACE_INCLUDE_DIRECTORIES "${MUI_INCLUDE_DIR}"
+)
+
+# ------------------------------------------------------------------
+# Include exported MUI targets
+# ------------------------------------------------------------------
+include("${CMAKE_CURRENT_LIST_DIR}/muiTargets.cmake")
+
+# ------------------------------------------------------------------
+# Optional message for debugging
+# ------------------------------------------------------------------
+message(STATUS "Loaded MUIConfig: include dir = ${MUI_INCLUDE_DIR}, version = @PROJECT_VERSION@")

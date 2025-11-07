@@ -26,9 +26,8 @@ target_include_directories (MUI INTERFACE
 math(EXPR MUI_VERSION_INT
      "${PROJECT_VERSION_MAJOR} * 10000 + ${PROJECT_VERSION_MINOR} * 100 + ${PROJECT_VERSION_PATCH}")
 
-target_compile_definitions(MUI INTERFACE LIBRARY_HEADER_ONLY
-    HAVE_MUI_DETECTED
-    MUI_VERSION=${MUI_VERSION_INT})
+# Pass it to the package config
+set(PACKAGE_MUI_VERSION_INT ${MUI_VERSION_INT})
 
 install(TARGETS MUI EXPORT muiTargets INCLUDES DESTINATION include)
 
@@ -238,6 +237,12 @@ configure_package_config_file(cmake/MUIConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/MUIConfig.cmake
   INSTALL_DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake
   PATH_VARS MUI_INCLUDE_INSTALL_DIR MUI_LIB_INSTALL_DIR MUI_INSTALL_DIR)
+
+# Export target definitions
+install(EXPORT muiTargets
+    FILE muiTargets.cmake
+    NAMESPACE MUI::
+    DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MUIConfig.cmake
         DESTINATION ${MUI_INSTALL_DIR}/share/MUI-${PROJECT_VERSION}/cmake)
