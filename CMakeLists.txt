@@ -167,9 +167,9 @@ if(PYTHON_WRAPPER)
 
     find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
-    # Paths
+    # Source and build directories
     set(_pkg_mui4py "${CMAKE_CURRENT_SOURCE_DIR}/wrappers/Python")
-    set(_build_mui4py_dir "${_pkg_mui4py}/build")
+    set(_build_mui4py_dir "${CMAKE_CURRENT_BINARY_DIR}/python_build")
 
     # Ensure build directory exists
     file(MAKE_DIRECTORY ${_build_mui4py_dir})
@@ -183,21 +183,46 @@ if(PYTHON_WRAPPER)
         VERBATIM
     )
 
-    # After build step
-    file(GLOB _mui4py_so "${_build_mui4py_dir}/*.so")
-    foreach(_so ${_mui4py_so})
-        add_custom_command(TARGET mui4py POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${_so} ${_pkg_mui4py}/mui4py/
-        )
-    endforeach()
+    # Destination directories for install
+    set(MUI_PYTHON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/include/wrappers/Python)
+    set(MUI_LIBRARY_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/lib)
+    set(MUI_SHARE_DIR ${CMAKE_INSTALL_PREFIX}/MUI-${PROJECT_VERSION}/share/MUI-${PROJECT_VERSION})
 
-    # Clean build artifacts with `make clean`
+    # --- Install Python source files (.py) ---
+    install(
+        DIRECTORY ${_pkg_mui4py}/mui4py/
+        DESTINATION ${MUI_PYTHON_INSTALL_DIR}/mui4py
+        FILES_MATCHING PATTERN "*.py"
+    )
+
+    # --- Install compiled Python extension (.so) ---
+    install(
+        DIRECTORY ${_build_mui4py_dir}/
+        DESTINATION ${MUI_PYTHON_INSTALL_DIR}/mui4py
+        FILES_MATCHING PATTERN "*.so"
+    )
+
+    # --- Environment setup script ---
+    set(MUI_SETUP_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/mui_setup.sh")
+    file(WRITE ${MUI_SETUP_SCRIPT} "#!/bin/sh\n")
+    file(APPEND ${MUI_SETUP_SCRIPT}
+        "prefix_dir=\"$(cd \"$(dirname \"\${BASH_SOURCE[0]}\")/../..\" && pwd)\"\n"
+        "export LD_LIBRARY_PATH=\"\${prefix_dir}/lib:\${LD_LIBRARY_PATH}\"\n"
+        "export PYTHONPATH=\"\${prefix_dir}/include/wrappers/Python:\${PYTHONPATH}\"\n"
+        "echo \"MUI environment set up for prefix: \${prefix_dir}\"\n"
+    )
+
+    install(
+        FILES ${MUI_SETUP_SCRIPT}
+        DESTINATION ${MUI_SHARE_DIR}
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+                    WORLD_EXECUTE WORLD_READ
+    )
+
+    # --- Cleanup build artifacts ---
     set_property(TARGET mui4py APPEND PROPERTY ADDITIONAL_CLEAN_FILES
         ${_build_mui4py_dir}
-        ${_pkg_mui4py}/mui4py/*.so
-        ${_pkg_mui4py}/mui4py.egg-info/
-        ${_pkg_mui4py}/build/
-        ${_pkg_mui4py}/dist/
     )
 
 endif(PYTHON_WRAPPER)
