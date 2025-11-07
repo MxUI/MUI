@@ -45,7 +45,7 @@
 #
 """
 
-from mui4py.types import map_type, UINT
+from mui4py.mui_types import map_type, UINT
 __default_config = None
 
 

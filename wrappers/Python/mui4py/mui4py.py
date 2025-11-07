@@ -48,7 +48,7 @@
 import mui4py.mui4py_mod as mui4py_mod
 from mui4py.common import CppClass, get_cpp_name, array2Point
 from mui4py.config import Config
-from mui4py.types import safe_cast, map_type, ALLOWED_IO_TYPES, STRING, BOOL, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT
+from mui4py.mui_types import safe_cast, map_type, ALLOWED_IO_TYPES, STRING, BOOL, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT
 from mui4py.geometry import Geometry
 from mui4py.samplers import Sampler
 from mui4py.temporal_samplers import TemporalSampler
