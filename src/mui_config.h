@@ -38,15 +38,15 @@
 *****************************************************************************/
 
 /**
- * @file config.h
+ * @file mui_config.h
  * @author S. Kudo
  * @date 10 March 2013
  * @brief File containing data structures defining all data types used
  * by an interface.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef MUI_CONFIG_H
+#define MUI_CONFIG_H
 
 #include "general/util.h"
 #include "general/dim.h"

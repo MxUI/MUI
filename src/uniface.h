@@ -55,7 +55,7 @@
 #include "general/util.h"
 #include "communication/comm.h"
 #include "communication/comm_factory.h"
-#include "config.h"
+#include "mui_config.h"
 #include "storage/dynstorage.h"
 #include "storage/spatial_storage.h"
 #include "communication/lib_dispatcher.h"
@@ -79,7 +79,7 @@ namespace mui {
 template<typename CONFIG = default_config>
 class uniface {
 public:
-	// public typedefs (see config.h for descriptions)
+	// public typedefs (see mui_config.h for descriptions)
 	static const int  D     = CONFIG::D;
 	static const bool FIXEDPOINTS = CONFIG::FIXEDPOINTS;
 	static const bool QUIET = CONFIG::QUIET;

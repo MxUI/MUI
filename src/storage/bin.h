@@ -49,7 +49,7 @@
 #define BIN_H
 
 #include "../geometry/geometry.h"
-#include "../config.h"
+#include "../mui_config.h"
 
 namespace mui {
 

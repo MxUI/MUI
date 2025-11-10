@@ -43,7 +43,7 @@
  * @author S. M. Longshaw
  * @date 11 August 2021
  * @brief File containing data structures defining all data types used
- *        by an interface using the Fortran wrapper - based on original config.h.
+ *        by an interface using the Fortran wrapper - based on original mui_config.h.
  */
 
 #ifndef CONFIG_F_WRAPPER_H

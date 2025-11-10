@@ -47,7 +47,7 @@
 
 from mui4py.common import CppClass
 from mui4py.config import Config
-from mui4py.types import UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64, INT, INT32, INT64, STRING, BOOL
+from mui4py.mui_types import UINT, UINT32, UINT64, FLOAT, FLOAT32, FLOAT64, INT, INT32, INT64, STRING, BOOL
 
 # Interface for Sampler
 def sampler_fetch_signature(self):

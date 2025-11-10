@@ -49,7 +49,7 @@
 #define MUI_SAMPLER_NULL_H_
 
 #include "../../general/util.h"
-#include "../../config.h"
+#include "../../mui_config.h"
 #include "../sampler.h"
 
 namespace mui {

@@ -48,7 +48,7 @@
 #define SPAN_H_
 
 #include "../general/util.h"
-#include "../config.h"
+#include "../mui_config.h"
 #include "geometry.h"
 #include "../storage/stream.h"
 #include "../storage/stream_vector.h"

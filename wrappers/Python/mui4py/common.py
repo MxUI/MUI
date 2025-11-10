@@ -47,7 +47,7 @@
 
 import mui4py.mui4py_mod as mui4py_mod
 from mui4py.config import get_default_config
-from mui4py.types import map_type, get_float_type_str, get_int_type_str, get_io_type_str
+from mui4py.mui_types import map_type, get_float_type_str, get_int_type_str, get_io_type_str
 import re
 import numpy as np
 

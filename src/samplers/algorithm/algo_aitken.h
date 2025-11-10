@@ -49,7 +49,7 @@
 #define MUI_COUPLING_ALGORITHM_AITKEN_H_
 
 #include "../../general/util.h"
-#include "../../config.h"
+#include "../../mui_config.h"
 #include <mpi.h>
 #include <iterator>
 

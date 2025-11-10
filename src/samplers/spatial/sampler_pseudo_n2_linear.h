@@ -48,7 +48,7 @@
 #ifndef MUI_SAMPLER_PSEUDO_N2_LINEAR_H_
 #define MUI_SAMPLER_PSEUDO_N2_LINEAR_H_
 
-#include "../../config.h"
+#include "../../mui_config.h"
 #include "../sampler.h"
 
 namespace mui {

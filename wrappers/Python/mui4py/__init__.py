@@ -56,6 +56,6 @@ from mui4py.samplers import SamplerExact, SamplerGauss, SamplerMovingAverage,\
 from mui4py.temporal_samplers import TemporalSamplerExact, TemporalSamplerGauss,\
                             TemporalSamplerMean, TemporalSamplerSum
 from mui4py.algorithms import AlgorithmFixedRelaxation, AlgorithmAitken
-from mui4py.types import STRING, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT, BOOL
+from mui4py.mui_types import STRING, INT32, INT64, INT, UINT32, UINT64, UINT, FLOAT32, FLOAT64, FLOAT, BOOL
 from mui4py.config import Config, set_default_config, get_default_config
 import mui4py.geometry

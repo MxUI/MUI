@@ -49,7 +49,7 @@
 #define MUI_TEMPORAL_SAMPLER_NULL_H_
 
 #include "../../general/util.h"
-#include "../../config.h"
+#include "../../mui_config.h"
 
 namespace mui {
 
