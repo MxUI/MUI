@@ -153,6 +153,11 @@ program main
     call mui_commit_1d_f(uniface_pointers_1d(i)%ptr, commit_time)
   end do
 
+  !Barrier to synchronize all domains (tests barrier function parameter passing)
+  do i = 1, interface_count
+    call mui_barrier_1d_f(uniface_pointers_1d(i)%ptr, commit_time)
+  end do
+
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_1d_f(spatial_sampler_exact_1d, tolerance)
   call mui_create_temporal_sampler_exact_1d_f(temporal_sampler_exact_1d, tolerance)
@@ -163,6 +168,11 @@ program main
            fetch_time, spatial_sampler_exact_1d, temporal_sampler_exact_1d, fetch_result_1d)
      print *, "Fetched 1D interface value = ",fetch_result_1d, " at the interface of ", interfaces1d(i),             &
            " domian of ", domain1d
+  end do
+
+  !Forget data before commit_time (tests forget function parameter passing)
+  do i = 1, interface_count
+    call mui_forget_upper_1d_f(uniface_pointers_1d(i)%ptr, commit_time, 1_c_int)
   end do
 
   !Destroy created 1D MUI objects
@@ -222,6 +232,11 @@ program main
     call mui_commit_2d_f(uniface_pointers_2d(i)%ptr, commit_time)
   end do
 
+  !Barrier to synchronize all domains (tests barrier function parameter passing)
+  do i = 1, interface_count
+    call mui_barrier_2d_f(uniface_pointers_2d(i)%ptr, commit_time)
+  end do
+
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_2d_f(spatial_sampler_exact_2d, tolerance)
   call mui_create_temporal_sampler_exact_2d_f(temporal_sampler_exact_2d, tolerance)
@@ -232,6 +247,11 @@ program main
            fetch_time, spatial_sampler_exact_2d, temporal_sampler_exact_2d, fetch_result_2d)
      print *, "Fetched 2D interface value = ",fetch_result_2d, " at the interface of ", interfaces2d(i),             &
            " domian of ", domain2d
+  end do
+
+  !Forget all data older than commit_time for all MUI interfaces (tests forget function parameter passing)
+  do i = 1, interface_count
+     call mui_forget_upper_2d_f(uniface_pointers_2d(i)%ptr, commit_time, 1_c_int)
   end do
 
   !Destroy created 2D MUI objects
@@ -292,6 +312,11 @@ program main
     call mui_commit_3d_f(uniface_pointers_3d(i)%ptr, commit_time)
   end do
 
+  !Barrier to synchronize all domains (tests barrier function parameter passing)
+  do i = 1, interface_count
+    call mui_barrier_3d_f(uniface_pointers_3d(i)%ptr, commit_time)
+  end do
+
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_3d_f(spatial_sampler_exact_3d, tolerance)
   call mui_create_temporal_sampler_exact_3d_f(temporal_sampler_exact_3d, tolerance)
@@ -302,6 +327,11 @@ program main
            fetch_point_3, fetch_time, spatial_sampler_exact_3d, temporal_sampler_exact_3d, fetch_result_3d)
      print *, "Fetched 3D interface value = ",fetch_result_3d, " at the interface of ", interfaces3d(i),             &
            " domian of ", domain3d
+  end do
+
+  !Forget all data older than commit_time for all MUI interfaces (tests forget function parameter passing)
+  do i = 1, interface_count
+     call mui_forget_upper_3d_f(uniface_pointers_3d(i)%ptr, commit_time, 1_c_int)
   end do
 
   !Destroy created 3D MUI objects
