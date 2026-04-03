@@ -14427,62 +14427,62 @@ module mui_3d_f
     subroutine mui_barrier_3f_f(uniface,t) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: t
+      real(kind=c_float), intent(in) :: t
     end subroutine mui_barrier_3f_f
 
     subroutine mui_barrier_3fx_f(uniface,t) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: t
+      real(kind=c_float), intent(in) :: t
     end subroutine mui_barrier_3fx_f
 
     subroutine mui_barrier_3d_f(uniface,t) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t
+      real(kind=c_double), intent(in) :: t
     end subroutine mui_barrier_3d_f
 
     subroutine mui_barrier_3dx_f(uniface,t) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t
+      real(kind=c_double), intent(in) :: t
     end subroutine mui_barrier_3dx_f
 
     subroutine mui_barrier_3t_f(uniface,t) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t
+      real(kind=c_double), intent(in) :: t
     end subroutine mui_barrier_3t_f
 
     !Barrier at two time values
     subroutine mui_barrier_3f_pair_f(uniface,t_1,t_2) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: t_1,t_2
+      real(kind=c_float), intent(in) :: t_1,t_2
     end subroutine mui_barrier_3f_pair_f
 
     subroutine mui_barrier_3fx_pair_f(uniface,t_1,t_2) bind(C)
       import :: c_ptr,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: t_1,t_2
+      real(kind=c_float), intent(in) :: t_1,t_2
     end subroutine mui_barrier_3fx_pair_f
 
     subroutine mui_barrier_3d_pair_f(uniface,t_1,t_2) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t_1,t_2
+      real(kind=c_double), intent(in) :: t_1,t_2
     end subroutine mui_barrier_3d_pair_f
 
     subroutine mui_barrier_3dx_pair_f(uniface,t_1,t_2) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t_1,t_2
+      real(kind=c_double), intent(in) :: t_1,t_2
     end subroutine mui_barrier_3dx_pair_f
 
     subroutine mui_barrier_3t_pair_f(uniface,t_1,t_2) bind(C)
       import :: c_ptr,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: t_1,t_2
+      real(kind=c_double), intent(in) :: t_1,t_2
     end subroutine mui_barrier_3t_pair_f
 
     !******************************************
@@ -14493,108 +14493,108 @@ module mui_3d_f
     subroutine mui_forget_upper_3f_f(uniface,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3f_f
 
     subroutine mui_forget_upper_3fx_f(uniface,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3fx_f
 
     subroutine mui_forget_upper_3d_f(uniface,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3d_f
 
     subroutine mui_forget_upper_3dx_f(uniface,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3dx_f
 
     subroutine mui_forget_upper_3t_f(uniface,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3t_f
 
     !Forget log between [-inf, -inf], [upper_1, upper_2]
     subroutine mui_forget_upper_3f_pair_f(uniface,upper_1,upper_2,reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3f_pair_f
 
     subroutine mui_forget_upper_3fx_pair_f(uniface,upper_1,upper_2,reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3fx_pair_f
 
     subroutine mui_forget_upper_3d_pair_f(uniface,upper_1,upper_2,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3d_pair_f
 
     subroutine mui_forget_upper_3dx_pair_f(uniface,upper_1,upper_2,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3dx_pair_f
 
     subroutine mui_forget_upper_3t_pair_f(uniface,upper_1,upper_2,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_upper_3t_pair_f
 
     !Forget log between [lower, upper]
     subroutine mui_forget_lower_upper_3f_f(uniface,lower,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: lower,upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: lower,upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3f_f
 
     subroutine mui_forget_lower_upper_3fx_f(uniface,lower,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: lower,upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: lower,upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3fx_f
 
     subroutine mui_forget_lower_upper_3d_f(uniface,lower,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: lower,upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: lower,upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3d_f
 
     subroutine mui_forget_lower_upper_3dx_f(uniface,lower,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: lower,upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: lower,upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3dx_f
 
     subroutine mui_forget_lower_upper_3t_f(uniface,lower,upper,reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: lower,upper
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: lower,upper
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3t_f
 
     !Forget log between [lower_1, lower_2], [upper_1, upper_2]
@@ -14602,40 +14602,40 @@ module mui_3d_f
       reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: lower_1,lower_2,upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: lower_1,lower_2,upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3f_pair_f
 
     subroutine mui_forget_lower_upper_3fx_pair_f(uniface,lower_1,lower_2,upper_1,upper_2, &
       reset_log) bind(C)
       import :: c_ptr,c_int,c_float
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_float), intent(in), value :: lower_1,lower_2,upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_float), intent(in) :: lower_1,lower_2,upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3fx_pair_f
 
     subroutine mui_forget_lower_upper_3d_pair_f(uniface,lower_1,lower_2,upper_1,upper_2, &
       reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: lower_1,lower_2,upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: lower_1,lower_2,upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3d_pair_f
 
     subroutine mui_forget_lower_upper_3dx_pair_f(uniface,lower_1,lower_2,upper_1,upper_2, &
       reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: lower_1,lower_2,upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: lower_1,lower_2,upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3dx_pair_f
 
     subroutine mui_forget_lower_upper_3t_pair_f(uniface,lower_1,lower_2,upper_1,upper_2, &
       reset_log) bind(C)
       import :: c_ptr,c_int,c_double
       type(c_ptr), intent(in), value :: uniface
-      real(kind=c_double), intent(in), value :: lower_1,lower_2,upper_1,upper_2
-      integer(kind=c_int), intent(in), value :: reset_log
+      real(kind=c_double), intent(in) :: lower_1,lower_2,upper_1,upper_2
+      integer(kind=c_int), intent(in) :: reset_log
     end subroutine mui_forget_lower_upper_3t_pair_f
 
     !Set to forget log between [-inf, current-length] automatically
