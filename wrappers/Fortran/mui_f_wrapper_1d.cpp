@@ -193,6 +193,16 @@ typedef mui::temporal_sampler_sum1dx mui_temporal_sampler_sum_1dx;
 // Summation temporal sampler typedefs for template creation (recommended)
 typedef mui::temporal_sampler_sum<mui::mui_f_wrapper_1D> mui_temporal_sampler_sum_1t;
 
+// Linear temporal sampler typedefs for specialism creation
+typedef mui::temporal_sampler_linear1f mui_temporal_sampler_linear_1f;
+typedef mui::temporal_sampler_linear1fx mui_temporal_sampler_linear_1fx;
+typedef mui::temporal_sampler_linear1d mui_temporal_sampler_linear_1d;
+typedef mui::temporal_sampler_linear1dx mui_temporal_sampler_linear_1dx;
+
+// Linear temporal sampler typedefs for template creation (recommended)
+typedef mui::temporal_sampler_linear<mui::mui_f_wrapper_1D> mui_temporal_sampler_linear_1t;
+
+
 // Fixed relaxation algorithm typedefs for specialism creation
 typedef mui::algo_fixed_relaxation1f mui_algorithm_fixed_relaxation_1f;
 typedef mui::algo_fixed_relaxation1fx mui_algorithm_fixed_relaxation_1fx;
@@ -1069,6 +1079,27 @@ void mui_create_temporal_sampler_sum_1t_f(mui_temporal_sampler_sum_1t** ret, dou
     *ret = new mui_temporal_sampler_sum_1t(static_cast<mui::mui_f_wrapper_1D::time_type>(*lower),
             static_cast<mui::mui_f_wrapper_1D::time_type>(*upper));
 }
+// Temporal sampler creation for temporal_sampler_linear
+void mui_create_temporal_sampler_linear_1f_f(mui_temporal_sampler_linear_1f **ret, float* dt_neighbour) {
+    *ret = new mui_temporal_sampler_linear_1f(*dt_neighbour);
+}
+
+void mui_create_temporal_sampler_linear_1fx_f(mui_temporal_sampler_linear_1fx **ret, float* dt_neighbour) {
+    *ret = new mui_temporal_sampler_linear_1fx(*dt_neighbour);
+}
+
+void mui_create_temporal_sampler_linear_1d_f(mui_temporal_sampler_linear_1d **ret, double* dt_neighbour) {
+    *ret = new mui_temporal_sampler_linear_1d(*dt_neighbour);
+}
+
+void mui_create_temporal_sampler_linear_1dx_f(mui_temporal_sampler_linear_1dx** ret, double* dt_neighbour) {
+    *ret = new mui_temporal_sampler_linear_1dx(*dt_neighbour);
+}
+
+void mui_create_temporal_sampler_linear_1t_f(mui_temporal_sampler_linear_1t** ret, double* dt_neighbour) {
+    *ret = new mui_temporal_sampler_linear_1t(static_cast<mui::mui_f_wrapper_1D::REAL>(*dt_neighbour));
+}
+
 
 /*******************************************
  * Destroy temporal samplers                *
@@ -1157,6 +1188,27 @@ void mui_destroy_temporal_sampler_sum_1dx_f(mui_temporal_sampler_sum_1dx* sample
 void mui_destroy_temporal_sampler_sum_1t_f(mui_temporal_sampler_sum_1t* sampler) {
     delete sampler;
 }
+// Temporal sampler destruction for temporal_sampler_linear
+void mui_destroy_temporal_sampler_linear_1f_f(mui_temporal_sampler_linear_1f* sampler) {
+    delete sampler;
+}
+
+void mui_destroy_temporal_sampler_linear_1fx_f(mui_temporal_sampler_linear_1fx* sampler) {
+    delete sampler;
+}
+
+void mui_destroy_temporal_sampler_linear_1d_f(mui_temporal_sampler_linear_1d* sampler) {
+    delete sampler;
+}
+
+void mui_destroy_temporal_sampler_linear_1dx_f(mui_temporal_sampler_linear_1dx* sampler) {
+    delete sampler;
+}
+
+void mui_destroy_temporal_sampler_linear_1t_f(mui_temporal_sampler_linear_1t* sampler) {
+    delete sampler;
+}
+
 
 /*******************************************
  * Create algorithms                       *
@@ -1713,8 +1765,18 @@ void mui_fetch_exact_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_exact_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_exact_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_exact_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -1723,13 +1785,31 @@ void mui_fetch_exact_exact_1d_f(mui_uniface_1d *uniface, const char *attr, doubl
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_exact_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_exact_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_exact_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_exact_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_exact_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -1829,8 +1909,18 @@ void mui_fetch_gauss_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_gauss_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_gauss_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_gauss_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_gauss_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -1839,13 +1929,31 @@ void mui_fetch_gauss_exact_1d_f(mui_uniface_1d *uniface, const char *attr, doubl
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_gauss_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_gauss_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_gauss_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_gauss_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_gauss_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -1945,8 +2053,18 @@ void mui_fetch_moving_average_exact_1f_f(mui_uniface_1f *uniface, const char *at
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_moving_average_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_moving_average_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_moving_average_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_moving_average_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_moving_average_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_moving_average_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -1955,13 +2073,31 @@ void mui_fetch_moving_average_exact_1d_f(mui_uniface_1d *uniface, const char *at
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_moving_average_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_moving_average_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_moving_average_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_moving_average_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_moving_average_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_moving_average_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2061,8 +2197,18 @@ void mui_fetch_nearest_neighbor_exact_1f_f(mui_uniface_1f *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_nearest_neighbor_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_nearest_neighbor_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_nearest_neighbor_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_nearest_neighbor_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_nearest_neighbor_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2071,13 +2217,31 @@ void mui_fetch_nearest_neighbor_exact_1d_f(mui_uniface_1d *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_nearest_neighbor_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_nearest_neighbor_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_nearest_neighbor_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_nearest_neighbor_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_nearest_neighbor_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_nearest_neighbor_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_nearest_neighbor_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2177,15 +2341,32 @@ void mui_fetch_pseudo_nearest_neighbor_exact_1f_f(mui_uniface_1f *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
         float* t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
+        float* t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
         mui_temporal_sampler_exact_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2198,6 +2379,15 @@ void mui_fetch_pseudo_nearest_neighbor_exact_1dx(mui_uniface_1dx *uniface, const
 void mui_fetch_pseudo_nearest_neighbor_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2307,15 +2497,32 @@ void mui_fetch_pseudo_n2_linear_exact_1f_f(mui_uniface_1f *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_pseudo_n2_linear_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
         float* t, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
+        float* t, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
         mui_temporal_sampler_exact_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_pseudo_n2_linear_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2328,6 +2535,15 @@ void mui_fetch_pseudo_n2_linear_exact_1dx(mui_uniface_1dx *uniface, const char *
 void mui_fetch_pseudo_n2_linear_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_pseudo_n2_linear_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2437,8 +2653,18 @@ void mui_fetch_shepard_quintic_exact_1f_f(mui_uniface_1f *uniface, const char *a
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_shepard_quintic_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_shepard_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_shepard_quintic_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_shepard_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_shepard_quintic_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_shepard_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2447,13 +2673,31 @@ void mui_fetch_shepard_quintic_exact_1d_f(mui_uniface_1d *uniface, const char *a
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_shepard_quintic_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_shepard_quintic_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_shepard_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_shepard_quintic_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_shepard_quintic_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_shepard_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_shepard_quintic_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2553,8 +2797,18 @@ void mui_fetch_sph_quintic_exact_1f_f(mui_uniface_1f *uniface, const char *attr,
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sph_quintic_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sph_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sph_quintic_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_sph_quintic_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2563,13 +2817,31 @@ void mui_fetch_sph_quintic_exact_1d_f(mui_uniface_1d *uniface, const char *attr,
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sph_quintic_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sph_quintic_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sph_quintic_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sph_quintic_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_sph_quintic_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2669,8 +2941,18 @@ void mui_fetch_sum_quintic_exact_1f_f(mui_uniface_1f *uniface, const char *attr,
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sum_quintic_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sum_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sum_quintic_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_sum_quintic_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2679,13 +2961,31 @@ void mui_fetch_sum_quintic_exact_1d_f(mui_uniface_1d *uniface, const char *attr,
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sum_quintic_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sum_quintic_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sum_quintic_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sum_quintic_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_sum_quintic_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2785,8 +3085,18 @@ void mui_fetch_rbf_exact_1f_f(mui_uniface_1f *uniface, const char *attr, float *
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_rbf_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_rbf_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_rbf_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
@@ -2795,13 +3105,31 @@ void mui_fetch_rbf_exact_1d_f(mui_uniface_1d *uniface, const char *attr, double*
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_rbf_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_rbf_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_rbf_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_rbf_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
+
+}
+
+void mui_fetch_rbf_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler));
@@ -2905,8 +3233,19 @@ void mui_fetch_exact_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_exact_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_exact_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_exact_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -2916,14 +3255,33 @@ void mui_fetch_exact_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_exact_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_exact_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
 
+void mui_fetch_exact_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_exact_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_exact_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3029,8 +3387,19 @@ void mui_fetch_gauss_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_gauss_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_gauss_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_gauss_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_gauss_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3040,14 +3409,33 @@ void mui_fetch_gauss_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_gauss_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_gauss_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
 
+void mui_fetch_gauss_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_gauss_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_gauss_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3122,6 +3510,11 @@ void mui_fetch_moving_average_exact_1f_pair_f(mui_uniface_1f *uniface, const cha
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_moving_average_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_moving_average_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_moving_average_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_moving_average_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
@@ -3129,8 +3522,20 @@ void mui_fetch_moving_average_exact_1fx_pair_f(mui_uniface_1fx *uniface, const c
             *temporal_sampler);
 }
 
+void mui_fetch_moving_average_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_moving_average_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_moving_average_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
+void mui_fetch_moving_average_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
@@ -3141,8 +3546,23 @@ void mui_fetch_moving_average_exact_1dx_pair_f(mui_uniface_1dx *uniface, const c
             *temporal_sampler);
 }
 
+void mui_fetch_moving_average_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_moving_average_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_moving_average_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_moving_average_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3252,9 +3672,21 @@ void mui_fetch_nearest_neighbor_exact_1f_pair_f(mui_uniface_1f *uniface, const c
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_nearest_neighbor_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_nearest_neighbor_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_nearest_neighbor_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3265,6 +3697,12 @@ void mui_fetch_nearest_neighbor_exact_1d_pair_f(mui_uniface_1d *uniface, const c
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_nearest_neighbor_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_nearest_neighbor_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
@@ -3272,9 +3710,25 @@ void mui_fetch_nearest_neighbor_exact_1dx_pair_f(mui_uniface_1dx *uniface, const
             *temporal_sampler);
 }
 
+void mui_fetch_nearest_neighbor_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_nearest_neighbor_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_nearest_neighbor_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3391,9 +3845,22 @@ void mui_fetch_pseudo_nearest_neighbor_exact_1f_pair_f(mui_uniface_1f *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler,
+        mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3404,6 +3871,12 @@ void mui_fetch_pseudo_nearest_neighbor_exact_1d_pair_f(mui_uniface_1d *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
@@ -3411,9 +3884,25 @@ void mui_fetch_pseudo_nearest_neighbor_exact_1dx_pair_f(mui_uniface_1dx *uniface
             *temporal_sampler);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3535,9 +4024,22 @@ void mui_fetch_pseudo_n2_linear_exact_1f_pair_f(mui_uniface_1f *uniface, const c
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_n2_linear_1f *spatial_sampler,
+        mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_pseudo_n2_linear_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3548,6 +4050,12 @@ void mui_fetch_pseudo_n2_linear_exact_1d_pair_f(mui_uniface_1d *uniface, const c
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
@@ -3555,9 +4063,25 @@ void mui_fetch_pseudo_n2_linear_exact_1dx_pair_f(mui_uniface_1dx *uniface, const
             *temporal_sampler);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_pseudo_n2_linear_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3678,9 +4202,21 @@ void mui_fetch_shepard_quintic_exact_1f_pair_f(mui_uniface_1f *uniface, const ch
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_shepard_quintic_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_shepard_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_shepard_quintic_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_shepard_quintic_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_shepard_quintic_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_shepard_quintic_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3691,6 +4227,12 @@ void mui_fetch_shepard_quintic_exact_1d_pair_f(mui_uniface_1d *uniface, const ch
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_shepard_quintic_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_shepard_quintic_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
@@ -3698,9 +4240,25 @@ void mui_fetch_shepard_quintic_exact_1dx_pair_f(mui_uniface_1dx *uniface, const 
             *temporal_sampler);
 }
 
+void mui_fetch_shepard_quintic_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_shepard_quintic_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_shepard_quintic_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_shepard_quintic_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3813,8 +4371,19 @@ void mui_fetch_sph_quintic_exact_1f_pair_f(mui_uniface_1f *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sph_quintic_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sph_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sph_quintic_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_sph_quintic_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3824,14 +4393,33 @@ void mui_fetch_sph_quintic_exact_1d_pair_f(mui_uniface_1d *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sph_quintic_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sph_quintic_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
 
+void mui_fetch_sph_quintic_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_sph_quintic_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_sph_quintic_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -3937,8 +4525,19 @@ void mui_fetch_sum_quintic_exact_1f_pair_f(mui_uniface_1f *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sum_quintic_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sum_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sum_quintic_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_sum_quintic_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -3948,14 +4547,33 @@ void mui_fetch_sum_quintic_exact_1d_pair_f(mui_uniface_1d *uniface, const char *
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_sum_quintic_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_sum_quintic_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
 
+void mui_fetch_sum_quintic_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_sum_quintic_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_sum_quintic_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -4061,8 +4679,19 @@ void mui_fetch_rbf_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr, fl
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_rbf_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_rbf_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
+void mui_fetch_rbf_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
@@ -4072,14 +4701,33 @@ void mui_fetch_rbf_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr, do
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
 }
 
+void mui_fetch_rbf_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler);
+}
+
 void mui_fetch_rbf_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler);
 }
 
+void mui_fetch_rbf_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler);
+}
+
 void mui_fetch_rbf_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler));
+}
+
+void mui_fetch_rbf_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
             static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
@@ -4191,8 +4839,20 @@ void mui_fetch_exact_exact_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_exact_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -4203,14 +4863,35 @@ void mui_fetch_exact_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_exact_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -4327,8 +5008,20 @@ void mui_fetch_gauss_exact_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_gauss_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_gauss_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -4339,14 +5032,35 @@ void mui_fetch_gauss_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_gauss_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -4463,8 +5177,20 @@ void mui_fetch_moving_average_exact_fixed_relaxation_1f_f(mui_uniface_1f *unifac
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_moving_average_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_moving_average_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_moving_average_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_moving_average_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -4475,14 +5201,35 @@ void mui_fetch_moving_average_exact_fixed_relaxation_1d_f(mui_uniface_1d *unifac
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_moving_average_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_moving_average_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -4599,8 +5346,20 @@ void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1f_f(mui_uniface_1f *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_nearest_neighbor_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_nearest_neighbor_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -4611,14 +5370,35 @@ void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1d_f(mui_uniface_1d *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_nearest_neighbor_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_nearest_neighbor_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -4735,6 +5515,12 @@ void mui_fetch_pseudo_n2_exact_fixed_relaxation_1f_f(mui_uniface_1f *uniface, co
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
         float* t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
@@ -4742,9 +5528,23 @@ void mui_fetch_pseudo_n2_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
+        float* t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
         mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -4759,6 +5559,16 @@ void mui_fetch_pseudo_n2_exact_fixed_relaxation_1dx(mui_uniface_1dx *uniface, co
 void mui_fetch_pseudo_n2_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -4885,6 +5695,12 @@ void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1f_f(mui_uniface_1f *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_pseudo_n2_linear_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
         float* t, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
@@ -4892,9 +5708,23 @@ void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *un
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
+        float* t, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
         mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -4909,6 +5739,16 @@ void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1dx(mui_uniface_1dx *unif
 void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5035,8 +5875,20 @@ void mui_fetch_shepard_quintic_exact_fixed_relaxation_1f_f(mui_uniface_1f *unifa
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_shepard_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_shepard_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_shepard_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5047,14 +5899,35 @@ void mui_fetch_shepard_quintic_exact_fixed_relaxation_1d_f(mui_uniface_1d *unifa
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_shepard_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_shepard_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5171,8 +6044,20 @@ void mui_fetch_sph_quintic_exact_fixed_relaxation_1f_f(mui_uniface_1f *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sph_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5183,14 +6068,35 @@ void mui_fetch_sph_quintic_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5307,8 +6213,20 @@ void mui_fetch_sum_quintic_exact_fixed_relaxation_1f_f(mui_uniface_1f *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sum_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5319,14 +6237,35 @@ void mui_fetch_sum_quintic_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5443,8 +6382,20 @@ void mui_fetch_rbf_exact_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const ch
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_fixed_relaxation_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_rbf_linear_fixed_relaxation_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5455,14 +6406,35 @@ void mui_fetch_rbf_exact_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const ch
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_fixed_relaxation_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_fixed_relaxation_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_rbf_linear_fixed_relaxation_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5579,8 +6551,20 @@ void mui_fetch_exact_exact_aitken_1f_f(mui_uniface_1f *uniface, const char *attr
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_exact_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5591,14 +6575,34 @@ void mui_fetch_exact_exact_aitken_1d_f(mui_uniface_1d *uniface, const char *attr
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_exact_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5714,8 +6718,20 @@ void mui_fetch_gauss_exact_aitken_1f_f(mui_uniface_1f *uniface, const char *attr
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_gauss_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_gauss_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5726,14 +6742,35 @@ void mui_fetch_gauss_exact_aitken_1d_f(mui_uniface_1d *uniface, const char *attr
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_gauss_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5850,8 +6887,20 @@ void mui_fetch_moving_average_exact_aitken_1f_f(mui_uniface_1f *uniface, const c
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_moving_average_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_moving_average_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_moving_average_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_moving_average_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5862,14 +6911,35 @@ void mui_fetch_moving_average_exact_aitken_1d_f(mui_uniface_1d *uniface, const c
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_moving_average_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_moving_average_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -5986,8 +7056,20 @@ void mui_fetch_nearest_neighbor_exact_aitken_1f_f(mui_uniface_1f *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_nearest_neighbor_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_nearest_neighbor_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_nearest_neighbor_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -5998,14 +7080,35 @@ void mui_fetch_nearest_neighbor_exact_aitken_1d_f(mui_uniface_1d *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_nearest_neighbor_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_nearest_neighbor_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_nearest_neighbor_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_nearest_neighbor_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6122,6 +7225,12 @@ void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1f_f(mui_uniface_1f *uniface
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
         float* t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
@@ -6129,9 +7238,23 @@ void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1fx_f(mui_uniface_1fx *unifa
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
+        float* t, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
         mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
 		mui_algorithm_aitken_1d *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -6146,6 +7269,16 @@ void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1dx(mui_uniface_1dx *uniface
 void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6272,6 +7405,12 @@ void mui_fetch_pseudo_n2_linear_exact_aitken_1f_f(mui_uniface_1f *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_pseudo_n2_linear_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
         float* t, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
@@ -6279,9 +7418,23 @@ void mui_fetch_pseudo_n2_linear_exact_aitken_1fx_f(mui_uniface_1fx *uniface, con
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1,
+        float* t, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
         mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_n2_linear_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
 		mui_algorithm_aitken_1d *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -6296,6 +7449,16 @@ void mui_fetch_pseudo_n2_linear_exact_aitken_1dx(mui_uniface_1dx *uniface, const
 void mui_fetch_pseudo_n2_linear_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_pseudo_n2_linear_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6422,8 +7585,20 @@ void mui_fetch_shepard_quintic_exact_aitken_1f_f(mui_uniface_1f *uniface, const 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_shepard_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_shepard_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_shepard_quintic_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_shepard_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -6434,14 +7609,35 @@ void mui_fetch_shepard_quintic_exact_aitken_1d_f(mui_uniface_1d *uniface, const 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_shepard_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_shepard_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_shepard_quintic_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_shepard_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6558,8 +7754,20 @@ void mui_fetch_sph_quintic_exact_aitken_1f_f(mui_uniface_1f *uniface, const char
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sph_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sph_quintic_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -6570,14 +7778,35 @@ void mui_fetch_sph_quintic_exact_aitken_1d_f(mui_uniface_1d *uniface, const char
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_sph_quintic_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6694,8 +7923,20 @@ void mui_fetch_sum_quintic_exact_aitken_1f_f(mui_uniface_1f *uniface, const char
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sum_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sum_quintic_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -6706,14 +7947,35 @@ void mui_fetch_sum_quintic_exact_aitken_1d_f(mui_uniface_1d *uniface, const char
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_sum_quintic_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6830,8 +8092,20 @@ void mui_fetch_rbf_exact_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_aitken_1f_f(mui_uniface_1f *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
         mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_rbf_linear_aitken_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *point_1, float* t,
+        mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -6842,14 +8116,35 @@ void mui_fetch_rbf_exact_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_aitken_1d_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_aitken_1dx_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), *spatial_sampler, *temporal_sampler, *algorithm));
+
+}
+
+void mui_fetch_rbf_linear_aitken_1t_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -6970,8 +8265,21 @@ void mui_fetch_exact_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, c
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_exact_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -6983,6 +8291,12 @@ void mui_fetch_exact_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, c
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
@@ -6990,8 +8304,24 @@ void mui_fetch_exact_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface,
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_exact_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -7114,8 +8444,21 @@ void mui_fetch_gauss_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, c
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_gauss_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_gauss_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -7127,6 +8470,12 @@ void mui_fetch_gauss_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, c
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
@@ -7134,8 +8483,24 @@ void mui_fetch_gauss_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface,
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_gauss_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -7222,6 +8587,12 @@ void mui_fetch_moving_average_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *u
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_moving_average_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_moving_average_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
@@ -7230,8 +8601,22 @@ void mui_fetch_moving_average_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx 
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_moving_average_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_moving_average_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -7244,8 +8629,25 @@ void mui_fetch_moving_average_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx 
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_moving_average_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_moving_average_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -7372,9 +8774,23 @@ void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -7387,6 +8803,13 @@ void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -7395,9 +8818,27 @@ void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1d
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_nearest_neighbor_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -7531,9 +8972,24 @@ void mui_fetch_pseudo_n2_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *unifac
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler,
+        mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -7546,6 +9002,13 @@ void mui_fetch_pseudo_n2_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *unifac
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -7554,9 +9017,27 @@ void mui_fetch_pseudo_n2_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *unif
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_pseudo_n2_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -7695,9 +9176,24 @@ void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_n2_linear_1f *spatial_sampler,
+        mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -7710,6 +9206,13 @@ void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -7718,9 +9221,27 @@ void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1d
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_pseudo_n2_linear_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -7858,9 +9379,23 @@ void mui_fetch_shepard_quintic_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_shepard_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_shepard_quintic_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_shepard_quintic_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -7873,6 +9408,13 @@ void mui_fetch_shepard_quintic_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -7881,9 +9423,27 @@ void mui_fetch_shepard_quintic_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_shepard_quintic_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_shepard_quintic_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8013,8 +9573,21 @@ void mui_fetch_sph_quintic_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sph_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -8026,6 +9599,12 @@ void mui_fetch_sph_quintic_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
@@ -8033,8 +9612,24 @@ void mui_fetch_sph_quintic_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *un
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_sph_quintic_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8157,8 +9752,21 @@ void mui_fetch_sum_quintic_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sum_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -8170,6 +9778,12 @@ void mui_fetch_sum_quintic_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *unif
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
@@ -8177,8 +9791,24 @@ void mui_fetch_sum_quintic_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *un
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_sum_quintic_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8301,8 +9931,21 @@ void mui_fetch_rbf_exact_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, con
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_fixed_relaxation_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_rbf_linear_fixed_relaxation_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -8314,6 +9957,12 @@ void mui_fetch_rbf_exact_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, con
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_fixed_relaxation_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
@@ -8321,8 +9970,24 @@ void mui_fetch_rbf_exact_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, c
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_fixed_relaxation_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_rbf_linear_fixed_relaxation_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_fixed_relaxation_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8445,8 +10110,21 @@ void mui_fetch_exact_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, const char 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_exact_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_exact_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_exact_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -8458,6 +10136,12 @@ void mui_fetch_exact_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, const char 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
@@ -8465,8 +10149,24 @@ void mui_fetch_exact_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const cha
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_exact_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_exact_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_exact_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_exact_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8589,8 +10289,21 @@ void mui_fetch_gauss_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, const char 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_gauss_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_gauss_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_gauss_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -8602,6 +10315,12 @@ void mui_fetch_gauss_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, const char 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
@@ -8609,8 +10328,24 @@ void mui_fetch_gauss_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const cha
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_gauss_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_gauss_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_gauss_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_gauss_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8697,6 +10432,12 @@ void mui_fetch_moving_average_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, co
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_moving_average_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_moving_average_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
@@ -8705,8 +10446,22 @@ void mui_fetch_moving_average_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, 
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_moving_average_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_exact_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_moving_average_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_moving_average_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
 		mui_algorithm_aitken_1d *algorithm, double *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
@@ -8719,8 +10474,25 @@ void mui_fetch_moving_average_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, 
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_moving_average_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_moving_average_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_moving_average_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_moving_average_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_moving_average_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -8847,9 +10619,23 @@ void mui_fetch_nearest_neighbor_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_nearest_neighbor_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_nearest_neighbor_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -8862,6 +10648,13 @@ void mui_fetch_nearest_neighbor_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -8870,9 +10663,27 @@ void mui_fetch_nearest_neighbor_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_nearest_neighbor_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_nearest_neighbor_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_nearest_neighbor_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9006,9 +10817,24 @@ void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1f_pair_f(mui_uniface_1f *un
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1f *spatial_sampler,
+        mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_nearest_neighbor_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -9021,6 +10847,13 @@ void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1d_pair_f(mui_uniface_1d *un
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -9029,9 +10862,27 @@ void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1dx_pair_f(mui_uniface_1dx *
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_nearest_neighbor_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_pseudo_nearest_neighbor_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_nearest_neighbor_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9170,9 +11021,24 @@ void mui_fetch_pseudo_n2_linear_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_n2_linear_1f *spatial_sampler,
+        mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_pseudo_n2_linear_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_pseudo_n2_linear_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -9185,6 +11051,13 @@ void mui_fetch_pseudo_n2_linear_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, 
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -9193,9 +11066,27 @@ void mui_fetch_pseudo_n2_linear_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_pseudo_n2_linear_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_pseudo_n2_linear_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_pseudo_n2_linear_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_pseudo_n2_linear_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9333,9 +11224,23 @@ void mui_fetch_shepard_quintic_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, c
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_shepard_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
         float* t, float* it, mui_sampler_shepard_quintic_1fx *spatial_sampler,
         mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_shepard_quintic_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1,
+        float* t, float* it, mui_sampler_shepard_quintic_1fx *spatial_sampler,
+        mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -9348,6 +11253,13 @@ void mui_fetch_shepard_quintic_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, c
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1d *spatial_sampler,
+        mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
         mui_temporal_sampler_exact_1dx *temporal_sampler,
@@ -9356,9 +11268,27 @@ void mui_fetch_shepard_quintic_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface,
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_shepard_quintic_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1dx *spatial_sampler,
+        mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_shepard_quintic_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
         double* t, double* it, mui_sampler_shepard_quintic_1t *spatial_sampler,
         mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_shepard_quintic_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1,
+        double* t, double* it, mui_sampler_shepard_quintic_1t *spatial_sampler,
+        mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9488,8 +11418,21 @@ void mui_fetch_sph_quintic_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sph_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sph_quintic_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sph_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -9501,6 +11444,12 @@ void mui_fetch_sph_quintic_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
@@ -9508,8 +11457,24 @@ void mui_fetch_sph_quintic_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, con
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sph_quintic_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sph_quintic_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_sph_quintic_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sph_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9632,8 +11597,21 @@ void mui_fetch_sum_quintic_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sum_quintic_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_sum_quintic_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_sum_quintic_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -9645,6 +11623,12 @@ void mui_fetch_sum_quintic_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, const
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
@@ -9652,8 +11636,24 @@ void mui_fetch_sum_quintic_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, con
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_sum_quintic_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_sum_quintic_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_sum_quintic_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_sum_quintic_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9776,8 +11776,21 @@ void mui_fetch_rbf_exact_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *a
     *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_aitken_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float* point_1, float* t, float* it,
+        mui_sampler_rbf_1f *spatial_sampler, mui_temporal_sampler_linear_1f *temporal_sampler,
+		mui_algorithm_aitken_1f *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1f(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
         float* it, mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_exact_1fx *temporal_sampler,
+		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
+void mui_fetch_rbf_linear_aitken_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float* point_1, float* t,
+        float* it, mui_sampler_rbf_1fx *spatial_sampler, mui_temporal_sampler_linear_1fx *temporal_sampler,
 		mui_algorithm_aitken_1fx *algorithm, float *return_value) {
     *return_value = uniface->fetch(std::string(attr), mui::point1fx(*point_1), *t, *it, *spatial_sampler,
             *temporal_sampler, *algorithm);
@@ -9789,6 +11802,12 @@ void mui_fetch_rbf_exact_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *a
     *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_aitken_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1d *spatial_sampler, mui_temporal_sampler_linear_1d *temporal_sampler,
+		mui_algorithm_aitken_1d *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1d(*point_1), *t, *it, *spatial_sampler, *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_exact_1dx *temporal_sampler,
 		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
@@ -9796,8 +11815,24 @@ void mui_fetch_rbf_exact_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char 
             *temporal_sampler, *algorithm);
 }
 
+void mui_fetch_rbf_linear_aitken_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1dx *spatial_sampler, mui_temporal_sampler_linear_1dx *temporal_sampler,
+		mui_algorithm_aitken_1dx *algorithm, double *return_value) {
+    *return_value = uniface->fetch(std::string(attr), mui::point1dx(*point_1), *t, *it, *spatial_sampler,
+            *temporal_sampler, *algorithm);
+}
+
 void mui_fetch_rbf_exact_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
         double* it, mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_exact_1t *temporal_sampler,
+		mui_algorithm_aitken_1t *algorithm, double *return_value) {
+    mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
+    *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
+            static_cast<mui::mui_f_wrapper_1D::time_type>(*t), static_cast<mui::mui_f_wrapper_1D::iterator_type>(*it),
+            *spatial_sampler, *temporal_sampler, *algorithm));
+}
+
+void mui_fetch_rbf_linear_aitken_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double* point_1, double* t,
+        double* it, mui_sampler_rbf_1t *spatial_sampler, mui_temporal_sampler_linear_1t *temporal_sampler,
 		mui_algorithm_aitken_1t *algorithm, double *return_value) {
     mui::mui_f_wrapper_1D::point_type point_fetch(static_cast<mui::mui_f_wrapper_1D::REAL>(*point_1));
     *return_value = static_cast<double>(uniface->fetch(std::string(attr), point_fetch,
@@ -9928,8 +11963,28 @@ void mui_fetch_points_exact_1f_f(mui_uniface_1f *uniface, const char *attr, floa
     *num_points = static_cast<int>(ret_pts.size());
 }
 
+void mui_fetch_points_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *t,
+        mui_temporal_sampler_linear_1f *temporal_sampler, float** ret_points_1, int *num_points) {
+    std::vector<mui::point1f> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *temporal_sampler);
+    *ret_points_1 = (float*) malloc(ret_pts.size() * sizeof(float));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
 void mui_fetch_points_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float** ret_points_1, int *num_points) {
+    std::vector<mui::point1fx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *temporal_sampler);
+    *ret_points_1 = (float*) malloc(ret_pts.size() * sizeof(float));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
+void mui_fetch_points_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float** ret_points_1, int *num_points) {
     std::vector<mui::point1fx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *temporal_sampler);
     *ret_points_1 = (float*) malloc(ret_pts.size() * sizeof(float));
     for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -9948,6 +12003,16 @@ void mui_fetch_points_exact_1d_f(mui_uniface_1d *uniface, const char *attr, doub
     *num_points = static_cast<int>(ret_pts.size());
 }
 
+void mui_fetch_points_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double *t,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double** ret_points_1, int *num_points) {
+    std::vector<mui::point1d> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *temporal_sampler);
+    *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
 void mui_fetch_points_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double** ret_points_1, int *num_points) {
     std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *temporal_sampler);
@@ -9958,8 +12023,29 @@ void mui_fetch_points_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, do
     *num_points = static_cast<int>(ret_pts.size());
 }
 
+void mui_fetch_points_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double** ret_points_1, int *num_points) {
+    std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *temporal_sampler);
+    *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
 void mui_fetch_points_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
         mui_temporal_sampler_exact_1t *temporal_sampler, double** ret_points_1, int *num_points) {
+    std::vector<mui::mui_f_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), *t,
+            *temporal_sampler);
+    *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = static_cast<double>(ret_pts[i][0]);
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
+void mui_fetch_points_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double** ret_points_1, int *num_points) {
     std::vector<mui::mui_f_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), *t,
             *temporal_sampler);
     *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
@@ -10140,8 +12226,28 @@ void mui_fetch_points_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr,
     *num_points = static_cast<int>(ret_pts.size());
 }
 
+void mui_fetch_points_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t, float *it,
+        mui_temporal_sampler_linear_1f *temporal_sampler, float** ret_points_1, int *num_points) {
+    std::vector<mui::point1f> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it, *temporal_sampler);
+    *ret_points_1 = (float*) malloc(ret_pts.size() * sizeof(float));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
 void mui_fetch_points_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t, float *it,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float** ret_points_1, int *num_points) {
+    std::vector<mui::point1fx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it, *temporal_sampler);
+    *ret_points_1 = (float*) malloc(ret_pts.size() * sizeof(float));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
+void mui_fetch_points_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t, float *it,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float** ret_points_1, int *num_points) {
     std::vector<mui::point1fx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it, *temporal_sampler);
     *ret_points_1 = (float*) malloc(ret_pts.size() * sizeof(float));
     for (size_t i = 0; i < ret_pts.size(); i++) {
@@ -10160,6 +12266,16 @@ void mui_fetch_points_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr,
     *num_points = static_cast<int>(ret_pts.size());
 }
 
+void mui_fetch_points_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t, double *it,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double** ret_points_1, int *num_points) {
+    std::vector<mui::point1d> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it, *temporal_sampler);
+    *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
 void mui_fetch_points_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t, double *it,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double** ret_points_1, int *num_points) {
     std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it, *temporal_sampler);
@@ -10170,8 +12286,29 @@ void mui_fetch_points_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *att
     *num_points = static_cast<int>(ret_pts.size());
 }
 
+void mui_fetch_points_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t, double *it,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double** ret_points_1, int *num_points) {
+    std::vector<mui::point1dx> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it, *temporal_sampler);
+    *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = ret_pts[i][0];
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
 void mui_fetch_points_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t, double *it,
         mui_temporal_sampler_exact_1t *temporal_sampler, double** ret_points_1, int *num_points) {
+    std::vector<mui::mui_f_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it,
+            *temporal_sampler);
+    *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
+    for (size_t i = 0; i < ret_pts.size(); i++) {
+        *ret_points_1[i] = static_cast<double>(ret_pts[i][0]);
+    }
+    *num_points = static_cast<int>(ret_pts.size());
+}
+
+void mui_fetch_points_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t, double *it,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double** ret_points_1, int *num_points) {
     std::vector<mui::mui_f_wrapper_1D::point_type> ret_pts = uniface->fetch_points<float>(std::string(attr), *t, *it,
             *temporal_sampler);
     *ret_points_1 = (double*) malloc(ret_pts.size() * sizeof(double));
@@ -10352,8 +12489,28 @@ void mui_fetch_values_exact_1f_f(mui_uniface_1f *uniface, const char *attr, floa
     *num_values = static_cast<int>(ret_vals.size());
 }
 
+void mui_fetch_values_linear_1f_f(mui_uniface_1f *uniface, const char *attr, float *t,
+        mui_temporal_sampler_linear_1f *temporal_sampler, float **values, int *num_values) {
+    std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
+    *values = (float*) malloc(ret_vals.size() * sizeof(float));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
 void mui_fetch_values_exact_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float **values, int *num_values) {
+    std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
+    *values = (float*) malloc(ret_vals.size() * sizeof(float));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
+void mui_fetch_values_linear_1fx_f(mui_uniface_1fx *uniface, const char *attr, float *t,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float **values, int *num_values) {
     std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *temporal_sampler);
     *values = (float*) malloc(ret_vals.size() * sizeof(float));
     for (size_t i = 0; i < ret_vals.size(); i++) {
@@ -10372,6 +12529,16 @@ void mui_fetch_values_exact_1d_f(mui_uniface_1d *uniface, const char *attr, doub
     *num_values = static_cast<int>(ret_vals.size());
 }
 
+void mui_fetch_values_linear_1d_f(mui_uniface_1d *uniface, const char *attr, double *t,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double **values, int *num_values) {
+    std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
+    *values = (double*) malloc(ret_vals.size() * sizeof(double));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
 void mui_fetch_values_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double **values, int *num_values) {
     std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
@@ -10382,8 +12549,29 @@ void mui_fetch_values_exact_1dx_f(mui_uniface_1dx *uniface, const char *attr, do
     *num_values = static_cast<int>(ret_vals.size());
 }
 
+void mui_fetch_values_linear_1dx_f(mui_uniface_1dx *uniface, const char *attr, double *t,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double **values, int *num_values) {
+    std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *temporal_sampler);
+    *values = (double*) malloc(ret_vals.size() * sizeof(double));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
 void mui_fetch_values_exact_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
         mui_temporal_sampler_exact_1t *temporal_sampler, double **values, int *num_values) {
+    std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
+            std::string(attr), *t, *temporal_sampler);
+    *values = (double*) malloc(ret_vals.size() * sizeof(double));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = static_cast<double>(ret_vals[i]);
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
+void mui_fetch_values_linear_1t_f(mui_uniface_1t *uniface, const char *attr, double *t,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double **values, int *num_values) {
     std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
             std::string(attr), *t, *temporal_sampler);
     *values = (double*) malloc(ret_vals.size() * sizeof(double));
@@ -10564,8 +12752,28 @@ void mui_fetch_values_exact_1f_pair_f(mui_uniface_1f *uniface, const char *attr,
     *num_values = static_cast<int>(ret_vals.size());
 }
 
+void mui_fetch_values_linear_1f_pair_f(mui_uniface_1f *uniface, const char *attr, float *t, float *it,
+        mui_temporal_sampler_linear_1f *temporal_sampler, float **values, int *num_values) {
+    std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *it, *temporal_sampler);
+    *values = (float*) malloc(ret_vals.size() * sizeof(float));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
 void mui_fetch_values_exact_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t, float *it,
         mui_temporal_sampler_exact_1fx *temporal_sampler, float **values, int *num_values) {
+    std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *it, *temporal_sampler);
+    *values = (float*) malloc(ret_vals.size() * sizeof(float));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
+void mui_fetch_values_linear_1fx_pair_f(mui_uniface_1fx *uniface, const char *attr, float *t, float *it,
+        mui_temporal_sampler_linear_1fx *temporal_sampler, float **values, int *num_values) {
     std::vector<float> ret_vals = uniface->fetch_values<float>(std::string(attr), *t, *it, *temporal_sampler);
     *values = (float*) malloc(ret_vals.size() * sizeof(float));
     for (size_t i = 0; i < ret_vals.size(); i++) {
@@ -10584,6 +12792,16 @@ void mui_fetch_values_exact_1d_pair_f(mui_uniface_1d *uniface, const char *attr,
     *num_values = static_cast<int>(ret_vals.size());
 }
 
+void mui_fetch_values_linear_1d_pair_f(mui_uniface_1d *uniface, const char *attr, double *t, double *it,
+        mui_temporal_sampler_linear_1d *temporal_sampler, double **values, int *num_values) {
+    std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *it, *temporal_sampler);
+    *values = (double*) malloc(ret_vals.size() * sizeof(double));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
 void mui_fetch_values_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t, double *it,
         mui_temporal_sampler_exact_1dx *temporal_sampler, double **values, int *num_values) {
     std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *it, *temporal_sampler);
@@ -10594,8 +12812,29 @@ void mui_fetch_values_exact_1dx_pair_f(mui_uniface_1dx *uniface, const char *att
     *num_values = static_cast<int>(ret_vals.size());
 }
 
+void mui_fetch_values_linear_1dx_pair_f(mui_uniface_1dx *uniface, const char *attr, double *t, double *it,
+        mui_temporal_sampler_linear_1dx *temporal_sampler, double **values, int *num_values) {
+    std::vector<double> ret_vals = uniface->fetch_values<double>(std::string(attr), *t, *it, *temporal_sampler);
+    *values = (double*) malloc(ret_vals.size() * sizeof(double));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = ret_vals[i];
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
 void mui_fetch_values_exact_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t, double *it,
         mui_temporal_sampler_exact_1t *temporal_sampler, double **values, int *num_values) {
+    std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
+            std::string(attr), *t, *it, *temporal_sampler);
+    *values = (double*) malloc(ret_vals.size() * sizeof(double));
+    for (size_t i = 0; i < ret_vals.size(); i++) {
+        *values[i] = static_cast<double>(ret_vals[i]);
+    }
+    *num_values = static_cast<int>(ret_vals.size());
+}
+
+void mui_fetch_values_linear_1t_pair_f(mui_uniface_1t *uniface, const char *attr, double *t, double *it,
+        mui_temporal_sampler_linear_1t *temporal_sampler, double **values, int *num_values) {
     std::vector<mui::mui_f_wrapper_1D::REAL> ret_vals = uniface->fetch_values<mui::mui_f_wrapper_1D::REAL>(
             std::string(attr), *t, *it, *temporal_sampler);
     *values = (double*) malloc(ret_vals.size() * sizeof(double));
