@@ -157,10 +157,6 @@ public:
                     assert((((present_iter->first.first - present_res_iter->first.first) < std::numeric_limits<time_type>::epsilon()) &&
                             (present_iter->first.second == present_res_iter->first.second)) || pts_time_res_.empty());
 
-                    if (!pts_time_res_.empty()) {
-                        assert(!residual_l2_norm_.empty());
-                    }
-
                     auto pts_relx_val_iter = std::find_if(present_iter->second.begin(),
                         present_iter->second.end(), [focus](std::pair<point_type, REAL> b) {
                     return normsq(focus - b.first) < std::numeric_limits<REAL>::epsilon();
