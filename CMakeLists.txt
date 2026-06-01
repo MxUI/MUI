@@ -104,6 +104,13 @@ endif(C_WRAPPER)
 if(FORTRAN_WRAPPER)
     message("-- MUI Fortran wrapper: Selected")
 
+    find_package(MPI REQUIRED)
+    if(MPI_FOUND)
+        include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+    elseif(NOT MPI_FOUND)
+        message(SEND_ERROR "MPI not found")
+    endif(MPI_FOUND)
+
     check_language(Fortran)
     if(CMAKE_Fortran_COMPILER)
         enable_language(Fortran)

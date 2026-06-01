@@ -112,6 +112,9 @@ program main
   !Commit (transmit) the pushed value at commit_time=0
   call mui_commit_1d_f(uniface_1d, commit_time)
 
+  !Barrier to synchronize all domains (tests barrier function parameter passing)
+  call mui_barrier_1d_f(uniface_1d, commit_time)
+
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_1d_f(spatial_sampler_exact_1d, tolerance)
   call mui_create_temporal_sampler_exact_1d_f(temporal_sampler_exact_1d, tolerance)
@@ -121,6 +124,9 @@ program main
        spatial_sampler_exact_1d, temporal_sampler_exact_1d, fetch_result_1d)
 
   print *, "Fetched 1D interface value = ",fetch_result_1d
+
+  !Forget data before commit_time (tests forget function parameter passing)
+  call mui_forget_upper_1d_f(uniface_1d, commit_time, 1_c_int)
 
   !Destroy created 1D MUI objects
   call mui_destroy_sampler_exact_1d_f(spatial_sampler_exact_1d)
@@ -141,6 +147,9 @@ program main
   !Commit (transmit) the pushed value at commit_time=0
   call mui_commit_2d_f(uniface_2d, commit_time)
 
+  !Barrier to synchronize all domains (tests barrier function parameter passing)
+  call mui_barrier_2d_f(uniface_2d, commit_time)
+
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_2d_f(spatial_sampler_exact_2d, tolerance)
   call mui_create_temporal_sampler_exact_2d_f(temporal_sampler_exact_2d, tolerance)
@@ -150,6 +159,9 @@ program main
        spatial_sampler_exact_2d, temporal_sampler_exact_2d, fetch_result_2d)
 
   print *, "Fetched 2D interface value = ",fetch_result_2d
+
+  !Forget data before commit_time (tests forget function parameter passing)
+  call mui_forget_upper_2d_f(uniface_2d, commit_time, 1_c_int)
 
   !Destroy created 2D MUI objects
   call mui_destroy_sampler_exact_2d_f(spatial_sampler_exact_2d)
@@ -170,6 +182,9 @@ program main
   !Commit (transmit) the pushed value at commit_time=0
   call mui_commit_3d_f(uniface_3d, commit_time)
 
+  !Barrier to synchronize all domains (tests barrier function parameter passing)
+  call mui_barrier_3d_f(uniface_3d, commit_time)
+
   !Create spatial and temporal samplers for fetch operation
   call mui_create_sampler_exact_3d_f(spatial_sampler_exact_3d, tolerance)
   call mui_create_temporal_sampler_exact_3d_f(temporal_sampler_exact_3d, tolerance)
@@ -179,6 +194,9 @@ program main
        spatial_sampler_exact_3d, temporal_sampler_exact_3d, fetch_result_3d)
 
   print *, "Fetched 3D interface value = ",fetch_result_3d
+
+  !Forget data before commit_time (tests forget function parameter passing)
+  call mui_forget_upper_3d_f(uniface_3d, commit_time, 1_c_int)
 
   !Destroy created 3D MUI objects
   call mui_destroy_sampler_exact_3d_f(spatial_sampler_exact_3d)
